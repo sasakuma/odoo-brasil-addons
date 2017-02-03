@@ -8,6 +8,7 @@ import logging
 from datetime import datetime
 from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 
 _logger = logging.getLogger(__name__)
 
@@ -58,7 +59,7 @@ class InvoiceEletronic(models.Model):
         ('3', u'Operação não presencial, Teleatendimento'),
         ('4', u'NFC-e em operação com entrega em domicílio'),
         ('9', u'Operação não presencial, outros'),
-    ], u'Tipo de operação', readonly=True, states=STATE, required=False,
+    ], u'Indicador de Presença', readonly=True, states=STATE, required=False,
         help=u'Indicador de presença do comprador no\n'
              u'estabelecimento comercial no momento\n'
              u'da operação.', default='0')
@@ -73,6 +74,18 @@ class InvoiceEletronic(models.Model):
         ('9', u'9 - Não Contribuinte')],
         string="Indicador IE Dest.", help="Indicador da IE do desinatário",
         readonly=True, states=STATE)
+    tipo_emissao = fields.Selection([
+        ('1', u'1 - Emissão normal'),
+        ('2', u'2 - Contingência FS-IA, com impressão do DANFE em formulário \
+         de segurança'),
+        ('3', u'3 - Contingência SCAN'),
+        ('4', u'4 - Contingência DPEC'),
+        ('5', u'5 - Contingência FS-DA, com impressão do DANFE em \
+         formulário de segurança'),
+        ('6', u'6 - Contingência SVC-AN'),
+        ('7', u'7 - Contingência SVC-RS'),
+        ('9', u'9 - Contingência off-line da NFC-e')],
+        string="Tipo de Emissão", readonly=True, states=STATE, default='1')
 
     # Transporte
     modalidade_frete = fields.Selection(
@@ -153,13 +166,18 @@ class InvoiceEletronic(models.Model):
         help=u'Total total do ICMS relativo Fundo de Combate à Pobreza (FCP) \
         da UF de destino')
 
+    # Documentos Relacionados
+    fiscal_document_related_ids = fields.One2many(
+        'br_account.document.related', 'invoice_eletronic_id',
+        'Documentos Fiscais Relacionados', readonly=True, states=STATE)
+
     # CARTA DE CORRECAO
     cartas_correcao_ids = fields.One2many(
         'carta.correcao.eletronica.evento', 'eletronic_doc_id',
         string="Cartas de Correção", readonly=True, states=STATE)
 
     def barcode_url(self):
-        url = '<img style="width:470px;height:50px;margin-top:5px;"\
+        url = '<img style="width:380px;height:50px;margin:2px 1px;"\
 src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         return url
 
@@ -199,14 +217,10 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         if self.model not in ('55', '65'):
             return res
 
-        xprod = item.product_id.name if self.company_id.\
-            tipo_ambiente != '2' else\
-            u'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR \
-FISCAL'
         prod = {
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or '',
-            'xProd': xprod,
+            'xProd': item.product_id.name,
             'NCM': re.sub('[^0-9]', '', item.ncm or '')[:8],
             'EXTIPI': re.sub('[^0-9]', '', item.ncm or '')[8:],
             'CFOP': item.cfop,
@@ -227,6 +241,39 @@ FISCAL'
             'cfop': item.cfop,
             'CEST': re.sub('[^0-9]', '', item.cest or ''),
         }
+        di_vals = []
+        for di in item.import_declaration_ids:
+            adicoes = []
+            for adi in di.line_ids:
+                adicoes.append({
+                    'nAdicao': adi.name,
+                    'nSeqAdic': adi.sequence,
+                    'cFabricante': adi.manufacturer_code,
+                    'vDescDI': "%.02f" % adi.amount_discount
+                    if adi.amount_discount else '',
+                    'nDraw': adi.drawback_number or '',
+                })
+
+            dt_registration = datetime.strptime(
+                di.date_registration, DATE_FORMAT)
+            dt_release = datetime.strptime(di.date_release, DATE_FORMAT)
+            di_vals.append({
+                'nDI': di.name,
+                'dDI': dt_registration.strftime('%Y-%m-%d'),
+                'xLocDesemb': di.location,
+                'UFDesemb': di.state_id.code,
+                'dDesemb': dt_release.strftime('%Y-%m-%d'),
+                'tpViaTransp': di.type_transportation,
+                'vAFRMM': "%.02f" % di.afrmm_value if di.afrmm_value else '',
+                'tpIntermedio': di.type_import,
+                'CNPJ': di.thirdparty_cnpj or '',
+                'UFTerceiro': di.thirdparty_state_id.code or '',
+                'cExportador': di.exporting_code,
+                'adi': adicoes,
+            })
+
+        prod["DI"] = di_vals
+
         imposto = {
             'vTotTrib': "%.02f" % item.tributos_estimados,
             'ICMS': {
@@ -277,7 +324,8 @@ FISCAL'
                 'vFCPUFDest': "%.02f" % item.icms_fcp_uf_dest,
                 'vICMSUFDest': "%.02f" % item.icms_uf_dest,
                 'vICMSUFRemet': "%.02f" % item.icms_uf_remet, }
-        return {'prod': prod, 'imposto': imposto}
+        return {'prod': prod, 'imposto': imposto,
+                'infAdProd': item.informacao_adicional}
 
     @api.multi
     def _prepare_eletronic_invoice_values(self):
@@ -303,13 +351,61 @@ FISCAL'
                                 self.company_id.city_id.ibge_code),
             # Formato de Impressão do DANFE - 1 - Danfe Retrato, 4 - Danfe NFCe
             'tpImp': '1' if self.model == '55' else '4',
-            'tpEmis': 1,  # Tipo de Emissão da NF-e - 1 - Emissão Normal
+            'tpEmis': int(self.tipo_emissao),
             'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
             'finNFe': self.finalidade_emissao,
             'indFinal': self.ind_final or '1',
             'indPres': self.ind_pres or '1',
             'procEmi': 0
         }
+        # Documentos Relacionados
+        documentos = []
+        for doc in self.fiscal_document_related_ids:
+            data = fields.Datetime.from_string(doc.date)
+            if doc.document_type == 'nfe':
+                documentos.append({
+                    'refNFe': doc.access_key
+                })
+            elif doc.document_type == 'nf':
+                documentos.append({
+                    'refNF': {
+                        'cUF': doc.state_id.ibge_code,
+                        'AAMM': data.strftime("%y%m"),
+                        'CNPJ': re.sub('[^0-9]', '', doc.cnpj_cpf),
+                        'mod': doc.fiscal_document_id.code,
+                        'serie': doc.serie,
+                        'nNF': doc.internal_number,
+                    }
+                })
+
+            elif doc.document_type == 'cte':
+                documentos.append({
+                    'refCTe': doc.access_key
+                })
+            elif doc.document_type == 'nfrural':
+                cnpj_cpf = re.sub('[^0-9]', '', doc.cnpj_cpf)
+                documentos.append({
+                    'refNFP': {
+                        'cUF': doc.state_id.ibge_code,
+                        'AAMM': data.strftime("%y%m"),
+                        'CNPJ': cnpj_cpf if len(cnpj_cpf) == 14 else '',
+                        'CPF': cnpj_cpf if len(cnpj_cpf) == 11 else '',
+                        'IE': doc.inscr_est,
+                        'mod': doc.fiscal_document_id.code,
+                        'serie': doc.serie,
+                        'nNF': doc.internal_number,
+                    }
+                })
+            elif doc.document_type == 'cf':
+                documentos.append({
+                    'refECF': {
+                        'mod': doc.fiscal_document_id.code,
+                        'nECF': doc.serie,
+                        'nCOO': doc.internal_number,
+                    }
+                })
+
+        ide['NFref'] = documentos
         emit = {
             'tipo': self.company_id.partner_id.company_type,
             'cnpj_cpf': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
@@ -331,6 +427,9 @@ FISCAL'
             },
             'IE':  re.sub('[^0-9]', '', self.company_id.inscr_est),
             'CRT': self.company_id.fiscal_type,
+            'IM': re.sub('[^0-9]', '', self.company_id.inscr_mun or ''),
+            'CNAE': re.sub(
+                '[^0-9]', '', self.company_id.cnae_main_id.code or '')
         }
         dest = None
         exporta = None
@@ -402,8 +501,6 @@ FISCAL'
         transp = {
             'modFrete': self.modalidade_frete,
             'transporta': {
-                'CNPJ': re.sub(
-                    '[^0-9]', '', self.transportadora_id.cnpj_cpf or ''),
                 'xNome': self.transportadora_id.legal_name or
                 self.transportadora_id.name or '',
                 'IE': re.sub('[^0-9]', '',
@@ -421,6 +518,12 @@ FISCAL'
                 'RNTC': self.rntc or '',
             }
         }
+        cnpj_cpf = re.sub('[^0-9]', '', self.transportadora_id.cnpj_cpf or '')
+        if self.transportadora_id.is_company:
+            transp['transporta']['CNPJ'] = cnpj_cpf
+        else:
+            transp['transporta']['CPF'] = cnpj_cpf
+
         reboques = []
         for item in self.reboque_ids:
             reboques.append({
@@ -438,8 +541,9 @@ FISCAL'
                 'esp': item.especie or '',
                 'marca': item.marca or '',
                 'nVol': item.numeracao or '',
-                'pesoL': item.peso_liquido or '',
-                'pesoB': item.peso_bruto or '',
+                'pesoL': "%.03f" % item.peso_liquido
+                if item.peso_liquido else '',
+                'pesoB': "%.03f" % item.peso_bruto if item.peso_bruto else '',
             })
         transp['vol'] = volumes
 
@@ -480,11 +584,12 @@ FISCAL'
             'detalhes': eletronic_items,
             'total': total,
             'transp': transp,
-            'cobr': cobr,
             'infAdic': infAdic,
             'exporta': exporta,
             'compra': compras,
         }
+        if len(duplicatas) > 0:
+            vals['cobr'] = cobr
         return vals
 
     @api.multi
@@ -512,8 +617,8 @@ FISCAL'
                 'modelo': item.model,
                 'numero': item.numero,
                 'serie': item.serie.code.zfill(3),
-                'tipo': 0 if item.tipo_operacao == 'entrada' else 1,
-                'codigo': item.numero_controle
+                'tipo': int(item.tipo_emissao),
+                'codigo': "%08d" % item.numero_controle
             }
             item.chave_nfe = gerar_chave(ChaveNFe(**chave_dict))
 
@@ -587,9 +692,9 @@ FISCAL'
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
-        super(InvoiceEletronic, self).action_cancel_document()
         if self.model not in ('55', '65'):
-            return
+            return super(InvoiceEletronic, self).action_cancel_document(
+                justificativa=justificativa)
 
         if not justificativa:
             return {

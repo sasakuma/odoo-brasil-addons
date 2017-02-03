@@ -228,7 +228,7 @@ class InvoiceEletronic(models.Model):
                 cert_pfx, self.company_id.nfe_a1_password)
 
             if self.ambiente == 'producao':
-                resposta = envio_lote_rps(certificado, **nfse_values)
+                resposta = envio_lote_rps(certificado, nfse=nfse_values)
             else:
                 resposta = teste_envio_lote_rps(certificado, nfse=nfse_values)
             retorno = resposta['object']
@@ -257,9 +257,9 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
-        super(InvoiceEletronic, self).action_cancel_document()
         if self.model not in ('001'):
-            return
+            return super(InvoiceEletronic, self).action_cancel_document(
+                justificativa=justificativa)
 
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
         cert_pfx = base64.decodestring(cert)

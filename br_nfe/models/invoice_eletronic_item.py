@@ -14,7 +14,7 @@ class InvoiceEletronicItem(models.Model):
     @api.depends('icms_cst', 'origem')
     def _compute_cst_danfe(self):
         for item in self:
-            item.cst_danfe = item.origem + item.icms_cst
+            item.cst_danfe = (item.origem or '') + (item.icms_cst or '')
 
     cst_danfe = fields.Char(string="CST Danfe", compute="_compute_cst_danfe")
 
@@ -25,6 +25,10 @@ class InvoiceEletronicItem(models.Model):
     codigo_enquadramento_ipi = fields.Char(
         string="Classe Enquadramento", size=3, default='999',
         readonly=True, states=STATE)
+
+    import_declaration_ids = fields.One2many(
+        'br_account.import.declaration',
+        'invoice_eletronic_line_id', u'Declaração de Importação')
 
     # ----------- ICMS INTERESTADUAL -----------
     tem_difal = fields.Boolean(string=u'Difal?', readonly=True, states=STATE)
@@ -37,10 +41,11 @@ class InvoiceEletronicItem(models.Model):
     icms_aliquota_interestadual = fields.Float(
         string=u"% ICMS Inter", readonly=True, states=STATE)
     icms_aliquota_inter_part = fields.Float(
-        string=u'% Partilha', default=40.0, readonly=True, states=STATE)
+        string=u'% Partilha', default=60.0, readonly=True, states=STATE)
     icms_uf_remet = fields.Monetary(
         string=u'ICMS Remetente', readonly=True, states=STATE)
     icms_uf_dest = fields.Monetary(
         string=u'ICMS Destino', readonly=True, states=STATE)
     icms_fcp_uf_dest = fields.Monetary(
         string=u'Valor FCP', readonly=True, states=STATE)
+    informacao_adicional = fields.Text(string="Informação Adicional")

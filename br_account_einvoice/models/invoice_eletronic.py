@@ -2,10 +2,13 @@
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import re
 import base64
+import copy
 from datetime import datetime
+import dateutil.relativedelta as relativedelta
 from odoo.exceptions import UserError
-from odoo import api, fields, models
+from odoo import api, fields, models, tools
 from odoo.addons import decimal_precision as dp
 from odoo.addons.br_account.models.cst import CST_ICMS
 from odoo.addons.br_account.models.cst import CSOSN_SIMPLES
@@ -38,7 +41,7 @@ class InvoiceEletronic(models.Model):
     tipo_operacao = fields.Selection(
         [('entrada', 'Entrada'),
          ('saida', 'Saída')],
-        string=u'Tipo emissão', readonly=True, states=STATE)
+        string=u'Tipo de Operação', readonly=True, states=STATE)
     model = fields.Selection(
         [('55', '55 - NFe'),
          ('65', '65 - NFCe'),
@@ -204,7 +207,8 @@ class InvoiceEletronic(models.Model):
             errors.append(u'Emitente / Endereço - Logradouro')
         if not self.company_id.partner_id.number:
             errors.append(u'Emitente / Endereço - Número')
-        if not self.company_id.partner_id.zip:
+        if not self.company_id.partner_id.zip or len(
+                re.sub(r"\D", "", self.company_id.partner_id.zip)) != 8:
             errors.append(u'Emitente / Endereço - CEP')
         if not self.company_id.partner_id.state_id:
             errors.append(u'Emitente / Endereço - Estado')
@@ -247,7 +251,8 @@ class InvoiceEletronic(models.Model):
             errors.append(u'Destinatário / Endereço - Número')
 
         if partner.country_id.id == company.partner_id.country_id.id:
-            if not partner.zip:
+            if not partner.zip or len(
+                    re.sub(r"\D", "", partner.zip)) != 8:
                 errors.append(u'Destinatário / Endereço - CEP')
 
         if partner.country_id.id == company.partner_id.country_id.id:
@@ -289,6 +294,57 @@ class InvoiceEletronic(models.Model):
         return errors
 
     @api.multi
+    def _compute_legal_information(self):
+        from jinja2.sandbox import SandboxedEnvironment
+        mako_template_env = SandboxedEnvironment(
+            block_start_string="<%",
+            block_end_string="%>",
+            variable_start_string="${",
+            variable_end_string="}",
+            comment_start_string="<%doc>",
+            comment_end_string="</%doc>",
+            line_statement_prefix="%",
+            line_comment_prefix="##",
+            trim_blocks=True,               # do not output newline after
+            autoescape=True,                # XML/HTML automatic escaping
+        )
+        mako_template_env.globals.update({
+            'str': str,
+            'datetime': datetime,
+            'len': len,
+            'abs': abs,
+            'min': min,
+            'max': max,
+            'sum': sum,
+            'filter': filter,
+            'reduce': reduce,
+            'map': map,
+            'round': round,
+            'cmp': cmp,
+            # dateutil.relativedelta is an old-style class and cannot be
+            # instanciated wihtin a jinja2 expression, so a lambda "proxy" is
+            # is needed, apparently.
+            'relativedelta': lambda *a, **kw: relativedelta.relativedelta(
+                *a, **kw),
+        })
+        mako_safe_env = copy.copy(mako_template_env)
+        mako_safe_env.autoescape = False
+
+        result = ''
+        for item in self.invoice_id.fiscal_observation_ids:
+            if item.document_id and item.document_id.code != self.model:
+                continue
+            template = mako_safe_env.from_string(tools.ustr(item.name))
+            variables = {
+                'user': self.env.user,
+                'ctx': self._context,
+                'invoice': self.invoice_id,
+            }
+            render_result = template.render(variables)
+            result += render_result + '\n'
+        self.informacoes_legais = result
+
+    @api.multi
     def validate_invoice(self):
         self.ensure_one()
         errors = self._hook_validation()
@@ -299,7 +355,7 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_post_validate(self):
-        pass
+        self._compute_legal_information()
 
     @api.multi
     def _prepare_eletronic_invoice_item(self, item, invoice):
@@ -328,7 +384,7 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def unlink(self):
         for item in self:
-            if item.state == 'done':
+            if item.state in ('done', 'cancel'):
                 raise UserError(
                     u'Documento Eletrônico enviado - Proibido excluir')
         super(InvoiceEletronic, self).unlink()
