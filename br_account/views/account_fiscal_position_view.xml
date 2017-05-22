@@ -96,6 +96,9 @@
                     </group>
                 </page>
             </xpath>
+            <field name="name" position="after">
+                <field name="position_type"/>
+            </field>
             <field name="vat_required" position="attributes" >
                 <attribute name="invisible">1</attribute>
             </field>
