@@ -75,8 +75,8 @@ class AccountFiscalPosition(models.Model):
     _inherit = 'account.fiscal.position'
 
     position_type = fields.Selection(string=u'Tipo da Posição',
-                                     selection=[('sale', 'Venda')],
-                                     default='sale',
+                                     selection=[('product', 'Produto')],
+                                     default='product',
                                      required=True)
     journal_id = fields.Many2one(
         'account.journal', string="Diário Contábil",
