@@ -11,7 +11,7 @@
             <xpath expr="//page[@name='notes']" position="after">
                 <page string="Serviço" name="service">
                     <group>
-                        <field name="service_type_id"/>
+                        <field name="service_type_id" attrs="{'required': [('position_type', '=', 'service')]}"/>
                     </group>
                 </page>
             </xpath>

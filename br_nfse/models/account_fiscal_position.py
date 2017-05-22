@@ -10,3 +10,5 @@ class AccountFiscalPosition(models.Model):
 
     service_type_id = fields.Many2one(comodel_name='br_account.service.type',
                                       string=u'Tipo de Serviço')
+
+    position_type = fields.Selection(selection_add=[('service', 'Serviço')])
