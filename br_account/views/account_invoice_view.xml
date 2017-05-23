@@ -232,6 +232,9 @@
                                     <field name="product_id" />
                                     <field name="product_type" invisible="1" />
                                     <field name="company_fiscal_type" invisible="1" />
+                                    <field name="invoice_id" invisible="1" />
+                                    <field name="fiscal_position_id" invisible="1" />
+
                                     <label for="quantity"/>
                                     <div>
                                         <field name="quantity" class="oe_inline"/>

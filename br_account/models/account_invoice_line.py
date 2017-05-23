@@ -192,6 +192,9 @@ class AccountInvoiceLine(models.Model):
         default=_default_company_fiscal_type, string=u"Regime Tributário")
     calculate_tax = fields.Boolean(string="Calcular Imposto?", default=True)
     fiscal_comment = fields.Text(u'Observação Fiscal')
+    fiscal_position_id = fields.Many2one(comodel_name='account.fiscal.position',
+                                         string=u'Posição Fiscal',
+                                         related='invoice_id.fiscal_position_id')
 
     # =========================================================================
     # ICMS Normal
