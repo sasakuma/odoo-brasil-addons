@@ -131,12 +131,10 @@ class AccountInvoice(models.Model):
         'br_account.document.serie', string=u'Série',
         domain="[('fiscal_document_id', '=', fiscal_document_id),\
         ('company_id','=',company_id)]", readonly=True,
-        states={'draft': [('readonly', False)]},
-        default=_default_fiscal_document_serie)
+        states={'draft': [('readonly', False)]})
     fiscal_document_id = fields.Many2one(
         'br_account.fiscal.document', string='Documento', readonly=True,
-        states={'draft': [('readonly', False)]},
-        default=_default_fiscal_document)
+        states={'draft': [('readonly', False)]})
     is_eletronic = fields.Boolean(
         related='fiscal_document_id.electronic', type='boolean',
         store=True, string=u'Eletrônico', readonly=True)
@@ -289,6 +287,9 @@ class AccountInvoice(models.Model):
             self.journal_id = self.fiscal_position_id.journal_id
         ob_ids = [x.id for x in self.fiscal_position_id.fiscal_observation_ids]
         self.fiscal_observation_ids = [(6, False, ob_ids)]
+
+        self.fiscal_document_id = self.fiscal_position_id.fiscal_document_id.id
+        self.document_serie_id = self.fiscal_position_id.document_serie_id.id
 
     @api.multi
     def action_invoice_cancel_paid(self):

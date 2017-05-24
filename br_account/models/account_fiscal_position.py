@@ -78,6 +78,16 @@ class AccountFiscalPosition(models.Model):
                                      selection=[('product', 'Produto')],
                                      default='product',
                                      required=True)
+
+    fiscal_document_id = fields.Many2one('br_account.fiscal.document',
+                                         string='Documento')
+
+    # TODO Adicionar no domain a empresa (utilizar empresa na posicao fiscal)
+    document_serie_id = fields.Many2one(
+        comodel_name='br_account.document.serie',
+        string=u'Série',
+        domain="[('fiscal_document_id', '=', fiscal_document_id)]")
+
     journal_id = fields.Many2one(
         'account.journal', string="Diário Contábil",
         help="Diário Contábil a ser utilizado na fatura.")

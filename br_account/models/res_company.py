@@ -18,7 +18,7 @@ COMPANY_FISCAL_TYPE_DEFAULT = '3'
 class ResCompany(models.Model):
     _inherit = 'res.company'
 
-    #TODO Remover os campos comentados abaixo no futuro
+    # TODO Remover os campos comentados abaixo no futuro
     # fiscal_document_for_product_id = fields.Many2one(
     #     'br_account.fiscal.document', "Documento Fiscal para produto")
     #
