@@ -3,6 +3,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from lxml import etree
 
 from odoo import api, fields, models
 from odoo.addons import decimal_precision as dp
@@ -192,9 +193,13 @@ class AccountInvoiceLine(models.Model):
         default=_default_company_fiscal_type, string=u"Regime Tributário")
     calculate_tax = fields.Boolean(string="Calcular Imposto?", default=True)
     fiscal_comment = fields.Text(u'Observação Fiscal')
-    fiscal_position_id = fields.Many2one(comodel_name='account.fiscal.position',
-                                         string=u'Posição Fiscal',
-                                         related='invoice_id.fiscal_position_id')
+    fiscal_position_id = fields.Many2one(
+        comodel_name='account.fiscal.position',
+        string=u'Posição Fiscal',
+        related='invoice_id.fiscal_position_id')
+    fiscal_position_type = fields.Selection(
+        string='Tipo Fiscal do Produto',
+        related='fiscal_position_id.position_type')
 
     # =========================================================================
     # ICMS Normal
@@ -461,6 +466,28 @@ class AccountInvoiceLine(models.Model):
         default=0.00)
 
     informacao_adicional = fields.Text(string="Informações Adicionais")
+
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False,
+                        submenu=False):
+        """Por algum motivo obscuro, o modulo account implementa o 
+        fields_view_get e força o domain do campo 'product_id'. Assim, mesmo 
+        definindo o domain na view ou na model, o dominio continua sendo o 
+        definido neste metodo metodo. Assim, para realizar o filtro entre 
+        serviços do tipo produto e serviço, foi necessário sobrescreve-lo.
+        """
+        res = super(AccountInvoiceLine, self).fields_view_get(
+            view_id=view_id, view_type=view_type, toolbar=toolbar,
+            submenu=submenu)
+        if self._context.get('type'):
+            doc = etree.XML(res['arch'])
+            for node in doc.xpath("//field[@name='product_id']"):
+                if self._context['type'] not in ('in_invoice', 'in_refund'):
+                    domain = "[('sale_ok', '=', True)," \
+                             "('fiscal_type', '=', fiscal_position_type)]"
+                    node.set('domain', domain)
+            res['arch'] = etree.tostring(doc)
+        return res
 
     def _update_tax_from_ncm(self):
         if self.product_id:

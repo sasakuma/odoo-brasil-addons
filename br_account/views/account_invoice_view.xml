@@ -229,12 +229,12 @@
                         <page string="Geral">
                             <group>
                                 <group>
-                                    <field name="product_id" />
-                                    <field name="product_type" invisible="1" />
-                                    <field name="company_fiscal_type" invisible="1" />
                                     <field name="invoice_id" invisible="1" />
-                                    <field name="fiscal_position_id" invisible="1" />
-
+                                    <field name="fiscal_position_id" invisible="1"/>
+                                    <field name="fiscal_position_type" invisible="1"/>
+                                    <field name="product_id"/>
+                                    <field name="product_type" invisible="1" />
+                                    <field name="company_fiscal_type" invisible="1"/>
                                     <label for="quantity"/>
                                     <div>
                                         <field name="quantity" class="oe_inline"/>
@@ -264,7 +264,7 @@
                             <label for="informacao_adicional"/>
                             <field name="informacao_adicional"/>
                         </page>
-                        <page name="icms" string="ICMS" attrs="{'invisible': [('product_type', '=', 'service')]}">
+                        <page name="icms" string="ICMS" attrs="{'invisible': [('fiscal_position_type', '=', 'service')]}">
                             <group name="detalhes_icms" string="Detalhes do ICMS">
                                 <group>
                                     <field name="icms_cst_normal" attrs="{'invisible': [('company_fiscal_type', '!=', '3')] }" />
@@ -308,20 +308,20 @@
                                 </group>
                             </group>
                         </page>
-                        <page name="issqn" string="ISSQN" attrs="{'invisible': [('product_type','!=', 'service')]}">
+                        <page name="issqn" string="ISSQN" attrs="{'invisible': [('fiscal_position_type','!=', 'service')]}">
                             <group>
                                 <field name="tax_issqn_id" />
                                 <field name="issqn_tipo"/>
                                 <field name="issqn_base_calculo"/>
                                 <field name="issqn_aliquota" invisible="1" />
-                                <field name="service_type_id" attrs="{'required': [('product_type','=', 'service')]}" domain="[('internal_type','=','normal')]"/>
+                                <field name="service_type_id" attrs="{'required': [('fiscal_position_type','=', 'service')]}" domain="[('internal_type','=','normal')]"/>
                                 <field name="issqn_valor"/>
                             </group>
                         </page>
-                        <page name="ipi" string="IPI" attrs="{'invisible': [('product_type','=', 'service')]}">
+                        <page name="ipi" string="IPI" attrs="{'invisible': [('fiscal_position_type','=', 'service')]}">
                             <group string="Detalhes do IPI">
                                 <group>
-                                    <field name="ipi_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
+                                    <field name="ipi_cst" attrs="{'required': [('fiscal_position_type','=', 'product')]}"/>
                                     <field name="ipi_tipo"/>
                                     <field name="ipi_rule_id" />
                                 </group>
@@ -337,7 +337,7 @@
                         <page name="pis" string="PIS">
                             <group string="Detalhes do PIS">
                                 <group>
-                                    <field name="pis_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
+                                    <field name="pis_cst" attrs="{'required': [('fiscal_position_type','=', 'product')]}"/>
                                     <field name="pis_tipo"/>
                                     <field name="pis_rule_id" />
                                 </group>
@@ -352,7 +352,7 @@
                         <page name="cofins" string="COFINS">
                             <group string="Detalhes do COFINS">
                                 <group>
-                                    <field name="cofins_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
+                                    <field name="cofins_cst" attrs="{'required': [('fiscal_position_type','=', 'product')]}"/>
                                     <field name="cofins_tipo"/>
                                     <field name="cofins_rule_id" />
                                 </group>
@@ -364,7 +364,7 @@
                                 </group>
                             </group>
                         </page>
-                        <page name="ii" string="II" attrs="{'invisible': [('product_type','=', 'service')]}">
+                        <page name="ii" string="II" attrs="{'invisible': [('fiscal_position_type','=', 'service')]}">
                             <group string="Detalhes do Imposto de Importação">
                                 <field name="ii_rule_id" />
                                 <field name="tax_ii_id" />
@@ -409,7 +409,7 @@
                                 </field>
                             </group>
                         </page>
-                        <page name="retencoes" string="Retenções" attrs="{'invisible': [('product_type','!=', 'service')]}">
+                        <page name="retencoes" string="Retenções" attrs="{'invisible': [('fiscal_position_type','!=', 'service')]}">
                             <group>
                                 <group string="CSLL">
                                     <field name="csll_rule_id" />
