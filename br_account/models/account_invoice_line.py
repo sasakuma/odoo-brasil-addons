@@ -470,22 +470,26 @@ class AccountInvoiceLine(models.Model):
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False,
                         submenu=False):
-        """Por algum motivo obscuro, o modulo account implementa o 
-        fields_view_get e força o domain do campo 'product_id'. Assim, mesmo 
-        definindo o domain na view ou na model, o dominio continua sendo o 
-        definido neste metodo metodo. Assim, para realizar o filtro entre 
-        serviços do tipo produto e serviço, foi necessário sobrescreve-lo.
-        """
         res = super(AccountInvoiceLine, self).fields_view_get(
             view_id=view_id, view_type=view_type, toolbar=toolbar,
             submenu=submenu)
         if self._context.get('type'):
             doc = etree.XML(res['arch'])
+
             for node in doc.xpath("//field[@name='product_id']"):
+
+                # Por algum motivo obscuro, o modulo account implementa o
+                # fields_view_get e força o domain do campo 'product_id'.
+                # Assim, mesmo definindo o domain na view ou na model, o
+                # dominio continua sendo o definido neste metodo metodo.
+                # Assim, para realizar o filtro entre serviços do tipo produto
+                # e serviço, foi necessário sobrescreve-lo
                 if self._context['type'] not in ('in_invoice', 'in_refund'):
+
                     domain = "[('sale_ok', '=', True)," \
                              "('fiscal_type', '=', fiscal_position_type)]"
                     node.set('domain', domain)
+
             res['arch'] = etree.tostring(doc)
         return res
 
