@@ -4,6 +4,8 @@
 
 from . import cst
 from . import account
+from . import account_financial_operation
+from . import account_title_type
 from . import br_account
 from . import product_fiscal_classification
 from . import product

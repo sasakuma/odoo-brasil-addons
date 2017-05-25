@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="account_financial_operation_6" model="account.financial.operation">
+            <field name="name">Cobrança Simples</field>
+        </record>
+
+        <record id="account_financial_operation_7" model="account.financial.operation">
+            <field name="name">Cobrança Registrada</field>
+        </record>
+
+        <record id="account_financial_operation_8" model="account.financial.operation">
+            <field name="name">Carteira</field>
+        </record>
+
+    </data>
+</odoo>

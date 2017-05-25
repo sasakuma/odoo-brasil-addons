@@ -17,6 +17,10 @@
         'account', 'br_base', 'account_cancel'
     ],
     'data': [
+        'data/account_financial_operation.xml',
+        'data/account_title_type.xml',
+        'views/account_financial_operation.xml',
+        'views/account_title_type.xml',
         'views/account_fiscal_position_view.xml',
         'views/account_invoice_view.xml',
         'views/account.xml',
