@@ -46,6 +46,10 @@
                                    attrs="{'readonly':[('reconciled','=', True)]}"/>
                             <field name="title_type_id"
                                    attrs="{'readonly':[('reconciled','=', True)]}"/>
+                            <field name="pin_date"
+                                   attrs="{'readonly':[('reconciled','=', True)]}"/>
+                            <field name="amount_day"
+                                   attrs="{'readonly':[('reconciled','=', True)]}"/>
                         </group>
                         <group name="dates" string="Dates">
                             <field name="date_maturity"
@@ -123,6 +127,16 @@
                 <attribute name="attrs">
                     {'readonly': [('reconciled','=',True)]}
                 </attribute>
+            </field>
+
+            <field name="date" position="attributes">
+                <attribute name="attrs">
+                    {'readonly': [('reconciled','=',True)]}
+                </attribute>
+            </field>
+
+            <field name="name">
+                <field name="name"/>
             </field>
 
         </field>

@@ -64,7 +64,7 @@ class TestNFeBrasil(TransactionCase):
             'default_code': '25',
             'type': 'service',
             'fiscal_type': 'service',
-            'service_type_id': self.service_type.id,
+            # 'service_type_id': self.service_type.id,
             'list_price': 50.0
         })
         default_partner = {
@@ -117,7 +117,7 @@ class TestNFeBrasil(TransactionCase):
                     'name': 'product test 5',
                     'price_unit': 100.00,
                     'product_type': self.service.fiscal_type,
-                    'service_type_id': self.service.service_type_id.id,
+                    # 'service_type_id': self.service.service_type_id.id,
                     'cfop_id': self.env.ref(
                         'br_data_account_product.cfop_5101').id,
                     'pis_cst': '01',
