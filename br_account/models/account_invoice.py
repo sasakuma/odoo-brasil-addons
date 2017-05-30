@@ -133,11 +133,17 @@ class AccountInvoice(models.Model):
 
     document_serie_id = fields.Many2one('br_account.document.serie',
                                         string=u'Série',
-                                        readonly=True)
+                                        readonly=True,
+                                        states={
+                                            'draft': [('readonly', False)],
+                                        })
 
-    fiscal_document_id = fields.Many2one(
-        'br_account.fiscal.document', string='Documento', readonly=True,
-        states={'draft': [('readonly', False)]})
+    fiscal_document_id = fields.Many2one('br_account.fiscal.document',
+                                         string='Documento',
+                                         readonly=True,
+                                         states={
+                                             'draft': [('readonly', False)],
+                                         })
 
     is_eletronic = fields.Boolean(
         related='fiscal_document_id.electronic', type='boolean',
@@ -329,7 +335,6 @@ class AccountInvoice(models.Model):
         self.fiscal_observation_ids = [(6, False, ob_ids)]
 
         self.fiscal_document_id = self.fiscal_position_id.fiscal_document_id.id
-        self.document_serie_id = self.fiscal_position_id.document_serie_id.id
 
     @api.multi
     def action_move_create(self):
