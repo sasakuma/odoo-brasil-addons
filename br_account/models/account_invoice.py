@@ -337,23 +337,6 @@ class AccountInvoice(models.Model):
         self.fiscal_document_id = self.fiscal_position_id.fiscal_document_id.id
 
     @api.multi
-    def action_move_create(self):
-        # if moves:
-        #     # second, invalidate the move(s)
-        #     moves.button_cancel()
-        #     # delete the move this invoice was pointing to
-        #     # Note that the corresponding move_lines and move_reconciles
-        #     # will be automatically deleted too
-        #     moves.unlink()
-        if self.move_id:
-            self.move_id.button_cancel()
-            self.move_id.unlink()
-
-        ret = super(AccountInvoice, self).action_move_create()
-        self.move_id.state = 'draft'
-        return ret
-
-    @api.multi
     def action_invoice_cancel_paid(self):
         if self.filtered(lambda inv: inv.state not in ['proforma2', 'draft',
                                                        'open', 'paid']):

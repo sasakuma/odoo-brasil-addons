@@ -1,29 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record id="fiscal_document_001" model="br_account.fiscal.document">
-        <field name="code">001</field>
-        <field name="name">Nota Fiscal Eletronica de Serviço</field>
-        <field name="electronic">True</field>
-    </record>
+    <data noupdate="0">
+        <record id="fiscal_document_001" model="br_account.fiscal.document">
+            <field name="code">001</field>
+            <field name="name">Nota Fiscal Eletronica de Serviço</field>
+            <field name="electronic">True</field>
+        </record>
 
-    <record id="nfes_internal_sequence_1" model="ir.sequence">
-        <field name="name">Série 1 - Nota Fiscal Eletrônica de Serviço</field>
-        <field name="implementation">no_gap</field>
-        <field name="active">True</field>
-        <field name="padding">1</field>
-        <field name="number_increment">1</field>
-        <field name="number_next_atual">1</field>
-    </record>
+        <record id="nfes_internal_sequence_1" model="ir.sequence">
+            <field name="name">Série 1 - Nota Fiscal Eletrônica de Serviço</field>
+            <field name="implementation">no_gap</field>
+            <field name="active">True</field>
+            <field name="padding">1</field>
+            <field name="number_increment">1</field>
+            <field name="number_next_atual">1</field>
+        </record>
 
-    <record id="br_document_serie_1" model="br_account.document.serie">
-        <field name="code">1</field>
-        <field name="name">Série 1 - Nota Fiscal Eletrônica de Serviço</field>
-        <field name="fiscal_document_id" ref="fiscal_document_001"/>
-        <field name="internal_sequence_id" ref="nfes_internal_sequence_1" />
-        <field name="company_id" ref="base.main_company" />
-        <field name="active">True</field>
-        <field name="fiscal_type">service</field>
-    </record>
+        <record id="br_document_serie_1" model="br_account.document.serie">
+            <field name="code">1</field>
+            <field name="name">Série 1 - Nota Fiscal Eletrônica de Serviço</field>
+            <field name="fiscal_document_id" ref="fiscal_document_001"/>
+            <field name="internal_sequence_id" ref="nfes_internal_sequence_1"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="active">True</field>
+            <field name="fiscal_type">service</field>
+        </record>
+
+    </data>
 
 </odoo>
