@@ -329,3 +329,46 @@ class BrAccountFiscalObservation(models.Model):
                              ('observacao', 'Observação')], string=u"Tipo")
     document_id = fields.Many2one(
         'br_account.fiscal.document', string="Documento Fiscal")
+
+
+class BrAccountInvoiceParcel(models.Model):
+
+    _name = 'br_account.invoice.parcel'
+    _description = u'Classe que representa as parcelas Para Fatura'
+
+    name = fields.Char(string='Name')
+
+    invoice_id = fields.Many2one(comodel_name='account.invoice',
+                                 string='Invoice')
+
+    date_maturity = fields.Date(string='Data de Vencimento',
+                                required=True)
+
+    parceling_value = fields.Monetary(string='Valor',
+                                      required=True,
+                                      default=0.0,
+                                      currency_field='company_currency_id')
+
+    company_currency_id = fields.Many2one(comodel_name='res.currency',
+                                          related='invoice_id.company_id.'
+                                                  'currency_id',
+                                          string='Company Currency',
+                                          readonly=True,
+                                          help='Utility field to express '
+                                               'amount currency',
+                                          store=True)
+
+    financial_operation_id = fields.Many2one('account.financial.operation',
+                                             required=True,
+                                             string=u'Operação Financeira')
+
+    title_type_id = fields.Many2one('account.title.type',
+                                    required=True,
+                                    string=u'Tipo de Título')
+
+    pin_date = fields.Boolean(string='Data Fixa')
+
+    amount_days = fields.Integer(string='Quantidade de Dias')
+
+
+
