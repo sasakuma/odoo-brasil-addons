@@ -337,6 +337,10 @@ class AccountInvoice(models.Model):
         self.fiscal_document_id = self.fiscal_position_id.fiscal_document_id.id
 
     @api.multi
+    def action_create_periodic_entry(self):
+        pass
+
+    @api.multi
     def action_invoice_cancel_paid(self):
         if self.filtered(lambda inv: inv.state not in ['proforma2', 'draft',
                                                        'open', 'paid']):
