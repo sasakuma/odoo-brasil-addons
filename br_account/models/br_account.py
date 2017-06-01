@@ -4,6 +4,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from datetime import datetime
 
 from odoo import api, fields, models
 from odoo.addons import decimal_precision as dp
@@ -319,7 +320,7 @@ class AccountDocumentRelated(models.Model):
 
 class BrAccountFiscalObservation(models.Model):
     _name = 'br_account.fiscal.observation'
-    _description = u'Mensagen Documento Eletrônico'
+    _description = u'Mensagem Documento Eletrônico'
     _order = 'sequence'
 
     sequence = fields.Integer(u'Sequência', default=1, required=True)
@@ -359,16 +360,20 @@ class BrAccountInvoiceParcel(models.Model):
                                           store=True)
 
     financial_operation_id = fields.Many2one('account.financial.operation',
-                                             required=True,
                                              string=u'Operação Financeira')
 
     title_type_id = fields.Many2one('account.title.type',
-                                    required=True,
                                     string=u'Tipo de Título')
 
     pin_date = fields.Boolean(string='Data Fixa')
 
-    amount_days = fields.Integer(string='Quantidade de Dias')
+    amount_days = fields.Integer(string='Quantidade de Dias',
+                                 compute='_compute_amount_day')
 
+    @api.depends('date_maturity')
+    def _compute_amount_day(self):
+        for rec in self:
+            d2 = datetime.strptime(rec.invoice_id.date_invoice, '%Y-%m-%d')
+            d1 = datetime.strptime(rec.date_maturity, '%Y-%m-%d')
 
-
+            rec.amount_days = abs((d2 - d1).days)

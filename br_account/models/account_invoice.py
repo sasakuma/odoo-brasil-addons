@@ -108,6 +108,16 @@ class AccountInvoice(models.Model):
         string='Impostos ( + )', readonly=True, compute='_compute_amount',
         digits=dp.get_precision('Account'), store=True)
 
+    parcel_ids = fields.One2many(comodel_name='br_account.invoice.parcel',
+                                 inverse_name='invoice_id',
+                                 string='Parcelas')
+
+    financial_operation_id = fields.Many2one('account.financial.operation',
+                                             string=u'Operação Financeira')
+
+    title_type_id = fields.Many2one('account.title.type',
+                                    string=u'Tipo de Título')
+
     receivable_move_line_ids = fields.Many2many(
         'account.move.line', string='Receivable Move Lines',
         compute='_compute_receivables')
@@ -313,6 +323,11 @@ class AccountInvoice(models.Model):
         digits=dp.get_precision('Account'),
         compute='_compute_amount')
 
+    # @api.onchange('date_invoice')
+    # def _onchange_date_invoice(self):
+    #     for parcel in self.parcel_ids:
+    #         parcel._onchange_date_maturity()
+
     @api.onchange('issuer')
     def _onchange_issuer(self):
         if self.issuer == '0' and self.type in (u'in_invoice', u'in_refund'):
@@ -338,7 +353,62 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def action_create_periodic_entry(self):
-        pass
+
+        for inv in self:
+
+            ctx = dict(self._context, lang=inv.partner_id.lang)
+
+            if not inv.date_invoice:
+                inv.with_context(ctx).write(
+                    {'date_invoice': fields.Date.context_today(self)})
+
+            date_invoice = inv.date_invoice
+            company_currency = inv.company_id.currency_id
+
+            # create move lines (one per invoice line + eventual taxes and
+            # analytic lines)
+            iml = inv.invoice_line_move_line_get()
+            iml += inv.tax_line_move_line_get()
+
+            diff_currency = inv.currency_id != company_currency
+
+            total, total_currency, iml = inv.with_context(
+                ctx).compute_invoice_totals(company_currency, iml)
+
+            if inv.payment_term_id:
+                lines = inv.with_context(ctx).payment_term_id.with_context(
+                    currency_id=company_currency.id).compute(total, date_invoice)[0]
+
+                res_amount_currency = total_currency
+                ctx['date'] = date_invoice
+
+                # Removemos as parcelas adicionadas anteriormente
+                inv.parcel_ids.unlink()
+
+                for i, t in enumerate(lines):
+                    if inv.currency_id != company_currency:
+                        amount_currency = \
+                            company_currency.with_context(ctx).compute(
+                                t[1], inv.currency_id)
+                    else:
+                        amount_currency = False
+
+                    # last line: add the diff
+                    res_amount_currency -= amount_currency or 0
+                    if i + 1 == len(lines):
+                        amount_currency += res_amount_currency
+
+                    teste = {
+                        'name': str(i + 1).zfill(2),
+                        'parceling_value': t[1],
+                        'date_maturity': t[0],
+                        'financial_operation_id': inv.financial_operation_id.id,
+                        'title_type_id': inv.title_type_id.id,
+                        'company_currency_id': diff_currency and inv.currency_id.id,
+                        'invoice_id': inv.id
+                    }
+
+                    self.env['br_account.invoice.parcel'].create(teste)
 
     @api.multi
     def action_invoice_cancel_paid(self):
