@@ -100,6 +100,7 @@
                 <field name="position_type"/>
                 <field name="fiscal_document_id"/>
                 <field name="document_serie_id"/>
+                <field name="service_type_id" attrs="{'required': [('position_type', '=', 'service')]}"/>
             </field>
             <field name="vat_required" position="attributes" >
                 <attribute name="invisible">1</attribute>

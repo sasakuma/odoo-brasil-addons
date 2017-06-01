@@ -9,4 +9,4 @@ from . import res_company
 from . import nfse_susesu
 from . import nfse_simpliss
 from . import nfse_ginfes
-from . import account_fiscal_position
+# from . import account_fiscal_position
