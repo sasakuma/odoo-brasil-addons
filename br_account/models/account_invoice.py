@@ -112,12 +112,19 @@ class AccountInvoice(models.Model):
 
     parcel_ids = fields.One2many(comodel_name='br_account.invoice.parcel',
                                  inverse_name='invoice_id',
+                                 readonly=True,
+                                 states={'draft': [('readonly', False)]},
                                  string='Parcelas')
 
     financial_operation_id = fields.Many2one('account.financial.operation',
+                                             states={'draft': [
+                                                 ('readonly', False)]},
+                                             readonly=True,
                                              string=u'Operação Financeira')
 
     title_type_id = fields.Many2one('account.title.type',
+                                    readonly=True,
+                                    states={'draft': [('readonly', False)]},
                                     string=u'Tipo de Título')
 
     receivable_move_line_ids = fields.Many2many(
