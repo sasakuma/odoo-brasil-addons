@@ -323,11 +323,6 @@ class AccountInvoice(models.Model):
         digits=dp.get_precision('Account'),
         compute='_compute_amount')
 
-    # @api.onchange('date_invoice')
-    # def _onchange_date_invoice(self):
-    #     for parcel in self.parcel_ids:
-    #         parcel._onchange_date_maturity()
-
     @api.onchange('issuer')
     def _onchange_issuer(self):
         if self.issuer == '0' and self.type in (u'in_invoice', u'in_refund'):
@@ -350,6 +345,42 @@ class AccountInvoice(models.Model):
         self.fiscal_observation_ids = [(6, False, ob_ids)]
 
         self.fiscal_document_id = self.fiscal_position_id.fiscal_document_id.id
+
+    def _create_move_line_from_payment_term(self, inv, ctx, total,
+                                            total_currency, iml):
+        """Sobrescreve criacao de move lines a partir das parcelas"""
+        date_invoice = inv.date_invoice
+        company_currency = inv.company_id.currency_id
+        diff_currency = inv.currency_id != company_currency
+        name = inv.name or '/'
+
+        res_amount_currency = total_currency
+        ctx['date'] = date_invoice
+
+        for i, t in enumerate(self.parcel_ids):
+            if inv.currency_id != company_currency:
+                amount_currency = company_currency.with_context(ctx).compute(
+                    t.parceling_value, inv.currency_id)
+            else:
+                amount_currency = False
+
+            # last line: add the diff
+            res_amount_currency -= amount_currency or 0
+            if i + 1 == len(self.parcel_ids):
+                amount_currency += res_amount_currency
+
+            iml.append({
+                'type': 'dest',
+                'name': name,
+                'price': t.parceling_value,
+                'account_id': inv.account_id.id,
+                'date_maturity': t.date_maturity,
+                'amount_currency': diff_currency and amount_currency,
+                'currency_id': diff_currency and inv.currency_id.id,
+                'invoice_id': inv.id,
+            })
+
+        return iml
 
     @api.multi
     def action_create_periodic_entry(self):
