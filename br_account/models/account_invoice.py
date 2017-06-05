@@ -3,6 +3,8 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from datetime import datetime, timedelta
+
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from odoo.addons import decimal_precision as dp
@@ -382,7 +384,7 @@ class AccountInvoice(models.Model):
 
             name = inv.name or '/'
             if inv.payment_term_id:
-                # Sobrescreve criacao de move lines a partir das parcelas
+                # Criacao de move lines a partir das parcelas
                 date_invoice = inv.date_invoice
                 company_currency = inv.company_id.currency_id
                 diff_currency = inv.currency_id != company_currency
@@ -404,15 +406,22 @@ class AccountInvoice(models.Model):
                     if i + 1 == len(self.parcel_ids):
                         amount_currency += res_amount_currency
 
+                    # Calculamos a nova data de vencimento baseado na data
+                    # de validação da faturação
+                    d1 = datetime.strptime(fields.Date.today(), '%Y-%m-%d')
+                    date_maturity = d1 + timedelta(days=t.amount_days)
+
                     iml.append({
                         'type': 'dest',
                         'name': name,
                         'price': t.parceling_value,
                         'account_id': inv.account_id.id,
-                        'date_maturity': t.date_maturity,
+                        'date_maturity': date_maturity,
                         'amount_currency': diff_currency and amount_currency,
                         'currency_id': diff_currency and inv.currency_id.id,
                         'invoice_id': inv.id,
+                        'financial_operation_id': t.financial_operation_id.id,
+                        'title_type_id': t.title_type_id.id,
                     })
             else:
                 iml.append({
@@ -459,44 +468,9 @@ class AccountInvoice(models.Model):
             inv.with_context(ctx).write(vals)
         return True
 
-    # def _create_move_line_from_payment_term(self, inv, ctx, total,
-    #                                         total_currency, iml):
-    #     """Sobrescreve criacao de move lines a partir das parcelas"""
-    #     date_invoice = inv.date_invoice
-    #     company_currency = inv.company_id.currency_id
-    #     diff_currency = inv.currency_id != company_currency
-    #     name = inv.name or '/'
-    #
-    #     res_amount_currency = total_currency
-    #     ctx['date'] = date_invoice
-    #
-    #     for i, t in enumerate(self.parcel_ids):
-    #         if inv.currency_id != company_currency:
-    #             amount_currency = company_currency.with_context(ctx).compute(
-    #                 t.parceling_value, inv.currency_id)
-    #         else:
-    #             amount_currency = False
-    #
-    #         # last line: add the diff
-    #         res_amount_currency -= amount_currency or 0
-    #         if i + 1 == len(self.parcel_ids):
-    #             amount_currency += res_amount_currency
-    #
-    #         iml.append({
-    #             'type': 'dest',
-    #             'name': name,
-    #             'price': t.parceling_value,
-    #             'account_id': inv.account_id.id,
-    #             'date_maturity': t.date_maturity,
-    #             'amount_currency': diff_currency and amount_currency,
-    #             'currency_id': diff_currency and inv.currency_id.id,
-    #             'invoice_id': inv.id,
-    #         })
-    #
-    #     return iml
-
     @api.multi
     def action_create_periodic_entry(self):
+        """Metodos responsaveis por criar parcelas a partir"""
 
         for inv in self:
 
@@ -539,10 +513,11 @@ class AccountInvoice(models.Model):
 
                     # last line: add the diff
                     res_amount_currency -= amount_currency or 0
+
                     if i + 1 == len(lines):
                         amount_currency += res_amount_currency
 
-                    teste = {
+                    values = {
                         'name': str(i + 1).zfill(2),
                         'parceling_value': t[1],
                         'date_maturity': t[0],
@@ -552,7 +527,10 @@ class AccountInvoice(models.Model):
                         'invoice_id': inv.id
                     }
 
-                    self.env['br_account.invoice.parcel'].create(teste)
+                    obj = self.env['br_account.invoice.parcel'].create(values)
+                    # Chamamos o onchange para que a quantidade de dias seja
+                    # calculado
+                    obj._onchange_date_maturity()
 
     @api.multi
     def action_invoice_cancel_paid(self):

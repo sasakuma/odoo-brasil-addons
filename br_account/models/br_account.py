@@ -335,7 +335,7 @@ class BrAccountFiscalObservation(models.Model):
 class BrAccountInvoiceParcel(models.Model):
 
     _name = 'br_account.invoice.parcel'
-    _description = u'Classe que representa as parcelas Para Fatura'
+    _description = u'Classe que representa as parcelas para Fatura'
 
     name = fields.Char(string='Name')
 
@@ -367,13 +367,13 @@ class BrAccountInvoiceParcel(models.Model):
 
     pin_date = fields.Boolean(string='Data Fixa')
 
-    amount_days = fields.Integer(string='Quantidade de Dias',
-                                 compute='_compute_amount_day')
+    amount_days = fields.Integer(string='Quantidade de Dias')
 
-    @api.depends('date_maturity')
-    def _compute_amount_day(self):
+    @api.onchange('date_maturity')
+    def _onchange_date_maturity(self):
+        # Calcula a quantidade de dias baseado na data de vencimento
         for rec in self:
-            d2 = datetime.strptime(rec.invoice_id.date_invoice, '%Y-%m-%d')
-            d1 = datetime.strptime(rec.date_maturity, '%Y-%m-%d')
-
-            rec.amount_days = abs((d2 - d1).days)
+            if rec.invoice_id.state == 'draft':
+                d2 = datetime.strptime(rec.invoice_id.date_invoice, '%Y-%m-%d')
+                d1 = datetime.strptime(rec.date_maturity, '%Y-%m-%d')
+                rec.amount_days = abs((d2 - d1).days)
