@@ -346,41 +346,154 @@ class AccountInvoice(models.Model):
 
         self.fiscal_document_id = self.fiscal_position_id.fiscal_document_id.id
 
-    def _create_move_line_from_payment_term(self, inv, ctx, total,
-                                            total_currency, iml):
-        """Sobrescreve criacao de move lines a partir das parcelas"""
-        date_invoice = inv.date_invoice
-        company_currency = inv.company_id.currency_id
-        diff_currency = inv.currency_id != company_currency
-        name = inv.name or '/'
+    @api.multi
+    def action_move_create(self):
+        """ Creates invoice related analytics and financial move lines """
+        account_move = self.env['account.move']
 
-        res_amount_currency = total_currency
-        ctx['date'] = date_invoice
+        for inv in self:
+            if not inv.journal_id.sequence_id:
+                raise UserError(_(
+                    'Please define sequence on the journal related to this '
+                    'invoice.'))
+            if not inv.invoice_line_ids:
+                raise UserError(_('Please create some invoice lines.'))
+            if inv.move_id:
+                continue
 
-        for i, t in enumerate(self.parcel_ids):
-            if inv.currency_id != company_currency:
-                amount_currency = company_currency.with_context(ctx).compute(
-                    t.parceling_value, inv.currency_id)
+            ctx = dict(self._context, lang=inv.partner_id.lang)
+
+            if not inv.date_invoice:
+                inv.with_context(ctx).write(
+                    {'date_invoice': fields.Date.context_today(self)})
+            date_invoice = inv.date_invoice
+            company_currency = inv.company_id.currency_id
+
+            # create move lines (one per invoice line + eventual taxes and
+            # analytic lines)
+            iml = inv.invoice_line_move_line_get()
+            iml += inv.tax_line_move_line_get()
+
+            diff_currency = inv.currency_id != company_currency
+            # create one move line for the total and possibly adjust the other
+            # lines amount
+            total, total_currency, iml = inv.with_context(
+                ctx).compute_invoice_totals(company_currency, iml)
+
+            name = inv.name or '/'
+            if inv.payment_term_id:
+                # Sobrescreve criacao de move lines a partir das parcelas
+                date_invoice = inv.date_invoice
+                company_currency = inv.company_id.currency_id
+                diff_currency = inv.currency_id != company_currency
+                name = inv.name or '/'
+
+                res_amount_currency = total_currency
+                ctx['date'] = date_invoice
+
+                for i, t in enumerate(self.parcel_ids):
+                    if inv.currency_id != company_currency:
+                        amount_currency = company_currency.with_context(
+                            ctx).compute(
+                            t.parceling_value, inv.currency_id)
+                    else:
+                        amount_currency = False
+
+                    # last line: add the diff
+                    res_amount_currency -= amount_currency or 0
+                    if i + 1 == len(self.parcel_ids):
+                        amount_currency += res_amount_currency
+
+                    iml.append({
+                        'type': 'dest',
+                        'name': name,
+                        'price': t.parceling_value,
+                        'account_id': inv.account_id.id,
+                        'date_maturity': t.date_maturity,
+                        'amount_currency': diff_currency and amount_currency,
+                        'currency_id': diff_currency and inv.currency_id.id,
+                        'invoice_id': inv.id,
+                    })
             else:
-                amount_currency = False
+                iml.append({
+                    'type': 'dest',
+                    'name': name,
+                    'price': total,
+                    'account_id': inv.account_id.id,
+                    'date_maturity': inv.date_due,
+                    'amount_currency': diff_currency and total_currency,
+                    'currency_id': diff_currency and inv.currency_id.id,
+                    'invoice_id': inv.id
+                })
+            part = self.env['res.partner']._find_accounting_partner(
+                inv.partner_id)
+            line = [(0, 0, self.line_get_convert(l, part.id)) for l in iml]
+            line = inv.group_lines(iml, line)
 
-            # last line: add the diff
-            res_amount_currency -= amount_currency or 0
-            if i + 1 == len(self.parcel_ids):
-                amount_currency += res_amount_currency
+            journal = inv.journal_id.with_context(ctx)
+            line = inv.finalize_invoice_move_lines(line)
 
-            iml.append({
-                'type': 'dest',
-                'name': name,
-                'price': t.parceling_value,
-                'account_id': inv.account_id.id,
-                'date_maturity': t.date_maturity,
-                'amount_currency': diff_currency and amount_currency,
-                'currency_id': diff_currency and inv.currency_id.id,
-                'invoice_id': inv.id,
-            })
+            date = inv.date or date_invoice
+            move_vals = {
+                'ref': inv.reference,
+                'line_ids': line,
+                'journal_id': journal.id,
+                'date': date,
+                'narration': inv.comment,
+            }
+            ctx['company_id'] = inv.company_id.id
+            ctx['invoice'] = inv
+            ctx_nolang = ctx.copy()
+            ctx_nolang.pop('lang', None)
+            move = account_move.with_context(ctx_nolang).create(move_vals)
+            # Pass invoice in context in method post: used if you want to get
+            # the same account move reference when creating the same invoice
+            # after a cancelled one:
+            move.post()
+            # make the invoice point to that move
+            vals = {
+                'move_id': move.id,
+                'date': date,
+                'move_name': move.name,
+            }
+            inv.with_context(ctx).write(vals)
+        return True
 
-        return iml
+    # def _create_move_line_from_payment_term(self, inv, ctx, total,
+    #                                         total_currency, iml):
+    #     """Sobrescreve criacao de move lines a partir das parcelas"""
+    #     date_invoice = inv.date_invoice
+    #     company_currency = inv.company_id.currency_id
+    #     diff_currency = inv.currency_id != company_currency
+    #     name = inv.name or '/'
+    #
+    #     res_amount_currency = total_currency
+    #     ctx['date'] = date_invoice
+    #
+    #     for i, t in enumerate(self.parcel_ids):
+    #         if inv.currency_id != company_currency:
+    #             amount_currency = company_currency.with_context(ctx).compute(
+    #                 t.parceling_value, inv.currency_id)
+    #         else:
+    #             amount_currency = False
+    #
+    #         # last line: add the diff
+    #         res_amount_currency -= amount_currency or 0
+    #         if i + 1 == len(self.parcel_ids):
+    #             amount_currency += res_amount_currency
+    #
+    #         iml.append({
+    #             'type': 'dest',
+    #             'name': name,
+    #             'price': t.parceling_value,
+    #             'account_id': inv.account_id.id,
+    #             'date_maturity': t.date_maturity,
+    #             'amount_currency': diff_currency and amount_currency,
+    #             'currency_id': diff_currency and inv.currency_id.id,
+    #             'invoice_id': inv.id,
+    #         })
+    #
+    #     return iml
 
     @api.multi
     def action_create_periodic_entry(self):
