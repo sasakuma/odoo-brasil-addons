@@ -44,16 +44,16 @@
                     <!--<field name="payment_term_id" position="replace"/>-->
                     <group>
                         <field name="payment_term_id"/>
-                        <field name="financial_operation_id"/>
-                        <field name="title_type_id"/>
+                        <field name="financial_operation_id" attrs="{'required': [('payment_term_id', '!=', False)], 'invisible': [('payment_term_id', '=', False)]}"/>
+                        <field name="title_type_id" attrs="{'required': [('payment_term_id', '!=', False)], 'invisible': [('payment_term_id', '=', False)]}"/>
                     </group>
                     <button name="action_create_periodic_entry"
-                            class="oe_highlight"
+                            class="oe_highlight oe_edit_only"
                             type="object"
-                            attrs="{'invisible': [('state', '!=', 'draft')]}"
+                            attrs="{'invisible': ['|',('state', '!=', 'draft'),('payment_term_id', '=', False)]}"
                             string="Gerar Parcelas"/>
                     <separator/>
-                    <field nolabel="1" name="parcel_ids" >
+                    <field nolabel="1" name="parcel_ids" attrs="{'required': [('payment_term_id', '!=', False)], 'invisible': [('payment_term_id', '=', False)]}">
                         <tree name="parcelas" string="Parcelas" colors="red:date_maturity&lt;current_date" editable="bottom">
                             <field name="invoice_id"/>
                             <field name="date_maturity"/>
