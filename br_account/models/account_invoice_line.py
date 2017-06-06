@@ -190,8 +190,8 @@ class AccountInvoiceLine(models.Model):
         string='Tipo do Produto', required=True, default='product')
     company_fiscal_type = fields.Selection(
         COMPANY_FISCAL_TYPE,
-        default=_default_company_fiscal_type, string=u"Regime Tributário")
-    calculate_tax = fields.Boolean(string="Calcular Imposto?", default=True)
+        default=_default_company_fiscal_type, string=u'Regime Tributário')
+    calculate_tax = fields.Boolean(string='Calcular Imposto', default=True)
     fiscal_comment = fields.Text(u'Observação Fiscal')
     fiscal_position_id = fields.Many2one(
         comodel_name='account.fiscal.position',
