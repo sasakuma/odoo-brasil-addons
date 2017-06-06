@@ -8,7 +8,8 @@
 # class AccountFiscalPosition(models.Model):
 #     _inherit = 'account.fiscal.position'
 #
-#     # service_type_id = fields.Many2one(comodel_name='br_account.service.type',
+#     # service_type_id = fields.Many2one(
+#                                       comodel_name='br_account.service.type',
 #     #                                   string=u'Tipo de Serviço')
 #
 #     position_type = fields.Selection(selection_add=[('service', 'Serviço')])

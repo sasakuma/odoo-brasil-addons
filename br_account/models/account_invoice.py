@@ -70,8 +70,8 @@ class AccountInvoice(models.Model):
         self.total_tributos_estimados = sum(
             l.tributos_estimados for l in lines)
         # TOTAL
-        self.amount_total = self.total_bruto - \
-            self.total_desconto + self.total_tax
+        self.amount_total = \
+            self.total_bruto - self.total_desconto + self.total_tax
         sign = self.type in ['in_refund', 'out_refund'] and -1 or 1
         self.amount_total_company_signed = self.amount_total * sign
         self.amount_total_signed = self.amount_total * sign
@@ -502,7 +502,8 @@ class AccountInvoice(models.Model):
 
             if inv.payment_term_id:
                 lines = inv.with_context(ctx).payment_term_id.with_context(
-                    currency_id=company_currency.id).compute(total, date_invoice)[0]
+                    currency_id=company_currency.id).compute(total,
+                                                             date_invoice)[0]
 
                 res_amount_currency = total_currency
                 ctx['date'] = date_invoice
@@ -528,10 +529,12 @@ class AccountInvoice(models.Model):
                         'name': str(i + 1).zfill(2),
                         'parceling_value': t[1],
                         'date_maturity': t[0],
-                        'financial_operation_id': inv.financial_operation_id.id,
+                        'financial_operation_id':
+                            inv.financial_operation_id.id,
                         'title_type_id': inv.title_type_id.id,
-                        'company_currency_id': diff_currency and inv.currency_id.id,
-                        'invoice_id': inv.id
+                        'company_currency_id': (diff_currency and
+                                                inv.currency_id.id),
+                        'invoice_id': inv.id,
                     }
 
                     obj = self.env['br_account.invoice.parcel'].create(values)
@@ -573,8 +576,8 @@ class AccountInvoice(models.Model):
                     x for x in taxes_dict['taxes'] if x['id'] == tax.id)
                 if not tax.price_include and tax.account_id:
                     res[contador]['price'] += tax_dict['amount']
-                if tax.price_include and (not tax.account_id or
-                                          not tax.deduced_account_id):
+                if tax.price_include and \
+                        (not tax.account_id or not tax.deduced_account_id):
                     if tax_dict['amount'] > 0.0:  # Negativo é retido
                         res[contador]['price'] -= tax_dict['amount']
 
@@ -584,14 +587,14 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def finalize_invoice_move_lines(self, move_lines):
-        res = super(AccountInvoice, self).\
-            finalize_invoice_move_lines(move_lines)
+        res = super(AccountInvoice, self).finalize_invoice_move_lines(
+            move_lines)
         count = 1
         for invoice_line in res:
             line = invoice_line[2]
             line['ref'] = self.origin
-            if line['name'] == '/' or (
-               line['name'] == self.name and self.name):
+            if line['name'] == '/' \
+                    or (line['name'] == self.name and self.name):
                 line['name'] = "%02d" % count
                 count += 1
         return res
@@ -602,11 +605,18 @@ class AccountInvoice(models.Model):
         for line in self.invoice_line_ids:
             other_taxes = line.invoice_line_tax_ids.filtered(
                 lambda x: not x.domain)
-            line.invoice_line_tax_ids = other_taxes | line.tax_icms_id | \
-                line.tax_ipi_id | line.tax_pis_id | line.tax_cofins_id | \
-                line.tax_issqn_id | line.tax_ii_id | line.tax_icms_st_id | \
-                line.tax_simples_id | line.tax_csll_id | line.tax_irrf_id | \
-                line.tax_inss_id
+            line.invoice_line_tax_ids = (other_taxes |
+                                         line.tax_icms_id |
+                                         line.tax_ipi_id |
+                                         line.tax_pis_id |
+                                         line.tax_cofins_id |
+                                         line.tax_issqn_id |
+                                         line.tax_ii_id |
+                                         line.tax_icms_st_id |
+                                         line.tax_simples_id |
+                                         line.tax_csll_id |
+                                         line.tax_irrf_id |
+                                         line.tax_inss_id)
 
             ctx = line._prepare_tax_context()
             tax_ids = line.invoice_line_tax_ids.with_context(**ctx)
