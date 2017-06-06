@@ -133,7 +133,8 @@ class AccountInvoice(models.Model):
             'cofins_valor_retencao':
             abs(line.cofins_valor) if line.cofins_valor < 0 else 0,
             # - ISSQN -
-            'issqn_codigo': line.service_type_id.code,
+            # 'issqn_codigo': line.fservice_type_id.code,
+            'issqn_codigo': line.fiscal_position_id.service_type_id.code,
             'issqn_aliquota': abs(line.issqn_aliquota),
             'issqn_base_calculo': line.issqn_base_calculo,
             'issqn_valor': abs(line.issqn_valor),

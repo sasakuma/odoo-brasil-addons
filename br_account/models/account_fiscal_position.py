@@ -75,9 +75,15 @@ class AccountFiscalPosition(models.Model):
     _inherit = 'account.fiscal.position'
 
     position_type = fields.Selection(string=u'Tipo da Posição',
-                                     selection=[('product', 'Produto')],
+                                     selection=[
+                                         ('product', 'Produto'),
+                                         ('service', 'Serviço'),
+                                     ],
                                      default='product',
                                      required=True)
+
+    service_type_id = fields.Many2one(comodel_name='br_account.service.type',
+                                      string=u'Tipo de Serviço')
 
     fiscal_document_id = fields.Many2one('br_account.fiscal.document',
                                          string='Documento')

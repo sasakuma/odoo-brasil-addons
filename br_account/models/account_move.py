@@ -19,9 +19,8 @@ class AccountMoveLine(models.Model):
     title_value = fields.Float(string='Minimum Plot Value',
                                digits=dp.get_precision('Product Price'))
 
-
-    # Correção na ordenação do faturamento, remover esse código caso o PR 14852
-    # no Odoo seja aceito ou eles corrijam de outra forma
+    # Correção na ordenação do faturamento, remover esse código caso o
+    # PR 14852 no Odoo seja aceito ou eles corrijam de outra forma
     def _get_pair_to_reconcile(self):
         # field is either 'amount_residual' or 'amount_residual_currency'
         # (if the reconciled account has a secondary currency set)

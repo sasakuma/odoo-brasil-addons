@@ -23,7 +23,7 @@
     ],
     'data': [
         'security/ir.model.access.csv',
-        'views/account_invoice.xml',
+        # 'views/account_invoice.xml',
         'views/br_account_payment.xml',
         'views/payment_mode.xml',
         'views/account_payment.xml',

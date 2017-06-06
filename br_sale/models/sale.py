@@ -168,6 +168,11 @@ class SaleOrderLine(models.Model):
     detalhes_calculo = fields.Text(
         string=u"Detalhes Cálculo", compute='_compute_detalhes', store=True)
 
+    fiscal_position_id = fields.Many2one(
+        comodel_name='account.fiscal.position',
+        string=u'Posição Fiscal',
+        related='order_id.fiscal_position_id')
+
     def _update_tax_from_ncm(self):
         if self.product_id:
             ncm = self.product_id.fiscal_classification_id
@@ -256,7 +261,8 @@ class SaleOrderLine(models.Model):
         res['company_fiscal_type'] = self.company_id.fiscal_type
         res['cfop_id'] = self.cfop_id.id
         ncm = self.product_id.fiscal_classification_id
-        service = self.product_id.service_type_id
+        # service = self.product_id.service_type_id
+        service = self.fiscal_position_id.service_type_id
         res['fiscal_classification_id'] = ncm.id
         res['service_type_id'] = service.id
         res['icms_origem'] = self.product_id.origin
