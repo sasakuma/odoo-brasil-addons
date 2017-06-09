@@ -47,8 +47,8 @@ class TestEletronicInvoice(TransactionCase):
             'name': 'Normal Service',
             'type': 'service',
             'fiscal_type': 'service',
-            'service_type_id': self.env.ref(
-                'br_data_account.service_type_101').id,
+            # 'service_type_id': self.env.ref(
+            #     'br_data_account.service_type_101').id,
             'list_price': 50.0
         })
         self.partner_fisica = self.env['res.partner'].create(dict(

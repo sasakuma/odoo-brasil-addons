@@ -3,6 +3,8 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from datetime import datetime, timedelta
+
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from odoo.addons import decimal_precision as dp
@@ -68,8 +70,8 @@ class AccountInvoice(models.Model):
         self.total_tributos_estimados = sum(
             l.tributos_estimados for l in lines)
         # TOTAL
-        self.amount_total = self.total_bruto - \
-            self.total_desconto + self.total_tax
+        self.amount_total = \
+            self.total_bruto - self.total_desconto + self.total_tax
         sign = self.type in ['in_refund', 'out_refund'] and -1 or 1
         self.amount_total_company_signed = self.amount_total * sign
         self.amount_total_signed = self.amount_total * sign
@@ -108,6 +110,23 @@ class AccountInvoice(models.Model):
         string='Impostos ( + )', readonly=True, compute='_compute_amount',
         digits=dp.get_precision('Account'), store=True)
 
+    parcel_ids = fields.One2many(comodel_name='br_account.invoice.parcel',
+                                 inverse_name='invoice_id',
+                                 readonly=True,
+                                 states={'draft': [('readonly', False)]},
+                                 string='Parcelas')
+
+    financial_operation_id = fields.Many2one('account.financial.operation',
+                                             states={'draft': [
+                                                 ('readonly', False)]},
+                                             readonly=True,
+                                             string=u'Operação Financeira')
+
+    title_type_id = fields.Many2one('account.title.type',
+                                    readonly=True,
+                                    states={'draft': [('readonly', False)]},
+                                    string=u'Tipo de Título')
+
     receivable_move_line_ids = fields.Many2many(
         'account.move.line', string='Receivable Move Lines',
         compute='_compute_receivables')
@@ -133,11 +152,17 @@ class AccountInvoice(models.Model):
 
     document_serie_id = fields.Many2one('br_account.document.serie',
                                         string=u'Série',
-                                        readonly=True)
+                                        readonly=True,
+                                        states={
+                                            'draft': [('readonly', False)],
+                                        })
 
-    fiscal_document_id = fields.Many2one(
-        'br_account.fiscal.document', string='Documento', readonly=True,
-        states={'draft': [('readonly', False)]})
+    fiscal_document_id = fields.Many2one('br_account.fiscal.document',
+                                         string='Documento',
+                                         readonly=True,
+                                         states={
+                                             'draft': [('readonly', False)],
+                                         })
 
     is_eletronic = fields.Boolean(
         related='fiscal_document_id.electronic', type='boolean',
@@ -329,7 +354,193 @@ class AccountInvoice(models.Model):
         self.fiscal_observation_ids = [(6, False, ob_ids)]
 
         self.fiscal_document_id = self.fiscal_position_id.fiscal_document_id.id
-        self.document_serie_id = self.fiscal_position_id.document_serie_id.id
+
+    @api.multi
+    def action_move_create(self):
+        """ Creates invoice related analytics and financial move lines """
+        account_move = self.env['account.move']
+
+        for inv in self:
+            if not inv.journal_id.sequence_id:
+                raise UserError(_(
+                    'Please define sequence on the journal related to this '
+                    'invoice.'))
+            if not inv.invoice_line_ids:
+                raise UserError(_('Please create some invoice lines.'))
+            if inv.move_id:
+                continue
+
+            ctx = dict(self._context, lang=inv.partner_id.lang)
+
+            if not inv.date_invoice:
+                inv.with_context(ctx).write(
+                    {'date_invoice': fields.Date.context_today(self)})
+            date_invoice = inv.date_invoice
+            company_currency = inv.company_id.currency_id
+
+            # create move lines (one per invoice line + eventual taxes and
+            # analytic lines)
+            iml = inv.invoice_line_move_line_get()
+            iml += inv.tax_line_move_line_get()
+
+            diff_currency = inv.currency_id != company_currency
+            # create one move line for the total and possibly adjust the other
+            # lines amount
+            total, total_currency, iml = inv.with_context(
+                ctx).compute_invoice_totals(company_currency, iml)
+
+            name = inv.name or '/'
+            if inv.payment_term_id:
+                # Criacao de move lines a partir das parcelas
+                date_invoice = inv.date_invoice
+                company_currency = inv.company_id.currency_id
+                diff_currency = inv.currency_id != company_currency
+                name = inv.name or '/'
+
+                res_amount_currency = total_currency
+                ctx['date'] = date_invoice
+
+                for i, t in enumerate(self.parcel_ids):
+                    if inv.currency_id != company_currency:
+                        amount_currency = company_currency.with_context(
+                            ctx).compute(
+                            t.parceling_value, inv.currency_id)
+                    else:
+                        amount_currency = False
+
+                    # last line: add the diff
+                    res_amount_currency -= amount_currency or 0
+                    if i + 1 == len(self.parcel_ids):
+                        amount_currency += res_amount_currency
+
+                    # Calculamos a nova data de vencimento baseado na data
+                    # de validação da faturação
+                    d1 = datetime.strptime(fields.Date.today(), '%Y-%m-%d')
+                    date_maturity = d1 + timedelta(days=t.amount_days)
+
+                    iml.append({
+                        'type': 'dest',
+                        'name': name,
+                        'price': t.parceling_value,
+                        'account_id': inv.account_id.id,
+                        'date_maturity': date_maturity,
+                        'amount_currency': diff_currency and amount_currency,
+                        'currency_id': diff_currency and inv.currency_id.id,
+                        'invoice_id': inv.id,
+                        'financial_operation_id': t.financial_operation_id.id,
+                        'title_type_id': t.title_type_id.id,
+                    })
+            else:
+                iml.append({
+                    'type': 'dest',
+                    'name': name,
+                    'price': total,
+                    'account_id': inv.account_id.id,
+                    'date_maturity': inv.date_due,
+                    'amount_currency': diff_currency and total_currency,
+                    'currency_id': diff_currency and inv.currency_id.id,
+                    'invoice_id': inv.id
+                })
+            part = self.env['res.partner']._find_accounting_partner(
+                inv.partner_id)
+            line = [(0, 0, self.line_get_convert(l, part.id)) for l in iml]
+            line = inv.group_lines(iml, line)
+
+            journal = inv.journal_id.with_context(ctx)
+            line = inv.finalize_invoice_move_lines(line)
+
+            date = inv.date or date_invoice
+            move_vals = {
+                'ref': inv.reference,
+                'line_ids': line,
+                'journal_id': journal.id,
+                'date': date,
+                'narration': inv.comment,
+            }
+            ctx['company_id'] = inv.company_id.id
+            ctx['invoice'] = inv
+            ctx_nolang = ctx.copy()
+            ctx_nolang.pop('lang', None)
+            move = account_move.with_context(ctx_nolang).create(move_vals)
+            # Pass invoice in context in method post: used if you want to get
+            # the same account move reference when creating the same invoice
+            # after a cancelled one:
+            move.post()
+            # make the invoice point to that move
+            vals = {
+                'move_id': move.id,
+                'date': date,
+                'move_name': move.name,
+            }
+            inv.with_context(ctx).write(vals)
+        return True
+
+    @api.multi
+    def action_create_periodic_entry(self):
+        """Metodos responsaveis por criar parcelas a partir"""
+
+        for inv in self:
+
+            ctx = dict(self._context, lang=inv.partner_id.lang)
+
+            if not inv.date_invoice:
+                inv.with_context(ctx).write(
+                    {'date_invoice': fields.Date.context_today(self)})
+
+            date_invoice = inv.date_invoice
+            company_currency = inv.company_id.currency_id
+
+            # create move lines (one per invoice line + eventual taxes and
+            # analytic lines)
+            iml = inv.invoice_line_move_line_get()
+            iml += inv.tax_line_move_line_get()
+
+            diff_currency = inv.currency_id != company_currency
+
+            total, total_currency, iml = inv.with_context(
+                ctx).compute_invoice_totals(company_currency, iml)
+
+            if inv.payment_term_id:
+                lines = inv.with_context(ctx).payment_term_id.with_context(
+                    currency_id=company_currency.id).compute(total,
+                                                             date_invoice)[0]
+
+                res_amount_currency = total_currency
+                ctx['date'] = date_invoice
+
+                # Removemos as parcelas adicionadas anteriormente
+                inv.parcel_ids.unlink()
+
+                for i, t in enumerate(lines):
+                    if inv.currency_id != company_currency:
+                        amount_currency = \
+                            company_currency.with_context(ctx).compute(
+                                t[1], inv.currency_id)
+                    else:
+                        amount_currency = False
+
+                    # last line: add the diff
+                    res_amount_currency -= amount_currency or 0
+
+                    if i + 1 == len(lines):
+                        amount_currency += res_amount_currency
+
+                    values = {
+                        'name': str(i + 1).zfill(2),
+                        'parceling_value': t[1],
+                        'date_maturity': t[0],
+                        'financial_operation_id':
+                            inv.financial_operation_id.id,
+                        'title_type_id': inv.title_type_id.id,
+                        'company_currency_id': (diff_currency and
+                                                inv.currency_id.id),
+                        'invoice_id': inv.id,
+                    }
+
+                    obj = self.env['br_account.invoice.parcel'].create(values)
+                    # Chamamos o onchange para que a quantidade de dias seja
+                    # calculado
+                    obj._onchange_date_maturity()
 
     @api.multi
     def action_invoice_cancel_paid(self):
@@ -365,8 +576,8 @@ class AccountInvoice(models.Model):
                     x for x in taxes_dict['taxes'] if x['id'] == tax.id)
                 if not tax.price_include and tax.account_id:
                     res[contador]['price'] += tax_dict['amount']
-                if tax.price_include and (not tax.account_id or
-                                          not tax.deduced_account_id):
+                if tax.price_include and \
+                        (not tax.account_id or not tax.deduced_account_id):
                     if tax_dict['amount'] > 0.0:  # Negativo é retido
                         res[contador]['price'] -= tax_dict['amount']
 
@@ -376,14 +587,14 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def finalize_invoice_move_lines(self, move_lines):
-        res = super(AccountInvoice, self).\
-            finalize_invoice_move_lines(move_lines)
+        res = super(AccountInvoice, self).finalize_invoice_move_lines(
+            move_lines)
         count = 1
         for invoice_line in res:
             line = invoice_line[2]
             line['ref'] = self.origin
-            if line['name'] == '/' or (
-               line['name'] == self.name and self.name):
+            if line['name'] == '/' \
+                    or (line['name'] == self.name and self.name):
                 line['name'] = "%02d" % count
                 count += 1
         return res
@@ -394,11 +605,18 @@ class AccountInvoice(models.Model):
         for line in self.invoice_line_ids:
             other_taxes = line.invoice_line_tax_ids.filtered(
                 lambda x: not x.domain)
-            line.invoice_line_tax_ids = other_taxes | line.tax_icms_id | \
-                line.tax_ipi_id | line.tax_pis_id | line.tax_cofins_id | \
-                line.tax_issqn_id | line.tax_ii_id | line.tax_icms_st_id | \
-                line.tax_simples_id | line.tax_csll_id | line.tax_irrf_id | \
-                line.tax_inss_id
+            line.invoice_line_tax_ids = (other_taxes |
+                                         line.tax_icms_id |
+                                         line.tax_ipi_id |
+                                         line.tax_pis_id |
+                                         line.tax_cofins_id |
+                                         line.tax_issqn_id |
+                                         line.tax_ii_id |
+                                         line.tax_icms_st_id |
+                                         line.tax_simples_id |
+                                         line.tax_csll_id |
+                                         line.tax_irrf_id |
+                                         line.tax_inss_id)
 
             ctx = line._prepare_tax_context()
             tax_ids = line.invoice_line_tax_ids.with_context(**ctx)

@@ -4,6 +4,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from datetime import datetime
 
 from odoo import api, fields, models
 from odoo.addons import decimal_precision as dp
@@ -319,7 +320,7 @@ class AccountDocumentRelated(models.Model):
 
 class BrAccountFiscalObservation(models.Model):
     _name = 'br_account.fiscal.observation'
-    _description = u'Mensagen Documento Eletrônico'
+    _description = u'Mensagem Documento Eletrônico'
     _order = 'sequence'
 
     sequence = fields.Integer(u'Sequência', default=1, required=True)
@@ -329,3 +330,50 @@ class BrAccountFiscalObservation(models.Model):
                              ('observacao', 'Observação')], string=u"Tipo")
     document_id = fields.Many2one(
         'br_account.fiscal.document', string="Documento Fiscal")
+
+
+class BrAccountInvoiceParcel(models.Model):
+
+    _name = 'br_account.invoice.parcel'
+    _description = u'Classe que representa as parcelas para Fatura'
+
+    name = fields.Char(string='Name')
+
+    invoice_id = fields.Many2one(comodel_name='account.invoice',
+                                 string='Invoice')
+
+    date_maturity = fields.Date(string='Data de Vencimento',
+                                required=True)
+
+    parceling_value = fields.Monetary(string='Valor',
+                                      required=True,
+                                      default=0.0,
+                                      currency_field='company_currency_id')
+
+    company_currency_id = fields.Many2one(comodel_name='res.currency',
+                                          related='invoice_id.company_id.'
+                                                  'currency_id',
+                                          string='Company Currency',
+                                          readonly=True,
+                                          help='Utility field to express '
+                                               'amount currency',
+                                          store=True)
+
+    financial_operation_id = fields.Many2one('account.financial.operation',
+                                             string=u'Operação Financeira')
+
+    title_type_id = fields.Many2one('account.title.type',
+                                    string=u'Tipo de Título')
+
+    pin_date = fields.Boolean(string='Data Fixa')
+
+    amount_days = fields.Integer(string='Quantidade de Dias')
+
+    @api.onchange('date_maturity')
+    def _onchange_date_maturity(self):
+        # Calcula a quantidade de dias baseado na data de vencimento
+        for rec in self:
+            if rec.invoice_id.state == 'draft':
+                d2 = datetime.strptime(rec.invoice_id.date_invoice, '%Y-%m-%d')
+                d1 = datetime.strptime(rec.date_maturity, '%Y-%m-%d')
+                rec.amount_days = abs((d2 - d1).days)
