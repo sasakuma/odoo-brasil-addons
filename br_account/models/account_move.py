@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo.tools import float_compare
-from odoo import fields, models
+from odoo import api, fields, models
 import odoo.addons.decimal_precision as dp
 
 
@@ -19,8 +19,8 @@ class AccountMoveLine(models.Model):
     title_value = fields.Float(string='Minimum Plot Value',
                                digits=dp.get_precision('Product Price'))
 
-    # Correção na ordenação do faturamento, remover esse código caso o
-    # PR 14852 no Odoo seja aceito ou eles corrijam de outra forma
+    # Correção na ordenação do faturamento, remover esse código caso o PR 14852
+    # no Odoo seja aceito ou eles corrijam de outra forma
     def _get_pair_to_reconcile(self):
         # field is either 'amount_residual' or 'amount_residual_currency'
         # (if the reconciled account has a secondary currency set)
@@ -58,3 +58,42 @@ class AccountMoveLine(models.Model):
                     not credit:
                 credit = aml
         return debit, credit
+
+
+class AccountMove(models.Model):
+    _inherit = 'account.move'
+
+    origin_type = fields.Selection(string='Origin Type',
+                                   selection=
+                                   [('sale', 'Sale'),
+                                    ('purchase', 'Purchase'),
+                                    ('discharge', 'Discharge'),
+                                    ('tax', 'Tax'),
+                                    ('iof', 'IOF'),
+                                    ('reversal', 'Reversal'),
+                                    ('reversed_discharge',
+                                     'Reversed Discharge'),
+                                    ('discount', 'Discount'),
+                                    ('interest', 'Interest'),
+                                    ('reversal_discount', 'Reversal Discount'),
+                                    ('reversal_interest', 'Reversal Interest'),
+                                    ('company_expense', 'Company Expense'),
+                                    ('releases', 'Releases')])
+
+    ref_move_id = fields.Many2one(string='Reference Account Move',
+                                  comodel_name='account.move')
+
+    @api.model
+    def create(self, values):
+        record = super(AccountMove, self).create(values)
+        if 'journal_type' in record.env.context:
+            journal_type = record.env.context['journal_type']
+            if journal_type in ('bank', 'cash'):
+                record.origin_type = 'discharge'
+            elif journal_type == 'general':
+                record.origin_type = 'company_expense'
+            else:
+                record.origin_type = journal_type
+        if 'move_reference' in record.env.context:
+            record.ref_move_id = record.env.context['move_reference']
+        return record
