@@ -29,4 +29,5 @@ def _auto_install_l10n(cr, registry):
     else:
         _auto_install_l10n_orig(cr, registry)
 
+
 account._auto_install_l10n = _auto_install_l10n

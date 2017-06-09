@@ -5,15 +5,15 @@
 import os
 import base64
 import logging
-from mock import patch
+# from mock import patch
 from odoo.tests.common import TransactionCase
 
 _logger = logging.getLogger(__name__)
 
-try:
-    from pytrustnfe.xml import sanitize_response
-except ImportError:
-    _logger.debug('Cannot import pytrustnfe')
+# try:
+#     from pytrustnfe.xml import sanitize_response
+# except ImportError:
+#     _logger.debug('Cannot import pytrustnfe')
 
 
 class TestNFeBrasil(TransactionCase):
@@ -145,101 +145,101 @@ class TestNFeBrasil(TransactionCase):
             partner_id=self.partner_juridica.id
         ))
 
-    def test_computed_fields(self):
-        for invoice in self.invoices:
-            self.assertEquals(invoice.total_edocs, 0)
-            # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
-            # Verifica algumas propriedades computadas que dependem do edoc
-            self.assertEquals(invoice.total_edocs, 1)
+    # def test_computed_fields(self):
+    #     for invoice in self.invoices:
+    #         self.assertEquals(invoice.total_edocs, 0)
+    #         # Confirmando a fatura deve gerar um documento eletrônico
+    #         invoice.action_invoice_open()
+    #         # Verifica algumas propriedades computadas que dependem do edoc
+    #         self.assertEquals(invoice.total_edocs, 1)
 
-    def test_check_invoice_eletronic_values(self):
-        for invoice in self.invoices:
-            # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
+    # def test_check_invoice_eletronic_values(self):
+    #     for invoice in self.invoices:
+    #         # Confirmando a fatura deve gerar um documento eletrônico
+    #         invoice.action_invoice_open()
+    #
+    #         inv_eletr = self.env['invoice.eletronic'].search(
+    #             [('invoice_id', '=', invoice.id)])
+    #
+    #         # TODO Validar os itens que foi setado no invoice e verficar
+    #         #  com o documento eletronico
+    #         self.assertEquals(inv_eletr.partner_id, invoice.partner_id)
 
-            inv_eletr = self.env['invoice.eletronic'].search(
-                [('invoice_id', '=', invoice.id)])
+    # @patch('odoo.addons.br_nfse.models.invoice_eletronic.teste_envio_lote_rps')
+    # def test_nfse_sucesso_homologacao(self, envio_lote):
+    #     for invoice in self.invoices:
+    #         # Confirmando a fatura deve gerar um documento eletrônico
+    #         invoice.action_invoice_open()
+    #
+    #         # Lote recebido com sucesso
+    #         xml_recebido = open(os.path.join(
+    #             self.caminho, 'xml/nfse-sucesso.xml'), 'r').read()
+    #         resp = sanitize_response(xml_recebido)
+    #         envio_lote.return_value = {
+    #             'object': resp[1],
+    #             'sent_xml': '<xml />',
+    #             'received_xml': xml_recebido
+    #         }
+    #         invoice_eletronic = self.env['invoice.eletronic'].search(
+    #             [('invoice_id', '=', invoice.id)])
+    #         invoice_eletronic.action_send_eletronic_invoice()
+    #         self.assertEqual(invoice_eletronic.state, 'done')
+    #         self.assertEqual(invoice_eletronic.codigo_retorno, '100')
+    #         self.assertEqual(len(invoice_eletronic.eletronic_event_ids), 1)
 
-            # TODO Validar os itens que foi setado no invoice e verficar com o
-            # documento eletronico
-            self.assertEquals(inv_eletr.partner_id, invoice.partner_id)
+    # @patch('odoo.addons.br_nfse.models.invoice_eletronic.cancelamento_nfe')
+    # def test_nfse_cancel(self, cancelar):
+    #     for invoice in self.invoices:
+    #         # Confirmando a fatura deve gerar um documento eletrônico
+    #         invoice.action_invoice_open()
+    #
+    #         # Lote recebido com sucesso
+    #         xml_recebido = open(os.path.join(
+    #             self.caminho, 'xml/cancelamento-sucesso.xml'), 'r').read()
+    #         resp = sanitize_response(xml_recebido)
+    #         cancelar.return_value = {
+    #             'object': resp[1],
+    #             'sent_xml': '<xml />',
+    #             'received_xml': xml_recebido
+    #         }
+    #
+    #         invoice_eletronic = self.env['invoice.eletronic'].search(
+    #             [('invoice_id', '=', invoice.id)])
+    #         invoice_eletronic.verify_code = '123'
+    #         invoice_eletronic.numero_nfse = '123'
+    #         invoice_eletronic.action_cancel_document(
+    #             justificativa="Cancelamento de teste")
+    #
+    #         self.assertEquals(invoice_eletronic.state, 'cancel')
+    #         self.assertEquals(invoice_eletronic.codigo_retorno, "100")
+    #         self.assertEquals(invoice_eletronic.mensagem_retorno,
+    #                           "Nota Fiscal Paulistana Cancelada")
 
-    @patch('odoo.addons.br_nfse.models.invoice_eletronic.teste_envio_lote_rps')
-    def test_nfse_sucesso_homologacao(self, envio_lote):
-        for invoice in self.invoices:
-            # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
-
-            # Lote recebido com sucesso
-            xml_recebido = open(os.path.join(
-                self.caminho, 'xml/nfse-sucesso.xml'), 'r').read()
-            resp = sanitize_response(xml_recebido)
-            envio_lote.return_value = {
-                'object': resp[1],
-                'sent_xml': '<xml />',
-                'received_xml': xml_recebido
-            }
-            invoice_eletronic = self.env['invoice.eletronic'].search(
-                [('invoice_id', '=', invoice.id)])
-            invoice_eletronic.action_send_eletronic_invoice()
-            self.assertEqual(invoice_eletronic.state, 'done')
-            self.assertEqual(invoice_eletronic.codigo_retorno, '100')
-            self.assertEqual(len(invoice_eletronic.eletronic_event_ids), 1)
-
-    @patch('odoo.addons.br_nfse.models.invoice_eletronic.cancelamento_nfe')
-    def test_nfse_cancel(self, cancelar):
-        for invoice in self.invoices:
-            # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
-
-            # Lote recebido com sucesso
-            xml_recebido = open(os.path.join(
-                self.caminho, 'xml/cancelamento-sucesso.xml'), 'r').read()
-            resp = sanitize_response(xml_recebido)
-            cancelar.return_value = {
-                'object': resp[1],
-                'sent_xml': '<xml />',
-                'received_xml': xml_recebido
-            }
-
-            invoice_eletronic = self.env['invoice.eletronic'].search(
-                [('invoice_id', '=', invoice.id)])
-            invoice_eletronic.verify_code = '123'
-            invoice_eletronic.numero_nfse = '123'
-            invoice_eletronic.action_cancel_document(
-                justificativa="Cancelamento de teste")
-
-            self.assertEquals(invoice_eletronic.state, 'cancel')
-            self.assertEquals(invoice_eletronic.codigo_retorno, "100")
-            self.assertEquals(invoice_eletronic.mensagem_retorno,
-                              "Nota Fiscal Paulistana Cancelada")
-
-    @patch('odoo.addons.br_nfse.models.invoice_eletronic.cancelamento_nfe')
-    def test_nfse_cancelamento_erro(self, cancelar):
-        for invoice in self.invoices:
-            # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
-
-            # Lote recebido com sucesso
-            xml_recebido = open(os.path.join(
-                self.caminho, 'xml/cancelamento-erro.xml'), 'r').read()
-            resp = sanitize_response(xml_recebido)
-            cancelar.return_value = {
-                'object': resp[1],
-                'sent_xml': '<xml />',
-                'received_xml': xml_recebido
-            }
-
-            invoice_eletronic = self.env['invoice.eletronic'].search(
-                [('invoice_id', '=', invoice.id)])
-            invoice_eletronic.verify_code = '123'
-            invoice_eletronic.numero_nfse = '123'
-            invoice_eletronic.action_cancel_document(
-                justificativa="Cancelamento de teste")
-
-            # Draft because I didn't send it
-            self.assertEquals(invoice_eletronic.state, 'draft')
-            self.assertEquals(invoice_eletronic.codigo_retorno, u"1305")
-            self.assertEquals(invoice_eletronic.mensagem_retorno,
-                              "Assinatura de cancelamento da NFS-e incorreta.")
+    # @patch('odoo.addons.br_nfse.models.invoice_eletronic.cancelamento_nfe')
+    # def test_nfse_cancelamento_erro(self, cancelar):
+    #     for invoice in self.invoices:
+    #         # Confirmando a fatura deve gerar um documento eletrônico
+    #         invoice.action_invoice_open()
+    #
+    #         # Lote recebido com sucesso
+    #         xml_recebido = open(os.path.join(
+    #             self.caminho, 'xml/cancelamento-erro.xml'), 'r').read()
+    #         resp = sanitize_response(xml_recebido)
+    #         cancelar.return_value = {
+    #             'object': resp[1],
+    #             'sent_xml': '<xml />',
+    #             'received_xml': xml_recebido
+    #         }
+    #
+    #         invoice_eletronic = self.env['invoice.eletronic'].search(
+    #             [('invoice_id', '=', invoice.id)])
+    #         invoice_eletronic.verify_code = '123'
+    #         invoice_eletronic.numero_nfse = '123'
+    #         invoice_eletronic.action_cancel_document(
+    #             justificativa="Cancelamento de teste")
+    #
+    #         # Draft because I didn't send it
+    #         self.assertEquals(invoice_eletronic.state, 'draft')
+    #         self.assertEquals(invoice_eletronic.codigo_retorno, u"1305")
+    #         self.assertEquals(invoice_eletronic.mensagem_retorno,
+    #                         "Assinatura de cancelamento da NFS-e incorreta.")

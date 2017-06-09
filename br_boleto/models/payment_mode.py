@@ -69,7 +69,8 @@ class PaymentMode(models.Model):
     #         if self.bank_account_id.bank_id.bic != '001':
     #             vals['warning'] = {
     #                 'title': u'Ação Bloqueada!',
-    #                 'message': u'Este boleto não combina com a conta bancária!'
+    #                 'message': u'Este boleto não combina com a conta
+    # bancária!'
     #             }
     #
     #         self.boleto_carteira = u'17'
@@ -79,7 +80,7 @@ class PaymentMode(models.Model):
     #         if self.bank_account_id.bank_id.bic != '237':
     #             vals['warning'] = {
     #                 'title': u'Ação Bloqueada!',
-    #                 'message': u'Este boleto não combina com a conta bancária!'
+    #               'message': u'Este boleto não combina com a conta bancária!'
     #             }
     #         self.boleto_carteira = u'9'
     #
@@ -87,7 +88,7 @@ class PaymentMode(models.Model):
     #         if self.bank_account_id.bank_id.bic != '033':
     #             vals['warning'] = {
     #                 'title': u'Ação Bloqueada!',
-    #                 'message': u'Este boleto não combina com a conta bancária!'
+    #               'message': u'Este boleto não combina com a conta bancária!'
     #             }
     #         self.boleto_carteira = u'101'
     #
@@ -95,7 +96,7 @@ class PaymentMode(models.Model):
     #         if self.bank_account_id.bank_id.bic != '756':
     #             vals['warning'] = {
     #                 'title': u'Ação Bloqueada!',
-    #                 'message': u'Este boleto não combina com a conta bancária!'
+    #               'message': u'Este boleto não combina com a conta bancária!'
     #             }
     #         self.boleto_carteira = u'1'
     #         self.boleto_modalidade = u'01'
@@ -104,7 +105,7 @@ class PaymentMode(models.Model):
     #         if self.bank_account_id.bank_id.bic != '0851':
     #             vals['warning'] = {
     #                 'title': u'Ação Bloqueada!',
-    #                 'message': u'Este boleto não combina com a conta bancária!'
+    #               'message': u'Este boleto não combina com a conta bancária!'
     #             }
     #         self.boleto_carteira = '01'
     #         self.boleto_protesto = '3'
@@ -119,6 +120,6 @@ class PaymentMode(models.Model):
             vals['warning'] = {
                 'title': u'Ação Bloqueada!',
                 'message': 'A carteira deste banco possui apenas um digito!'
-                }
+            }
 
         return vals
