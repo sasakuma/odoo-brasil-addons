@@ -13,6 +13,9 @@ class ResCompany(models.Model):
                                           string='Ambiente NFSe',
                                           default='2')
 
+    webservice_nfse = fields.Selection([('paulistana', u'Paulistana')],
+                                       string='Webservice NFSe')
+
     senha_ambiente_nfse = fields.Char(string=u'Senha NFSe',
                                       size=30,
                                       help=u'Senha Nota Fiscal de Serviço')
