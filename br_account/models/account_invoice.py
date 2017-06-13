@@ -394,9 +394,13 @@ class AccountInvoice(models.Model):
                         amount_currency += res_amount_currency
 
                     # Calculamos a nova data de vencimento baseado na data
-                    # de validação da faturação
-                    d1 = datetime.strptime(fields.Date.today(), '%Y-%m-%d')
-                    date_maturity = d1 + timedelta(days=t.amount_days)
+                    # de validação da faturação, caso a parcela nao esteja
+                    # marcada como 'data fixa'
+                    if not t.pin_date:
+                        d1 = datetime.strptime(fields.Date.today(), '%Y-%m-%d')
+                        date_maturity = d1 + timedelta(days=t.amount_days)
+                    else:
+                        date_maturity = t.date_maturity
 
                     iml.append({
                         'type': 'dest',
