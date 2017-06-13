@@ -6,7 +6,7 @@
 from odoo import api, fields, models
 
 
-class BrAccountInvoiceParcel(models.Model):
+class BrAccountInvoiceParcelWizard(models.TransientModel):
     _name = 'br_account.invoice.parcel.wizard'
     _description = 'Wizard para criar parcelas na fatura'
 
