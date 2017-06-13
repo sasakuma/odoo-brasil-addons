@@ -347,6 +347,8 @@ class BrAccountInvoiceParcel(models.Model):
 
     parceling_value = fields.Monetary(string='Valor',
                                       required=True,
+                                      readonly=True,
+                                      store=True,
                                       default=0.0,
                                       currency_field='company_currency_id')
 
@@ -367,7 +369,9 @@ class BrAccountInvoiceParcel(models.Model):
 
     pin_date = fields.Boolean(string='Data Fixa')
 
-    amount_days = fields.Integer(string='Quantidade de Dias')
+    amount_days = fields.Integer(string='Quantidade de Dias',
+                                 store=True,
+                                 readonly=True)
 
     @api.onchange('date_maturity')
     def _onchange_date_maturity(self):

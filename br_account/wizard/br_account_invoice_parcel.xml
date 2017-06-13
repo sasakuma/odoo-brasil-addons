@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="br_account_invoice_parcel_wizard_form" model="ir.ui.view">
+        <field name="name">Parcelas Wizard</field>
+        <field name="model">br_account.invoice.parcel.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Invoice Parcels Wizard">
+                <group>
+                        <field name="payment_term_id"/>
+                        <field name="date_invoice"/>
+                        <field name="financial_operation_id" options="{'no_create': True}"/>
+                        <field name="title_type_id" options="{'no_create': True}"/>
+                    </group>
+                <footer>
+                    <button name="action_generate_parcel_entry"
+                            string="Gerar Parcelas"
+                            type="object"
+                            default_focus="1"
+                            class="oe_highlight"/>
+                    or
+                    <button string="Cancelar" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>
