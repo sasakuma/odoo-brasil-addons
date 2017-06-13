@@ -20,8 +20,7 @@
                 </div>
             </xpath>
             <field name="fiscal_position_id" position="replace"/>
-            <field name="payment_term_id" position="replace"/>
-            <field name="partner_id" position="after">
+            <field name="payment_term_id" position="after">
                 <field name="fiscal_position_id" required="1"/>
             </field>
             <field name="date_invoice" position="before">
@@ -41,9 +40,6 @@
             </xpath>
             <page name="other_info" position="before">
                 <page name="parcelas" string="Parcelas">
-                    <group>
-                        <field name="payment_term_id"/>
-                    </group>
                     <button name="action_create_periodic_entry"
                             class="oe_highlight oe_edit_only"
                             type="object"
@@ -155,7 +151,9 @@
                 </div>
             </xpath>
             <field name="fiscal_position_id" position="replace"/>
-            <field name="reference" position="after">
+            <field name="payment_term_id" position="replace"/>
+            <field name="partner_id" position="after">
+                <field name="payment_term_id" />
                 <field name="fiscal_position_id" />
             </field>
             <field name="date_invoice" position="after">
@@ -169,7 +167,6 @@
             <field name="payment_term_id" position="attributes">
                 <attribute name="attrs"></attribute>
             </field>
-            <field name="payment_term_id" position="replace"/>
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
                 <attribute name="editable"></attribute>
             </xpath>
@@ -182,9 +179,6 @@
             </xpath>
             <page name="other_info" position="before">
                 <page name="parcelas" string="Parcelas">
-                    <group>
-                        <field name="payment_term_id"/>
-                    </group>
                     <button name="action_create_periodic_entry"
                             class="oe_highlight oe_edit_only"
                             type="object"
