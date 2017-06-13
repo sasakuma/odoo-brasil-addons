@@ -8,9 +8,11 @@ from odoo import fields, models
 class ResCompany(models.Model):
     _inherit = 'res.company'
 
-    tipo_ambiente_nfse = fields.Selection(
-        [('1', u'Produção'), ('2', u'Homologação')],
-        string="Ambiente NFSe", default='2')
+    tipo_ambiente_nfse = fields.Selection([('1', u'Produção'),
+                                           ('2', u'Homologação')],
+                                          string='Ambiente NFSe',
+                                          default='2')
 
-    senha_ambiente_nfse = fields.Char(
-        string=u'Senha NFSe', size=30, help=u'Senha Nota Fiscal de Serviço')
+    senha_ambiente_nfse = fields.Char(string=u'Senha NFSe',
+                                      size=30,
+                                      help=u'Senha Nota Fiscal de Serviço')
