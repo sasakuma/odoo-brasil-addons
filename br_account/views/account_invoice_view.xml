@@ -39,7 +39,7 @@
                 <field name="valor_desconto" invisible="1" />
             </xpath>
             <page name="other_info" position="before">
-                <page name="parcelas" string="Parcelas">
+                <page name="parcelas" string="Parcelas" attrs="{'invisible': [('payment_term_id', '=', False)]}">
                     <button name="action_create_periodic_entry"
                             class="oe_highlight oe_edit_only"
                             type="object"
@@ -178,7 +178,7 @@
                 <field name="valor_desconto" invisible="1" />
             </xpath>
             <page name="other_info" position="before">
-                <page name="parcelas" string="Parcelas">
+                <page name="parcelas" string="Parcelas" attrs="{'invisible': [('payment_term_id', '=', False)]}">
                     <button name="action_create_periodic_entry"
                             class="oe_highlight oe_edit_only"
                             type="object"
