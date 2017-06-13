@@ -41,11 +41,8 @@
             </xpath>
             <page name="other_info" position="before">
                 <page name="parcelas" string="Parcelas">
-                    <!--<field name="payment_term_id" position="replace"/>-->
                     <group>
                         <field name="payment_term_id"/>
-                        <field name="financial_operation_id" attrs="{'required': [('payment_term_id', '!=', False)], 'invisible': [('payment_term_id', '=', False)]}"/>
-                        <field name="title_type_id" attrs="{'required': [('payment_term_id', '!=', False)], 'invisible': [('payment_term_id', '=', False)]}"/>
                     </group>
                     <button name="action_create_periodic_entry"
                             class="oe_highlight oe_edit_only"
@@ -187,8 +184,6 @@
                 <page name="parcelas" string="Parcelas">
                     <group>
                         <field name="payment_term_id"/>
-                        <field name="financial_operation_id" attrs="{'required': [('payment_term_id', '!=', False)], 'invisible': [('payment_term_id', '=', False)]}"/>
-                        <field name="title_type_id" attrs="{'required': [('payment_term_id', '!=', False)], 'invisible': [('payment_term_id', '=', False)]}"/>
                     </group>
                     <button name="action_create_periodic_entry"
                             class="oe_highlight oe_edit_only"
