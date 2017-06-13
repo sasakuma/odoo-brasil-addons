@@ -66,25 +66,25 @@ class AccountMoveLine(models.Model):
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
+    ORIGIN_TYPE = [
+        ('sale', 'Sale'),
+        ('purchase', 'Purchase'),
+        ('discharge', 'Discharge'),
+        ('tax', 'Tax'),
+        ('iof', 'IOF'),
+        ('reversal_iof', 'Reversal IOF'),
+        ('reversal', 'Reversal'),
+        ('reversed_discharge', 'Reversed Discharge'),
+        ('discount', 'Discount'),
+        ('interest', 'Interest'),
+        ('reversal_discount', 'Reversal Discount'),
+        ('reversal_interest', 'Reversal Interest'),
+        ('company_expense', 'Company Expense'),
+        ('releases', 'Releases'),
+    ]
+
     origin_type = fields.Selection(string='Origin Type',
-                                   selection=[
-                                       ('sale', 'Sale'),
-                                       ('purchase', 'Purchase'),
-                                       ('discharge', 'Discharge'),
-                                       ('tax', 'Tax'),
-                                       ('iof', 'IOF'),
-                                       ('reversal', 'Reversal'),
-                                       ('reversed_discharge',
-                                        'Reversed Discharge'),
-                                       ('discount', 'Discount'),
-                                       ('interest', 'Interest'),
-                                       ('reversal_discount',
-                                        'Reversal Discount'),
-                                       ('reversal_interest',
-                                        'Reversal Interest'),
-                                       ('company_expense', 'Company Expense'),
-                                       ('releases', 'Releases'),
-                                   ])
+                                   selection=ORIGIN_TYPE)
 
     ref_move_id = fields.Many2one(string='Reference Account Move',
                                   comodel_name='account.move')
