@@ -35,25 +35,35 @@ class InvoiceEletronicItem(models.Model):
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
 
-    ambiente_nfse = fields.Selection(
-        string="Ambiente NFe", related="company_id.tipo_ambiente_nfse",
-        readonly=True)
+    ambiente_nfse = fields.Selection(string='Ambiente NFe',
+                                     related='company_id.tipo_ambiente_nfse',
+                                     readonly=True)
+
     operation = fields.Selection(
-        [('T', u"Tributado em São Paulo"),
-         ('F', u"Tributado Fora de São Paulo"),
-         ('A', u"Tributado em São Paulo, porém isento"),
-         ('B', u"Tributado Fora de São Paulo, porém isento"),
-         ('M', u"Tributado em São Paulo, porém Imune"),
-         ('N', u"Tributado Fora de São Paulo, porém Imune"),
-         ('X', u"Tributado em São Paulo, porém Exigibilidade Suspensa"),
-         ('V', u"Tributado Fora de São Paulo, porém Exigibilidade Suspensa"),
-         ('P', u"Exportação de Serviços"),
-         ('C', u"Cancelado")], u"Operação",
-        default='T', readonly=True, states=STATE)
-    verify_code = fields.Char(
-        string=u'Código Autorização', size=20, readonly=True, states=STATE)
-    numero_nfse = fields.Char(
-        string=u"Número NFSe", size=50, readonly=True, states=STATE)
+        [('T', u'Tributado em São Paulo'),
+         ('F', u'Tributado Fora de São Paulo'),
+         ('A', u'Tributado em São Paulo, porém isento'),
+         ('B', u'Tributado Fora de São Paulo, porém isento'),
+         ('M', u'Tributado em São Paulo, porém Imune'),
+         ('N', u'Tributado Fora de São Paulo, porém Imune'),
+         ('X', u'Tributado em São Paulo, porém Exigibilidade Suspensa'),
+         ('V', u'Tributado Fora de São Paulo, porém Exigibilidade Suspensa'),
+         ('P', u'Exportação de Serviços'),
+         ('C', u'Cancelado')],
+        string=u'Operação',
+        default='T',
+        readonly=True,
+        states=STATE)
+
+    verify_code = fields.Char(string=u'Código Autorização',
+                              size=20,
+                              readonly=True,
+                              states=STATE)
+
+    numero_nfse = fields.Char(string=u'Número NFSe',
+                              size=50,
+                              readonly=True,
+                              states=STATE)
 
     def issqn_due_date(self):
         date_emition = datetime.strptime(self.data_emissao, DTFT)
