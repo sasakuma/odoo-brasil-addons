@@ -21,6 +21,15 @@ class AccountInvoice(models.Model):
             line.fiscal_position_id.service_type_id.codigo_servico_paulistana
         return res
 
+    def _prepare_edoc_vals(self, invoice):
+        res = super(AccountInvoice, self)._prepare_edoc_vals(invoice)
+
+        # Indica que a fatura é uma Nota Fiscal Eletronica de Serviço
+        if invoice.fiscal_position_id.position_type == 'service':
+            res['ambiente'] = ('homologacao' if invoice.ambiente_nfse == '2'
+                               else 'producao')
+        return res
+
     def action_preview_danfse(self):
         docs = self.env['invoice.eletronic'].search(
             [('invoice_id', '=', self.id)])
@@ -42,7 +51,6 @@ class AccountInvoice(models.Model):
         elif self.invoice_model == '008':
             report = 'br_nfse.main_template_br_nfse_danfe_simpliss'
 
-        action = self.env['report'].get_action(
-            docs.ids, report)
+        action = self.env['report'].get_action(docs.ids, report)
         action['report_type'] = 'qweb-html'
         return action
