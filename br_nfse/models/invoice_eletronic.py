@@ -237,7 +237,9 @@ class InvoiceEletronic(models.Model):
                 resposta = envio_lote_rps(certificado, nfse=nfse_values)
             else:
                 resposta = teste_envio_lote_rps(certificado, nfse=nfse_values)
+
             retorno = resposta['object']
+
             if retorno.Cabecalho.Sucesso:
                 self.state = 'done'
                 self.codigo_retorno = '100'
@@ -280,11 +282,13 @@ class InvoiceEletronic(models.Model):
             'assinatura': '%s%s' % (
                 re.sub('[^0-9]', '', company.inscr_mun),
                 self.numero_nfse.zfill(12)
+                if self.numero_nfse else ''.zfill(12)
             )
         }
         resposta = cancelamento_nfe(certificado, cancelamento=canc)
         retorno = resposta['object']
-        if retorno.Cabecalho.Sucesso:
+
+        if retorno.Cabecalho.Sucesso or self.ambiente == 'homologacao':
             self.state = 'cancel'
             self.codigo_retorno = '100'
             self.mensagem_retorno = 'Nota Fiscal Paulistana Cancelada'
@@ -297,5 +301,7 @@ class InvoiceEletronic(models.Model):
             'name': self.mensagem_retorno,
             'invoice_eletronic_id': self.id,
         })
-        self._create_attachment('canc', self, resposta['sent_xml'])
-        self._create_attachment('canc-ret', self, resposta['received_xml'])
+
+        if self.ambiente == 'homologacao':
+            self._create_attachment('canc', self, resposta['sent_xml'])
+            self._create_attachment('canc-ret', self, resposta['received_xml'])
