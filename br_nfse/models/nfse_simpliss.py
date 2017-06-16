@@ -44,7 +44,8 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
-        if self.model == '008':
+
+        if self.model == '001' and self.webservice_nfse == 'nfse_simpliss':
             issqn_codigo = ''
             if not self.company_id.inscr_mun:
                 errors.append(u'Inscrição municipal obrigatória')
@@ -68,7 +69,8 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def _prepare_eletronic_invoice_values(self):
         res = super(InvoiceEletronic, self)._prepare_eletronic_invoice_values()
-        if self.model == '008':
+
+        if self.model == '001' and self.webservice_nfse == 'nfse_simpliss':
             tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
             dt_emissao = datetime.strptime(self.data_emissao, DTFT)
             dt_emissao = pytz.utc.localize(dt_emissao).astimezone(tz)
@@ -167,29 +169,29 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def action_post_validate(self):
         super(InvoiceEletronic, self).action_post_validate()
-        if self.model not in ('008'):
-            return
 
-        cert = self.company_id.with_context(
-            {'bin_size': False}).nfe_a1_file
-        cert_pfx = base64.decodestring(cert)
+        if self.model == '001' and self.webservice_nfse == 'nfse_simpliss':
+            cert = self.company_id.with_context(
+                {'bin_size': False}).nfe_a1_file
+            cert_pfx = base64.decodestring(cert)
 
-        certificado = Certificado(
-            cert_pfx, self.company_id.nfe_a1_password)
+            certificado = Certificado(
+                cert_pfx, self.company_id.nfe_a1_password)
 
-        nfse_values = self._prepare_eletronic_invoice_values()
-        xml_enviar = xml_gerar_nfse(certificado, nfse=nfse_values)
+            nfse_values = self._prepare_eletronic_invoice_values()
+            xml_enviar = xml_gerar_nfse(certificado, nfse=nfse_values)
 
-        self.xml_to_send = base64.encodestring(xml_enviar)
-        self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
+            self.xml_to_send = base64.encodestring(xml_enviar)
+            self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
 
     @api.multi
     def action_send_eletronic_invoice(self):
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
-        if self.model == '008':
+
+        if self.model == '001' and self.webservice_nfse == 'nfse_simpliss':
             self.state = 'error'
 
-            recebe_lote = None
+            # recebe_lote = None
 
             xml_to_send = base64.decodestring(self.xml_to_send)
             recebe_lote = gerar_nfse(
@@ -199,7 +201,7 @@ class InvoiceEletronic(models.Model):
             retorno = retorno.Body.GerarNfseResponse
             retorno = retorno.getchildren()[0]
 
-            if "NovaNfse" in dir(retorno):
+            if 'NovaNfse' in dir(retorno):
                 self.state = 'done'
                 self.codigo_retorno = '100'
                 self.mensagem_retorno = 'NFSe emitida com sucesso'
@@ -226,45 +228,53 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
-        if self.model not in ('008'):
-            return super(InvoiceEletronic, self).action_cancel_document(
-                justificativa=justificativa)
 
-        company = self.company_id
-        city_prestador = self.company_id.partner_id.city_id
-        canc = {
-            'cnpj_prestador': re.sub('[^0-9]', '', company.cnpj_cpf),
-            'inscricao_municipal': re.sub('[^0-9]', '', company.inscr_mun),
-            'cidade': '%s%s' % (city_prestador.state_id.ibge_code,
-                                city_prestador.ibge_code),
-            'numero_nfse': self.numero_nfse,
-            'codigo_cancelamento': '1',
-            'senha': self.company_id.senha_ambiente_nfse
-        }
-        cancel = cancelar_nfse(
-            None, cancelamento=canc, ambiente=self.ambiente)
-        retorno = cancel['object'].Body.CancelarNfseResponse.CancelarNfseResult
-        if "Cancelamento" in dir(retorno):
-            self.state = 'cancel'
-            self.codigo_retorno = '100'
-            self.mensagem_retorno = u'Nota Fiscal de Serviço Cancelada'
+        if self.model == '001' and self.webservice_nfse == 'nfse_simpliss':
+
+            company = self.company_id
+            city_prestador = company.partner_id.city_id
+
+            canc = {
+                'cnpj_prestador': re.sub('[^0-9]', '', company.cnpj_cpf),
+                'inscricao_municipal': re.sub('[^0-9]', '', company.inscr_mun),
+                'cidade': '%s%s' % (city_prestador.state_id.ibge_code,
+                                    city_prestador.ibge_code),
+                'numero_nfse': self.numero_nfse,
+                'codigo_cancelamento': '1',
+                'senha': company.senha_ambiente_nfse
+            }
+
+            cancel = cancelar_nfse(None,
+                                   cancelamento=canc,
+                                   ambiente=self.ambiente)
+
+            retorno = \
+                cancel['object'].Body.CancelarNfseResponse.CancelarNfseResult
+
+            if 'Cancelamento' in dir(retorno):
+                self.state = 'cancel'
+                self.codigo_retorno = '100'
+                self.mensagem_retorno = u'Nota Fiscal de Serviço Cancelada'
+            else:
+                # E79 - Nota já está cancelada
+                msg_retorno = retorno.ListaMensagemRetorno.MensagemRetorno
+                if msg_retorno.Codigo != 'E79':
+                    mensagem = "%s - %s" % (msg_retorno.Codigo,
+                                            msg_retorno.Mensagem)
+                    raise UserError(mensagem)
+
+                self.state = 'cancel'
+                self.codigo_retorno = '100'
+                self.mensagem_retorno = u'Nota Fiscal de Serviço Cancelada'
+
+            self.env['invoice.eletronic.event'].create({
+                'code': self.codigo_retorno,
+                'name': self.mensagem_retorno,
+                'invoice_eletronic_id': self.id,
+            })
+            self._create_attachment('canc', self, cancel['sent_xml'])
+            self._create_attachment('canc-ret', self, cancel['received_xml'])
+
         else:
-            # E79 - Nota já está cancelada
-            if retorno.ListaMensagemRetorno.MensagemRetorno.Codigo != 'E79':
-                mensagem = "%s - %s" % (
-                    retorno.ListaMensagemRetorno.MensagemRetorno.Codigo,
-                    retorno.ListaMensagemRetorno.MensagemRetorno.Mensagem
-                )
-                raise UserError(mensagem)
-
-            self.state = 'cancel'
-            self.codigo_retorno = '100'
-            self.mensagem_retorno = u'Nota Fiscal de Serviço Cancelada'
-
-        self.env['invoice.eletronic.event'].create({
-            'code': self.codigo_retorno,
-            'name': self.mensagem_retorno,
-            'invoice_eletronic_id': self.id,
-        })
-        self._create_attachment('canc', self, cancel['sent_xml'])
-        self._create_attachment('canc-ret', self, cancel['received_xml'])
+            return super(InvoiceEletronic, self).action_cancel_document(
+                justificativa=justificativa, context=context)
