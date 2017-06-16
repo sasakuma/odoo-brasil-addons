@@ -276,7 +276,13 @@ class InvoiceEletronic(models.Model):
             resposta = cancelamento_nfe(certificado, cancelamento=canc)
             retorno = resposta['object']
 
-            if retorno.Cabecalho.Sucesso or self.ambiente == 'homologacao':
+            if self.ambiente == 'homologacao':
+                # Se enviamos a nota em homologacao, entao a mesma nao será
+                # criada no servidor e assim nao podemos cancelá-la. Sendo
+                # assim, simulamos um retorno em sucedido
+                retorno.Cabecalho.Sucesso = True
+
+            if retorno.Cabecalho.Sucesso:
                 self.state = 'cancel'
                 self.codigo_retorno = '100'
                 self.mensagem_retorno = 'Nota Fiscal Paulistana Cancelada'
@@ -290,7 +296,7 @@ class InvoiceEletronic(models.Model):
                 'invoice_eletronic_id': self.id,
             })
 
-            if self.ambiente == 'homologacao':
+            if self.ambiente == 'producao':
                 self._create_attachment('canc', self, resposta['sent_xml'])
                 self._create_attachment('canc-ret', self,
                                         resposta['received_xml'])
