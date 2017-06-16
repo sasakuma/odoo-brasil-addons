@@ -235,4 +235,3 @@ class InvoiceEletronic(models.Model):
         else:
             return super(InvoiceEletronic, self).action_cancel_document(
                 justificativa=justificativa, context=context)
-

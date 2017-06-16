@@ -35,9 +35,9 @@ class InvoiceEletronic(models.Model):
                  'valor_retencao_csll')
     def _compute_total_retencoes(self):
         for item in self:
-            total = item.valor_retencao_pis + item.valor_retencao_cofins + \
-                    item.valor_retencao_irrf + item.valor_retencao_inss + \
-                    item.valor_retencao_csll
+            total = (item.valor_retencao_pis + item.valor_retencao_cofins +
+                     item.valor_retencao_irrf + item.valor_retencao_inss +
+                     item.valor_retencao_csll)
             item.retencoes_federais = total
 
     retencoes_federais = fields.Monetary(
@@ -130,8 +130,8 @@ class InvoiceEletronic(models.Model):
                 'data_emissao': dt_emissao,
                 'natureza_operacao': '1',  # Tributada no municipio
                 'regime_tributacao': '2',  # Estimativa
-                'optante_simples':  # 1 - Sim, 2 - Não
-                    '2' if self.company_id.fiscal_type == '3' else '1',
+                'optante_simples': '2'
+                if self.company_id.fiscal_type == '3' else '1',
                 'incentivador_cultural': '2',  # 2 - Não
                 'status': '1',  # 1 - Normal
                 'valor_servico': str("%.2f" % self.valor_final),
@@ -235,8 +235,10 @@ class InvoiceEletronic(models.Model):
                     '[^0-9]', '', self.company_id.inscr_mun),
                 'protocolo': self.recibo_nfe,
             }
+
             consulta_situacao = consultar_situacao_lote(
                 certificado, consulta=obj, ambiente=self.ambiente)
+
             ret_rec = consulta_situacao['object']
 
             if 'Situacao' in dir(ret_rec):
