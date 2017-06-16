@@ -53,12 +53,13 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
-        if self.model == '001':
+
+        if self.model == '001' and self.webservice_nfse == 'nfse_paulistana':
             issqn_codigo = ''
             if not self.company_id.inscr_mun:
                 errors.append(u'Inscrição municipal obrigatória')
             for eletr in self.eletronic_item_ids:
-                prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
+                prod = u'Produto: %s - %s' % (eletr.product_id.default_code,
                                               eletr.product_id.name)
                 if eletr.tipo_produto == 'product':
                     errors.append(
@@ -84,7 +85,8 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def _prepare_eletronic_invoice_values(self):
         res = super(InvoiceEletronic, self)._prepare_eletronic_invoice_values()
-        if self.model == '001':
+
+        if self.model == '001' and self.webservice_nfse == 'nfse_paulistana':
             tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
             dt_emissao = datetime.strptime(self.data_emissao, DTFT)
             dt_emissao = pytz.utc.localize(dt_emissao).astimezone(tz)
@@ -206,7 +208,8 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def action_send_eletronic_invoice(self):
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
-        if self.model == '001':
+
+        if self.model == '001' and self.webservice_nfse == 'nfse_paulistana':
             self.state = 'error'
 
             nfse_values = self._prepare_eletronic_invoice_values()
@@ -249,43 +252,49 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
-        if self.model not in ('001'):
-            return super(InvoiceEletronic, self).action_cancel_document(
-                justificativa=justificativa)
 
-        cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
-        cert_pfx = base64.decodestring(cert)
-        certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
+        if self.model == '001' and self.webservice_nfse == 'nfse_paulistana':
 
-        company = self.company_id
-        canc = {
-            'cnpj_remetente': re.sub('[^0-9]', '', company.cnpj_cpf),
-            'inscricao_municipal': re.sub('[^0-9]', '', company.inscr_mun),
-            'numero_nfse': self.numero_nfse,
-            'codigo_verificacao': self.verify_code,
-            'assinatura': '%s%s' % (
-                re.sub('[^0-9]', '', company.inscr_mun),
-                self.numero_nfse.zfill(12)
-                if self.numero_nfse else ''.zfill(12)
-            )
-        }
-        resposta = cancelamento_nfe(certificado, cancelamento=canc)
-        retorno = resposta['object']
+            cert = \
+                self.company_id.with_context({'bin_size': False}).nfe_a1_file
+            cert_pfx = base64.decodestring(cert)
+            certificado = Certificado(cert_pfx,
+                                      self.company_id.nfe_a1_password)
 
-        if retorno.Cabecalho.Sucesso or self.ambiente == 'homologacao':
-            self.state = 'cancel'
-            self.codigo_retorno = '100'
-            self.mensagem_retorno = 'Nota Fiscal Paulistana Cancelada'
+            company = self.company_id
+            canc = {
+                'cnpj_remetente': re.sub('[^0-9]', '', company.cnpj_cpf),
+                'inscricao_municipal': re.sub('[^0-9]', '', company.inscr_mun),
+                'numero_nfse': self.numero_nfse,
+                'codigo_verificacao': self.verify_code,
+                'assinatura': '%s%s' % (
+                    re.sub('[^0-9]', '', company.inscr_mun),
+                    self.numero_nfse.zfill(12)
+                    if self.numero_nfse else ''.zfill(12)
+                )
+            }
+            resposta = cancelamento_nfe(certificado, cancelamento=canc)
+            retorno = resposta['object']
+
+            if retorno.Cabecalho.Sucesso or self.ambiente == 'homologacao':
+                self.state = 'cancel'
+                self.codigo_retorno = '100'
+                self.mensagem_retorno = 'Nota Fiscal Paulistana Cancelada'
+            else:
+                self.codigo_retorno = retorno.Erro.Codigo
+                self.mensagem_retorno = retorno.Erro.Descricao
+
+            self.env['invoice.eletronic.event'].create({
+                'code': self.codigo_retorno,
+                'name': self.mensagem_retorno,
+                'invoice_eletronic_id': self.id,
+            })
+
+            if self.ambiente == 'homologacao':
+                self._create_attachment('canc', self, resposta['sent_xml'])
+                self._create_attachment('canc-ret', self,
+                                        resposta['received_xml'])
+
         else:
-            self.codigo_retorno = retorno.Erro.Codigo
-            self.mensagem_retorno = retorno.Erro.Descricao
-
-        self.env['invoice.eletronic.event'].create({
-            'code': self.codigo_retorno,
-            'name': self.mensagem_retorno,
-            'invoice_eletronic_id': self.id,
-        })
-
-        if self.ambiente == 'homologacao':
-            self._create_attachment('canc', self, resposta['sent_xml'])
-            self._create_attachment('canc-ret', self, resposta['received_xml'])
+            return super(InvoiceEletronic, self).action_cancel_document(
+                justificativa=justificativa, context=context)
