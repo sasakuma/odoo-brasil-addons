@@ -34,7 +34,8 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
-        if self.model == '009':
+
+        if self.model == '001' and self.webservice_nfse == 'nfse_susesu':
             issqn_codigo = ''
             if not self.company_id.inscr_mun:
                 errors.append(u'Inscrição municipal obrigatória')
@@ -58,7 +59,8 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def _prepare_eletronic_invoice_values(self):
         res = super(InvoiceEletronic, self)._prepare_eletronic_invoice_values()
-        if self.model == '009':
+
+        if self.model == '001' and self.webservice_nfse == 'nfse_susesu':
             tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
             dt_emissao = datetime.strptime(self.data_emissao, DTFT)
             dt_emissao = pytz.utc.localize(dt_emissao).astimezone(tz)
@@ -142,58 +144,63 @@ class InvoiceEletronic(models.Model):
 
     def _find_attachment_ids_email(self):
         atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
-        attachment_obj = self.env['ir.attachment']
-        if self.model not in ('009'):
-            return
 
-        tmp = tempfile._get_default_tempdir()
-        temp_name = os.path.join(tmp, next(tempfile._get_candidate_names()))
+        if self.model == '001' and self.webservice_nfse == 'nfse_susesu':
 
-        command_args = ["--dpi", "84", str(self.url_danfe), temp_name]
-        wkhtmltopdf = [_get_wkhtmltopdf_bin()] + command_args
-        process = subprocess.Popen(wkhtmltopdf, stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE)
-        out, err = process.communicate()
-        if process.returncode not in [0, 1]:
-            raise UserError(_('Wkhtmltopdf failed (error code: %s). '
-                              'Message: %s') % (str(process.returncode), err))
-        tmpDanfe = None
-        with open(temp_name, 'r') as f:
-            tmpDanfe = f.read()
+            tmp = tempfile._get_default_tempdir()
+            temp_name = os.path.join(tmp,
+                                     next(tempfile._get_candidate_names()))
 
-        try:
-            os.unlink(temp_name)
-        except (OSError, IOError):
-            _logger.error('Error when trying to remove file %s' % temp_name)
+            command_args = ["--dpi", "84", str(self.url_danfe), temp_name]
+            wkhtmltopdf = [_get_wkhtmltopdf_bin()] + command_args
+            process = subprocess.Popen(wkhtmltopdf, stdout=subprocess.PIPE,
+                                       stderr=subprocess.PIPE)
+            out, err = process.communicate()
 
-        if tmpDanfe:
-            danfe_id = attachment_obj.create(dict(
-                name="Danfe-%08d.pdf" % self.numero,
-                datas_fname="Danfe-%08d.pdf" % self.numero,
-                datas=base64.b64encode(tmpDanfe),
-                mimetype='application/pdf',
-                res_model='account.invoice',
-                res_id=self.invoice_id.id,
-            ))
-            atts.append(danfe_id.id)
+            if process.returncode not in [0, 1]:
+                msg_erro = _('Wkhtmltopdf failed (error code: %s). '
+                             'Message: %s') % (str(process.returncode), err)
+                raise UserError(msg_erro)
+
+            # tmp_danfe = None
+            with open(temp_name, 'r') as f:
+                tmp_danfe = f.read()
+
+            try:
+                os.unlink(temp_name)
+            except (OSError, IOError):
+                _logger.error('Error when trying to remove file %s' %
+                              temp_name)
+
+            if tmp_danfe:
+                values = {
+                    'name': "Danfe-%08d.pdf" % self.numero,
+                    'datas_fname': "Danfe-%08d.pdf" % self.numero,
+                    'datas': base64.b64encode(tmp_danfe),
+                    'mimetype': 'application/pdf',
+                    'res_model': 'account.invoice',
+                    'res_id': self.invoice_id.id,
+                }
+                danfe_id = self.env['ir.attachment'].create(values)
+                atts.append(danfe_id.id)
         return atts
 
     @api.multi
     def action_post_validate(self):
         super(InvoiceEletronic, self).action_post_validate()
-        if self.model not in ('009'):
-            return
 
-        nfse_values = self._prepare_eletronic_invoice_values()
-        xml_enviar = xml_enviar_nota_retorna_url(nfse=nfse_values)
+        if self.model == '001' and self.webservice_nfse == 'nfse_susesu':
+            nfse_values = self._prepare_eletronic_invoice_values()
+            xml_enviar = xml_enviar_nota_retorna_url(nfse=nfse_values)
 
-        self.xml_to_send = base64.encodestring(xml_enviar)
-        self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
+            self.xml_to_send = base64.encodestring(xml_enviar)
+            self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
 
     @api.multi
     def action_send_eletronic_invoice(self):
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
-        if self.model == '009':
+
+        if self.model == '001' and self.webservice_nfse == 'nfse_susesu':
             self.state = 'error'
             xml_to_send = base64.decodestring(self.xml_to_send)
             resposta = enviar_nota_retorna_url(
@@ -218,9 +225,14 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
-        if self.model not in ('009'):
-            return super(InvoiceEletronic, self).action_cancel_document(
-                justificativa=justificativa)
 
-        if self.model == '009':
+        # if self.model not in ('009'):
+        #     return super(InvoiceEletronic, self).action_cancel_document(
+        #         justificativa=justificativa)
+
+        if self.model == '001' and self.webservice_nfse == 'nfse_susesu':
             raise UserError(u'Não é possível cancelar NFSe automaticamente!')
+        else:
+            return super(InvoiceEletronic, self).action_cancel_document(
+                justificativa=justificativa, context=context)
+
