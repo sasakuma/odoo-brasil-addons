@@ -81,8 +81,8 @@ class AccountInvoice(models.Model):
                 and self.webservice_nfse == 'nfse_paulistana':
             report = 'br_nfse.main_template_br_nfse_danfe'
 
-        # TODO adicionar ambiente para invoice_model == '008'
-        elif self.invoice_model == '008':
+        elif self.invoice_model == '008' \
+                and self.webservice_nfse == 'nfse_simpliss':
             report = 'br_nfse.main_template_br_nfse_danfe_simpliss'
 
         action = self.env['report'].get_action(docs.ids, report)
