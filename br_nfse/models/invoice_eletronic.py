@@ -5,8 +5,11 @@
 import logging
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
-from odoo import fields, models
+
+from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
+
+from . import res_company
 
 _logger = logging.getLogger(__name__)
 
@@ -17,9 +20,20 @@ STATE = {'edit': [('readonly', False)]}
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
 
+    @api.model
+    def _default_webservice_nfse(self):
+        company = self.env['res.company'].browse(self.env.user.company_id.id)
+        return company.webservice_nfse
+
     ambiente_nfse = fields.Selection(string='Ambiente NFe',
                                      related='company_id.tipo_ambiente_nfse',
                                      readonly=True)
+
+    webservice_nfse = fields.Selection(res_company.NFSE_WEBSERVICES,
+                                       default=_default_webservice_nfse,
+                                       readonly=True,
+                                       states=STATE,
+                                       string='Webservice NFSe')
 
     verify_code = fields.Char(string=u'Código Autorização',
                               size=20,
