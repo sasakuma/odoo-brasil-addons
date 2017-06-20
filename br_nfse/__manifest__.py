@@ -20,7 +20,7 @@
     ],
     'external_dependencies': {
         'python': [
-            'pytrustnfe.nfse.paulistana', 'pytrustnfe.certificado'
+            'pytrustnfe', 'pytrustnfe'
         ],
     },
     'data': [
