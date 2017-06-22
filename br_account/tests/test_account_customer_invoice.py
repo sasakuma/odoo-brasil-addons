@@ -15,16 +15,16 @@ class BrAccountTestAccountCustomerInvoice(TestAccountCustomerInvoice):
 
         # I will create bank detail with using manager access rights
         # because account manager can only create bank details.
-        values = {
-            'acc_type': 'bank',
-            'company_id': self.main_company.id,
-            'partner_id': self.main_partner.id,
-            'acc_number': '123456789',
-            'bank_id': self.main_bank.id,
-        }
+        # values = {
+        #     'acc_type': 'bank',
+        #     'company_id': self.main_company.id,
+        #     'partner_id': self.main_partner.id,
+        #     'acc_number': '123456789',
+        #     'bank_id': self.main_bank.id,
+        # }
 
-        res_partner_bank_0 = self.env['res.partner.bank'].sudo(
-            self.account_manager.id).create(values)
+        # res_partner_bank_0 = self.env['res.partner.bank'].sudo(
+        #     self.account_manager.id).create(values)
 
         # Test with that user which have rights to make Invoicing and payment
         # and who is accountant. Create a customer invoice

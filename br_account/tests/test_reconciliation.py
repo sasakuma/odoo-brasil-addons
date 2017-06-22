@@ -22,13 +22,14 @@ class BrAccountTestReconciliation(TestReconciliation):
 
         # we create an invoice in given currency
 
+        name = type == 'out_invoice' and 'invoice to client' or 'invoice to ' \
+                                                                'vendor '
+
         values = {
             'partner_id': self.partner_agrolait_id,
             'reference_type': 'none',
             'currency_id': currency_id,
-            'name':
-                type == 'out_invoice'
-                and 'invoice to client' or 'invoice to vendor',
+            'name': name,
             'account_id': self.account_rcv.id,
             'type': type,
             'date_invoice': time.strftime('%Y') + '-07-01',
