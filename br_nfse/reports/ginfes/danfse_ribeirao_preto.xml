@@ -2,19 +2,19 @@
 <odoo>
 
     <report
-        id="report_br_nfse_danfe_ginfes"
+        id="report_br_nfse_danfe_ginfes_rebeirao_preto"
         string="Nota de Serviço - Ginfes"
         model="invoice.eletronic"
         report_type="qweb-html"
-        file="br_nfse.main_template_br_nfse_danfe_ginfes"
-        name="br_nfse.main_template_br_nfse_danfe_ginfes" />
+        file="br_nfse.main_template_br_nfse_danfe_ginfes_rebeirao_preto"
+        name="br_nfse.main_template_br_nfse_danfe_ginfes_rebeirao_preto" />
 
-    <record id="report_br_nfse_danfe_ginfes" model="ir.actions.report.xml">
+    <record id="report_br_nfse_danfe_ginfes_rebeirao_preto" model="ir.actions.report.xml">
         <field name="paperformat_id" ref="paperformat_br_nfse_danfse"/>
         <field name="name">Nota de Serviço - Ginfes</field>
     </record>
 
-    <template id="danfse_report_template_ginfes">
+    <template id="danfse_report_template_ginfes_rebeirao_preto">
         <div class="page" style="font-size:12px;">
             <style type="text/css">
                 .col-xs-1, .col-xs-2,
@@ -466,10 +466,10 @@
         </div>
     </template>
 
-    <template id="main_template_br_nfse_danfe_ginfes">
+    <template id="main_template_br_nfse_danfe_ginfes_rebeirao_preto">
         <t t-call="report.html_container">
             <t t-foreach="docs" t-as="doc">
-                <t t-call="br_nfse.danfse_report_template_ginfes" t-lang="doc.partner_id.lang"/>
+                <t t-call="br_nfse.danfse_report_template_ginfes_rebeirao_preto" t-lang="doc.partner_id.lang"/>
             </t>
         </t>
     </template>
