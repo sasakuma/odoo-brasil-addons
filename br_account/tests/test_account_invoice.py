@@ -9,11 +9,13 @@ class TestAccountInvoice(TestBaseBr):
 
     def setUp(self):
         super(TestAccountInvoice, self).setUp()
+
         self.partner = self.env['res.partner'].create({
             'name': 'Nome Parceiro',
             'is_company': False,
             'property_account_receivable_id': self.receivable_account.id,
         })
+
         self.journalrec = self.env['account.journal'].create({
             'name': 'Faturas',
             'code': 'INV',
@@ -21,27 +23,29 @@ class TestAccountInvoice(TestBaseBr):
             'default_debit_account_id': self.revenue_account.id,
             'default_credit_account_id': self.revenue_account.id,
         })
+
         invoice_line_data = [
             (0, 0,
-                {
-                    'product_id': self.default_product.id,
-                    'quantity': 10.0,
-                    'price_unit': self.default_product.list_price,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                }
+             {
+                 'product_id': self.default_product.id,
+                 'quantity': 10.0,
+                 'price_unit': self.default_product.list_price,
+                 'account_id': self.revenue_account.id,
+                 'name': 'product test 5',
+             }
              ),
             (0, 0,
-                {
-                    'product_id': self.service.id,
-                    'quantity': 10.0,
-                    'price_unit': self.service.list_price,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                    'product_type': self.service.fiscal_type,
-                }
+             {
+                 'product_id': self.service.id,
+                 'quantity': 10.0,
+                 'price_unit': self.service.list_price,
+                 'account_id': self.revenue_account.id,
+                 'name': 'product test 5',
+                 'product_type': self.service.fiscal_type,
+             }
              )
         ]
+
         default_invoice = {
             'name': u"Teste Validação",
             'reference_type': "none",
@@ -49,6 +53,7 @@ class TestAccountInvoice(TestBaseBr):
             'account_id': self.receivable_account.id,
             'invoice_line_ids': invoice_line_data
         }
+
         self.invoices = self.env['account.invoice'].create(dict(
             default_invoice.items(),
             partner_id=self.partner.id
@@ -125,7 +130,6 @@ class TestAccountInvoice(TestBaseBr):
 
     def test_invoice_issqn_and_ii_taxes(self):
         for invoice in self.invoices:
-
             prod_item = invoice.invoice_line_ids[0]
             serv_item = invoice.invoice_line_ids[1]
 
