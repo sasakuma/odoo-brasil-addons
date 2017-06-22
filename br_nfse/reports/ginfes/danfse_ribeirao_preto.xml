@@ -12,7 +12,7 @@
 
     <record id="report_br_nfse_danfe_ginfes_rebeirao_preto" model="ir.actions.report.xml">
         <field name="paperformat_id" ref="paperformat_br_nfse_danfse"/>
-        <field name="name">Nota de Serviço - Ginfes</field>
+        <field name="name">Nota de Serviço - Ginfes - Ribeirão Preto</field>
     </record>
 
     <template id="danfse_report_template_ginfes_rebeirao_preto">
