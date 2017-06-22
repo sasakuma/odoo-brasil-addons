@@ -83,7 +83,7 @@ class AccountInvoice(models.Model):
 
         elif self.invoice_model == '008' \
                 and self.webservice_nfse == 'nfse_simpliss':
-            report = 'br_nfse.main_template_br_nfse_danfe_simpliss'
+            report = 'br_nfse.main_template_br_nfse_danfe_simpliss_piracicaba'
 
         action = self.env['report'].get_action(docs.ids, report)
         action['report_type'] = 'qweb-html'

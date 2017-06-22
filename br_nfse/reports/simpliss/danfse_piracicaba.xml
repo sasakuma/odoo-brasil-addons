@@ -2,19 +2,19 @@
 <odoo>
 
     <report
-        id="report_br_nfse_danfe_simpliss"
-        string="Nota de Serviço - Simpliss"
+        id="report_br_nfse_danfe_simpliss_piracicaba"
+        string="Nota de Serviço - Simpliss - Piracicaba"
         model="invoice.eletronic"
         report_type="qweb-pdf"
-        file="br_nfse.main_template_br_nfse_danfe_simpliss"
-        name="br_nfse.main_template_br_nfse_danfe_simpliss" />
+        file="br_nfse.main_template_br_nfse_danfe_simpliss_piracicaba"
+        name="br_nfse.main_template_br_nfse_danfe_simpliss_piracicaba" />
 
-    <record id="report_br_nfse_danfe_simpliss" model="ir.actions.report.xml">
+    <record id="report_br_nfse_danfe_simpliss_piracicaba" model="ir.actions.report.xml">
         <field name="paperformat_id" ref="paperformat_br_nfse_danfse"/>
-        <field name="name">Nota de Serviço - Simpliss</field>
+        <field name="name">Nota de Serviço - Simpliss - Piracicaba</field>
     </record>
 
-    <template id="danfse_report_template_simpliss">
+    <template id="danfse_report_template_simpliss_piracicaba">
         <style type="text/css">
             .col-xs-1, .col-xs-2,
             .col-xs-3,.col-xs-4,.col-xs-5, .col-xs-6, .col-xs-7,
@@ -398,10 +398,10 @@
         </div>
     </template>
 
-    <template id="main_template_br_nfse_danfe_simpliss">
+    <template id="main_template_br_nfse_danfe_simpliss_piracicaba">
         <t t-call="report.html_container">
             <t t-foreach="docs" t-as="doc">
-                <t t-call="br_nfse.danfse_report_template_simpliss" t-lang="doc.partner_id.lang"/>
+                <t t-call="br_nfse.danfse_report_template_simpliss_piracicaba" t-lang="doc.partner_id.lang"/>
             </t>
         </t>
     </template>
