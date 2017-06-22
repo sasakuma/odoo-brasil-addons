@@ -79,7 +79,7 @@ class AccountInvoice(models.Model):
 
         if self.invoice_model == '001' \
                 and self.webservice_nfse == 'nfse_paulistana':
-            report = 'br_nfse.main_template_br_nfse_danfe'
+            report = 'br_nfse.main_template_br_nfse_danfe_paulistana'
 
         elif self.invoice_model == '008' \
                 and self.webservice_nfse == 'nfse_simpliss':
