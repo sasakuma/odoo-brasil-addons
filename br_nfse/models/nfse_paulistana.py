@@ -13,10 +13,8 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 _logger = logging.getLogger(__name__)
 
 try:
-    from pytrustnfe.nfse.paulistana import envio_lote_rps
-    from pytrustnfe.nfse.paulistana import teste_envio_lote_rps
-    from pytrustnfe.nfse.paulistana import cancelamento_nfe
-    from pytrustnfe.certificado import Certificado
+    import pytrustnfe.nfse.paulistana
+    import pytrustnfe.certificado
 except ImportError:
     _logger.debug('Cannot import pytrustnfe')
 
@@ -217,13 +215,15 @@ class InvoiceEletronic(models.Model):
                 {'bin_size': False}).nfe_a1_file
             cert_pfx = base64.decodestring(cert)
 
-            certificado = Certificado(
+            certificado = pytrustnfe.certificado.Certificado(
                 cert_pfx, self.company_id.nfe_a1_password)
 
             if self.ambiente == 'producao':
-                resposta = envio_lote_rps(certificado, nfse=nfse_values)
+                resposta = pytrustnfe.nfse.paulistana.envio_lote_rps(
+                    certificado, nfse=nfse_values)
             else:
-                resposta = teste_envio_lote_rps(certificado, nfse=nfse_values)
+                resposta = pytrustnfe.nfse.paulistana.teste_envio_lote_rps(
+                    certificado, nfse=nfse_values)
 
             retorno = resposta['object']
 
@@ -255,13 +255,14 @@ class InvoiceEletronic(models.Model):
 
         if self.model == '001' and self.webservice_nfse == 'nfse_paulistana':
 
-            cert = \
-                self.company_id.with_context({'bin_size': False}).nfe_a1_file
-            cert_pfx = base64.decodestring(cert)
-            certificado = Certificado(cert_pfx,
-                                      self.company_id.nfe_a1_password)
+            cert = self.company_id.with_context({'bin_size': False})
+            cert_pfx = base64.decodestring(cert.nfe_a1_file)
+
+            certificado = pytrustnfe.certificado.Certificado(
+                cert_pfx, self.company_id.nfe_a1_password)
 
             company = self.company_id
+
             canc = {
                 'cnpj_remetente': re.sub('[^0-9]', '', company.cnpj_cpf),
                 'inscricao_municipal': re.sub('[^0-9]', '', company.inscr_mun),
@@ -273,7 +274,10 @@ class InvoiceEletronic(models.Model):
                     if self.numero_nfse else ''.zfill(12)
                 )
             }
-            resposta = cancelamento_nfe(certificado, cancelamento=canc)
+
+            resposta = pytrustnfe.nfse.paulistana.cancelamento_nfe(
+                certificado, cancelamento=canc)
+
             retorno = resposta['object']
 
             if self.ambiente == 'homologacao':

@@ -5,7 +5,7 @@
 import os
 import base64
 import logging
-from mock import patch
+import mock
 from odoo.tests.common import TransactionCase
 
 _logger = logging.getLogger(__name__)
@@ -156,14 +156,18 @@ class TestNFeBrasil(TransactionCase):
         ))
 
     def test_computed_fields(self):
+
         for invoice in self.invoices:
+
             self.assertEquals(invoice.total_edocs, 0)
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
+
             # Verifica algumas propriedades computadas que dependem do edoc
             self.assertEquals(invoice.total_edocs, 1)
 
     def test_check_invoice_eletronic_values(self):
+
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -175,8 +179,9 @@ class TestNFeBrasil(TransactionCase):
             #  com o documento eletronico
             self.assertEquals(inv_eletr.partner_id, invoice.partner_id)
 
-    @patch('odoo.addons.br_nfse.models.nfse_paulistana.teste_envio_lote_rps')
+    @mock.patch('pytrustnfe.nfse.paulistana.teste_envio_lote_rps')
     def test_nfse_sucesso_homologacao(self, envio_lote):
+
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -197,8 +202,9 @@ class TestNFeBrasil(TransactionCase):
             self.assertEqual(invoice_eletronic.codigo_retorno, '100')
             self.assertEqual(len(invoice_eletronic.eletronic_event_ids), 1)
 
-    @patch('odoo.addons.br_nfse.models.nfse_paulistana.cancelamento_nfe')
+    @mock.patch('pytrustnfe.nfse.paulistana.cancelamento_nfe')
     def test_nfse_cancel(self, cancelar):
+
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -225,8 +231,9 @@ class TestNFeBrasil(TransactionCase):
             self.assertEquals(invoice_eletronic.mensagem_retorno,
                               "Nota Fiscal Paulistana Cancelada")
 
-    @patch('odoo.addons.br_nfse.models.nfse_paulistana.cancelamento_nfe')
+    @mock.patch('pytrustnfe.nfse.paulistana.cancelamento_nfe')
     def test_nfse_cancelamento_erro(self, cancelar):
+
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
