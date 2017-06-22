@@ -30,6 +30,7 @@
         'views/invoice_eletronic.xml',
         'views/res_company.xml',
         # 'views/account_fiscal_position.xml',
+        'reports/danfse_default.xml',
         'reports/nota_paulistana/danfse_sao_paulo.xml',
         'reports/simpliss/danfse_piracicaba.xml',
         'reports/ginfes/danfse_ribeirao_preto.xml',
