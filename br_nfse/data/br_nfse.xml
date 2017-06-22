@@ -14,7 +14,7 @@
             <field name="active">True</field>
             <field name="padding">1</field>
             <field name="number_increment">1</field>
-            <field name="number_next_atual">1</field>
+            <field name="number_next_actual">1</field>
         </record>
 
         <record id="br_document_serie_1" model="br_account.document.serie">
