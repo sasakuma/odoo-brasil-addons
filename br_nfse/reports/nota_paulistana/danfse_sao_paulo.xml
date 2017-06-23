@@ -30,7 +30,13 @@
                 <div class="col-xs-2">
                     <img src="/br_nfse/static/src/img/prefeitura-sp.gif"
                          alt="Logo Prefeitura Sao Paulo"
-                         style="max-height:120px; margin-top:4px; margin-left:10px;"/>
+                         style="max-height:110px; margin-top:3px; margin-left:10px;"/>
+                    <t t-set="cnpj_formatado" t-value="doc.company_id.partner_id.cnpj_cpf.replace('.', '')"/>
+                    <t t-set="cnpj_formatado" t-value="cnpj_formatado.replace('-', '')"/>
+                    <t t-set="cnpj_formatado" t-value="cnpj_formatado.replace('/', '')"/>
+                    <t t-set="data_formatada" t-value="doc.data_emissao.replace('-','')[:7]"/>
+                    <t t-set="ref_date_cnpj" t-value="data_formatada+'u'+cnpj_formatado"/>
+                    <span style="font-size:10px;" t-esc="ref_date_cnpj"/>
                 </div>
                 <div class="col-xs-8"
                      style="padding:0px;text-align:center;font-size:13px;">
