@@ -27,6 +27,9 @@
                     <br /><b>URL Danfe:</b> <field name="url_danfe" class="oe_inline" readonly="1" widget="url" />
                 </span>
             </field>
+            <field name="informacoes_complementares" position="after">
+                <field name="observacao_nfse" invisible="1"/>
+            </field>
         </field>
     </record>
 

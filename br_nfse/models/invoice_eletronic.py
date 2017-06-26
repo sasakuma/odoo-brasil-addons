@@ -45,6 +45,8 @@ class InvoiceEletronic(models.Model):
                               readonly=True,
                               states=STATE)
 
+    observacao_nfse = fields.Text(string='Observação NFSe')
+
     def issqn_due_date(self):
         date_emition = datetime.strptime(self.data_emissao, DTFT)
         next_month = date_emition + relativedelta(months=1)
