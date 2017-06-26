@@ -9,7 +9,7 @@ from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 
-from . import res_company
+# from . import res_company
 
 _logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ class InvoiceEletronic(models.Model):
                                      related='company_id.tipo_ambiente_nfse',
                                      readonly=True)
 
-    webservice_nfse = fields.Selection(res_company.NFSE_WEBSERVICES,
+    webservice_nfse = fields.Selection([],
                                        default=_default_webservice_nfse,
                                        readonly=True,
                                        states=STATE,
@@ -44,8 +44,6 @@ class InvoiceEletronic(models.Model):
                               size=50,
                               readonly=True,
                               states=STATE)
-
-    observacao_nfse = fields.Text(string='Observação NFSe')
 
     def issqn_due_date(self):
         date_emition = datetime.strptime(self.data_emissao, DTFT)

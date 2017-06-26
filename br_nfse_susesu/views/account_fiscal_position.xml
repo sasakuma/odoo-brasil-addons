@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!--&lt;!&ndash; Inherit Form View to Modify it &ndash;&gt;-->
+    <!--<record id="br_account_tax_rule_form" model="ir.ui.view">-->
+        <!--<field name="name">br_account.tax.rule.form</field>-->
+        <!--<field name="model">account.fiscal.position</field>-->
+        <!--<field name="inherit_id" ref="br_account.br_account_position_form"/>-->
+        <!--<field name="arch" type="xml">-->
+
+            <!--<xpath expr="//page[@name='notes']" position="after">-->
+                <!--<page string="Serviço" name="service">-->
+                    <!--<group>-->
+                        <!--<field name="service_type_id" attrs="{'required': [('position_type', '=', 'service')]}"/>-->
+                    <!--</group>-->
+                <!--</page>-->
+            <!--</xpath>-->
+
+        <!--</field>-->
+    <!--</record>-->
+
+</odoo>

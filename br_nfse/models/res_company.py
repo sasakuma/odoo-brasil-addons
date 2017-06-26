@@ -5,12 +5,12 @@
 from odoo import fields, models
 
 
-NFSE_WEBSERVICES = [
-    ('nfse_paulistana', 'Nota Fiscal Paulistana'),
-    ('nfse_simpliss', 'SIMPLISS'),
-    ('nfse_susesu', 'SUSESU'),
-    ('nfse_ginfes', 'GINFES'),
-]
+# NFSE_WEBSERVICES = [
+#     ('nfse_paulistana', 'Nota Fiscal Paulistana'),
+#     ('nfse_simpliss', 'SIMPLISS'),
+#     ('nfse_susesu', 'SUSESU'),
+#     ('nfse_ginfes', 'GINFES'),
+# ]
 
 
 class ResCompany(models.Model):
@@ -21,7 +21,7 @@ class ResCompany(models.Model):
                                           string='Ambiente NFSe',
                                           default='2')
 
-    webservice_nfse = fields.Selection(NFSE_WEBSERVICES,
+    webservice_nfse = fields.Selection([],
                                        string='Webservice NFSe')
 
     senha_ambiente_nfse = fields.Char(string=u'Senha NFSe',
