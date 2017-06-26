@@ -77,14 +77,50 @@ class AccountInvoice(models.Model):
 
         report = ''
 
+        docs[0].observacao_nfse = self._get_nfse_observation_text(docs[0])
+
         if self.invoice_model == '001' \
                 and self.webservice_nfse == 'nfse_paulistana':
             report = 'br_nfse.main_template_br_nfse_danfe_paulistana'
 
-        elif self.invoice_model == '008' \
+        elif self.invoice_model == '001' \
                 and self.webservice_nfse == 'nfse_simpliss':
             report = 'br_nfse.main_template_br_nfse_danfe_simpliss_piracicaba'
 
         action = self.env['report'].get_action(docs.ids, report)
         action['report_type'] = 'qweb-html'
         return action
+
+    def _get_nfse_observation_text(self, docm):
+
+        observacao_nfse = ''
+
+        aux = []
+
+        if self.invoice_model == '001':
+            observacao_nfse = u'# Esta NFS-e foi emitida com respaldo na ' \
+                              u'Lei nº 14.097/2005; '
+
+            aux.append(observacao_nfse)
+
+            if docm.state == 'done':
+                if docm.company_id.fiscal_type == '1':
+                    observacao_nfse = u'# Documento emitido por ME ou EPP ' \
+                                      u'optante pelo Simples Nacional; '
+
+                    aux.append(observacao_nfse)
+
+                observacao_nfse = u'# Esta NFS-e substitui o RPS Nº %d ' \
+                                  u'Série %s, ' \
+                                  u'emitido em %s; ' % (docm.numero,
+                                                        docm.serie.code,
+                                                        docm.data_emissao[:10])
+
+                aux.append(observacao_nfse)
+
+            observacao_nfse = ''
+
+            for index, value in enumerate(aux):
+                observacao_nfse += value.replace('#', '(%d)' % (index + 1))
+
+        return observacao_nfse
