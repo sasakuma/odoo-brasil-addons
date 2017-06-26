@@ -382,14 +382,14 @@
                 </div>
                 <div style="float:left; width:50%;">
                     <p>
-                        (1) Esta NFS-e foi emitida com respaldo na Lei nº
-                        14.097/2005; (2) Esta NFS-e substitui o RPS Nº
-                        <span t-field="doc.numero"/>
-                        Série<span t-field="doc.serie.code"/>, emitido em
-                        <span t-field="doc.data_emissao"
-                              t-field-options='{"format": "dd/MM/yyyy"}'/>
-                        (3) Data de vencimento do ISS desta NFS-e:
-                        <span t-esc="doc.issqn_due_date()"/>
+                        <!--(1) Esta NFS-e foi emitida com respaldo na Lei nº-->
+                        <!--14.097/2005; (2) Esta NFS-e substitui o RPS Nº-->
+                        <span t-field="doc.observacao_nfse"/>
+                        <!--Série<span t-field="doc.serie.code"/>, emitido em-->
+                        <!--<span t-field="doc.data_emissao"-->
+                              <!--t-field-options='{"format": "dd/MM/yyyy"}'/>-->
+                        <!--(3) Data de vencimento do ISS desta NFS-e:-->
+                        <!--<span t-esc="doc.issqn_due_date()"/>-->
                     </p>
                 </div>
                 <!--<div style="float:left; width:50%;">-->
