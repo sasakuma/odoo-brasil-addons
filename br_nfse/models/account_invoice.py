@@ -5,8 +5,6 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
-# from . import res_company
-
 
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'

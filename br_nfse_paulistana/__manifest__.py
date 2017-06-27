@@ -24,6 +24,7 @@
         ],
     },
     'data': [
+        'data/br_nfse.xml',
         'views/br_account_service.xml',
         'views/invoice_eletronic.xml',
         'reports/danfse_sao_paulo.xml',

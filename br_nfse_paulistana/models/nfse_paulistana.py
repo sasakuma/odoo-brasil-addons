@@ -18,7 +18,6 @@ try:
 except ImportError:
     _logger.debug('Cannot import pytrustnfe')
 
-
 STATE = {'edit': [('readonly', False)]}
 
 
@@ -38,21 +37,21 @@ class InvoiceElectronic(models.Model):
 
     observacao_nfse = fields.Text(string='Observação NFSe')
 
-    operation = fields.Selection(
-        [('T', u'Tributado em São Paulo'),
-         ('F', u'Tributado Fora de São Paulo'),
-         ('A', u'Tributado em São Paulo, porém isento'),
-         ('B', u'Tributado Fora de São Paulo, porém isento'),
-         ('M', u'Tributado em São Paulo, porém Imune'),
-         ('N', u'Tributado Fora de São Paulo, porém Imune'),
-         ('X', u'Tributado em São Paulo, porém Exigibilidade Suspensa'),
-         ('V', u'Tributado Fora de São Paulo, porém Exigibilidade Suspensa'),
-         ('P', u'Exportação de Serviços'),
-         ('C', u'Cancelado')],
-        string=u'Operação',
-        default='T',
-        readonly=True,
-        states=STATE)
+    # operation = fields.Selection(
+    #     [('T', u'Tributado em São Paulo'),
+    #      ('F', u'Tributado Fora de São Paulo'),
+    #      ('A', u'Tributado em São Paulo, porém isento'),
+    #      ('B', u'Tributado Fora de São Paulo, porém isento'),
+    #      ('M', u'Tributado em São Paulo, porém Imune'),
+    #      ('N', u'Tributado Fora de São Paulo, porém Imune'),
+    #      ('X', u'Tributado em São Paulo, porém Exigibilidade Suspensa'),
+    #      ('V', u'Tributado Fora de São Paulo, porém Exigibilidade Suspensa'),
+    #      ('P', u'Exportação de Serviços'),
+    #      ('C', u'Cancelado')],
+    #     string=u'Operação',
+    #     default='T',
+    #     readonly=True,
+    #     states=STATE)
 
     @api.multi
     def _hook_validation(self):
@@ -176,7 +175,8 @@ class InvoiceElectronic(models.Model):
             iss_retido = 'N'
             tipo_cpfcnpj = tomador['tipo_cpfcnpj']
             codigo_atividade = rps['codigo_atividade']
-            tipo_recolhimento = self.operation  # T – Tributado em São Paulo
+            tipo_recolhimento = \
+                self.fiscal_position_id.nfse_source_operation_id.code
 
             assinatura = '%s%s%s%s%sN%s%015d%015d%s%s%s' % (
                 str(inscr).zfill(8),
@@ -185,12 +185,12 @@ class InvoiceElectronic(models.Model):
                 str(data_envio[0:4] + data_envio[5:7] + data_envio[8:10]),
                 str(tipo_recolhimento),
                 str(iss_retido),
-                round(valor_servico*100),
-                round(valor_deducao*100),
+                round(valor_servico * 100),
+                round(valor_deducao * 100),
                 str(codigo_atividade).zfill(5),
                 str(tipo_cpfcnpj),
                 str(cnpj_cpf).zfill(14)
-                )
+            )
             rps['assinatura'] = assinatura
 
             nfse_vals = {

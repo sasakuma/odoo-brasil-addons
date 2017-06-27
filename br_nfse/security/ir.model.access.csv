@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+br_account_nfse_source_operation,br_account.nfse.source.operation,model_br_account_nfse_source_operation,account.group_account_manager,1,1,1,1
+br_account_nfse_source_operation_user,br_account.nfse.source.operation,model_br_account_nfse_source_operation,account.group_account_user,1,0,0,0

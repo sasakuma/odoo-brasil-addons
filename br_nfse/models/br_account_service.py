@@ -15,3 +15,11 @@ class BrAccountServiceType(models.Model):
                                               size=20,
                                               help=u'Código de Tributação no '
                                                    u'Municipio')
+
+
+class BrAccountNFSeSourceOperation(models.Model):
+
+    _name = 'br_account.nfse.source.operation'
+
+    code = fields.Char(string=u'Código', required=True)
+    name = fields.Char(string=u'Observação', required=True)

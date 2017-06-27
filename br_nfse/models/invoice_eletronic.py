@@ -9,8 +9,6 @@ from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 
-# from . import res_company
-
 _logger = logging.getLogger(__name__)
 
 
@@ -44,6 +42,9 @@ class InvoiceEletronic(models.Model):
                               size=50,
                               readonly=True,
                               states=STATE)
+
+    def _get_source_operation(self):
+        return self.nfse_source_operation
 
     def issqn_due_date(self):
         date_emition = datetime.strptime(self.data_emissao, DTFT)
