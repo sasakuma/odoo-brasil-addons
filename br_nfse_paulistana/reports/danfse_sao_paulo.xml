@@ -19,21 +19,19 @@
     <template id="danfse_report_template_paulistana">
         <style type="text/css">
             .col-xs-1, .col-xs-2,
-            .col-xs-3, .col-xs-4,
-            .col-xs-5, .col-xs-6,
-            .col-xs-7, .col-xs-8,
-            .col-xs-9, .col-xs-10,
-            .col-xs-11, .col-xs-12 {
+            .col-xs-3,.col-xs-4,.col-xs-5, .col-xs-6, .col-xs-7,
+            .col-xs-8,
+            .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
             padding:0px;
             }
             td, th { padding: 0 4px; }
         </style>
         <div class="page">
-            <div class="row" style="border: 2px solid black; border-bottom: none; padding: 0; display:table;">
+            <div class="row" style="border: 2px solid black; border-bottom: none; padding: 0; ">
                 <div class="col-xs-2">
                     <img src="/br_nfse_paulistana/static/src/img/prefeitura-sp.gif"
                          alt="Logo Prefeitura Sao Paulo"
-                         style="max-height:100px; margin-top:6px; margin-left:0px;"/>
+                         style="max-height:100px; margin-top:6px; margin-left:10px;"/>
                     <t t-set="cnpj_formatado" t-value="doc.company_id.partner_id.cnpj_cpf.replace('.', '')"/>
                     <t t-set="cnpj_formatado" t-value="cnpj_formatado.replace('-', '')"/>
                     <t t-set="cnpj_formatado" t-value="cnpj_formatado.replace('/', '')"/>
@@ -97,9 +95,7 @@
                     </div>
                     <t t-if="doc.state == 'done'">
                         <div style="padding: 2px;">
-                            <span style="font-size:12px;">Código de
-                                Verificação
-                            </span>
+                            <span style="font-size:12px;">Código de Verificação</span>
                             <br/>
                             <center>
                                 <strong t-field="doc.verify_code"></strong>
@@ -383,7 +379,7 @@
                 <div style="text-align:center">
                     <b>Outras informações</b>
                 </div>
-                <div style="float:left; width:50%;">
+                <div style="float:left; width:100%;">
                     <p>
                         <span t-esc="doc.get_nfse_observation_text(doc)" />
                     </p>
