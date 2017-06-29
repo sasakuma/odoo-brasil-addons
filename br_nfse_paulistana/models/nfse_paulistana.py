@@ -35,7 +35,7 @@ class InvoiceElectronic(models.Model):
         ('nfse_paulistana', 'Nota Fiscal Paulistana'),
     ])
 
-    observacao_nfse = fields.Text(string='Observação NFSe')
+    observacao_nfse = fields.Text(string=u'Observação NFSe')
 
     # operation = fields.Selection(
     #     [('T', u'Tributado em São Paulo'),
@@ -315,3 +315,106 @@ class InvoiceElectronic(models.Model):
         else:
             return super(InvoiceElectronic, self).action_cancel_document(
                 justificativa=justificativa, context=context)
+
+    def get_nfse_observation_text(self, docm):
+
+        aux = []
+
+        if docm.invoice_id.invoice_model == '001' and \
+                        self.webservice_nfse == 'nfse_paulistana':
+
+            observacao_nfse = u'(#) Esta NFS-e foi emitida com respaldo na ' \
+                              u'Lei nº 14.097/2005; '
+
+            tributacao = docm.fiscal_position_id.nfse_source_operation_id.code
+
+            aux.append(observacao_nfse)
+
+            # O documento eletronico e uma NFSe que foi enviada com sucesso
+            if docm.state == 'done':
+
+                if docm.company_id.fiscal_type == '1':
+                    observacao_nfse = u'(#) Documento emitido por ME ou EPP ' \
+                                      u'optante pelo Simples Nacional; '
+
+                    aux.append(observacao_nfse)
+
+                docs = self.env['invoice.eletronic'].search([
+                    ('invoice_id', '=', docm.invoice_id.id),
+                    ('state', '=', 'cancel'),
+                ])
+
+                if docs:
+                    observacao_nfse = u'(#) Esta NFS-e substitui a NFS-e ' \
+                                      u'N° %s; ' % docs[0].numero_nfse
+                    aux.append(observacao_nfse)
+
+                if tributacao == 'T':
+                    observacao_nfse = u'(#) Data de vencimento do ISS desta ' \
+                                      u'NFS-e: %s; ' % docm.issqn_due_date()
+                    aux.append(observacao_nfse)
+
+                    # Partner estabelecido na cidade de SP
+                    # TODO: Adicionar tipo do ISS
+                    if docm.partner_id.city_id.ibge_code == '50308':
+                        observacao_nfse = (u'(#) O ISS desta NFS-e será RETIDO'
+                                           u' pelo Tomador de Serviço que '
+                                           u'deverá recolher através da Guia '
+                                           u'da NFS-e; ')
+                        aux.append(observacao_nfse)
+
+                elif tributacao == 'F':
+                    observacao_nfse = (u'(#) O ISS desta NFS-e é devido FORA '
+                                       u'do Município de São Paulo; ')
+                    aux.append(observacao_nfse)
+
+                    # TODO: Adicionar verificacao do tipo de ISSQN
+                    # observacao_nfse = (u'(#) O ISS desta NFS-e será RETIDO'
+                    #                    u' pelo Tomador de Serviço; ')
+                    # aux.append(observacao_nfse)
+
+                elif tributacao in ['A', 'B', 'M', 'N']:
+                    observacao_nfse = (u'(#) Os serviços referentes a esta '
+                                       u'NFS-e são Isentos/Imunes do ISS; ')
+                    aux.append(observacao_nfse)
+
+                elif tributacao in ['X', 'V']:
+                    observacao_nfse = (u'(#) ISS suspenso por decisão '
+                                       u'judicial; ')
+                    aux.append(observacao_nfse)
+
+            elif docm.state == 'cancel':
+                event = docm.eletronic_event_ids.search([
+                    ('name', '=', 'Nota Fiscal Paulistana Cancelada')])
+
+                observacao_nfse = u'(#) Esta NFS-e foi CANCELADA em: %s; ' \
+                                  % event[0].create_date
+
+                aux.append(observacao_nfse)
+
+            elif docm.state == 'draft':
+
+                observacao_nfse = (u'(#) O RPS deverá ser substituído '
+                                   u'por NF-e até o 10º (décimo) dia '
+                                   u'subsequente ao de sua emissão; '
+                                   u'\nA não substituição deste RPS '
+                                   u'pela NF-e, ou a substituição fora '
+                                   u'do prazo, sujeitará o prestador '
+                                   u'de serviços às penalidades previstas '
+                                   u'na legislação em vigor')
+                aux.append(observacao_nfse)
+
+            if docm.state in ['done', 'cancel']:
+                observacao_nfse = u'(#) Esta NFS-e substitui o RPS Nº %d ' \
+                                  u'Série %s, ' \
+                                  u'emitido em %s; ' % (docm.numero,
+                                                        docm.serie.code,
+                                                        docm.data_emissao[:10])
+                aux.append(observacao_nfse)
+
+            observacao_nfse = ''
+
+            for index, value in enumerate(aux):
+                observacao_nfse += value.replace('#', '%d' % (index + 1))
+
+        return observacao_nfse
