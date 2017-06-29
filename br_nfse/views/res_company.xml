@@ -7,8 +7,9 @@
         <field name="arch" type="xml">
             <field name="nfe_a1_password" position="after" >
                 <field name="tipo_ambiente_nfse" />
-                <field name="webservice_nfse" />
                 <field name="senha_ambiente_nfse" password="True" />
+                <field name="report_nfse_id" domain="[('city_id', '=', city_id)]"/>
+                <field name="webservice_nfse" />
             </field>
         </field>
     </record>

@@ -7,3 +7,4 @@ from . import account_invoice
 from . import invoice_eletronic
 from . import res_company
 from . import account_fiscal_position
+from . import ir_actions_report_xml
