@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import fields, models
+from odoo.exceptions import UserError
 
 
 class AccountInvoice(models.Model):
@@ -22,18 +23,36 @@ class AccountInvoice(models.Model):
 
     def action_preview_danfse(self):
         action = super(AccountInvoice, self).action_preview_danfse()
-        docs = self.env['invoice.eletronic'].search(
-            [('invoice_id', '=', self.id)])
 
         if self.invoice_model == '001' \
                 and self.webservice_nfse == 'nfse_paulistana':
-            report = \
-                'br_nfse_paulistana.main_template_br_nfse_danfe_paulistana'
 
-        # elif self.invoice_model == '001' \
-        #         and self.webservice_nfse == 'nfse_simpliss':
-        #    report = 'br_nfse.main_template_br_nfse_danfe_simpliss_piracicaba'
+            if self.company_id.report_nfse_id:
+                report = self.company_id.report_nfse_id.report_name
 
-        action = self.env['report'].get_action(docs.ids, report)
-        action['report_type'] = 'qweb-html'
+                # Apenas documentos eletronicos que estao como 'draft' (RPS)
+                # ou ja foram enviados 'done' (são NFSe)
+                docs = self.env['invoice.eletronic'].search([
+                    ('invoice_id', '=', self.id),
+                    ('state', 'in', ['draft', 'done']),
+                ])
+
+                if not docs:
+                    # Se não encontrarmos nenhum documento eletronico enviado
+                    # ou provisorio, imprimimos um documento eletronico
+                    # que foram cancelados
+                    docs = self.env['invoice.eletronic'].search([
+                        ('invoice_id', '=', self.id),
+                        ('state', 'in', ['cancel']),
+                    ])
+
+                action = self.env['report'].get_action(docs.ids, report)
+                action['report_type'] = 'qweb-pdf'
+
+            else:
+                raise UserError(
+                    u'Não existe um template de relatorio para NFSe '
+                    u'selecionado para a empresa emissora desta Fatura. '
+                    u'Por favor, selecione um template no cadastro da empresa')
+
         return action
