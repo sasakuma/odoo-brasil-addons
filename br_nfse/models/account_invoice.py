@@ -73,7 +73,7 @@ class AccountInvoice(models.Model):
                 "target": "_blank",
             }
 
-        report = ''
+        # report = ''
 
         # docs[0].observacao_nfse = self._get_nfse_observation_text(docs[0])
         #
@@ -86,6 +86,6 @@ class AccountInvoice(models.Model):
         #     report =
         # 'br_nfse.main_template_br_nfse_danfe_simpliss_piracicaba'
 
-        action = self.env['report'].get_action(docs.ids, report)
-        action['report_type'] = 'qweb-html'
-        return action
+        # action = self.env['report'].get_action(docs.ids, report)
+        # action['report_type'] = 'qweb-html'
+        return None

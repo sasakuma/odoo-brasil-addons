@@ -37,4 +37,3 @@ class AccountInvoice(models.Model):
         action = self.env['report'].get_action(docs.ids, report)
         action['report_type'] = 'qweb-html'
         return action
-

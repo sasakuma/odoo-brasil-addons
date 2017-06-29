@@ -321,7 +321,7 @@ class InvoiceElectronic(models.Model):
         aux = []
 
         if docm.invoice_id.invoice_model == '001' and \
-                        self.webservice_nfse == 'nfse_paulistana':
+                self.webservice_nfse == 'nfse_paulistana':
 
             observacao_nfse = u'(#) Esta NFS-e foi emitida com respaldo na ' \
                               u'Lei nº 14.097/2005; '
