@@ -6,6 +6,15 @@
         <field name="model">invoice.eletronic</field>
         <field name="inherit_id" ref="br_account_einvoice.br_account_invoice_eletronic_form"/>
         <field name="arch" type="xml">
+
+            <xpath expr="//button[@name='send_email_nfe']" position="after">
+                <button name="action_print_danfse"
+                        type="object"
+                        string="Imprimir"
+                        class="oe_highlight"
+                        attrs="{'invisible': [('model', 'not in', ('001'))]}"/>
+            </xpath>
+
             <div name="alertas" position="before">
                 <field name="ambiente_nfse" invisible="1" />
                 <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"

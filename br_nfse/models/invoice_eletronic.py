@@ -56,3 +56,13 @@ class InvoiceEletronic(models.Model):
         date_mask = "%d/%m/%Y"
         due_date = datetime.strftime(due_date, date_mask)
         return due_date
+
+    @api.multi
+    def action_print_danfse(self):
+        action = {
+            "type": "ir.actions.act_url",
+            "url": '',
+            "target": "_blank",
+        }
+        return action
+

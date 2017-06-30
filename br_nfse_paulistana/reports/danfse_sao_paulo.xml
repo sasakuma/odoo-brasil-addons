@@ -32,12 +32,7 @@
                     <img src="/br_nfse_paulistana/static/src/img/prefeitura-sp.gif"
                          alt="Logo Prefeitura Sao Paulo"
                          style="max-height:100px; margin-top:6px; margin-left:10px;"/>
-                    <t t-set="cnpj_formatado" t-value="doc.company_id.partner_id.cnpj_cpf.replace('.', '')"/>
-                    <t t-set="cnpj_formatado" t-value="cnpj_formatado.replace('-', '')"/>
-                    <t t-set="cnpj_formatado" t-value="cnpj_formatado.replace('/', '')"/>
-                    <t t-set="data_formatada" t-value="doc.data_emissao.replace('-','')[:8]"/>
-                    <t t-set="ref_date_cnpj" t-value="data_formatada+'u'+cnpj_formatado"/>
-                    <span style="font-size:10px;" t-esc="ref_date_cnpj"/>
+                    <span style="font-size:10px;" t-esc="doc.get_reg_code()"/>
                 </div>
                 <div class="col-xs-8"
                      style="padding:5px;text-align:center;font-size:13px;">
@@ -110,7 +105,7 @@
                     <strong>PRESTADOR DE SERVIÇOS</strong>
                 </div>
                 <div class="col-xs-1">
-                    <img style="width:80px;max-height:80px;margin-top:15px;"
+                    <img style="margin-top:15px;"
                          t-att-src="'data:image/png;base64,%s' % doc.company_id.logo"/>
                     <br/>
                 </div>
@@ -381,7 +376,7 @@
                 </div>
                 <div style="float:left; width:100%;">
                     <p>
-                        <span t-esc="doc.get_nfse_observation_text(doc)" />
+                        <span t-esc="doc.get_nfse_observation_text()" />
                     </p>
                 </div>
                 <br/>

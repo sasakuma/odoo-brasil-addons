@@ -7,7 +7,9 @@ import pytz
 import base64
 import logging
 from datetime import datetime
+
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 
 _logger = logging.getLogger(__name__)
@@ -316,47 +318,67 @@ class InvoiceElectronic(models.Model):
             return super(InvoiceElectronic, self).action_cancel_document(
                 justificativa=justificativa, context=context)
 
-    def get_nfse_observation_text(self, docm):
+    @api.multi
+    def action_print_danfse(self):
+        action = super(InvoiceElectronic, self).action_print_danfse()
+
+        if self.model == '001' and self.webservice_nfse == 'nfse_paulistana':
+
+            if self.invoice_id.company_id.report_nfse_id:
+                report = self.invoice_id.company_id.report_nfse_id.report_name
+
+                action = self.env['report'].get_action(self.ids, report)
+                action['report_type'] = 'qweb-pdf'
+
+            else:
+                raise UserError(
+                    u'Não existe um template de relatorio para NFSe '
+                    u'selecionado para a empresa emissora desta Fatura. '
+                    u'Por favor, selecione um template no cadastro da empresa')
+
+        return action
+
+    def get_nfse_observation_text(self):
 
         aux = []
 
-        if docm.invoice_id.invoice_model == '001' and \
-                self.webservice_nfse == 'nfse_paulistana':
+        if self.invoice_id.invoice_model == '001' and \
+                        self.webservice_nfse == 'nfse_paulistana':
 
-            observacao_nfse = u'(#) Esta NFS-e foi emitida com respaldo na ' \
-                              u'Lei nº 14.097/2005; '
+            observacao_nfse = (u'(#) Esta NFS-e foi emitida com respaldo na '
+                               u'Lei nº 14.097/2005; ')
 
-            tributacao = docm.fiscal_position_id.nfse_source_operation_id.code
+            tributacao = self.fiscal_position_id.nfse_source_operation_id.code
 
             aux.append(observacao_nfse)
 
             # O documento eletronico e uma NFSe que foi enviada com sucesso
-            if docm.state == 'done':
+            if self.state == 'done':
 
-                if docm.company_id.fiscal_type == '1':
-                    observacao_nfse = u'(#) Documento emitido por ME ou EPP ' \
-                                      u'optante pelo Simples Nacional; '
+                if self.company_id.fiscal_type == '1':
+                    observacao_nfse = (u'(#) Documento emitido por ME ou EPP '
+                                       u'optante pelo Simples Nacional; ')
 
                     aux.append(observacao_nfse)
 
                 docs = self.env['invoice.eletronic'].search([
-                    ('invoice_id', '=', docm.invoice_id.id),
+                    ('invoice_id', '=', self.invoice_id.id),
                     ('state', '=', 'cancel'),
                 ])
 
                 if docs:
-                    observacao_nfse = u'(#) Esta NFS-e substitui a NFS-e ' \
-                                      u'N° %s; ' % docs[0].numero_nfse
+                    observacao_nfse = (u'(#) Esta NFS-e substitui a NFS-e '
+                                       u'N° %s; ' % docs[0].numero_nfse)
                     aux.append(observacao_nfse)
 
                 if tributacao == 'T':
-                    observacao_nfse = u'(#) Data de vencimento do ISS desta ' \
-                                      u'NFS-e: %s; ' % docm.issqn_due_date()
+                    observacao_nfse = (u'(#) Data de vencimento do ISS desta '
+                                       u'NFS-e: %s; ' % self.issqn_due_date())
                     aux.append(observacao_nfse)
 
                     # Partner estabelecido na cidade de SP
                     # TODO: Adicionar tipo do ISS
-                    if docm.partner_id.city_id.ibge_code == '50308':
+                    if self.partner_id.city_id.ibge_code == '50308':
                         observacao_nfse = (u'(#) O ISS desta NFS-e será RETIDO'
                                            u' pelo Tomador de Serviço que '
                                            u'deverá recolher através da Guia '
@@ -383,16 +405,16 @@ class InvoiceElectronic(models.Model):
                                        u'judicial; ')
                     aux.append(observacao_nfse)
 
-            elif docm.state == 'cancel':
-                event = docm.eletronic_event_ids.search([
+            elif self.state == 'cancel':
+                event = self.eletronic_event_ids.search([
                     ('name', '=', 'Nota Fiscal Paulistana Cancelada')])
 
-                observacao_nfse = u'(#) Esta NFS-e foi CANCELADA em: %s; ' \
-                                  % event[0].create_date
+                observacao_nfse = (u'(#) Esta NFS-e foi CANCELADA em: %s; '
+                                   % event[0].create_date)
 
                 aux.append(observacao_nfse)
 
-            elif docm.state == 'draft':
+            elif self.state == 'draft':
 
                 observacao_nfse = (u'(#) O RPS deverá ser substituído '
                                    u'por NF-e até o 10º (décimo) dia '
@@ -404,12 +426,12 @@ class InvoiceElectronic(models.Model):
                                    u'na legislação em vigor')
                 aux.append(observacao_nfse)
 
-            if docm.state in ['done', 'cancel']:
-                observacao_nfse = u'(#) Esta NFS-e substitui o RPS Nº %d ' \
-                                  u'Série %s, ' \
-                                  u'emitido em %s; ' % (docm.numero,
-                                                        docm.serie.code,
-                                                        docm.data_emissao[:10])
+            if self.state in ['done', 'cancel']:
+                observacao_nfse = (u'(#) Esta NFS-e substitui o RPS Nº %d '
+                                   u'Série %s, emitido em %s; ' %
+                                   (self.numero,
+                                    self.serie.code,
+                                    self.data_emissao[:10]))
                 aux.append(observacao_nfse)
 
             observacao_nfse = ''
@@ -418,3 +440,19 @@ class InvoiceElectronic(models.Model):
                 observacao_nfse += value.replace('#', '%d' % (index + 1))
 
         return observacao_nfse
+
+    def get_reg_code(self):
+        """ Retorna codigo data_emissaoucnpjcpf presente no header do danfse"""
+
+        if self.invoice_id.invoice_model == '001' and \
+                        self.webservice_nfse == 'nfse_paulistana':
+
+            cnpj_cpf = self.company_id.partner_id.cnpj_cpf.replace('.', '')
+            cnpj_cpf = cnpj_cpf.replace('-', '')
+            cnpj_cpf = cnpj_cpf.replace('/', '')
+
+            send_date = self.data_emissao.replace('-', '')[:8]
+
+            return send_date + 'u' + cnpj_cpf
+        else:
+            return ''
