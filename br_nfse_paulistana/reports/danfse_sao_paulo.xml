@@ -92,9 +92,11 @@
                         <div style="padding: 2px;">
                             <span style="font-size:12px;">Código de Verificação</span>
                             <br/>
-                            <center>
-                                <strong t-field="doc.verify_code"></strong>
-                            </center>
+                            <t t-if="doc.verify_code">
+                                <center>
+                                    <strong t-esc="doc.verify_code[:4] + '-' + doc.verify_code[4:]"></strong>
+                                </center>
+                            </t>
                         </div>
                     </t>
                 </div>
@@ -376,7 +378,7 @@
                 </div>
                 <div style="float:left; width:100%;">
                     <p>
-                        <span t-esc="doc.get_nfse_observation_text()" />
+                        <span t-esc="doc.get_nfse_observation_text()"/>
                     </p>
                 </div>
                 <br/>
