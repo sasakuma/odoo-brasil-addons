@@ -107,7 +107,7 @@
                     <strong>PRESTADOR DE SERVIÇOS</strong>
                 </div>
                 <div class="col-xs-1">
-                    <img style="margin-top:15px;"
+                    <img style="margin-top:0px;height:100px;width:200px"
                          t-att-src="'data:image/png;base64,%s' % doc.company_id.logo"/>
                     <br/>
                 </div>

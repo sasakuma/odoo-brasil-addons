@@ -343,7 +343,7 @@ class InvoiceElectronic(models.Model):
         aux = []
 
         if self.invoice_id.invoice_model == '001' and \
-                        self.webservice_nfse == 'nfse_paulistana':
+                self.webservice_nfse == 'nfse_paulistana':
 
             observacao_nfse = (u'(#) Esta NFS-e foi emitida com respaldo na '
                                u'Lei nº 14.097/2005; ')
@@ -445,7 +445,7 @@ class InvoiceElectronic(models.Model):
         """ Retorna codigo data_emissaoucnpjcpf presente no header do danfse"""
 
         if self.invoice_id.invoice_model == '001' and \
-                        self.webservice_nfse == 'nfse_paulistana':
+                self.webservice_nfse == 'nfse_paulistana':
 
             cnpj_cpf = self.company_id.partner_id.cnpj_cpf.replace('.', '')
             cnpj_cpf = cnpj_cpf.replace('-', '')

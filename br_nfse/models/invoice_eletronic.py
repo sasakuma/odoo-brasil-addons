@@ -65,4 +65,3 @@ class InvoiceEletronic(models.Model):
             "target": "_blank",
         }
         return action
-
