@@ -22,6 +22,9 @@
                         <field name="cst_pis" attrs="{'invisible': [('domain', '!=', 'pis')]}" />
                         <field name="cst_cofins" attrs="{'invisible': [('domain', '!=', 'cofins')]}" />
                     </group>
+                    <group>
+                        <field name="issqn_tipo" attrs="{'invisible': [('domain', '!=', 'issqn')], 'required': [('domain', '==', 'issqn')]}" />
+                    </group>
                 </group>
                 <group name="icms" attrs="{'invisible': [('domain', 'not in', ('icms', 'simples'))]}">
                     <group>
