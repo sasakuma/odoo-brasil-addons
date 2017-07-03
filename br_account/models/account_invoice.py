@@ -335,129 +335,68 @@ class AccountInvoice(models.Model):
 
         self.fiscal_document_id = self.fiscal_position_id.fiscal_document_id.id
 
-    @api.multi
-    def action_move_create(self):
-        """ Creates invoice related analytics and financial move lines """
-        account_move = self.env['account.move']
+    def move_line_from_payment_term(self, inv, total, total_currency):
 
-        for inv in self:
-            if not inv.journal_id.sequence_id:
-                raise UserError(_(
-                    'Please define sequence on the journal related to this '
-                    'invoice.'))
-            if not inv.invoice_line_ids:
-                raise UserError(_('Please create some invoice lines.'))
-            if inv.move_id:
-                continue
+        # O sistema de parcelas sera obrigatorio, entao sempre teremos pelo
+        # menos uma parcela. Esse verificacao foi adicionada para manter
+        # compatibilidade com os testes do core
+        if not self.parcel_ids:
+            ml_list = super(AccountInvoice, self).move_line_from_payment_term(
+                inv, total, total_currency)
+            return ml_list
 
-            ctx = dict(self._context, lang=inv.partner_id.lang)
+        ctx = dict(self._context, lang=inv.partner_id.lang)
+        date_invoice = inv.date_invoice
+        ctx['date'] = date_invoice
 
-            if not inv.date_invoice:
-                inv.with_context(ctx).write(
-                    {'date_invoice': fields.Date.context_today(self)})
-            date_invoice = inv.date_invoice
-            company_currency = inv.company_id.currency_id
+        # Criacao de move lines a partir das parcelas
+        # date_invoice = inv.date_invoice
+        company_currency = inv.company_id.currency_id
+        diff_currency = inv.currency_id != company_currency
 
-            # create move lines (one per invoice line + eventual taxes and
-            # analytic lines)
-            iml = inv.invoice_line_move_line_get()
-            iml += inv.tax_line_move_line_get()
+        res_amount_currency = total_currency
 
-            diff_currency = inv.currency_id != company_currency
-            # create one move line for the total and possibly adjust the other
-            # lines amount
-            total, total_currency, iml = inv.with_context(
-                ctx).compute_invoice_totals(company_currency, iml)
+        # Sobrescrevemos conteudo da lista porque e mais simples
+        # recriarmos os dicts das movelines a partir das parcelas
+        ml_list = []
 
-            name = inv.name or '/'
-            if inv.payment_term_id:
-                # Criacao de move lines a partir das parcelas
-                date_invoice = inv.date_invoice
-                company_currency = inv.company_id.currency_id
-                diff_currency = inv.currency_id != company_currency
-                name = inv.name or '/'
+        for i, parcel in enumerate(self.parcel_ids):
 
-                res_amount_currency = total_currency
-                ctx['date'] = date_invoice
-
-                for i, t in enumerate(self.parcel_ids):
-                    if inv.currency_id != company_currency:
-                        amount_currency = company_currency.with_context(
-                            ctx).compute(
-                            t.parceling_value, inv.currency_id)
-                    else:
-                        amount_currency = False
-
-                    # last line: add the diff
-                    res_amount_currency -= amount_currency or 0
-                    if i + 1 == len(self.parcel_ids):
-                        amount_currency += res_amount_currency
-
-                    # Calculamos a nova data de vencimento baseado na data
-                    # de validação da faturação, caso a parcela nao esteja
-                    # marcada como 'data fixa'
-                    if not t.pin_date:
-                        d1 = datetime.strptime(fields.Date.today(), '%Y-%m-%d')
-                        date_maturity = d1 + timedelta(days=t.amount_days)
-                    else:
-                        date_maturity = t.date_maturity
-
-                    iml.append({
-                        'type': 'dest',
-                        'name': name,
-                        'price': t.parceling_value,
-                        'account_id': inv.account_id.id,
-                        'date_maturity': date_maturity,
-                        'amount_currency': diff_currency and amount_currency,
-                        'currency_id': diff_currency and inv.currency_id.id,
-                        'invoice_id': inv.id,
-                        'financial_operation_id': t.financial_operation_id.id,
-                        'title_type_id': t.title_type_id.id,
-                    })
+            if inv.currency_id != company_currency:
+                amount_currency = company_currency.with_context(
+                    ctx).compute(
+                    parcel.parceling_value, inv.currency_id)
             else:
-                iml.append({
-                    'type': 'dest',
-                    'name': name,
-                    'price': total,
-                    'account_id': inv.account_id.id,
-                    'date_maturity': inv.date_due,
-                    'amount_currency': diff_currency and total_currency,
-                    'currency_id': diff_currency and inv.currency_id.id,
-                    'invoice_id': inv.id
-                })
-            part = self.env['res.partner']._find_accounting_partner(
-                inv.partner_id)
-            line = [(0, 0, self.line_get_convert(l, part.id)) for l in iml]
-            line = inv.group_lines(iml, line)
+                amount_currency = False
 
-            journal = inv.journal_id.with_context(ctx)
-            line = inv.finalize_invoice_move_lines(line)
+            # last line: add the diff
+            res_amount_currency -= amount_currency or 0
+            if i + 1 == len(self.parcel_ids):
+                amount_currency += res_amount_currency
 
-            date = inv.date or date_invoice
-            move_vals = {
-                'ref': inv.reference,
-                'line_ids': line,
-                'journal_id': journal.id,
-                'date': date,
-                'narration': inv.comment,
-            }
-            ctx['company_id'] = inv.company_id.id
-            ctx['invoice'] = inv
-            ctx_nolang = ctx.copy()
-            ctx_nolang.pop('lang', None)
-            move = account_move.with_context(ctx_nolang).create(move_vals)
-            # Pass invoice in context in method post: used if you want to get
-            # the same account move reference when creating the same invoice
-            # after a cancelled one:
-            move.post()
-            # make the invoice point to that move
-            vals = {
-                'move_id': move.id,
-                'date': date,
-                'move_name': move.name,
-            }
-            inv.with_context(ctx).write(vals)
-        return True
+            # Calculamos a nova data de vencimento baseado na data
+            # de validação da faturação, caso a parcela nao esteja
+            # marcada como 'data fixa'
+            if not parcel.pin_date:
+                d1 = datetime.strptime(fields.Date.today(), '%Y-%m-%d')
+                date_maturity = d1 + timedelta(days=parcel.amount_days)
+            else:
+                date_maturity = parcel.date_maturity
+
+            ml_list.append({
+                'type': 'dest',
+                'name': inv.name or '/',
+                'price': parcel.parceling_value,
+                'account_id': inv.account_id.id,
+                'date_maturity': date_maturity,
+                'amount_currency': diff_currency and amount_currency,
+                'currency_id': diff_currency and inv.currency_id.id,
+                'invoice_id': inv.id,
+                'financial_operation_id': parcel.financial_operation_id.id,
+                'title_type_id': parcel.title_type_id.id,
+            })
+
+        return ml_list
 
     @api.multi
     def action_create_periodic_entry(self):
@@ -513,8 +452,8 @@ class AccountInvoice(models.Model):
                 if not tax.price_include and tax.account_id:
                     res[contador]['price'] += tax_dict['amount']
 
-                if tax.price_include and (not tax.account_id or
-                                          not tax.deduced_account_id):
+                if tax.price_include and \
+                        (not tax.account_id or not tax.deduced_account_id):
                     if tax_dict['amount'] > 0.0:  # Negativo é retido
                         res[contador]['price'] -= tax_dict['amount']
 

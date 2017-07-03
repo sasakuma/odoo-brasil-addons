@@ -70,6 +70,12 @@ class AccountFiscalPositionTaxRule(models.Model):
     tax_icms_fcp_id = fields.Many2one(
         'account.tax', string="% FCP", domain=[('domain', '=', 'fcp')])
 
+    issqn_tipo = fields.Selection([('N', 'Normal'),
+                                   ('R', 'Retida'),
+                                   ('S', 'Substituta'),
+                                   ('I', 'Isenta')],
+                                  string='Tipo do ISSQN')
+
 
 class AccountFiscalPosition(models.Model):
     _inherit = 'account.fiscal.position'
@@ -193,6 +199,8 @@ class AccountFiscalPosition(models.Model):
                 'pis_cst': rules[0].cst_pis,
                 # PIS
                 'cofins_cst': rules[0].cst_cofins,
+                # ISSQN
+                'issqn_tipo': rules[0].issqn_tipo,
             }
         else:
             return {}

@@ -20,19 +20,18 @@
     ],
     'external_dependencies': {
         'python': [
-            'pytrustnfe.nfse.paulistana', 'pytrustnfe.certificado'
+            'pytrustnfe',
         ],
     },
     'data': [
+        'security/ir.model.access.csv',
         'data/br_nfse.xml',
         'views/br_account_service.xml',
         'views/account_invoice.xml',
         'views/invoice_eletronic.xml',
         'views/res_company.xml',
-        # 'views/account_fiscal_position.xml',
-        'reports/danfse_sao_paulo.xml',
-        'reports/danfse_simpliss.xml',
-        'reports/danfse_ginfes.xml',
+        'views/account_fiscal_position.xml',
+        'reports/danfse_default.xml',
     ],
     'installable': True,
     'application': True,

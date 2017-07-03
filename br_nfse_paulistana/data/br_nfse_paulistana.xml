@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="0">
+
+        <record id="source_operation_T" model="br_account.nfse.source.operation">
+            <field name="name">Tributado em São Paulo</field>
+            <field name="code">T</field>
+        </record>
+
+        <record id="source_operation_F" model="br_account.nfse.source.operation">
+            <field name="name">Tributado Fora de São Paulo</field>
+            <field name="code">F</field>
+        </record>
+
+        <record id="source_operation_A" model="br_account.nfse.source.operation">
+            <field name="name">Tributado em São Paulo, porém isento</field>
+            <field name="code">A</field>
+        </record>
+
+        <record id="source_operation_B" model="br_account.nfse.source.operation">
+            <field name="name">Tributado Fora de São Paulo, porém isento</field>
+            <field name="code">B</field>
+        </record>
+
+        <record id="source_operation_M" model="br_account.nfse.source.operation">
+            <field name="name">Tributado em São Paulo, porém Imune</field>
+            <field name="code">M</field>
+        </record>
+
+        <record id="source_operation_N" model="br_account.nfse.source.operation">
+            <field name="name">Tributado Fora de São Paulo, porém Imune</field>
+            <field name="code">N</field>
+        </record>
+
+        <record id="source_operation_X" model="br_account.nfse.source.operation">
+            <field name="name">Tributado em São Paulo, porém Exigibilidade Suspensa</field>
+            <field name="code">X</field>
+        </record>
+
+        <record id="source_operation_V" model="br_account.nfse.source.operation">
+            <field name="name">Tributado Fora de São Paulo, porém Exigibilidade Suspensa</field>
+            <field name="code">V</field>
+        </record>
+
+        <record id="source_operation_P" model="br_account.nfse.source.operation">
+            <field name="name">Exportação de Serviços</field>
+            <field name="code">P</field>
+        </record>
+
+         <record id="report_br_nfse_danfe_paulistana" model="ir.actions.report.xml">
+             <field name="city_id" ref="br_base.city_3550308"/>
+        </record>
+
+    </data>
+
+</odoo>

@@ -335,7 +335,7 @@ class BrAccountFiscalObservation(models.Model):
 class BrAccountInvoiceParcel(models.Model):
 
     _name = 'br_account.invoice.parcel'
-    _description = u'Classe que representa as parcelas para Fatura'
+    _description = 'Classe que representa as parcelas da Fatura'
 
     name = fields.Char(string='Name')
 
