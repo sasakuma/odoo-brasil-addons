@@ -377,8 +377,10 @@ class InvoiceElectronic(models.Model):
                     aux.append(observacao_nfse)
 
                     # Partner estabelecido na cidade de SP
-                    # TODO: Adicionar tipo do ISS
-                    if self.partner_id.city_id.ibge_code == '50308':
+                    issqn_tipo = self.eletronic_item_ids[0].issqn_tipo
+
+                    if self.partner_id.city_id.ibge_code == '50308'\
+                            and issqn_tipo == 'R':
                         observacao_nfse = (u'(#) O ISS desta NFS-e será RETIDO'
                                            u' pelo Tomador de Serviço que '
                                            u'deverá recolher através da Guia '
@@ -390,10 +392,12 @@ class InvoiceElectronic(models.Model):
                                        u'do Município de São Paulo; ')
                     aux.append(observacao_nfse)
 
-                    # TODO: Adicionar verificacao do tipo de ISSQN
-                    # observacao_nfse = (u'(#) O ISS desta NFS-e será RETIDO'
-                    #                    u' pelo Tomador de Serviço; ')
-                    # aux.append(observacao_nfse)
+                    issqn_tipo = self.eletronic_item_ids[0].issqn_codigo
+
+                    if issqn_tipo == 'R':
+                        observacao_nfse = (u'(#) O ISS desta NFS-e será RETIDO'
+                                           u' pelo Tomador de Serviço; ')
+                        aux.append(observacao_nfse)
 
                 elif tributacao in ['A', 'B', 'M', 'N']:
                     observacao_nfse = (u'(#) Os serviços referentes a esta '

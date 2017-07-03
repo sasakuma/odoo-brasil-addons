@@ -8,12 +8,11 @@ from random import SystemRandom
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
-
 TYPE2EDOC = {
-    'out_invoice': 'saida',        # Customer Invoice
-    'in_invoice': 'entrada',          # Vendor Bill
-    'out_refund': 'entrada',        # Customer Refund
-    'in_refund': 'saida',          # Vendor Refund
+    'out_invoice': 'saida',  # Customer Invoice
+    'in_invoice': 'entrada',  # Vendor Bill
+    'out_refund': 'entrada',  # Customer Refund
+    'in_refund': 'saida',  # Vendor Refund
 }
 
 
@@ -100,8 +99,8 @@ class AccountInvoice(models.Model):
             # - ICMS ST -
             'icms_st_aliquota': line.icms_st_aliquota,
             'icms_st_aliquota_mva': line.icms_st_aliquota_mva,
-            'icms_st_aliquota_reducao_base': line.\
-            icms_st_aliquota_reducao_base,
+            'icms_st_aliquota_reducao_base':
+                line.icms_st_aliquota_reducao_base,
             'icms_st_base_calculo': line.icms_st_base_calculo,
             'icms_st_valor': line.icms_st_valor,
             # - Simples Nacional -
@@ -124,14 +123,14 @@ class AccountInvoice(models.Model):
             'pis_base_calculo': line.pis_base_calculo,
             'pis_valor': abs(line.pis_valor),
             'pis_valor_retencao':
-            abs(line.pis_valor) if line.pis_valor < 0 else 0,
+                abs(line.pis_valor) if line.pis_valor < 0 else 0,
             # - COFINS -
             'cofins_cst': line.cofins_cst,
             'cofins_aliquota': abs(line.cofins_aliquota),
             'cofins_base_calculo': line.cofins_base_calculo,
             'cofins_valor': abs(line.cofins_valor),
             'cofins_valor_retencao':
-            abs(line.cofins_valor) if line.cofins_valor < 0 else 0,
+                abs(line.cofins_valor) if line.cofins_valor < 0 else 0,
             # - ISSQN -
             # 'issqn_codigo': line.fservice_type_id.code,
             'issqn_codigo': line.fiscal_position_id.service_type_id.code,
@@ -139,26 +138,26 @@ class AccountInvoice(models.Model):
             'issqn_base_calculo': line.issqn_base_calculo,
             'issqn_valor': abs(line.issqn_valor),
             'issqn_valor_retencao':
-            abs(line.issqn_valor) if line.issqn_valor < 0 else 0,
+                abs(line.issqn_valor) if line.issqn_valor < 0 else 0,
             # - RETENÇÔES -
             'csll_base_calculo': line.csll_base_calculo,
             'csll_aliquota': abs(line.csll_aliquota),
             'csll_valor_retencao':
-            abs(line.csll_valor) if line.csll_valor < 0 else 0,
+                abs(line.csll_valor) if line.csll_valor < 0 else 0,
             'irrf_base_calculo': line.irrf_base_calculo,
             'irrf_aliquota': abs(line.irrf_aliquota),
             'irrf_valor_retencao':
-            abs(line.irrf_valor) if line.irrf_valor < 0 else 0,
+                abs(line.irrf_valor) if line.irrf_valor < 0 else 0,
             'inss_base_calculo': line.inss_base_calculo,
             'inss_aliquota': abs(line.inss_aliquota),
             'inss_valor_retencao':
-            abs(line.inss_valor) if line.inss_valor < 0 else 0,
+                abs(line.inss_valor) if line.inss_valor < 0 else 0,
         }
         return vals
 
     def _prepare_edoc_vals(self, invoice):
         num_controle = int(''.join([str(SystemRandom().randrange(9))
-                           for i in range(8)]))
+                                    for i in range(8)]))
         vals = {
             'invoice_id': invoice.id,
             'code': invoice.number,
