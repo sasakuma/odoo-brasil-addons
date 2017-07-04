@@ -220,6 +220,15 @@
                     <span t-field="doc.informacoes_legais"></span>
                     <span t-field="doc.informacoes_complementares"></span>
                     <span t-field="doc.invoice_id.number"></span>
+
+                     <t t-if="doc.state == 'cancel'">
+                        <center>
+                            <br/>
+                            <span style="font-size:60px;color:red !important;">NOTA CANCELADA</span>
+                            <br/>
+                        </center>
+                    </t>
+
                 </div>
             </div>
             <div class="row"

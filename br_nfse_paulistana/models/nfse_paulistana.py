@@ -377,7 +377,7 @@ class InvoiceElectronic(models.Model):
                     aux.append(observacao_nfse)
 
                     # Partner estabelecido na cidade de SP
-                    issqn_tipo = self.eletronic_item_ids[0].issqn_tipo
+                    issqn_tipo = self.eletronic_item_ids[0].issqn_codigo
 
                     if self.partner_id.city_id.ibge_code == '50308'\
                             and issqn_tipo == 'R':
