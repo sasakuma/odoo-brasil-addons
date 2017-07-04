@@ -60,7 +60,7 @@
                     <field name="product_category_ids" widget="many2many_tags" nolabel="1"/>
                 </group>
                 <group string="Produtos">
-                    <field name="product_ids" widget="many2many_tags" nolabel="1"/>
+                    <field name="product_ids" widget="many2many_tags" nolabel="1" domain="[('fiscal_type', '=', tipo_produto)]"/>
                 </group>
                 <group string="Parceiros">
                     <field name="partner_ids" widget="many2many_tags" nolabel="1"/>
