@@ -25,6 +25,7 @@ class TestBase(TransactionCase):
         partner = self.env['res.partner'].create({
             'name': 'Parceiro Ok',
             'cnpj_cpf': '99644045491',
+            'is_company': False,
             'country_id': self.env.ref('base.br').id
         })
         self.assertTrue(partner)
@@ -34,6 +35,7 @@ class TestBase(TransactionCase):
             'name': 'Parceiro Ok',
             'cnpj_cpf': '99644045491',
             'inscr_est': '123',
+            'is_company': False,
             'country_id': self.env.ref('base.br').id
         })
         self.assertTrue(partner)
@@ -43,6 +45,7 @@ class TestBase(TransactionCase):
             self.env['res.partner'].create({
                 'name': 'Parceiro Ok',
                 'cnpj_cpf': '99644045490',
+                'is_company': False,
                 'country_id': self.env.ref('base.br').id
             })
 
@@ -120,6 +123,7 @@ class TestBase(TransactionCase):
         partner = self.env['res.partner'].create({
             'name': 'Empresa',
             'cnpj_cpf': '71194004016',
+            'is_company': False,
             'country_id': self.env.ref('base.br').id,
         })
         self.assertEquals(partner.cnpj_cpf, '71194004016')
