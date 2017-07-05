@@ -60,7 +60,7 @@
                     <field name="product_category_ids" widget="many2many_tags" nolabel="1"/>
                 </group>
                 <group string="Produtos">
-                    <field name="product_ids" widget="many2many_tags" nolabel="1"/>
+                    <field name="product_ids" widget="many2many_tags" nolabel="1" domain="[('fiscal_type', '=', tipo_produto)]"/>
                 </group>
                 <group string="Parceiros">
                     <field name="partner_ids" widget="many2many_tags" nolabel="1"/>
@@ -103,8 +103,14 @@
                 <field name="position_type"/>
                 <field name="fiscal_document_id"/>
                 <field name="document_serie_id"/>
-                <field name="service_type_id" attrs="{'required': [('position_type', '=', 'service')]}"/>
             </field>
+            <group position="after">
+                <group name="nfse" string="Informações NFS-e">
+                    <group>
+                        <field name="service_type_id" attrs="{'required': [('position_type', '=', 'service')]}"/>
+                    </group>
+                </group>
+            </group>
             <field name="vat_required" position="attributes" >
                 <attribute name="invisible">1</attribute>
             </field>
@@ -125,7 +131,7 @@
             </page>
             <page name="tax_mapping" position="before">
                 <page string="Regras de Impostos">
-                    <group name="icms_rules" string="Regras de ICMS">
+                    <group name="icms_rules" string="Regras de ICMS" attrs="{'invisible': [('position_type', '!=', 'product')]}">
                         <field nolabel="1" name="icms_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'icms'}">
                             <tree>
                                 <field name="sequence" widget="handle"/>
@@ -141,7 +147,7 @@
                         </field>
                     </group>
                     <group name="simples_rules" string="Regras Simples Nacional">
-                        <field nolabel="1" name="simples_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'simples'}">
+                        <field nolabel="1" name="simples_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'simples', 'default_tipo_produto': 'product'}">
                             <tree>
                                 <field name="sequence" widget="handle"/>
                                 <field name="name" />
@@ -154,8 +160,8 @@
                             </tree>
                         </field>
                     </group>
-                    <group name="ipi_rules" string="Regras de IPI">
-                        <field nolabel="1" name="ipi_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'ipi'}">
+                    <group name="ipi_rules" string="Regras de IPI" attrs="{'invisible': [('position_type', '!=', 'product')]}">
+                        <field nolabel="1" name="ipi_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'ipi', 'default_tipo_produto': 'product'}">
                             <tree>
                                 <field name="sequence" widget="handle"/>
                                 <field name="name" />
@@ -166,7 +172,7 @@
                         </field>
                     </group>
                     <group name="pis_rules" string="Regras de PIS">
-                        <field nolabel="1" name="pis_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'pis'}">
+                        <field nolabel="1" name="pis_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'pis', 'default_tipo_produto': 'service'}">
                             <tree>
                                 <field name="sequence" widget="handle"/>
                                 <field name="name" />
@@ -185,16 +191,16 @@
                             </tree>
                         </field>
                     </group>
-                    <group name="issqn_rules" string="Regras ISSQN">
-                        <field nolabel="1" name="issqn_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'issqn'}"/>
+                    <group name="issqn_rules" string="Regras ISSQN" attrs="{'invisible': [('position_type', '!=', 'service')]}">
+                        <field nolabel="1" name="issqn_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'issqn', 'default_tipo_produto': 'service'}"/>
                     </group>
-                    <group name="irrf_rules" string="Regras de IRRF">
+                    <group name="irrf_rules" string="Regras de IRRF" attrs="{'invisible': [('position_type', '!=', 'product')]}">
                         <field nolabel="1" name="irrf_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'irrf'}" />
                     </group>
-                    <group name="inss_rules" string="Regras de INSS">
+                    <group name="inss_rules" string="Regras de INSS" attrs="{'invisible': [('position_type', '!=', 'product')]}">
                         <field nolabel="1" name="inss_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'inss'}" />
                     </group>
-                    <group name="csll_rules" string="Regras de CSLL">
+                    <group name="csll_rules" string="Regras de CSLL" attrs="{'invisible': [('position_type', '!=', 'product')]}">
                         <field nolabel="1" name="csll_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'csll'}" />
                     </group>
                     <group name="ii_rules" string="Regras de II">
