@@ -394,6 +394,7 @@ class AccountInvoice(models.Model):
                 'invoice_id': inv.id,
                 'financial_operation_id': parcel.financial_operation_id.id,
                 'title_type_id': parcel.title_type_id.id,
+                'company_id': inv.company_id.id,
             })
 
         return ml_list
