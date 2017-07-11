@@ -24,14 +24,16 @@ class BrAccountCFOP(models.Model):
     description = fields.Text(u'Descrição')
     type = fields.Selection([('input', u'Entrada'),
                              ('output', u'Saída')],
-                            'Tipo', required=True)
-    parent_id = fields.Many2one(
-        'br_account.cfop', 'CFOP Pai')
-    child_ids = fields.One2many(
-        'br_account.cfop', 'parent_id', 'CFOP Filhos')
-    internal_type = fields.Selection(
-        [('view', u'Visualização'), ('normal', 'Normal')],
-        'Tipo Interno', required=True, default='normal')
+                            string='Tipo',
+                            required=True)
+    parent_id = fields.Many2one('br_account.cfop', string='CFOP Pai')
+    child_ids = fields.One2many('br_account.cfop', 'parent_id',
+                                string='CFOP Filhos')
+    internal_type = fields.Selection([('view', u'Visualização'),
+                                      ('normal', 'Normal')],
+                                     string='Tipo Interno',
+                                     required=True,
+                                     default='normal')
 
     _sql_constraints = [
         ('br_account_cfop_code_uniq', 'unique (code)',
@@ -378,6 +380,6 @@ class BrAccountInvoiceParcel(models.Model):
         # Calcula a quantidade de dias baseado na data de vencimento
         for rec in self:
             if rec.invoice_id.state == 'draft':
-                d2 = datetime.strptime(rec.invoice_id.date_invoice, '%Y-%m-%d')
+                d2 = datetime.strptime(rec.invoice_id.pre_invoice_date, '%Y-%m-%d')
                 d1 = datetime.strptime(rec.date_maturity, '%Y-%m-%d')
                 rec.amount_days = abs((d2 - d1).days)

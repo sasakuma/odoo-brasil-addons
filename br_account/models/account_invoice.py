@@ -153,6 +153,10 @@ class AccountInvoice(models.Model):
                                              'draft': [('readonly', False)],
                                          })
 
+    pre_invoice_date = fields.Date(string='Data do Pedido',
+                                   required=True,
+                                   default=fields.Date.today)
+
     is_eletronic = fields.Boolean(
         related='fiscal_document_id.electronic', type='boolean',
         store=True, string=u'Eletrônico', readonly=True)
@@ -328,8 +332,10 @@ class AccountInvoice(models.Model):
     def _onchange_br_account_fiscal_position_id(self):
         if self.fiscal_position_id and self.fiscal_position_id.account_id:
             self.account_id = self.fiscal_position_id.account_id.id
+
         if self.fiscal_position_id and self.fiscal_position_id.journal_id:
             self.journal_id = self.fiscal_position_id.journal_id
+
         ob_ids = [x.id for x in self.fiscal_position_id.fiscal_observation_ids]
         self.fiscal_observation_ids = [(6, False, ob_ids)]
 
@@ -378,7 +384,7 @@ class AccountInvoice(models.Model):
             # de validação da faturação, caso a parcela nao esteja
             # marcada como 'data fixa'
             if not parcel.pin_date:
-                d1 = datetime.strptime(fields.Date.today(), '%Y-%m-%d')
+                d1 = datetime.strptime(self.date_invoice, '%Y-%m-%d')
                 date_maturity = d1 + timedelta(days=parcel.amount_days)
             else:
                 date_maturity = parcel.date_maturity
@@ -410,7 +416,7 @@ class AccountInvoice(models.Model):
             'view_mode': 'form',
             'context': {
                 'default_payment_term_id': self.payment_term_id.id,
-                'default_date_invoice': self.date_invoice,
+                'default_pre_invoice_date': self.pre_invoice_date,
             },
             'views': [(False, 'form')],
             'target': 'new',

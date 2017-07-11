@@ -8,7 +8,7 @@
             <form string="Invoice Parcels Wizard">
                 <group>
                         <field name="payment_term_id"/>
-                        <field name="date_invoice"/>
+                        <field name="pre_invoice_date"/>
                         <field name="financial_operation_id" options="{'no_create': True}"/>
                         <field name="title_type_id" options="{'no_create': True}"/>
                     </group>

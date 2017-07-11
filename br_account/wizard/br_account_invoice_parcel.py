@@ -14,8 +14,8 @@ class BrAccountInvoiceParcelWizard(models.TransientModel):
                                       string=u'Condições de Pagamento',
                                       readonly=True)
 
-    date_invoice = fields.Date(string='Data da Fatura',
-                               readonly=True)
+    pre_invoice_date = fields.Date(string='Data da Fatura',
+                                   readonly=True)
 
     financial_operation_id = fields.Many2one('account.financial.operation',
                                              required=True,
@@ -36,11 +36,11 @@ class BrAccountInvoiceParcelWizard(models.TransientModel):
 
             ctx = dict(self._context, lang=inv.partner_id.lang)
 
-            if not inv.date_invoice:
+            if not inv.pre_invoice_date:
                 inv.with_context(ctx).write(
-                    {'date_invoice': fields.Date.context_today(self)})
+                    {'pre_invoice_date': fields.Date.context_today(self)})
 
-            date_invoice = inv.date_invoice
+            pre_invoice_date = inv.pre_invoice_date
             company_currency = inv.company_id.currency_id
 
             # create move lines (one per invoice line + eventual taxes and
@@ -55,11 +55,11 @@ class BrAccountInvoiceParcelWizard(models.TransientModel):
 
             if inv.payment_term_id:
                 lines = inv.with_context(ctx).payment_term_id.with_context(
-                    currency_id=company_currency.id).compute(total,
-                                                             date_invoice)[0]
+                    currency_id=company_currency.id).compute(
+                    total, pre_invoice_date)[0]
 
                 res_amount_currency = total_currency
-                ctx['date'] = date_invoice
+                ctx['date'] = pre_invoice_date
 
                 # Removemos as parcelas adicionadas anteriormente
                 inv.parcel_ids.unlink()
