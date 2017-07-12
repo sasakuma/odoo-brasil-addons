@@ -382,19 +382,17 @@ class AccountInvoice(models.Model):
 
             # Calculamos a nova data de vencimento baseado na data
             # de validação da faturação, caso a parcela nao esteja
-            # marcada como 'data fixa'
+            # marcada como 'data fixa'. A data da parcela também é atualizada
             if not parcel.pin_date:
                 d1 = datetime.strptime(self.date_invoice, '%Y-%m-%d')
-                date_maturity = d1 + timedelta(days=parcel.amount_days)
-            else:
-                date_maturity = parcel.date_maturity
+                parcel.date_maturity = d1 + timedelta(days=parcel.amount_days)
 
             ml_list.append({
                 'type': 'dest',
                 'name': inv.name or '/',
                 'price': parcel.parceling_value,
                 'account_id': inv.account_id.id,
-                'date_maturity': date_maturity,
+                'date_maturity': parcel.date_maturity,
                 'amount_currency': diff_currency and amount_currency,
                 'currency_id': diff_currency and inv.currency_id.id,
                 'invoice_id': inv.id,
@@ -573,8 +571,8 @@ class AccountInvoice(models.Model):
             ctx = dict(self._context, lang=inv.partner_id.lang)
 
             if not inv_date:
-                raise UserError('Nenhuma data base fornecida para a criação '
-                                'das parcelas!')
+                raise UserError(u'Nenhuma data fornecida como base para a '
+                                u'criação das parcelas!')
 
             company_currency = inv.company_id.currency_id
 
