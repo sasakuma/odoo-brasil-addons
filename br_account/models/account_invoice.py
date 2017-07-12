@@ -3,8 +3,6 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from datetime import datetime, timedelta
-
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from odoo.addons import decimal_precision as dp
@@ -386,9 +384,7 @@ class AccountInvoice(models.Model):
             # Calculamos a nova data de vencimento baseado na data
             # de validação da faturação, caso a parcela nao esteja
             # marcada como 'data fixa'. A data da parcela também é atualizada
-            if not parcel.pin_date:
-                d1 = datetime.strptime(self.date_invoice, '%Y-%m-%d')
-                parcel.date_maturity = d1 + timedelta(days=parcel.amount_days)
+            parcel.update_date_maturity(self.date_invoice)
 
             ml_list.append({
                 'type': 'dest',

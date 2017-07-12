@@ -38,6 +38,7 @@ class TestNFeBrasil(TransactionCase):
             'city_id': self.env.ref('br_base.city_4205407').id,
             'phone': '(48) 9801-6226',
             'currency_id': self.currency_real.id,
+            'tipo_ambiente_nfse': '2',
             'webservice_nfse': 'nfse_paulistana',
             'nfe_a1_password': '123456',
             'nfe_a1_file': base64.b64encode(

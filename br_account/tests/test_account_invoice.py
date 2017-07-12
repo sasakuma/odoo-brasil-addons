@@ -46,11 +46,14 @@ class TestAccountInvoice(TestBaseBr):
              )
         ]
 
+        payment_term = self.env.ref('account.account_payment_term_net')
+
         default_invoice = {
             'name': u"Teste Validação",
             'reference_type': "none",
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,
+            'payment_term_id': payment_term.id,
             'invoice_line_ids': invoice_line_data
         }
 
@@ -58,6 +61,10 @@ class TestAccountInvoice(TestBaseBr):
             default_invoice.items(),
             partner_id=self.partner.id
         ))
+
+        self.title_type_id = self.env.ref('br_account.account_title_type_2')
+        self.financial_operation_id = self.env.ref(
+            'br_account.account_financial_operation_6')
 
     def test_compute_total_values(self):
         for invoice in self.invoices:
@@ -232,3 +239,25 @@ class TestAccountInvoice(TestBaseBr):
             # Ainda deve ter os mesmos valores
             self.assertEquals(invoice.icms_base, 585.0)
             self.assertEquals(invoice.icms_value, 99.45)
+
+    def test_generate_parcel_entry(self):
+
+        for inv in self.invoices:
+
+            inv.pre_invoice_date = '2017-07-01'
+
+            # Criamos as parcelas
+            inv.generate_parcel_entry(self.financial_operation_id,
+                                      self.title_type_id)
+
+            self.assertEqual(len(inv.parcel_ids), 1)
+
+            for parcel in inv.parcel_ids:
+                self.assertEqual(parcel.date_maturity, '2017-07-31')
+                self.assertEqual(parcel.name, '01')
+                self.assertEqual(parcel.parceling_value, inv.amount_total)
+                self.assertEqual(parcel.financial_operation_id.id,
+                                 self.financial_operation_id.id)
+                self.assertEqual(parcel.title_type_id.id,
+                                 self.title_type_id.id)
+                self.assertEqual(parcel.amount_days, 30)
