@@ -153,7 +153,7 @@ class AccountInvoice(models.Model):
                                              'draft': [('readonly', False)],
                                          })
 
-    pre_invoice_date = fields.Date(string='Data do Pedido',
+    pre_invoice_date = fields.Date(string=u'Data da Pré-Fatura',
                                    required=True,
                                    default=fields.Date.today)
 
