@@ -62,19 +62,8 @@ class BrAccountTestReconciliation(TestReconciliation):
         financial_operation_id = \
             self.env.ref('br_account.account_financial_operation_6')
 
+        # Criamos as parcelas
         invoice.generate_parcel_entry(financial_operation_id, title_type_id)
-        #
-        # values = {
-        #     'payment_term_id': invoice.payment_term_id.id,
-        #     'date_invoice': invoice.pre_invoice_date,
-        #     'financial_operation_id': financial_operation_id,
-        #     'title_type_id': title_type_id,
-        # }
-        #
-        # wiz = self.env['br_account.invoice.parcel.wizard'].create(values)
-        #
-        # wiz.with_context(
-        #     active_ids=[invoice.id]).action_generate_parcel_entry()
 
         # validate invoice
         invoice.action_invoice_open()
