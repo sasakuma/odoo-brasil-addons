@@ -157,9 +157,12 @@ class AccountInvoice(models.Model):
                                    required=True,
                                    default=fields.Date.today)
 
-    is_eletronic = fields.Boolean(
-        related='fiscal_document_id.electronic', type='boolean',
-        store=True, string=u'Eletrônico', readonly=True)
+    is_electronic = fields.Boolean(related='fiscal_document_id.electronic',
+                                   type='boolean',
+                                   store=True,
+                                   string=u'Eletrônico',
+                                   readonly=True,
+                                   oldname='is_eletronic')
 
     fiscal_document_related_ids = fields.One2many(
         'br_account.document.related', 'invoice_id',

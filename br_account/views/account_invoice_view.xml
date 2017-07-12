@@ -28,7 +28,7 @@
                 <field name="fiscal_position_id" required="1"/>
             </field>
             <field name="date_invoice" position="before">
-                <field name="is_eletronic" invisible="1" />
+                <field name="is_electronic" invisible="1" />
                 <field name="fiscal_document_id" />
                 <field name="document_serie_id" />
             </field>
@@ -162,7 +162,7 @@
                 <field name="fiscal_position_id" />
             </field>
             <field name="date_invoice" position="after">
-                <field name="is_eletronic" invisible="1" />
+                <field name="is_electronic" invisible="1" />
                 <field name="issuer" />
                 <field name="fiscal_document_id" attrs="{'invisible': [('issuer','=', '0')]}" />
                 <field name="document_serie_id" attrs="{'invisible': [('issuer','=', '0')]}" />

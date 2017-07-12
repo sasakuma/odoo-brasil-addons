@@ -63,7 +63,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_number(self):
         for invoice in self:
-            if invoice.is_eletronic:
+            if invoice.is_electronic:
                 if not invoice.document_serie_id.internal_sequence_id.id:
                     raise UserError(
                         u'Configure a sequência para a numeração da nota')
@@ -212,7 +212,7 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self).invoice_validate()
         self.action_number()
         for item in self:
-            if item.is_eletronic:
+            if item.is_electronic:
                 edoc_vals = self._prepare_edoc_vals(item)
                 if edoc_vals:
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
