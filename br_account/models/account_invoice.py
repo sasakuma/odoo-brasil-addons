@@ -409,6 +409,11 @@ class AccountInvoice(models.Model):
     def action_open_periodic_entry_wizard(self):
         """Abre wizard para gerar pagamentos periodicos"""
         self.ensure_one()
+
+        if self.state != 'draft':
+            raise UserError('Parcelas podem ser criadas apenas quando a '
+                            'fatura estiver como "Provisório"')
+
         action = {
             'type': 'ir.actions.act_window',
             'res_model': 'br_account.invoice.parcel.wizard',
