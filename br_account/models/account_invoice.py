@@ -558,3 +558,68 @@ class AccountInvoice(models.Model):
         res['fiscal_document_id'] = invoice.fiscal_document_id.id
         res['document_serie_id'] = invoice.document_serie_id.id
         return res
+
+    @api.multi
+    def generate_parcel_entry(self, inv_date, financial_operation, title_type):
+        """Cria as parcelas da fatura."""
+
+        for inv in self:
+
+            ctx = dict(self._context, lang=inv.partner_id.lang)
+
+            if not inv_date:
+                raise UserError('Nenhuma data base fornecida para a criação '
+                                'das parcelas!')
+
+            company_currency = inv.company_id.currency_id
+
+            # create move lines (one per invoice line + eventual taxes and
+            # analytic lines)
+            iml = inv.invoice_line_move_line_get()
+            iml += inv.tax_line_move_line_get()
+
+            diff_currency = inv.currency_id != company_currency
+
+            total, total_currency, iml = inv.with_context(
+                ctx).compute_invoice_totals(company_currency, iml)
+
+            if inv.payment_term_id:
+                aux = inv.with_context(ctx).payment_term_id.with_context(
+                    currency_id=company_currency.id).compute(total, inv_date)
+                lines = aux[0]
+
+                res_amount_currency = total_currency
+                ctx['date'] = inv_date
+
+                # Removemos as parcelas adicionadas anteriormente
+                inv.parcel_ids.unlink()
+
+                for i, t in enumerate(lines):
+                    if inv.currency_id != company_currency:
+                        amount_currency = \
+                            company_currency.with_context(ctx).compute(
+                                t[1], inv.currency_id)
+                    else:
+                        amount_currency = False
+
+                    # last line: add the diff
+                    res_amount_currency -= amount_currency or 0
+
+                    if i + 1 == len(lines):
+                        amount_currency += res_amount_currency
+
+                    values = {
+                        'name': str(i + 1).zfill(2),
+                        'parceling_value': t[1],
+                        'date_maturity': t[0],
+                        'financial_operation_id': financial_operation.id,
+                        'title_type_id': title_type.id,
+                        'company_currency_id': (diff_currency and
+                                                inv.currency_id.id),
+                        'invoice_id': inv.id,
+                    }
+
+                    obj = self.env['br_account.invoice.parcel'].create(values)
+                    # Chamamos o onchange para que a quantidade de dias seja
+                    # calculado
+                    obj._onchange_date_maturity()
