@@ -563,14 +563,14 @@ class AccountInvoice(models.Model):
         return res
 
     @api.multi
-    def generate_parcel_entry(self, inv_date, financial_operation, title_type):
+    def generate_parcel_entry(self, financial_operation, title_type):
         """Cria as parcelas da fatura."""
 
         for inv in self:
 
             ctx = dict(self._context, lang=inv.partner_id.lang)
 
-            if not inv_date:
+            if not inv.pre_invoice_date:
                 raise UserError(u'Nenhuma data fornecida como base para a '
                                 u'criação das parcelas!')
 
@@ -588,11 +588,13 @@ class AccountInvoice(models.Model):
 
             if inv.payment_term_id:
                 aux = inv.with_context(ctx).payment_term_id.with_context(
-                    currency_id=company_currency.id).compute(total, inv_date)
+                    currency_id=company_currency.id).compute(
+                    total, inv.pre_invoice_date)
+
                 lines = aux[0]
 
                 res_amount_currency = total_currency
-                ctx['date'] = inv_date
+                ctx['date'] = inv.pre_invoice_date
 
                 # Removemos as parcelas adicionadas anteriormente
                 inv.parcel_ids.unlink()

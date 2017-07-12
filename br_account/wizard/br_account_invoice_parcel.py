@@ -34,6 +34,5 @@ class BrAccountInvoiceParcelWizard(models.TransientModel):
 
         for inv in invoices:
 
-            inv.generate_parcel_entry(self.pre_invoice_date,
-                                      self.financial_operation_id,
+            inv.generate_parcel_entry(self.financial_operation_id,
                                       self.title_type_id)
