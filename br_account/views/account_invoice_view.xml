@@ -43,7 +43,7 @@
             </xpath>
             <page name="other_info" position="before">
                 <page name="parcelas" string="Parcelas" attrs="{'invisible': [('payment_term_id', '=', False)]}">
-                    <button name="action_create_periodic_entry"
+                    <button name="action_open_periodic_entry_wizard"
                             class="oe_highlight oe_edit_only"
                             type="object"
                             attrs="{'invisible': ['|',('state', '!=', 'draft'),('payment_term_id', '=', False)]}"

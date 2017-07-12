@@ -406,7 +406,7 @@ class AccountInvoice(models.Model):
         return ml_list
 
     @api.multi
-    def action_create_periodic_entry(self):
+    def action_open_periodic_entry_wizard(self):
         """Abre wizard para gerar pagamentos periodicos"""
         self.ensure_one()
         action = {
