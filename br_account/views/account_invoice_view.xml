@@ -19,7 +19,8 @@
                 <div class="oe_button_box" name="button_box">
                 </div>
             </xpath>
-            <field name="date_invoice" position="after">
+            <field name="date_invoice" position="replace">
+                <field name="date_invoice" invisible="1"/>
                 <field name="pre_invoice_date"/>
             </field>
             <field name="fiscal_position_id" position="replace"/>
