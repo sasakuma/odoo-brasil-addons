@@ -3,8 +3,6 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from datetime import datetime, timedelta
-
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from odoo.addons import decimal_precision as dp
@@ -153,9 +151,16 @@ class AccountInvoice(models.Model):
                                              'draft': [('readonly', False)],
                                          })
 
-    is_eletronic = fields.Boolean(
-        related='fiscal_document_id.electronic', type='boolean',
-        store=True, string=u'Eletrônico', readonly=True)
+    pre_invoice_date = fields.Date(string=u'Data da Pré-Fatura',
+                                   required=True,
+                                   default=fields.Date.today)
+
+    is_electronic = fields.Boolean(related='fiscal_document_id.electronic',
+                                   type='boolean',
+                                   store=True,
+                                   string=u'Eletrônico',
+                                   readonly=True,
+                                   oldname='is_eletronic')
 
     fiscal_document_related_ids = fields.One2many(
         'br_account.document.related', 'invoice_id',
@@ -328,8 +333,10 @@ class AccountInvoice(models.Model):
     def _onchange_br_account_fiscal_position_id(self):
         if self.fiscal_position_id and self.fiscal_position_id.account_id:
             self.account_id = self.fiscal_position_id.account_id.id
+
         if self.fiscal_position_id and self.fiscal_position_id.journal_id:
             self.journal_id = self.fiscal_position_id.journal_id
+
         ob_ids = [x.id for x in self.fiscal_position_id.fiscal_observation_ids]
         self.fiscal_observation_ids = [(6, False, ob_ids)]
 
@@ -376,19 +383,15 @@ class AccountInvoice(models.Model):
 
             # Calculamos a nova data de vencimento baseado na data
             # de validação da faturação, caso a parcela nao esteja
-            # marcada como 'data fixa'
-            if not parcel.pin_date:
-                d1 = datetime.strptime(fields.Date.today(), '%Y-%m-%d')
-                date_maturity = d1 + timedelta(days=parcel.amount_days)
-            else:
-                date_maturity = parcel.date_maturity
+            # marcada como 'data fixa'. A data da parcela também é atualizada
+            parcel.update_date_maturity(self.date_invoice)
 
             ml_list.append({
                 'type': 'dest',
                 'name': inv.name or '/',
                 'price': parcel.parceling_value,
                 'account_id': inv.account_id.id,
-                'date_maturity': date_maturity,
+                'date_maturity': parcel.date_maturity,
                 'amount_currency': diff_currency and amount_currency,
                 'currency_id': diff_currency and inv.currency_id.id,
                 'invoice_id': inv.id,
@@ -400,9 +403,14 @@ class AccountInvoice(models.Model):
         return ml_list
 
     @api.multi
-    def action_create_periodic_entry(self):
+    def action_open_periodic_entry_wizard(self):
         """Abre wizard para gerar pagamentos periodicos"""
         self.ensure_one()
+
+        if self.state != 'draft':
+            raise UserError('Parcelas podem ser criadas apenas quando a '
+                            'fatura estiver como "Provisório"')
+
         action = {
             'type': 'ir.actions.act_window',
             'res_model': 'br_account.invoice.parcel.wizard',
@@ -410,7 +418,7 @@ class AccountInvoice(models.Model):
             'view_mode': 'form',
             'context': {
                 'default_payment_term_id': self.payment_term_id.id,
-                'default_date_invoice': self.date_invoice,
+                'default_pre_invoice_date': self.pre_invoice_date,
             },
             'views': [(False, 'form')],
             'target': 'new',
@@ -552,3 +560,70 @@ class AccountInvoice(models.Model):
         res['fiscal_document_id'] = invoice.fiscal_document_id.id
         res['document_serie_id'] = invoice.document_serie_id.id
         return res
+
+    @api.multi
+    def generate_parcel_entry(self, financial_operation, title_type):
+        """Cria as parcelas da fatura."""
+
+        for inv in self:
+
+            ctx = dict(self._context, lang=inv.partner_id.lang)
+
+            if not inv.pre_invoice_date:
+                raise UserError(u'Nenhuma data fornecida como base para a '
+                                u'criação das parcelas!')
+
+            company_currency = inv.company_id.currency_id
+
+            # create move lines (one per invoice line + eventual taxes and
+            # analytic lines)
+            iml = inv.invoice_line_move_line_get()
+            iml += inv.tax_line_move_line_get()
+
+            diff_currency = inv.currency_id != company_currency
+
+            total, total_currency, iml = inv.with_context(
+                ctx).compute_invoice_totals(company_currency, iml)
+
+            if inv.payment_term_id:
+                aux = inv.with_context(ctx).payment_term_id.with_context(
+                    currency_id=company_currency.id).compute(
+                    total, inv.pre_invoice_date)
+
+                lines = aux[0]
+
+                res_amount_currency = total_currency
+                ctx['date'] = inv.pre_invoice_date
+
+                # Removemos as parcelas adicionadas anteriormente
+                inv.parcel_ids.unlink()
+
+                for i, t in enumerate(lines):
+                    if inv.currency_id != company_currency:
+                        amount_currency = \
+                            company_currency.with_context(ctx).compute(
+                                t[1], inv.currency_id)
+                    else:
+                        amount_currency = False
+
+                    # last line: add the diff
+                    res_amount_currency -= amount_currency or 0
+
+                    if i + 1 == len(lines):
+                        amount_currency += res_amount_currency
+
+                    values = {
+                        'name': str(i + 1).zfill(2),
+                        'parceling_value': t[1],
+                        'date_maturity': t[0],
+                        'financial_operation_id': financial_operation.id,
+                        'title_type_id': title_type.id,
+                        'company_currency_id': (diff_currency and
+                                                inv.currency_id.id),
+                        'invoice_id': inv.id,
+                    }
+
+                    obj = self.env['br_account.invoice.parcel'].create(values)
+                    # Chamamos o onchange para que a quantidade de dias seja
+                    # calculado
+                    obj._onchange_date_maturity()

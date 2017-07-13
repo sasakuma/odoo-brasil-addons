@@ -58,21 +58,12 @@ class BrAccountTestReconciliation(TestReconciliation):
 
         # Criamos as parcelas da invoice para que seja possivel criar um
         # lancamento de diario balanceado
-        title_type_id = self.env.ref('br_account.account_title_type_2').id
+        title_type_id = self.env.ref('br_account.account_title_type_2')
         financial_operation_id = \
-            self.env.ref('br_account.account_financial_operation_6').id
+            self.env.ref('br_account.account_financial_operation_6')
 
-        values = {
-            'payment_term_id': invoice.payment_term_id.id,
-            'date_invoice': invoice.date_invoice,
-            'financial_operation_id': financial_operation_id,
-            'title_type_id': title_type_id,
-        }
-
-        wiz = self.env['br_account.invoice.parcel.wizard'].create(values)
-
-        wiz.with_context(
-            active_ids=[invoice.id]).action_generate_parcel_entry()
+        # Criamos as parcelas
+        invoice.generate_parcel_entry(financial_operation_id, title_type_id)
 
         # validate invoice
         invoice.action_invoice_open()

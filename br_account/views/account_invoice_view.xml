@@ -19,12 +19,16 @@
                 <div class="oe_button_box" name="button_box">
                 </div>
             </xpath>
+            <field name="date_invoice" position="replace">
+                <field name="date_invoice" invisible="1"/>
+                <field name="pre_invoice_date"/>
+            </field>
             <field name="fiscal_position_id" position="replace"/>
             <field name="payment_term_id" position="after">
                 <field name="fiscal_position_id" required="1"/>
             </field>
             <field name="date_invoice" position="before">
-                <field name="is_eletronic" invisible="1" />
+                <field name="is_electronic" invisible="1" />
                 <field name="fiscal_document_id" />
                 <field name="document_serie_id" />
             </field>
@@ -40,7 +44,8 @@
             </xpath>
             <page name="other_info" position="before">
                 <page name="parcelas" string="Parcelas" attrs="{'invisible': [('payment_term_id', '=', False)]}">
-                    <button name="action_create_periodic_entry"
+                    <separator/>
+                    <button name="action_open_periodic_entry_wizard"
                             class="oe_highlight oe_edit_only"
                             type="object"
                             attrs="{'invisible': ['|',('state', '!=', 'draft'),('payment_term_id', '=', False)]}"
@@ -157,7 +162,7 @@
                 <field name="fiscal_position_id" />
             </field>
             <field name="date_invoice" position="after">
-                <field name="is_eletronic" invisible="1" />
+                <field name="is_electronic" invisible="1" />
                 <field name="issuer" />
                 <field name="fiscal_document_id" attrs="{'invisible': [('issuer','=', '0')]}" />
                 <field name="document_serie_id" attrs="{'invisible': [('issuer','=', '0')]}" />
