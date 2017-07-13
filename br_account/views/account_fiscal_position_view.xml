@@ -7,51 +7,51 @@
         <field name="arch" type="xml">
             <form>
                 <group>
-                    <field name="name" />
-                    <field name="fiscal_position_id" invisible="1" />
-                    <field name="domain" invisible="1" />
+                    <field name="name"/>
+                    <field name="fiscal_position_id" invisible="1"/>
+                    <field name="domain" invisible="1"/>
                 </group>
                 <group string="Usar a seguinte tributação">
                     <group>
-                        <field name="tax_id" domain="[('domain', '=', domain)]" />
+                        <field name="tax_id" domain="[('domain', '=', domain)]"/>
                     </group>
                     <group>
-                        <field name="cst_icms" attrs="{'invisible': [('domain', '!=', 'icms')]}" />
-                        <field name="csosn_icms" attrs="{'invisible': [('domain', '!=', 'simples')]}" />
-                        <field name="cst_ipi" attrs="{'invisible': [('domain', '!=', 'ipi')]}" />
-                        <field name="cst_pis" attrs="{'invisible': [('domain', '!=', 'pis')]}" />
-                        <field name="cst_cofins" attrs="{'invisible': [('domain', '!=', 'cofins')]}" />
+                        <field name="cst_icms" attrs="{'invisible': [('domain', '!=', 'icms')]}"/>
+                        <field name="csosn_icms" attrs="{'invisible': [('domain', '!=', 'simples')]}"/>
+                        <field name="cst_ipi" attrs="{'invisible': [('domain', '!=', 'ipi')]}"/>
+                        <field name="cst_pis" attrs="{'invisible': [('domain', '!=', 'pis')]}"/>
+                        <field name="cst_cofins" attrs="{'invisible': [('domain', '!=', 'cofins')]}"/>
                     </group>
                     <group>
-                        <field name="issqn_tipo" attrs="{'invisible': [('domain', '!=', 'issqn')], 'required': [('domain', '==', 'issqn')]}" />
+                        <field name="issqn_tipo" attrs="{'invisible': [('domain', '!=', 'issqn')], 'required': [('domain', '==', 'issqn')]}"/>
                     </group>
                 </group>
                 <group name="icms" attrs="{'invisible': [('domain', 'not in', ('icms', 'simples'))]}">
                     <group>
-                        <field name="cfop_id"  />
-                        <field name="tax_icms_st_id" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90')), ('csosn_icms', 'not in', ('201', '202', '203', '900'))]}" />
-                        <field name="reducao_icms_st" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90')), ('csosn_icms', 'not in', ('201', '202', '203', '900'))]}" />
-                        <field name="tem_difal" />
-                        <field name="tax_icms_intra_id" attrs="{'invisible': ['|', ('tem_difal', '=', False), ('domain', '=', 'simples')]}" />
+                        <field name="cfop_id"/>
+                        <field name="tax_icms_st_id" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90')), ('csosn_icms', 'not in', ('201', '202', '203', '900'))]}"/>
+                        <field name="reducao_icms_st" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90')), ('csosn_icms', 'not in', ('201', '202', '203', '900'))]}"/>
+                        <field name="tem_difal"/>
+                        <field name="tax_icms_intra_id" attrs="{'invisible': ['|', ('tem_difal', '=', False), ('domain', '=', 'simples')]}"/>
                     </group>
                     <group>
-                        <field name="incluir_ipi_base" attrs="{'invisible': [('domain', '=', 'simples')]}" />
-                        <field name="icms_aliquota_credito" attrs="{'invisible': [('domain', '!=', 'simples')]}" />
-                        <field name="reducao_icms" attrs="{'invisible': [('cst_icms', 'not in', ('20', '70', '90'))]}" />
-                        <field name="aliquota_mva" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90')), ('csosn_icms', 'not in', ('201', '202', '203', '900'))]}" />
-                        <field name="icms_st_aliquota_deducao" attrs="{'invisible': [('csosn_icms', 'not in', ('201', '202', '203', '900'))]}" />
-                        <field name="tax_icms_inter_id" attrs="{'invisible': [('tem_difal', '=', False)]}" />
-                        <field name="tax_icms_fcp_id" attrs="{'invisible': ['|', ('tem_difal', '=', False), ('domain', '=', 'simples')]}" />
+                        <field name="incluir_ipi_base" attrs="{'invisible': [('domain', '=', 'simples')]}"/>
+                        <field name="icms_aliquota_credito" attrs="{'invisible': [('domain', '!=', 'simples')]}"/>
+                        <field name="reducao_icms" attrs="{'invisible': [('cst_icms', 'not in', ('20', '70', '90'))]}"/>
+                        <field name="aliquota_mva" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90')), ('csosn_icms', 'not in', ('201', '202', '203', '900'))]}"/>
+                        <field name="icms_st_aliquota_deducao" attrs="{'invisible': [('csosn_icms', 'not in', ('201', '202', '203', '900'))]}"/>
+                        <field name="tax_icms_inter_id" attrs="{'invisible': [('tem_difal', '=', False)]}"/>
+                        <field name="tax_icms_fcp_id" attrs="{'invisible': ['|', ('tem_difal', '=', False), ('domain', '=', 'simples')]}"/>
                     </group>
                 </group>
                 <group name="ipi" attrs="{'invisible': [('domain', '!=', 'ipi')]}">
                     <group>
-                        <field name="reducao_ipi" />
+                        <field name="reducao_ipi"/>
                     </group>
                     <group></group>
                 </group>
                 <group string="Aplicar esta regra quando:">
-                    <field name="tipo_produto" />
+                    <field name="tipo_produto"/>
                 </group>
                 <group string="Estados">
                     <field name="state_ids" widget="many2many_tags" nolabel="1"/>
@@ -60,7 +60,7 @@
                     <field name="product_category_ids" widget="many2many_tags" nolabel="1"/>
                 </group>
                 <group string="Produtos">
-                    <field name="product_ids" widget="many2many_tags" nolabel="1" domain="[('fiscal_type', '=', tipo_produto)]"/>
+                    <field name="product_ids" widget="many2many_tags" nolabel="1"/>
                 </group>
                 <group string="Parceiros">
                     <field name="partner_ids" widget="many2many_tags" nolabel="1"/>
@@ -75,8 +75,8 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="sequence" widget="handle"/>
-                <field name="name" />
-                <field name="tax_id" />
+                <field name="name"/>
+                <field name="tax_id"/>
             </tree>
         </field>
     </record>
@@ -88,14 +88,14 @@
         <field name="arch" type="xml">
             <xpath expr="//page[@name='account_mapping']/group" position="before">
                 <group>
-                    <field name="journal_id" placeholder="Este diário vai ser usado no faturamento" />
-                    <field name="account_id" placeholder="Esta conta vai ser usada para faturamento" />
+                    <field name="journal_id" placeholder="Este diário vai ser usado no faturamento"/>
+                    <field name="account_id" placeholder="Esta conta vai ser usada para faturamento"/>
                 </group>
             </xpath>
             <xpath expr="//page[@name='account_mapping']" position="after">
                 <page name="notes" string="Observações Fiscais">
                     <group string="Observações">
-                        <field name="fiscal_observation_ids" nolabel="1" />
+                        <field name="fiscal_observation_ids" nolabel="1"/>
                     </group>
                 </page>
             </xpath>
@@ -111,19 +111,19 @@
                     </group>
                 </group>
             </group>
-            <field name="vat_required" position="attributes" >
+            <field name="vat_required" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
-            <field name="zip_from" position="attributes" >
+            <field name="zip_from" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
-            <field name="zip_to" position="attributes" >
+            <field name="zip_to" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
-            <xpath expr="//group/group/div" position="attributes" >
+            <xpath expr="//group/group/div" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//group/group/label" position="attributes" >
+            <xpath expr="//group/group/label" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
             <page name="tax_mapping" position="attributes">
@@ -131,18 +131,18 @@
             </page>
             <page name="tax_mapping" position="before">
                 <page string="Regras de Impostos">
-                    <group name="icms_rules" string="Regras de ICMS" attrs="{'invisible': [('position_type', '!=', 'product')]}">
+                    <group name="icms_rules" string="Regras de ICMS">
                         <field nolabel="1" name="icms_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'icms'}">
                             <tree>
                                 <field name="sequence" widget="handle"/>
-                                <field name="name" />
-                                <field name="tax_id" />
-                                <field name="cfop_id" />
-                                <field name="cst_icms" />
-                                <field name="reducao_icms" />
-                                <field name="tax_icms_st_id" />
-                                <field name="reducao_icms_st" />
-                                <field name="aliquota_mva" />
+                                <field name="name"/>
+                                <field name="tax_id"/>
+                                <field name="cfop_id"/>
+                                <field name="cst_icms"/>
+                                <field name="reducao_icms"/>
+                                <field name="tax_icms_st_id"/>
+                                <field name="reducao_icms_st"/>
+                                <field name="aliquota_mva"/>
                             </tree>
                         </field>
                     </group>
@@ -150,24 +150,24 @@
                         <field nolabel="1" name="simples_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'simples', 'default_tipo_produto': 'product'}">
                             <tree>
                                 <field name="sequence" widget="handle"/>
-                                <field name="name" />
-                                <field name="tax_id" />
-                                <field name="cfop_id" />
-                                <field name="csosn_icms" />
-                                <field name="icms_aliquota_credito" />
-                                <field name="tem_difal" />
-                                <field name="tax_icms_inter_id" />
+                                <field name="name"/>
+                                <field name="tax_id"/>
+                                <field name="cfop_id"/>
+                                <field name="csosn_icms"/>
+                                <field name="icms_aliquota_credito"/>
+                                <field name="tem_difal"/>
+                                <field name="tax_icms_inter_id"/>
                             </tree>
                         </field>
                     </group>
-                    <group name="ipi_rules" string="Regras de IPI" attrs="{'invisible': [('position_type', '!=', 'product')]}">
+                    <group name="ipi_rules" string="Regras de IPI">
                         <field nolabel="1" name="ipi_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'ipi', 'default_tipo_produto': 'product'}">
                             <tree>
                                 <field name="sequence" widget="handle"/>
-                                <field name="name" />
-                                <field name="tax_id" />
-                                <field name="cst_ipi" />
-                                <field name="reducao_ipi" />
+                                <field name="name"/>
+                                <field name="tax_id"/>
+                                <field name="cst_ipi"/>
+                                <field name="reducao_ipi"/>
                             </tree>
                         </field>
                     </group>
@@ -175,9 +175,9 @@
                         <field nolabel="1" name="pis_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'pis', 'default_tipo_produto': 'service'}">
                             <tree>
                                 <field name="sequence" widget="handle"/>
-                                <field name="name" />
-                                <field name="tax_id" />
-                                <field name="cst_pis" />
+                                <field name="name"/>
+                                <field name="tax_id"/>
+                                <field name="cst_pis"/>
                             </tree>
                         </field>
                     </group>
@@ -185,26 +185,26 @@
                         <field nolabel="1" name="cofins_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'cofins'}">
                             <tree>
                                 <field name="sequence" widget="handle"/>
-                                <field name="name" />
-                                <field name="tax_id" />
-                                <field name="cst_cofins" />
+                                <field name="name"/>
+                                <field name="tax_id"/>
+                                <field name="cst_cofins"/>
                             </tree>
                         </field>
                     </group>
-                    <group name="issqn_rules" string="Regras ISSQN" attrs="{'invisible': [('position_type', '!=', 'service')]}">
+                    <group name="issqn_rules" string="Regras ISSQN">
                         <field nolabel="1" name="issqn_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'issqn', 'default_tipo_produto': 'service'}"/>
                     </group>
-                    <group name="irrf_rules" string="Regras de IRRF" attrs="{'invisible': [('position_type', '!=', 'product')]}">
-                        <field nolabel="1" name="irrf_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'irrf'}" />
+                    <group name="irrf_rules" string="Regras de IRRF">
+                        <field nolabel="1" name="irrf_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'irrf'}"/>
                     </group>
-                    <group name="inss_rules" string="Regras de INSS" attrs="{'invisible': [('position_type', '!=', 'product')]}">
-                        <field nolabel="1" name="inss_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'inss'}" />
+                    <group name="inss_rules" string="Regras de INSS">
+                        <field nolabel="1" name="inss_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'inss'}"/>
                     </group>
-                    <group name="csll_rules" string="Regras de CSLL" attrs="{'invisible': [('position_type', '!=', 'product')]}">
-                        <field nolabel="1" name="csll_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'csll'}" />
+                    <group name="csll_rules" string="Regras de CSLL">
+                        <field nolabel="1" name="csll_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'csll'}"/>
                     </group>
                     <group name="ii_rules" string="Regras de II">
-                        <field nolabel="1" name="ii_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'ii'}" />
+                        <field nolabel="1" name="ii_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'ii'}"/>
                     </group>
                 </page>
             </page>
