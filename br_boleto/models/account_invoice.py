@@ -53,9 +53,9 @@ class AccountInvoice(models.Model):
                     error += u'Cliente - Estado\n'
 
                 # if item.number and len(item.number) > 12:
-                #     error += u'Numeração da fatura deve ser menor que 12 ' + \
-                #         'caracteres quando usado boleto\n'
-                #     print(item.number)
+                # error += u'Numeração da fatura deve ser menor que 12 ' + \
+                # 'caracteres quando usado boleto\n'
+                # print(item.number)
 
                 if len(error) > 0:
                     raise UserError(u"""Ação Bloqueada!
