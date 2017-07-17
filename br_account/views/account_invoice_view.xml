@@ -21,7 +21,7 @@
             </xpath>
             <field name="date_invoice" position="replace">
                 <field name="date_invoice" invisible="1"/>
-                <field name="pre_invoice_date"/>
+                <field name="pre_invoice_date" attrs="{'readonly':[('state','!=','draft')]}"/>
             </field>
             <field name="fiscal_position_id" position="replace"/>
             <field name="payment_term_id" position="after">
@@ -55,7 +55,7 @@
                         <tree name="parcelas" string="Parcelas" colors="red:date_maturity&lt;current_date" editable="bottom">
                             <field name="invoice_id" invisible="1"/>
                             <field name="date_maturity"/>
-                            <field name="name"/>
+                            <field name="name" string="Parcela"/>
                             <field name="parceling_value"/>
                             <field name="financial_operation_id"/>
                             <field name="title_type_id"/>
