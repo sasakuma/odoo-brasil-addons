@@ -58,8 +58,8 @@
                               editable="bottom">
                             <field name="invoice_id" invisible="1"/>
                             <field name="date_maturity"/>
-                            <field name="name" string="Parcela"/>
-                            <field name="parceling_value"/>
+                            <field name="name"/>
+                            <field name="parceling_value" sum="Valor Total"/>
                             <field name="financial_operation_id"/>
                             <field name="title_type_id"/>
                             <field name="pin_date"/>

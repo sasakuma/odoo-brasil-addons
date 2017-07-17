@@ -339,7 +339,7 @@ class BrAccountInvoiceParcel(models.Model):
     _name = 'br_account.invoice.parcel'
     _description = 'Classe que representa as parcelas da Fatura'
 
-    name = fields.Char(string='Name')
+    name = fields.Char(string='Parcela')
 
     invoice_id = fields.Many2one(comodel_name='account.invoice',
                                  string='Invoice')

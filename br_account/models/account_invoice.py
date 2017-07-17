@@ -6,6 +6,7 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from odoo.addons import decimal_precision as dp
+from odoo.tools import float_compare
 
 
 class AccountInvoice(models.Model):
@@ -425,6 +426,37 @@ class AccountInvoice(models.Model):
         }
 
         return action
+
+    @api.multi
+    def action_invoice_open(self):
+
+        if self.action_compare_total_parcel_value:
+            return super(AccountInvoice, self).action_invoice_open()
+        else:
+            raise UserError(_('O valor total da fatura e total das '
+                              'parcelas divergem! Por favor, gere as '
+                              'parcelas novamente.'))
+
+    @api.multi
+    def action_compare_total_parcel_value(self):
+
+        if self.parcel_ids:
+
+            # Obtemos o total dos valores da parcela
+            total = sum([p.parceling_value for p in self.parcel_ids])
+
+            # Obtemos a precisao configurada
+            prec = self.env['decimal.precision'].precision_get('Account')
+
+            # Comparamos o valor total da invoice e das parcelas
+            # a fim de verificar se os valores sao os mesmos
+            # float_compare retorna 0, se os valores forem iguais
+            # float_compare retorna -1, se amount_total for menor que total
+            # float_compare retorna 1, se amount_total for maior que total
+            if float_compare(self.amount_total, total, precision_digits=prec):
+                return False
+
+        return True
 
     @api.multi
     def action_invoice_cancel_paid(self):
