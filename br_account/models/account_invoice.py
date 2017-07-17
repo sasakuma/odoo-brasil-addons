@@ -430,6 +430,16 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_invoice_open(self):
 
+        if self.action_compare_total_parcel_value:
+            return super(AccountInvoice, self).action_invoice_open()
+        else:
+            raise UserError(_('O valor total da fatura e total das '
+                              'parcelas divergem! Por favor, gere as '
+                              'parcelas novamente.'))
+
+    @api.multi
+    def action_compare_total_parcel_value(self):
+
         if self.parcel_ids:
 
             # Obtemos o total dos valores da parcela
@@ -444,11 +454,9 @@ class AccountInvoice(models.Model):
             # float_compare retorna -1, se amount_total for menor que total
             # float_compare retorna 1, se amount_total for maior que total
             if float_compare(self.amount_total, total, precision_digits=prec):
-                raise UserError(_('O valor total da fatura e total das '
-                                  'parcelas divergem! Por favor, gere as '
-                                  'parcelas novamente.'))
+                return False
 
-        return super(AccountInvoice, self).action_invoice_open()
+        return True
 
     @api.multi
     def action_invoice_cancel_paid(self):
