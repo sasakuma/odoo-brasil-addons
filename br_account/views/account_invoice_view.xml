@@ -21,26 +21,27 @@
             </xpath>
             <field name="date_invoice" position="replace">
                 <field name="date_invoice" invisible="1"/>
-                <field name="pre_invoice_date"/>
+                <field name="pre_invoice_date" attrs="{'readonly':[('state','!=','draft')]}"/>
             </field>
             <field name="fiscal_position_id" position="replace"/>
             <field name="payment_term_id" position="after">
                 <field name="fiscal_position_id" required="1"/>
             </field>
             <field name="date_invoice" position="before">
-                <field name="is_electronic" invisible="1" />
-                <field name="fiscal_document_id" />
-                <field name="document_serie_id" />
+                <field name="is_electronic" invisible="1"/>
+                <field name="fiscal_document_id"/>
+                <field name="document_serie_id"/>
             </field>
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
                 <attribute name="editable"></attribute>
             </xpath>
-            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='invoice_line_tax_ids']" position="attributes">
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='invoice_line_tax_ids']"
+                   position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
-                <field name="valor_bruto" invisible="1" />
-                <field name="valor_desconto" invisible="1" />
+                <field name="valor_bruto" invisible="1"/>
+                <field name="valor_desconto" invisible="1"/>
             </xpath>
             <page name="other_info" position="before">
                 <page name="parcelas" string="Parcelas" attrs="{'invisible': [('payment_term_id', '=', False)]}">
@@ -51,8 +52,10 @@
                             attrs="{'invisible': ['|',('state', '!=', 'draft'),('payment_term_id', '=', False)]}"
                             string="Gerar Parcelas"/>
                     <separator/>
-                    <field nolabel="1" name="parcel_ids" attrs="{'required': [('payment_term_id', '!=', False)], 'invisible': [('payment_term_id', '=', False)]}">
-                        <tree name="parcelas" string="Parcelas" colors="red:date_maturity&lt;current_date" editable="bottom">
+                    <field nolabel="1" name="parcel_ids"
+                           attrs="{'required': [('payment_term_id', '!=', False)], 'invisible': [('payment_term_id', '=', False)]}">
+                        <tree name="parcelas" string="Parcelas" colors="red:date_maturity&lt;current_date"
+                              editable="bottom">
                             <field name="invoice_id" invisible="1"/>
                             <field name="date_maturity"/>
                             <field name="name"/>
@@ -67,14 +70,15 @@
             </page>
             <page name="other_info" position="after">
                 <page name="vencimentos" string="Títulos">
-                    <field nolabel="1" name="receivable_move_line_ids" >
-                        <tree name="vencimentos" string="Vencimentos" colors="grey:reconciled==True;red:date_maturity&lt;current_date">
+                    <field nolabel="1" name="receivable_move_line_ids">
+                        <tree name="vencimentos" string="Vencimentos"
+                              colors="grey:reconciled==True;red:date_maturity&lt;current_date">
                             <field name="date_maturity"/>
                             <field name="name"/>
                             <field name="ref"/>
                             <field name="debit"/>
                             <field name="credit"/>
-                            <field name="reconciled" string="Pago" />
+                            <field name="reconciled" string="Pago"/>
                         </tree>
                     </field>
                 </page>
@@ -93,22 +97,32 @@
                         </tree>
                         <form string="Documentos Fiscais">
                             <group>
-                                <field name="invoice_related_id" />
+                                <field name="invoice_related_id"/>
                             </group>
                             <group>
                                 <field name="document_type"/>
                             </group>
-                            <group string="NF-e/CT-e" attrs="{'invisible': [('document_type','in', ('nf', 'nfrural', 'cf', False))]}">
+                            <group string="NF-e/CT-e"
+                                   attrs="{'invisible': [('document_type','in', ('nf', 'nfrural', 'cf', False))]}">
                                 <field name="access_key"/>
                             </group>
-                            <group string="Nota Fiscal/Produtor/Cupom Fiscal" attrs="{'invisible': [('document_type', 'in', ('nfe','cte', False))]}">
-                                <field name="serie" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural', 'cf'))]}"/>
-                                <field name="internal_number" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural', 'cf'))]}"/>
-                                <field name="fiscal_document_id" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural', 'cf'))]}"/>
-                                <field name="state_id" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural'))], 'invisible': [('document_type', '=', 'cf')]}" options="{'no_create': True, 'no_create_edit': True}" />
-                                <field name="date" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural'))], 'invisible': [('document_type', '=', 'cf')]}"/>
-                                <field name="cpfcnpj_type" attrs="{'required': [('document_type', 'in', ('nfrural'))], 'invisible': [('document_type', '!=', 'nfrural')]}"/>
-                                <field name="cnpj_cpf" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural'))], 'invisible': [('document_type', '=', 'cf')]}"/>
+                            <group string="Nota Fiscal/Produtor/Cupom Fiscal"
+                                   attrs="{'invisible': [('document_type', 'in', ('nfe','cte', False))]}">
+                                <field name="serie"
+                                       attrs="{'required': [('document_type', 'in', ('nf', 'nfrural', 'cf'))]}"/>
+                                <field name="internal_number"
+                                       attrs="{'required': [('document_type', 'in', ('nf', 'nfrural', 'cf'))]}"/>
+                                <field name="fiscal_document_id"
+                                       attrs="{'required': [('document_type', 'in', ('nf', 'nfrural', 'cf'))]}"/>
+                                <field name="state_id"
+                                       attrs="{'required': [('document_type', 'in', ('nf', 'nfrural'))], 'invisible': [('document_type', '=', 'cf')]}"
+                                       options="{'no_create': True, 'no_create_edit': True}"/>
+                                <field name="date"
+                                       attrs="{'required': [('document_type', 'in', ('nf', 'nfrural'))], 'invisible': [('document_type', '=', 'cf')]}"/>
+                                <field name="cpfcnpj_type"
+                                       attrs="{'required': [('document_type', 'in', ('nfrural'))], 'invisible': [('document_type', '!=', 'nfrural')]}"/>
+                                <field name="cnpj_cpf"
+                                       attrs="{'required': [('document_type', 'in', ('nf', 'nfrural'))], 'invisible': [('document_type', '=', 'cf')]}"/>
                                 <field name="inscr_est" attrs="{'invisible': [('document_type', '!=', 'nfrural')]}"/>
                             </group>
                         </form>
@@ -131,7 +145,7 @@
                 <attribute name="invisible">1</attribute>
             </field>
             <field name="amount_tax" position="before">
-                <field name="total_bruto"  widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_bruto" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="total_desconto" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="total_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
             </field>
@@ -144,7 +158,8 @@
         <field name="inherit_id" ref="account_cancel.invoice_form_cancel_inherit"/>
         <field name="arch" type="xml">
             <button name="action_invoice_cancel" position="replace">
-                <button name="action_invoice_cancel_paid" type="object" states="draft,proforma2,open,paid" string="Cancelar Fatura" groups="account.group_account_invoice"/>
+                <button name="action_invoice_cancel_paid" type="object" states="draft,proforma2,open,paid"
+                        string="Cancelar Fatura" groups="account.group_account_invoice"/>
             </button>
         </field>
     </record>
@@ -152,7 +167,7 @@
     <record id="view_br_account_invoice_supplier_form" model="ir.ui.view">
         <field name="name">br_account.invoice.supplier.form</field>
         <field name="model">account.invoice</field>
-        <field name="inherit_id" ref="account.invoice_supplier_form" />
+        <field name="inherit_id" ref="account.invoice_supplier_form"/>
         <field name="arch" type="xml">
             <xpath expr="//sheet/div" position="before">
                 <div class="oe_button_box" name="button_box">
@@ -161,16 +176,16 @@
             <field name="fiscal_position_id" position="replace"/>
             <field name="payment_term_id" position="replace"/>
             <field name="partner_id" position="after">
-                <field name="payment_term_id" />
-                <field name="fiscal_position_id" />
+                <field name="payment_term_id"/>
+                <field name="fiscal_position_id"/>
             </field>
             <field name="date_invoice" position="after">
-                <field name="is_electronic" invisible="1" />
-                <field name="issuer" />
-                <field name="fiscal_document_id" attrs="{'invisible': [('issuer','=', '0')]}" />
-                <field name="document_serie_id" attrs="{'invisible': [('issuer','=', '0')]}" />
-                <field name="vendor_number" attrs="{'invisible': [('issuer','=', '1')]}" />
-                <field name="vendor_serie" attrs="{'invisible': [('issuer','=', '1')]}" />
+                <field name="is_electronic" invisible="1"/>
+                <field name="issuer"/>
+                <field name="fiscal_document_id" attrs="{'invisible': [('issuer','=', '0')]}"/>
+                <field name="document_serie_id" attrs="{'invisible': [('issuer','=', '0')]}"/>
+                <field name="vendor_number" attrs="{'invisible': [('issuer','=', '1')]}"/>
+                <field name="vendor_serie" attrs="{'invisible': [('issuer','=', '1')]}"/>
             </field>
             <field name="payment_term_id" position="attributes">
                 <attribute name="attrs"></attribute>
@@ -178,12 +193,13 @@
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
                 <attribute name="editable"></attribute>
             </xpath>
-            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='invoice_line_tax_ids']" position="attributes">
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='invoice_line_tax_ids']"
+                   position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
-                <field name="valor_bruto" invisible="1" />
-                <field name="valor_desconto" invisible="1" />
+                <field name="valor_bruto" invisible="1"/>
+                <field name="valor_desconto" invisible="1"/>
             </xpath>
             <page name="other_info" position="before">
                 <page name="parcelas" string="Parcelas" attrs="{'invisible': [('payment_term_id', '=', False)]}">
@@ -193,8 +209,10 @@
                             attrs="{'invisible': ['|',('state', '!=', 'draft'),('payment_term_id', '=', False)]}"
                             string="Gerar Parcelas"/>
                     <separator/>
-                    <field nolabel="1" name="parcel_ids" attrs="{'required': [('payment_term_id', '!=', False)], 'invisible': [('payment_term_id', '=', False)]}">
-                        <tree name="parcelas" string="Parcelas" colors="red:date_maturity&lt;current_date" editable="bottom">
+                    <field nolabel="1" name="parcel_ids"
+                           attrs="{'required': [('payment_term_id', '!=', False)], 'invisible': [('payment_term_id', '=', False)]}">
+                        <tree name="parcelas" string="Parcelas" colors="red:date_maturity&lt;current_date"
+                              editable="bottom">
                             <field name="invoice_id" invisible="1"/>
                             <field name="date_maturity"/>
                             <field name="name"/>
@@ -210,13 +228,14 @@
             <xpath expr="//notebook/page[@name='other_info']" position="after">
                 <page name="vencimentos" string="Vencimentos">
                     <field nolabel="1" name="payable_move_line_ids">
-                        <tree name="vencimentos" string="Vencimentos" colors="grey:reconciled==True;red:date_maturity&lt;current_date">
+                        <tree name="vencimentos" string="Vencimentos"
+                              colors="grey:reconciled==True;red:date_maturity&lt;current_date">
                             <field name="date_maturity"/>
                             <field name="name"/>
                             <field name="ref"/>
                             <field name="debit"/>
                             <field name="credit"/>
-                            <field name="reconciled" string="Pago" />
+                            <field name="reconciled" string="Pago"/>
                         </tree>
                     </field>
                 </page>
@@ -239,9 +258,9 @@
                 <attribute name="invisible">1</attribute>
             </field>
             <field name="amount_tax" position="before">
-                <field name="total_bruto"  widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_bruto" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="total_desconto" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="total_tax"  widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
             </field>
         </field>
     </record>
@@ -252,7 +271,8 @@
         <field name="inherit_id" ref="account_cancel.invoice_supplier_cancel_form_inherit"/>
         <field name="arch" type="xml">
             <button name="action_invoice_cancel" position="replace">
-                <button name="action_invoice_cancel_paid" type="object" states="draft,proforma2,open,paid" string="Cancelar Fatura" groups="account.group_account_invoice"/>
+                <button name="action_invoice_cancel_paid" type="object" states="draft,proforma2,open,paid"
+                        string="Cancelar Fatura" groups="account.group_account_invoice"/>
             </button>
         </field>
     </record>
@@ -261,11 +281,11 @@
     <record model="ir.ui.view" id="br_account_product_invoice_line_tree">
         <field name="name">br_account_product.invoice.line.tree</field>
         <field name="model">account.invoice.line</field>
-        <field name="inherit_id" ref="account.view_invoice_line_tree" />
+        <field name="inherit_id" ref="account.view_invoice_line_tree"/>
         <field name="priority">26</field>
         <field name="arch" type="xml">
             <field name="account_id" position="replace">
-                <field name="cfop_id" />
+                <field name="cfop_id"/>
             </field>
         </field>
     </record>
@@ -274,7 +294,7 @@
     <record model="ir.ui.view" id="view_br_account_invoice_line_form">
         <field name="name">br_account.invoice.line.form</field>
         <field name="model">account.invoice.line</field>
-        <field name="inherit_id" ref="account.view_invoice_line_form" />
+        <field name="inherit_id" ref="account.view_invoice_line_form"/>
         <field name="priority">36</field>
         <field name="arch" type="xml">
             <form position="replace">
@@ -283,34 +303,37 @@
                         <page string="Geral">
                             <group>
                                 <group>
-                                    <field name="invoice_id" invisible="1" />
+                                    <field name="invoice_id" invisible="1"/>
                                     <field name="fiscal_position_id" invisible="1"/>
                                     <field name="fiscal_position_type" invisible="1"/>
-                                    <field name="product_id" required="1" domain="[('fiscal_type', '=', fiscal_position_type)]"/>
+                                    <field name="product_id" required="1"
+                                           domain="[('fiscal_type', '=', fiscal_position_type)]"/>
                                     <field name="product_type" invisible="1"/>
                                     <field name="company_fiscal_type" invisible="1"/>
                                     <label for="quantity"/>
                                     <div>
                                         <field name="quantity" class="oe_inline"/>
                                     </div>
-                                     <field name="uom_id" groups="product.group_uom"/>
+                                    <field name="uom_id" groups="product.group_uom"/>
                                     <field name="price_unit"/>
-                                    <field name="discount" groups="sale.group_discount_per_so_line" string="(-) Desconto (%)"/>
-                                    <field name="price_subtotal" string="(=) Valor Líquido" />
+                                    <field name="discount" groups="sale.group_discount_per_so_line"
+                                           string="(-) Desconto (%)"/>
+                                    <field name="price_subtotal" string="(=) Valor Líquido"/>
                                 </group>
                                 <group>
-                                    <field name="cfop_id" attrs="{'invisible': [('fiscal_position_type', '=', 'service')]}"/>
-                                    <field name="fiscal_classification_id" attrs="{'invisible': [('fiscal_position_type', '=', 'service')]}"/>
-                                    <field domain="[('user_type_id', '&lt;&gt;', 'view')]" name="account_id" groups="account.group_account_user"/>
-                                    <field domain="[('company_id', '=', parent.company_id)]" name="account_analytic_id" groups="analytic.group_analytic_accounting"/>
+                                    <field name="cfop_id"
+                                           attrs="{'invisible': [('fiscal_position_type', '=', 'service')]}"/>
+                                    <field name="fiscal_classification_id"
+                                           attrs="{'invisible': [('fiscal_position_type', '=', 'service')]}"/>
+                                    <field domain="[('user_type_id', '&lt;&gt;', 'view')]" name="account_id"
+                                           groups="account.group_account_user"/>
+                                    <field domain="[('company_id', '=', parent.company_id)]" name="account_analytic_id"
+                                           groups="analytic.group_analytic_accounting"/>
                                     <field name="company_id" groups="base.group_multi_company" readonly="1"/>
-                                    <field name="invoice_line_tax_ids" invisible="1" />
-                                    <field name="tax_simples_id" attrs="{'invisible': [('company_fiscal_type', '==', '3')]}" />
-                                    <field name="tributos_estimados_federais" />
-                                    <field name="tributos_estimados_estaduais" />
-                                    <field name="tributos_estimados_municipais" />
-                                    <field name="tributos_estimados" />
-                                    <field name="calculate_tax" invisible="1" />
+                                    <field name="invoice_line_tax_ids" invisible="1"/>
+                                    <field name="tax_simples_id"
+                                           attrs="{'invisible': [('company_fiscal_type', '==', '3')]}"/>
+                                    <field name="calculate_tax" invisible="1"/>
                                 </group>
                             </group>
                             <label for="name"/>
@@ -321,22 +344,26 @@
                         <page name="icms" string="ICMS" attrs="{'invisible': [('product_type', '!=', 'product')]}">
                             <group name="detalhes_icms" string="Detalhes do ICMS">
                                 <group>
-                                    <field name="icms_cst_normal" attrs="{'invisible': [('company_fiscal_type', '!=', '3')] }" />
-                                    <field name="icms_csosn_simples" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
+                                    <field name="icms_cst_normal"
+                                           attrs="{'invisible': [('company_fiscal_type', '!=', '3')] }"/>
+                                    <field name="icms_csosn_simples"
+                                           attrs="{'invisible': [('company_fiscal_type', '==', '3')] }"/>
                                     <field name="icms_origem"/>
                                     <field name="icms_tipo_base" invisible="1"/>
-                                    <field name="incluir_ipi_base" />
-                                    <field name="tem_difal" />
+                                    <field name="incluir_ipi_base"/>
+                                    <field name="tem_difal"/>
                                 </group>
                                 <group>
-                                    <field name="icms_rule_id" />
+                                    <field name="icms_rule_id"/>
                                     <field name="icms_base_calculo"/>
                                     <field name="icms_aliquota_reducao_base"/>
-                                    <field name="tax_icms_id" />
+                                    <field name="tax_icms_id"/>
                                     <field name="icms_aliquota" invisible="1"/>
                                     <field name="icms_valor"/>
-                                    <field name="icms_aliquota_credito" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
-                                    <field name="icms_valor_credito" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
+                                    <field name="icms_aliquota_credito"
+                                           attrs="{'invisible': [('company_fiscal_type', '==', '3')] }"/>
+                                    <field name="icms_valor_credito"
+                                           attrs="{'invisible': [('company_fiscal_type', '==', '3')] }"/>
                                 </group>
                             </group>
                             <group name="substituicao_icms" string="Substituição Tributária ICMS">
@@ -345,30 +372,32 @@
                                     <field name="icms_st_aliquota_mva"/>
                                     <field name="icms_st_base_calculo"/>
                                     <field name="icms_st_aliquota_reducao_base"/>
-                                    <field name="tax_icms_st_id" />
+                                    <field name="tax_icms_st_id"/>
                                     <field name="icms_st_aliquota" invisible="1"/>
-                                    <field name="icms_st_aliquota_deducao" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
+                                    <field name="icms_st_aliquota_deducao"
+                                           attrs="{'invisible': [('company_fiscal_type', '==', '3')] }"/>
                                     <field name="icms_st_valor"/>
                                 </group>
                                 <group name="icms_interestaual" attrs="{'invisible': [('tem_difal', '==', False)] }">
-                                    <field name="icms_bc_uf_dest" />
-                                    <field name="tax_icms_inter_id" />
-                                    <field name="tax_icms_intra_id" />
-                                    <field name="tax_icms_fcp_id" />
-                                    <field name="icms_aliquota_inter_part" />
-                                    <field name="icms_fcp_uf_dest" />
-                                    <field name="icms_uf_dest" />
-                                    <field name="icms_uf_remet" />
+                                    <field name="icms_bc_uf_dest"/>
+                                    <field name="tax_icms_inter_id"/>
+                                    <field name="tax_icms_intra_id"/>
+                                    <field name="tax_icms_fcp_id"/>
+                                    <field name="icms_aliquota_inter_part"/>
+                                    <field name="icms_fcp_uf_dest"/>
+                                    <field name="icms_uf_dest"/>
+                                    <field name="icms_uf_remet"/>
                                 </group>
                             </group>
                         </page>
                         <page name="issqn" string="ISSQN" attrs="{'invisible': [('product_type','!=', 'service')]}">
                             <group>
-                                <field name="tax_issqn_id" />
+                                <field name="tax_issqn_id"/>
                                 <field name="issqn_tipo"/>
                                 <field name="issqn_base_calculo"/>
-                                <field name="issqn_aliquota" invisible="1" />
-                                <field name="service_type_id" attrs="{'required': [('product_type','=', 'service')]}" domain="[('internal_type','=','normal')]"/>
+                                <field name="issqn_aliquota" invisible="1"/>
+                                <field name="service_type_id" attrs="{'required': [('product_type','=', 'service')]}"
+                                       domain="[('internal_type','=','normal')]"/>
                                 <field name="issqn_valor"/>
                             </group>
                         </page>
@@ -377,12 +406,12 @@
                                 <group>
                                     <field name="ipi_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
                                     <field name="ipi_tipo"/>
-                                    <field name="ipi_rule_id" />
+                                    <field name="ipi_rule_id"/>
                                 </group>
                                 <group>
                                     <field name="ipi_base_calculo"/>
                                     <field name="ipi_reducao_bc"/>
-                                    <field name="tax_ipi_id" />
+                                    <field name="tax_ipi_id"/>
                                     <field name="ipi_aliquota" invisible="1"/>
                                     <field name="ipi_valor"/>
                                 </group>
@@ -393,11 +422,11 @@
                                 <group>
                                     <field name="pis_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
                                     <field name="pis_tipo"/>
-                                    <field name="pis_rule_id" />
+                                    <field name="pis_rule_id"/>
                                 </group>
                                 <group>
                                     <field name="pis_base_calculo"/>
-                                    <field name="tax_pis_id" />
+                                    <field name="tax_pis_id"/>
                                     <field name="pis_aliquota" invisible="1"/>
                                     <field name="pis_valor"/>
                                 </group>
@@ -408,20 +437,20 @@
                                 <group>
                                     <field name="cofins_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
                                     <field name="cofins_tipo"/>
-                                    <field name="cofins_rule_id" />
+                                    <field name="cofins_rule_id"/>
                                 </group>
                                 <group>
                                     <field name="cofins_base_calculo"/>
-                                    <field name="tax_cofins_id" />
-                                    <field name="cofins_aliquota" invisible="1" />
+                                    <field name="tax_cofins_id"/>
+                                    <field name="cofins_aliquota" invisible="1"/>
                                     <field name="cofins_valor"/>
                                 </group>
                             </group>
                         </page>
                         <page name="ii" string="II" attrs="{'invisible': [('product_type','!=', 'product')]}">
                             <group string="Detalhes do Imposto de Importação">
-                                <field name="ii_rule_id" />
-                                <field name="tax_ii_id" />
+                                <field name="ii_rule_id"/>
+                                <field name="tax_ii_id"/>
                                 <field name="ii_base_calculo"/>
                                 <field name="ii_aliquota" invisible="1"/>
                                 <field name="ii_valor_despesas"/>
@@ -443,16 +472,18 @@
                                             <group>
                                                 <field name="name"/>
                                                 <field name="date_registration"/>
-                                                <field name="state_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                                                <field name="state_id"
+                                                       options="{'no_create': True, 'no_create_edit': True}"/>
                                                 <field name="location"/>
                                                 <field name="date_release"/>
-                                                <field name="type_transportation" />
+                                                <field name="type_transportation"/>
                                             </group>
                                             <group>
-                                                <field name="afrmm_value" />
-                                                <field name="type_import" />
-                                                <field name="thirdparty_cnpj" />
-                                                <field name="thirdparty_state_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                                                <field name="afrmm_value"/>
+                                                <field name="type_import"/>
+                                                <field name="thirdparty_cnpj"/>
+                                                <field name="thirdparty_state_id"
+                                                       options="{'no_create': True, 'no_create_edit': True}"/>
                                                 <field name="exporting_code"/>
                                             </group>
                                             <group string="Adições" colspan="4">
@@ -463,29 +494,38 @@
                                 </field>
                             </group>
                         </page>
-                        <page name="retencoes" string="Retenções" attrs="{'invisible': [('product_type','!=', 'service')]}">
+                        <page string="Lei da Transparência Fiscal">
+                            <group>
+                                <field name="tributos_estimados_federais"/>
+                                <field name="tributos_estimados_estaduais"/>
+                                <field name="tributos_estimados_municipais"/>
+                                <field name="tributos_estimados"/>
+                            </group>
+                        </page>
+                        <page name="retencoes" string="Retenções"
+                              attrs="{'invisible': [('product_type','!=', 'service')]}">
                             <group>
                                 <group string="CSLL">
-                                    <field name="csll_rule_id" />
+                                    <field name="csll_rule_id"/>
                                     <field name="csll_base_calculo"/>
                                     <field name="tax_csll_id"/>
-                                    <field name="csll_aliquota" invisible="1" />
+                                    <field name="csll_aliquota" invisible="1"/>
                                     <field name="csll_valor"/>
                                 </group>
                                 <group string="IRRF">
-                                    <field name="irrf_rule_id" />
+                                    <field name="irrf_rule_id"/>
                                     <field name="irrf_base_calculo"/>
                                     <field name="tax_irrf_id"/>
-                                    <field name="irrf_aliquota" invisible="1" />
+                                    <field name="irrf_aliquota" invisible="1"/>
                                     <field name="irrf_valor"/>
                                 </group>
                             </group>
                             <group>
                                 <group string="INSS">
-                                    <field name="inss_rule_id" />
+                                    <field name="inss_rule_id"/>
                                     <field name="inss_base_calculo"/>
                                     <field name="tax_inss_id"/>
-                                    <field name="inss_aliquota" invisible="1" />
+                                    <field name="inss_aliquota" invisible="1"/>
                                     <field name="inss_valor"/>
                                 </group>
                             </group>
