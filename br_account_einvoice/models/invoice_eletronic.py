@@ -448,9 +448,6 @@ class InvoiceEletronic(models.Model):
         for item in nfes:
             try:
                 item.action_send_eletronic_invoice()
-                for line_invoice in item.invoice_id.invoice_line_ids:
-                    if line_invoice.contract_event_id:
-                        line_invoice.contract_event_id.state = 'invoice'
             except Exception as e:
                 item.log_exception(e)
 
