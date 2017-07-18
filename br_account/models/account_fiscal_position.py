@@ -80,6 +80,11 @@ class AccountFiscalPositionTaxRule(models.Model):
 class AccountFiscalPosition(models.Model):
     _inherit = 'account.fiscal.position'
 
+    def _default_company_id(self):
+        return self.env.user.company_id
+
+    company_id = fields.Many2one('res.company', default=_default_company_id)
+
     position_type = fields.Selection(string=u'Tipo da Posição',
                                      selection=[
                                          ('product', 'Produto'),
