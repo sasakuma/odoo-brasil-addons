@@ -193,7 +193,7 @@
                             </tree>
                         </field>
                     </group>
-                    <group name="issqn_rules" string="Regras ISSQN">
+                    <group name="issqn_rules" string="Regras ISSQN" attrs="{'invisible': [('position_type', '=', 'product')]}">
                         <field nolabel="1" name="issqn_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'issqn', 'default_tipo_produto': position_type}"/>
                     </group>
                     <group name="irrf_rules" string="Regras de IRRF">
