@@ -396,7 +396,8 @@
                                 <field name="issqn_tipo"/>
                                 <field name="issqn_base_calculo"/>
                                 <field name="issqn_aliquota" invisible="1"/>
-                                <field name="service_type_id" attrs="{'required': [('product_type','=', 'service')]}"
+                                <field name="service_type_id" readonly="1"
+                                       attrs="{'required': [('product_type','=', 'service')]}"
                                        domain="[('internal_type','=','normal')]"/>
                                 <field name="issqn_valor"/>
                             </group>
