@@ -105,7 +105,7 @@
                 <field name="document_serie_id"/>
             </field>
             <group position="after">
-                <group name="nfse" string="Informações NFS-e">
+                <group name="nfse" string="Informações NFS-e" attrs="{'invisible': [('position_type', '=', 'product')]}">
                     <group>
                         <field name="service_type_id" attrs="{'required': [('position_type', '=', 'service')]}"/>
                     </group>
