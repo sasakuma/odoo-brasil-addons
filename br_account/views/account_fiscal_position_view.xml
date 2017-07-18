@@ -53,16 +53,16 @@
                 <group string="Aplicar esta regra quando:">
                     <field name="tipo_produto"/>
                 </group>
-                <group string="Estados">
+                <group string="Estados" attrs="{'invisible': [('tipo_produto', '=', 'service')]}">
                     <field name="state_ids" widget="many2many_tags" nolabel="1"/>
                 </group>
-                <group string="Categorias de Produto">
+                <group string="Categorias de Produto" attrs="{'invisible': [('tipo_produto', '=', 'service')]}">
                     <field name="product_category_ids" widget="many2many_tags" nolabel="1"/>
                 </group>
-                <group string="Produtos">
+                <group string="Produtos" attrs="{'invisible': [('tipo_produto', '=', 'service')]}">
                     <field name="product_ids" widget="many2many_tags" nolabel="1"/>
                 </group>
-                <group string="Parceiros">
+                <group string="Parceiros" attrs="{'invisible': [('tipo_produto', '=', 'service')]}">
                     <field name="partner_ids" widget="many2many_tags" nolabel="1"/>
                 </group>
             </form>
