@@ -160,8 +160,10 @@
                             </tree>
                         </field>
                     </group>
-                    <group name="ipi_rules" string="Regras de IPI">
-                        <field nolabel="1" name="ipi_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'ipi', 'default_tipo_produto': position_type}">
+                    <group name="ipi_rules" string="Regras de IPI" attrs="{'invisible': [('position_type', '=', 'service')]}">
+                        <field nolabel="1"
+                               name="ipi_tax_rule_ids"
+                               context="{'default_fiscal_position_id': id, 'default_domain': 'ipi', 'default_tipo_produto': position_type}">
                             <tree>
                                 <field name="sequence" widget="handle"/>
                                 <field name="name"/>
@@ -203,7 +205,7 @@
                     <group name="csll_rules" string="Regras de CSLL">
                         <field nolabel="1" name="csll_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'csll', 'default_tipo_produto': position_type}"/>
                     </group>
-                    <group name="ii_rules" string="Regras de II">
+                    <group name="ii_rules" string="Regras de II" attrs="{'invisible': [('position_type', '=', 'service')]}">
                         <field nolabel="1" name="ii_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'ii', 'default_tipo_produto': position_type}"/>
                     </group>
                 </page>
