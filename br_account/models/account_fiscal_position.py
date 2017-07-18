@@ -93,6 +93,8 @@ class AccountFiscalPosition(models.Model):
                                      default='product',
                                      required=True)
 
+    company_fiscal_type = fields.Selection(related='company_id.fiscal_type')
+
     service_type_id = fields.Many2one(comodel_name='br_account.service.type',
                                       string=u'Tipo de Serviço')
 

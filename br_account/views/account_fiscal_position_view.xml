@@ -103,6 +103,7 @@
                 <field name="position_type"/>
                 <field name="fiscal_document_id"/>
                 <field name="document_serie_id"/>
+                <field name="company_fiscal_type" invisible="1"/>
             </field>
             <group position="after">
                 <group name="nfse" string="Informações NFS-e" attrs="{'invisible': [('position_type', '=', 'product')]}">
@@ -146,7 +147,7 @@
                             </tree>
                         </field>
                     </group>
-                    <group name="simples_rules" string="Regras Simples Nacional">
+                    <group name="simples_rules" string="Regras Simples Nacional" attrs="{'invisible': ['|',('company_fiscal_type', '!=', '1'),('position_type', '=', 'service')]}">
                         <field nolabel="1" name="simples_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'simples', 'default_tipo_produto': position_type}">
                             <tree>
                                 <field name="sequence" widget="handle"/>
