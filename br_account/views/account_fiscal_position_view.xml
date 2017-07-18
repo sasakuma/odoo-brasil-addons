@@ -50,7 +50,7 @@
                     </group>
                     <group></group>
                 </group>
-                <group string="Aplicar esta regra quando:">
+                <group string="Aplicar esta regra quando:" invisible="1">
                     <field name="tipo_produto"/>
                 </group>
                 <group string="Estados" attrs="{'invisible': [('tipo_produto', '=', 'service')]}">
