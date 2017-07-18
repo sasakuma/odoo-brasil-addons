@@ -318,7 +318,7 @@ class AccountInvoiceLine(models.Model):
                                   string='Tipo do ISSQN',
                                   required=True, default='N')
     service_type_id = fields.Many2one(
-        'br_account.service.type', u'Tipo de Serviço')
+        'br_account.service.type', u'Tipo de Serviço',store=True)
     issqn_base_calculo = fields.Float(
         'Base ISSQN', digits=dp.get_precision('Account'),
         compute='_compute_price', store=True)
