@@ -1547,13 +1547,13 @@ msgstr "Financial"
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_move_line_financial_operation_id
 msgid "Financial Operation"
-msgstr "Operação Finânceira"
+msgstr "Operação Financeira"
 
 #. module: br_account
 #: model:ir.actions.act_window,name:br_account.account_financial_operation_action
 #: model:ir.ui.menu,name:br_account.account_financial_operation_menu
 msgid "Financial Operations"
-msgstr "Operações Finânceiras"
+msgstr "Operações Financeiras"
 
 #. module: br_account
 #: model:ir.model,name:br_account.model_account_fiscal_position
