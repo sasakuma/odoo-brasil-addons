@@ -45,10 +45,7 @@
                     </group>
                 </group>
                 <group name="ipi" attrs="{'invisible': [('domain', '!=', 'ipi')]}">
-                    <group>
-                        <field name="reducao_ipi"/>
-                    </group>
-                    <group></group>
+                    <field name="reducao_ipi"/>
                 </group>
                 <group string="Aplicar esta regra quando:" invisible="1">
                     <field name="tipo_produto"/>
