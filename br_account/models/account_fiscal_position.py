@@ -89,8 +89,7 @@ class AccountFiscalPosition(models.Model):
                                      required=True)
 
     service_type_id = fields.Many2one(comodel_name='br_account.service.type',
-                                      string=u'Tipo de Serviço',
-                                      store=True)
+                                      string=u'Tipo de Serviço')
 
     fiscal_document_id = fields.Many2one('br_account.fiscal.document',
                                          string='Documento')
