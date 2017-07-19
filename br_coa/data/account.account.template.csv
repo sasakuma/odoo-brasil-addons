@@ -1,5 +1,5 @@
 id,code,name,parent_id:id,reconcile,type,user_type_id:id,chart_template_id:id
-id_0,0,Plano de Contas Trustcode,,FALSE,view,account.data_account_type_current_assets,br_account_chart_template
+id_0,0,Plano de Contas MultidadosTI,,FALSE,view,account.data_account_type_current_assets,br_account_chart_template
 id_1,1,Ativo,id_0,FALSE,view,account.data_account_type_current_assets,br_account_chart_template
 id_1_1,1.1,Ativo Circulante,id_1,FALSE,view,account.data_account_type_current_assets,br_account_chart_template
 id_1_1_1,1.1.1,Disponibilidade,id_1_1,FALSE,view,account.data_account_type_current_assets,br_account_chart_template
