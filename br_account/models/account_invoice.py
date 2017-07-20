@@ -6,6 +6,7 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from odoo.addons import decimal_precision as dp
+from odoo.tools import float_compare
 
 
 class AccountInvoice(models.Model):
@@ -68,8 +69,8 @@ class AccountInvoice(models.Model):
         self.total_tributos_estimados = sum(
             l.tributos_estimados for l in lines)
         # TOTAL
-        self.amount_total = self.total_bruto - \
-            self.total_desconto + self.total_tax
+        self.amount_total = \
+            self.total_bruto - self.total_desconto + self.total_tax
         sign = self.type in ['in_refund', 'out_refund'] and -1 or 1
         self.amount_total_company_signed = self.amount_total * sign
         self.amount_total_signed = self.amount_total * sign
@@ -94,19 +95,25 @@ class AccountInvoice(models.Model):
         self.payable_move_line_ids = self.env['account.move.line'].browse(
             list(set(payable_lines)))
 
-    @api.model
-    def _default_fiscal_document(self):
-        company = self.env['res.company'].browse(self.env.user.company_id.id)
-        return company.fiscal_document_for_product_id
-
-    @api.model
-    def _default_fiscal_document_serie(self):
-        company = self.env['res.company'].browse(self.env.user.company_id.id)
-        return company.document_serie_id.id
+    # @api.model
+    # def _default_fiscal_document(self):
+    #     company = self.env['res.company'].browse(self.env.user.company_id.id)
+    #     return company.fiscal_document_for_product_id
+    #
+    # @api.model
+    # def _default_fiscal_document_serie(self):
+    #     company = self.env['res.company'].browse(self.env.user.company_id.id)
+    #     return company.document_serie_id.id
 
     total_tax = fields.Float(
         string='Impostos ( + )', readonly=True, compute='_compute_amount',
         digits=dp.get_precision('Account'), store=True)
+
+    parcel_ids = fields.One2many(comodel_name='br_account.invoice.parcel',
+                                 inverse_name='invoice_id',
+                                 readonly=True,
+                                 states={'draft': [('readonly', False)]},
+                                 string='Parcelas')
 
     receivable_move_line_ids = fields.Many2many(
         'account.move.line', string='Receivable Move Lines',
@@ -119,34 +126,52 @@ class AccountInvoice(models.Model):
     issuer = fields.Selection(
         [('0', 'Terceiros'), ('1', u'Emissão própria')], 'Emitente',
         default='0', readonly=True, states={'draft': [('readonly', False)]})
+
     vendor_number = fields.Char(
         u'Número NF Entrada', size=18, readonly=True,
         states={'draft': [('readonly', False)]},
         help=u"Número da Nota Fiscal do Fornecedor")
-    vendor_serie = fields.Char(
-        u'Série NF Entrada', size=12, readonly=True,
-        states={'draft': [('readonly', False)]},
-        help=u"Série do número da Nota Fiscal do Fornecedor")
-    document_serie_id = fields.Many2one(
-        'br_account.document.serie', string=u'Série',
-        domain="[('fiscal_document_id', '=', fiscal_document_id),\
-        ('company_id','=',company_id)]", readonly=True,
-        states={'draft': [('readonly', False)]},
-        default=_default_fiscal_document_serie)
-    fiscal_document_id = fields.Many2one(
-        'br_account.fiscal.document', string='Documento', readonly=True,
-        states={'draft': [('readonly', False)]},
-        default=_default_fiscal_document)
-    is_eletronic = fields.Boolean(
-        related='fiscal_document_id.electronic', type='boolean',
-        store=True, string=u'Eletrônico', readonly=True)
+
+    vendor_serie = fields.Char(string=u'Série NF Entrada',
+                               size=12,
+                               readonly=True,
+                               help=u"Série do número da Nota Fiscal do "
+                                    u"Fornecedor")
+
+    document_serie_id = fields.Many2one('br_account.document.serie',
+                                        string=u'Série',
+                                        readonly=True,
+                                        states={
+                                            'draft': [('readonly', False)],
+                                        })
+
+    fiscal_document_id = fields.Many2one('br_account.fiscal.document',
+                                         string='Documento',
+                                         readonly=True,
+                                         states={
+                                             'draft': [('readonly', False)],
+                                         })
+
+    pre_invoice_date = fields.Date(string=u'Data da Pré-Fatura',
+                                   required=True,
+                                   default=fields.Date.today)
+
+    is_electronic = fields.Boolean(related='fiscal_document_id.electronic',
+                                   type='boolean',
+                                   store=True,
+                                   string=u'Eletrônico',
+                                   readonly=True,
+                                   oldname='is_eletronic')
+
     fiscal_document_related_ids = fields.One2many(
         'br_account.document.related', 'invoice_id',
         'Documento Fiscal Relacionado', readonly=True,
         states={'draft': [('readonly', False)]})
+
     fiscal_observation_ids = fields.Many2many(
         'br_account.fiscal.observation', string="Observações Fiscais",
         readonly=True, states={'draft': [('readonly', False)]})
+
     fiscal_comment = fields.Text(
         u'Observação Fiscal', readonly=True,
         states={'draft': [('readonly', False)]})
@@ -154,6 +179,7 @@ class AccountInvoice(models.Model):
     total_bruto = fields.Float(
         string='Total Bruto ( = )', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
+
     total_desconto = fields.Float(
         string='Desconto ( - )', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
@@ -161,63 +187,82 @@ class AccountInvoice(models.Model):
     icms_base = fields.Float(
         string='Base ICMS', store=True, compute='_compute_amount',
         digits=dp.get_precision('Account'))
+
     icms_value = fields.Float(
         string='Valor ICMS', digits=dp.get_precision('Account'),
         compute='_compute_amount', store=True)
+
     icms_st_base = fields.Float(
         string='Base ICMS ST', store=True, compute='_compute_amount',
         digits=dp.get_precision('Account'))
+
     icms_st_value = fields.Float(
         string='Valor ICMS ST', store=True, compute='_compute_amount',
         digits=dp.get_precision('Account'))
+
     valor_icms_fcp_uf_dest = fields.Float(
         string="Total ICMS FCP", store=True, compute='_compute_amount',
         help=u'Total total do ICMS relativo Fundo de Combate à Pobreza (FCP) \
         da UF de destino')
+
     valor_icms_uf_dest = fields.Float(
         string="ICMS Destino", store=True, compute='_compute_amount',
         help='Valor total do ICMS Interestadual para a UF de destino')
+
     valor_icms_uf_remet = fields.Float(
         string="ICMS Remetente", store=True, compute='_compute_amount',
         help='Valor total do ICMS Interestadual para a UF do Remetente')
+
     issqn_base = fields.Float(
         string='Base ISSQN', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
+
     issqn_value = fields.Float(
         string='Valor ISSQN', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
+
     issqn_retention = fields.Float(
         string='ISSQN Retido', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
+
     ipi_base = fields.Float(
         string='Base IPI', store=True, digits=dp.get_precision('Account'),
         compute='_compute_amount')
+
     ipi_base_other = fields.Float(
         string="Base IPI Outras", store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
+
     ipi_value = fields.Float(
         string='Valor IPI', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
+
     pis_base = fields.Float(
         string='Base PIS', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
+
     pis_value = fields.Float(
         string='Valor PIS', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
+
     pis_retention = fields.Float(
         string='PIS Retido', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
+
     cofins_base = fields.Float(
         string='Base COFINS', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
+
     cofins_value = fields.Float(
         string='Valor COFINS', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount',
         readonly=True)
+
     cofins_retention = fields.Float(
         string='COFINS Retido', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount',
         readonly=True)
+
     ii_value = fields.Float(
         string='Valor II', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
@@ -248,21 +293,25 @@ class AccountInvoice(models.Model):
     inss_retention = fields.Float(
         string='INSS Retido', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
+
     total_tributos_federais = fields.Float(
         string='Total de Tributos Federais',
         store=True,
         digits=dp.get_precision('Account'),
         compute='_compute_amount')
+
     total_tributos_estaduais = fields.Float(
         string='Total de Tributos Estaduais',
         store=True,
         digits=dp.get_precision('Account'),
         compute='_compute_amount')
+
     total_tributos_municipais = fields.Float(
         string='Total de Tributos Municipais',
         store=True,
         digits=dp.get_precision('Account'),
         compute='_compute_amount')
+
     total_tributos_estimados = fields.Float(
         string='Total de Tributos',
         store=True,
@@ -285,10 +334,129 @@ class AccountInvoice(models.Model):
     def _onchange_br_account_fiscal_position_id(self):
         if self.fiscal_position_id and self.fiscal_position_id.account_id:
             self.account_id = self.fiscal_position_id.account_id.id
+
         if self.fiscal_position_id and self.fiscal_position_id.journal_id:
             self.journal_id = self.fiscal_position_id.journal_id
+
         ob_ids = [x.id for x in self.fiscal_position_id.fiscal_observation_ids]
         self.fiscal_observation_ids = [(6, False, ob_ids)]
+
+        self.fiscal_document_id = self.fiscal_position_id.fiscal_document_id.id
+
+    def move_line_from_payment_term(self, inv, total, total_currency):
+
+        # O sistema de parcelas sera obrigatorio, entao sempre teremos pelo
+        # menos uma parcela. Esse verificacao foi adicionada para manter
+        # compatibilidade com os testes do core
+        if not self.parcel_ids:
+            ml_list = super(AccountInvoice, self).move_line_from_payment_term(
+                inv, total, total_currency)
+            return ml_list
+
+        ctx = dict(self._context, lang=inv.partner_id.lang)
+        date_invoice = inv.date_invoice
+        ctx['date'] = date_invoice
+
+        # Criacao de move lines a partir das parcelas
+        # date_invoice = inv.date_invoice
+        company_currency = inv.company_id.currency_id
+        diff_currency = inv.currency_id != company_currency
+
+        res_amount_currency = total_currency
+
+        # Sobrescrevemos conteudo da lista porque e mais simples
+        # recriarmos os dicts das movelines a partir das parcelas
+        ml_list = []
+
+        for i, parcel in enumerate(self.parcel_ids):
+
+            if inv.currency_id != company_currency:
+                amount_currency = company_currency.with_context(
+                    ctx).compute(
+                    parcel.parceling_value, inv.currency_id)
+            else:
+                amount_currency = False
+
+            # last line: add the diff
+            res_amount_currency -= amount_currency or 0
+            if i + 1 == len(self.parcel_ids):
+                amount_currency += res_amount_currency
+
+            # Calculamos a nova data de vencimento baseado na data
+            # de validação da faturação, caso a parcela nao esteja
+            # marcada como 'data fixa'. A data da parcela também é atualizada
+            parcel.update_date_maturity(self.date_invoice)
+
+            ml_list.append({
+                'type': 'dest',
+                'name': inv.name or '/',
+                'price': parcel.parceling_value,
+                'account_id': inv.account_id.id,
+                'date_maturity': parcel.date_maturity,
+                'amount_currency': diff_currency and amount_currency,
+                'currency_id': diff_currency and inv.currency_id.id,
+                'invoice_id': inv.id,
+                'financial_operation_id': parcel.financial_operation_id.id,
+                'title_type_id': parcel.title_type_id.id,
+                'company_id': inv.company_id.id,
+            })
+
+        return ml_list
+
+    @api.multi
+    def action_open_periodic_entry_wizard(self):
+        """Abre wizard para gerar pagamentos periodicos"""
+        self.ensure_one()
+
+        if self.state != 'draft':
+            raise UserError('Parcelas podem ser criadas apenas quando a '
+                            'fatura estiver como "Provisório"')
+
+        action = {
+            'type': 'ir.actions.act_window',
+            'res_model': 'br_account.invoice.parcel.wizard',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'context': {
+                'default_payment_term_id': self.payment_term_id.id,
+                'default_pre_invoice_date': self.pre_invoice_date,
+            },
+            'views': [(False, 'form')],
+            'target': 'new',
+        }
+
+        return action
+
+    @api.multi
+    def action_invoice_open(self):
+
+        if self.action_compare_total_parcel_value:
+            return super(AccountInvoice, self).action_invoice_open()
+        else:
+            raise UserError(_('O valor total da fatura e total das '
+                              'parcelas divergem! Por favor, gere as '
+                              'parcelas novamente.'))
+
+    @api.multi
+    def action_compare_total_parcel_value(self):
+
+        if self.parcel_ids:
+
+            # Obtemos o total dos valores da parcela
+            total = sum([p.parceling_value for p in self.parcel_ids])
+
+            # Obtemos a precisao configurada
+            prec = self.env['decimal.precision'].precision_get('Account')
+
+            # Comparamos o valor total da invoice e das parcelas
+            # a fim de verificar se os valores sao os mesmos
+            # float_compare retorna 0, se os valores forem iguais
+            # float_compare retorna -1, se amount_total for menor que total
+            # float_compare retorna 1, se amount_total for maior que total
+            if float_compare(self.amount_total, total, precision_digits=prec):
+                return False
+
+        return True
 
     @api.multi
     def action_invoice_cancel_paid(self):
@@ -324,8 +492,9 @@ class AccountInvoice(models.Model):
                     x for x in taxes_dict['taxes'] if x['id'] == tax.id)
                 if not tax.price_include and tax.account_id:
                     res[contador]['price'] += tax_dict['amount']
-                if tax.price_include and (not tax.account_id or
-                                          not tax.deduced_account_id):
+
+                if tax.price_include and \
+                        (not tax.account_id or not tax.deduced_account_id):
                     if tax_dict['amount'] > 0.0:  # Negativo é retido
                         res[contador]['price'] -= tax_dict['amount']
 
@@ -335,14 +504,16 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def finalize_invoice_move_lines(self, move_lines):
-        res = super(AccountInvoice, self).\
-            finalize_invoice_move_lines(move_lines)
+
+        res = super(AccountInvoice, self).finalize_invoice_move_lines(
+            move_lines)
+
         count = 1
         for invoice_line in res:
             line = invoice_line[2]
             line['ref'] = self.origin
-            if line['name'] == '/' or (
-               line['name'] == self.name and self.name):
+            if line['name'] == '/' \
+                    or (line['name'] == self.name and self.name):
                 line['name'] = "%02d" % count
                 count += 1
         return res
@@ -353,11 +524,19 @@ class AccountInvoice(models.Model):
         for line in self.invoice_line_ids:
             other_taxes = line.invoice_line_tax_ids.filtered(
                 lambda x: not x.domain)
-            line.invoice_line_tax_ids = other_taxes | line.tax_icms_id | \
-                line.tax_ipi_id | line.tax_pis_id | line.tax_cofins_id | \
-                line.tax_issqn_id | line.tax_ii_id | line.tax_icms_st_id | \
-                line.tax_simples_id | line.tax_csll_id | line.tax_irrf_id | \
-                line.tax_inss_id
+
+            line.invoice_line_tax_ids = (other_taxes |
+                                         line.tax_icms_id |
+                                         line.tax_ipi_id |
+                                         line.tax_pis_id |
+                                         line.tax_cofins_id |
+                                         line.tax_issqn_id |
+                                         line.tax_ii_id |
+                                         line.tax_icms_st_id |
+                                         line.tax_simples_id |
+                                         line.tax_csll_id |
+                                         line.tax_irrf_id |
+                                         line.tax_inss_id)
 
             ctx = line._prepare_tax_context()
             tax_ids = line.invoice_line_tax_ids.with_context(**ctx)
@@ -413,3 +592,70 @@ class AccountInvoice(models.Model):
         res['fiscal_document_id'] = invoice.fiscal_document_id.id
         res['document_serie_id'] = invoice.document_serie_id.id
         return res
+
+    @api.multi
+    def generate_parcel_entry(self, financial_operation, title_type):
+        """Cria as parcelas da fatura."""
+
+        for inv in self:
+
+            ctx = dict(self._context, lang=inv.partner_id.lang)
+
+            if not inv.pre_invoice_date:
+                raise UserError(u'Nenhuma data fornecida como base para a '
+                                u'criação das parcelas!')
+
+            company_currency = inv.company_id.currency_id
+
+            # create move lines (one per invoice line + eventual taxes and
+            # analytic lines)
+            iml = inv.invoice_line_move_line_get()
+            iml += inv.tax_line_move_line_get()
+
+            diff_currency = inv.currency_id != company_currency
+
+            total, total_currency, iml = inv.with_context(
+                ctx).compute_invoice_totals(company_currency, iml)
+
+            if inv.payment_term_id:
+                aux = inv.with_context(ctx).payment_term_id.with_context(
+                    currency_id=company_currency.id).compute(
+                    total, inv.pre_invoice_date)
+
+                lines = aux[0]
+
+                res_amount_currency = total_currency
+                ctx['date'] = inv.pre_invoice_date
+
+                # Removemos as parcelas adicionadas anteriormente
+                inv.parcel_ids.unlink()
+
+                for i, t in enumerate(lines):
+                    if inv.currency_id != company_currency:
+                        amount_currency = \
+                            company_currency.with_context(ctx).compute(
+                                t[1], inv.currency_id)
+                    else:
+                        amount_currency = False
+
+                    # last line: add the diff
+                    res_amount_currency -= amount_currency or 0
+
+                    if i + 1 == len(lines):
+                        amount_currency += res_amount_currency
+
+                    values = {
+                        'name': str(i + 1).zfill(2),
+                        'parceling_value': t[1],
+                        'date_maturity': t[0],
+                        'financial_operation_id': financial_operation.id,
+                        'title_type_id': title_type.id,
+                        'company_currency_id': (diff_currency and
+                                                inv.currency_id.id),
+                        'invoice_id': inv.id,
+                    }
+
+                    obj = self.env['br_account.invoice.parcel'].create(values)
+                    # Chamamos o onchange para que a quantidade de dias seja
+                    # calculado
+                    obj._onchange_date_maturity()

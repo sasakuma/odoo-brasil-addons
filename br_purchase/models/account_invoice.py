@@ -45,7 +45,8 @@ class AccountInvoice(models.Model):
         res['company_fiscal_type'] = line.company_id.fiscal_type
         res['cfop_id'] = line.cfop_id.id
         ncm = line.product_id.fiscal_classification_id
-        service = line.product_id.service_type_id
+        # service = line.product_id.service_type_id
+        service = self.fiscal_position_id.service_type_id
         res['fiscal_classification_id'] = ncm.id
         res['service_type_id'] = service.id
         res['icms_origem'] = line.product_id.origin

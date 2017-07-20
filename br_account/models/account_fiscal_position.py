@@ -70,9 +70,43 @@ class AccountFiscalPositionTaxRule(models.Model):
     tax_icms_fcp_id = fields.Many2one(
         'account.tax', string="% FCP", domain=[('domain', '=', 'fcp')])
 
+    issqn_tipo = fields.Selection([('N', 'Normal'),
+                                   ('R', 'Retida'),
+                                   ('S', 'Substituta'),
+                                   ('I', 'Isenta')],
+                                  string='Tipo do ISSQN')
+
 
 class AccountFiscalPosition(models.Model):
     _inherit = 'account.fiscal.position'
+
+    @api.model
+    def _default_company_id(self):
+        return self.env.user.company_id
+
+    company_id = fields.Many2one('res.company', default=_default_company_id)
+
+    position_type = fields.Selection(string=u'Tipo da Posição',
+                                     selection=[
+                                         ('product', 'Produto'),
+                                         ('service', 'Serviço'),
+                                     ],
+                                     default='product',
+                                     required=True)
+
+    company_fiscal_type = fields.Selection(related='company_id.fiscal_type')
+
+    service_type_id = fields.Many2one(comodel_name='br_account.service.type',
+                                      string=u'Tipo de Serviço')
+
+    fiscal_document_id = fields.Many2one('br_account.fiscal.document',
+                                         string='Documento')
+
+    # TODO Adicionar no domain a empresa (utilizar empresa na posicao fiscal)
+    document_serie_id = fields.Many2one(
+        comodel_name='br_account.document.serie',
+        string=u'Série',
+        domain="[('fiscal_document_id', '=', fiscal_document_id)]")
 
     journal_id = fields.Many2one(
         'account.journal', string="Diário Contábil",
@@ -173,6 +207,8 @@ class AccountFiscalPosition(models.Model):
                 'pis_cst': rules[0].cst_pis,
                 # PIS
                 'cofins_cst': rules[0].cst_cofins,
+                # ISSQN
+                'issqn_tipo': rules[0].issqn_tipo,
             }
         else:
             return {}

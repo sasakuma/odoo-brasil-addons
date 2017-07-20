@@ -11,15 +11,21 @@ from .cst import ORIGEM_PROD
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-    fiscal_type = fields.Selection(
-        [('service', u'Serviço'), ('product', 'Produto')], 'Tipo Fiscal',
-        required=True, default='product')
+    fiscal_type = fields.Selection([('service', u'Serviço'),
+                                    ('product', 'Produto')],
+                                   string='Tipo Fiscal',
+                                   required=True,
+                                   default='product')
 
     origin = fields.Selection(ORIGEM_PROD, 'Origem', default='0')
+
     fiscal_classification_id = fields.Many2one(
-        'product.fiscal.classification', string=u"Classificação Fiscal (NCM)")
-    service_type_id = fields.Many2one(
-        'br_account.service.type', u'Tipo de Serviço')
+        'product.fiscal.classification', string=u'Classificação Fiscal (NCM)')
+
+    # service_type_id = fields.Many2one('br_account.service.type',
+    #                                   required=False,
+    #                                   string=u'Tipo de Serviço')
+
     cest = fields.Char(string="CEST", size=10,
                        help=u"Código Especificador da Substituição Tributária")
     fiscal_observation_ids = fields.Many2many(

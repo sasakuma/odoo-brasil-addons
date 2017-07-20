@@ -72,8 +72,8 @@ class TestCartaCorrecao(TransactionCase):
             'default_code': '25',
             'type': 'service',
             'fiscal_type': 'service',
-            'service_type_id': self.env.ref(
-                'br_data_account.service_type_101').id,
+            # 'service_type_id': self.env.ref(
+            #     'br_data_account.service_type_101').id,
             'list_price': 50.0
         })
         self.st_product = self.env['product.product'].create({
@@ -141,7 +141,7 @@ class TestCartaCorrecao(TransactionCase):
                     'name': 'product test 5',
                     'price_unit': 100.00,
                     'product_type': self.service.fiscal_type,
-                    'service_type_id': self.service.service_type_id.id,
+                    # 'service_type_id': self.service.service_type_id.id,
                     'cfop_id': self.env.ref(
                         'br_data_account_product.cfop_5101').id,
                     'pis_cst': '01',

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="account_title_type_view_form" model="ir.ui.view">
+        <field name="name">account.title.type.view.form</field>
+        <field name="model">account.title.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="initials"/>
+                            <field name="minimum_plot_value"/>
+                            <field name="allow_cnab_sending"/>
+                            <field name="company_currency_id"
+                                           invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="account_title_type_view_tree" model="ir.ui.view">
+        <field name="name">account.title.type.view.tree</field>
+        <field name="model">account.title.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="initials"/>
+                <field name="minimum_plot_value"/>
+                <field name="allow_cnab_sending"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="account_title_type_action" model="ir.actions.act_window">
+        <field name="name">Title Type</field>
+        <field name="res_model">account.title.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="account_title_type_menu"
+        action="account_title_type_action"
+        parent="account.account_management_menu" />
+
+</odoo>

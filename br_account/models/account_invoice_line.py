@@ -3,6 +3,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from lxml import etree
 
 from odoo import api, fields, models
 from odoo.addons import decimal_precision as dp
@@ -189,9 +190,16 @@ class AccountInvoiceLine(models.Model):
         string='Tipo do Produto', required=True, default='product')
     company_fiscal_type = fields.Selection(
         COMPANY_FISCAL_TYPE,
-        default=_default_company_fiscal_type, string=u"Regime Tributário")
-    calculate_tax = fields.Boolean(string="Calcular Imposto?", default=True)
+        default=_default_company_fiscal_type, string=u'Regime Tributário')
+    calculate_tax = fields.Boolean(string='Calcular Imposto', default=True)
     fiscal_comment = fields.Text(u'Observação Fiscal')
+    fiscal_position_id = fields.Many2one(
+        comodel_name='account.fiscal.position',
+        string=u'Posição Fiscal',
+        related='invoice_id.fiscal_position_id')
+    fiscal_position_type = fields.Selection(
+        string='Tipo Fiscal do Produto',
+        related='fiscal_position_id.position_type')
 
     # =========================================================================
     # ICMS Normal
@@ -310,7 +318,7 @@ class AccountInvoiceLine(models.Model):
                                   string='Tipo do ISSQN',
                                   required=True, default='N')
     service_type_id = fields.Many2one(
-        'br_account.service.type', u'Tipo de Serviço')
+        'br_account.service.type', u'Tipo de Serviço', store=True)
     issqn_base_calculo = fields.Float(
         'Base ISSQN', digits=dp.get_precision('Account'),
         compute='_compute_price', store=True)
@@ -445,7 +453,8 @@ class AccountInvoiceLine(models.Model):
     # Impostos de serviço - INSS
     # =========================================================================
     inss_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
-    tax_inss_id = fields.Many2one('account.tax', string=u"Alíquota IRRF",
+
+    tax_inss_id = fields.Many2one('account.tax', string=u"Alíquota INSS",
                                   domain=[('domain', '=', 'inss')])
     inss_base_calculo = fields.Float(
         'Base INSS', required=True, digits=dp.get_precision('Account'),
@@ -458,6 +467,32 @@ class AccountInvoiceLine(models.Model):
         default=0.00)
 
     informacao_adicional = fields.Text(string="Informações Adicionais")
+
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False,
+                        submenu=False):
+        res = super(AccountInvoiceLine, self).fields_view_get(
+            view_id=view_id, view_type=view_type, toolbar=toolbar,
+            submenu=submenu)
+        if self._context.get('type'):
+            doc = etree.XML(res['arch'])
+
+            for node in doc.xpath("//field[@name='product_id']"):
+
+                # Por algum motivo obscuro, o modulo account implementa o
+                # fields_view_get e força o domain do campo 'product_id'.
+                # Assim, mesmo definindo o domain na view ou na model, o
+                # dominio continua sendo o definido neste metodo metodo.
+                # Assim, para realizar o filtro entre serviços do tipo produto
+                # e serviço, foi necessário sobrescreve-lo
+                if self._context['type'] not in ('in_invoice', 'in_refund'):
+
+                    domain = "[('sale_ok', '=', True)," \
+                             "('fiscal_type', '=', fiscal_position_type)]"
+                    node.set('domain', domain)
+
+            res['arch'] = etree.tostring(doc)
+        return res
 
     def _update_tax_from_ncm(self):
         if self.product_id:
@@ -492,7 +527,8 @@ class AccountInvoiceLine(models.Model):
             self.tax_inss_id
 
     def _set_extimated_taxes(self, price):
-        service = self.product_id.service_type_id
+        # service = self.product_id.service_type_id
+        service = self.fiscal_position_id.service_type_id
         ncm = self.product_id.fiscal_classification_id
 
         if self.product_type == 'service':
@@ -525,7 +561,8 @@ class AccountInvoiceLine(models.Model):
         self.product_type = self.product_id.fiscal_type
         self.icms_origem = self.product_id.origin
         ncm = self.product_id.fiscal_classification_id
-        service = self.product_id.service_type_id
+        # service = self.product_id.service_type_id
+        service = self.fiscal_position_id.service_type_id
         self.fiscal_classification_id = ncm.id
         self.service_type_id = service.id
 

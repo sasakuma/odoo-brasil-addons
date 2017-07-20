@@ -14,10 +14,10 @@
                                 <field name="annual_revenue" string="Faturamento dos últimos 12 meses" />
                             </group>
                         </group>
-                        <group  string="Séries de Documentos Fiscais">
-                            <field name="fiscal_document_for_product_id" />
-                            <field name="document_serie_id" />
-                        </group>
+                        <!--<group  string="Séries de Documentos Fiscais">-->
+                            <!--<field name="fiscal_document_for_product_id" />-->
+                            <!--<field name="document_serie_id" />-->
+                        <!--</group>-->
                         <group name="cnae" string="CNAE">
                             <field name="cnae_main_id"/>
                         </group>

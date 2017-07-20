@@ -47,8 +47,8 @@ class TestSaleOrder(TransactionCase):
             'default_code': '25',
             'type': 'service',
             'fiscal_type': 'service',
-            'service_type_id': self.env.ref(
-                'br_data_account.service_type_101').id,
+            # 'service_type_id': self.env.ref(
+            #     'br_data_account.service_type_101').id,
             'list_price': 50.0,
             'property_account_income_id': self.revenue_account.id,
         })
@@ -238,7 +238,9 @@ class TestSaleOrder(TransactionCase):
                 self.assertEqual(line.cfop_id, inv_line.cfop_id)
                 self.assertEqual(line.product_id.fiscal_classification_id,
                                  inv_line.fiscal_classification_id)
-                self.assertEqual(line.product_id.service_type_id,
+                # self.assertEqual(line.product_id.service_type_id,
+                #                  inv_line.service_type_id)
+                self.assertEqual(line.fiscal_position_id.service_type_id,
                                  inv_line.service_type_id)
                 self.assertEqual(line.product_id.origin, inv_line.icms_origem)
 

@@ -75,13 +75,12 @@
         <field name="view_id" ref="view_payments_tree_a_receber"/>
         <field name="search_view_id" ref="view_payments_filter"/>
         <field name="context">{'search_default_open': 1}</field>
-        <field name="domain">[('user_type_id.type', '=', 'receivable'), ('credit', '=', 0)]</field>
+        <field name="domain">[('user_type_id.type', '=', 'receivable'),('move_id.state','=','posted'),('credit', '=', 0)]</field>
     </record>
 
     <menuitem sequence="10" action="action_receivable_move_line"
               id="menu_action_receivable_move_line"
               parent="menu_br_payments"/>
-
 
     <record id="action_payable_move_lines" model="ir.actions.act_window">
         <field name="name">Contas a Pagar</field>
@@ -91,7 +90,7 @@
         <field name="view_id" ref="view_payments_tree_a_pagar"/>
         <field name="search_view_id" ref="view_payments_filter"/>
         <field name="context">{'search_default_open': 1}</field>
-        <field name="domain">[('user_type_id.type', '=', 'payable'), ('debit', '=', 0)]</field>
+        <field name="domain">[('user_type_id.type', '=', 'payable'),('move_id.state','=','posted'), ('debit', '=', 0)]</field>
     </record>
 
     <menuitem sequence="20" action="action_payable_move_lines"

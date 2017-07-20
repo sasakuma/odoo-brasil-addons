@@ -544,10 +544,12 @@ class InvoiceEletronicItem(models.Model):
     valor_liquido = fields.Monetary(
         string=u'Valor Líquido', digits=dp.get_precision('Account'),
         readonly=True, states=STATE)
-    indicador_total = fields.Selection(
-        [('0', '0 - Não'), ('1', '1 - Sim')],
-        string="Compõe Total da Nota?", default='1',
-        readonly=True, states=STATE)
+    indicador_total = fields.Selection([('0', '0 - Não'),
+                                        ('1', '1 - Sim')],
+                                       string="Compõe Total da Nota?",
+                                       default='1',
+                                       readonly=True,
+                                       states=STATE)
 
     origem = fields.Selection(
         ORIGEM_PROD, string=u'Origem Mercadoria', readonly=True, states=STATE)

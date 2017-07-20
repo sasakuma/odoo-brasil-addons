@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="account_title_type_1" model="account.title.type">
+            <field name="initials">CH</field>
+            <field name="name">Cheque</field>
+        </record>
+
+        <record id="account_title_type_2" model="account.title.type">
+            <field name="initials">BL</field>
+            <field name="name">Boleto</field>
+        </record>
+
+        <record id="account_title_type_3" model="account.title.type">
+            <field name="initials">OC</field>
+            <field name="name">Ordem de Cobrança</field>
+        </record>
+
+    </data>
+</odoo>

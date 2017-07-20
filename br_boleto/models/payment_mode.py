@@ -55,61 +55,62 @@ class PaymentMode(models.Model):
     ], string=u'Códigos de Protesto', default='0')
     boleto_protesto_prazo = fields.Char(u'Prazo protesto', size=2)
 
-    @api.onchange("boleto_type")
-    def br_boleto_onchange_boleto_type(self):
-        vals = {}
-
-        if self.boleto_type not in IMPLEMENTADOS:
-            vals['warning'] = {
-                'title': u'Ação Bloqueada!',
-                'message': u'Este boleto ainda não foi implentado!'
-            }
-
-        if self.boleto_type == u'1':
-            if self.bank_account_id.bank_id.bic != '001':
-                vals['warning'] = {
-                    'title': u'Ação Bloqueada!',
-                    'message': u'Este boleto não combina com a conta bancária!'
-                }
-
-            self.boleto_carteira = u'17'
-            self.boleto_variacao = u'19'
-
-        if self.boleto_type == u'3':
-            if self.bank_account_id.bank_id.bic != '237':
-                vals['warning'] = {
-                    'title': u'Ação Bloqueada!',
-                    'message': u'Este boleto não combina com a conta bancária!'
-                }
-            self.boleto_carteira = u'9'
-
-        if self.boleto_type == u'7':
-            if self.bank_account_id.bank_id.bic != '033':
-                vals['warning'] = {
-                    'title': u'Ação Bloqueada!',
-                    'message': u'Este boleto não combina com a conta bancária!'
-                }
-            self.boleto_carteira = u'101'
-
-        if self.boleto_type == u'9':
-            if self.bank_account_id.bank_id.bic != '756':
-                vals['warning'] = {
-                    'title': u'Ação Bloqueada!',
-                    'message': u'Este boleto não combina com a conta bancária!'
-                }
-            self.boleto_carteira = u'1'
-            self.boleto_modalidade = u'01'
-
-        if self.boleto_type == u'10':
-            if self.bank_account_id.bank_id.bic != '0851':
-                vals['warning'] = {
-                    'title': u'Ação Bloqueada!',
-                    'message': u'Este boleto não combina com a conta bancária!'
-                }
-            self.boleto_carteira = '01'
-            self.boleto_protesto = '3'
-
-        return vals
+    # @api.onchange("boleto_type")
+    # def br_boleto_onchange_boleto_type(self):
+    #     vals = {}
+    #
+    #     if self.boleto_type not in IMPLEMENTADOS:
+    #         vals['warning'] = {
+    #             'title': u'Ação Bloqueada!',
+    #             'message': u'Este boleto ainda não foi implentado!'
+    #         }
+    #
+    #     if self.boleto_type == u'1':
+    #         if self.bank_account_id.bank_id.bic != '001':
+    #             vals['warning'] = {
+    #                 'title': u'Ação Bloqueada!',
+    #                 'message': u'Este boleto não combina com a conta
+    # bancária!'
+    #             }
+    #
+    #         self.boleto_carteira = u'17'
+    #         self.boleto_variacao = u'19'
+    #
+    #     if self.boleto_type == u'3':
+    #         if self.bank_account_id.bank_id.bic != '237':
+    #             vals['warning'] = {
+    #                 'title': u'Ação Bloqueada!',
+    #               'message': u'Este boleto não combina com a conta bancária!'
+    #             }
+    #         self.boleto_carteira = u'9'
+    #
+    #     if self.boleto_type == u'7':
+    #         if self.bank_account_id.bank_id.bic != '033':
+    #             vals['warning'] = {
+    #                 'title': u'Ação Bloqueada!',
+    #               'message': u'Este boleto não combina com a conta bancária!'
+    #             }
+    #         self.boleto_carteira = u'101'
+    #
+    #     if self.boleto_type == u'9':
+    #         if self.bank_account_id.bank_id.bic != '756':
+    #             vals['warning'] = {
+    #                 'title': u'Ação Bloqueada!',
+    #               'message': u'Este boleto não combina com a conta bancária!'
+    #             }
+    #         self.boleto_carteira = u'1'
+    #         self.boleto_modalidade = u'01'
+    #
+    #     if self.boleto_type == u'10':
+    #         if self.bank_account_id.bank_id.bic != '0851':
+    #             vals['warning'] = {
+    #                 'title': u'Ação Bloqueada!',
+    #               'message': u'Este boleto não combina com a conta bancária!'
+    #             }
+    #         self.boleto_carteira = '01'
+    #         self.boleto_protesto = '3'
+    #
+    #     return vals
 
     @api.onchange("boleto_carteira")
     def br_boleto_onchange_boleto_carteira(self):
@@ -119,6 +120,6 @@ class PaymentMode(models.Model):
             vals['warning'] = {
                 'title': u'Ação Bloqueada!',
                 'message': 'A carteira deste banco possui apenas um digito!'
-                }
+            }
 
         return vals
