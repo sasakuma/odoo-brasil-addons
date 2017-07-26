@@ -12,7 +12,7 @@
 
     <record id="br_document_serie_1_avulsa" model="br_account.document.serie">
         <field name="code">1</field>
-        <field name="name">Série 1 - Nota Avulsa</field>
+        <field name="name">Série 1 - Nota Avulsa de Produto</field>
         <field name="fiscal_document_id" ref="br_data_account.fiscal_document_1B" />
         <field name="company_id" ref="base.main_company" />
         <field name="active">True</field>
