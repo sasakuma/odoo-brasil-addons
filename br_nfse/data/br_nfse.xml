@@ -44,7 +44,7 @@
 
         <record id="br_document_serie_2" model="br_account.document.serie">
             <field name="code">2</field>
-            <field name="name">Série 1 - Nota Fiscal Avulsa de Serviço</field>
+            <field name="name">Série 2 - Nota Fiscal Avulsa de Serviço</field>
             <field name="fiscal_document_id" ref="fiscal_document_002"/>
             <field name="internal_sequence_id" ref="nfes_internal_sequence_2"/>
             <field name="company_id" ref="base.main_company"/>
