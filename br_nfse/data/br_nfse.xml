@@ -8,6 +8,11 @@
             <field name="name">Nota Fiscal Eletronica de Serviço</field>
             <field name="electronic">True</field>
         </record>
+        <record id="fiscal_document_002" model="br_account.fiscal.document">
+            <field name="code">002</field>
+            <field name="name">Nota Avulsa de Serviço</field>
+            <field name="fiscal_type">service</field>
+        </record>
 
         <record id="nfes_internal_sequence_1" model="ir.sequence">
             <field name="name">Série 1 - Nota Fiscal Eletrônica de Serviço</field>
@@ -28,6 +33,25 @@
             <field name="fiscal_type">service</field>
         </record>
 
+        <record id="nfes_internal_sequence_2" model="ir.sequence">
+            <field name="name">Série 1 - Nota Fiscal Avulsa de Serviço</field>
+            <field name="implementation">no_gap</field>
+            <field name="active">True</field>
+            <field name="padding">1</field>
+            <field name="number_increment">1</field>
+            <field name="number_next_actual">1</field>
+        </record>
+
+        <record id="br_document_serie_2" model="br_account.document.serie">
+            <field name="code">2</field>
+            <field name="name">Série 2 - Nota Fiscal Avulsa de Serviço</field>
+            <field name="fiscal_document_id" ref="fiscal_document_002"/>
+            <field name="internal_sequence_id" ref="nfes_internal_sequence_2"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="active">True</field>
+            <field name="fiscal_type">service</field>
+        </record>
+
         <record id="product_product_2" model="product.product">
             <field name="name">Assessoria</field>
             <field name="categ_id" ref="product.product_category_3"/>
@@ -39,7 +63,7 @@
             <field name="uom_po_id" ref="product.product_uom_hour"/>
             <field name="description_sale">Exemplo de serviço para faturamento.</field>
         </record>
-
+      
     </data>
 
 </odoo>
