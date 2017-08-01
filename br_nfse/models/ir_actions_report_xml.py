@@ -9,4 +9,4 @@ class IrActionsReportXml(models.Model):
     _inherit = 'ir.actions.report.xml'
 
     city_id = fields.Many2one('res.state.city',
-                              string='Município')
+                              string=u'Município')

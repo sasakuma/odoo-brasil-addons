@@ -4,8 +4,7 @@
 
 {
     'name': 'Envio de NFS-e',
-    'summary': """Permite o envio de NFS-e através das faturas do Odoo
-    Mantido por Trustcode""",
+    'summary': u"""Permite o envio de NFS-e através das faturas do Odoo.""",
     'description': 'Envio de NFS-e - Nota Fiscal Paulistana',
     'version': '10.0.1.0.0',
     'category': 'account',

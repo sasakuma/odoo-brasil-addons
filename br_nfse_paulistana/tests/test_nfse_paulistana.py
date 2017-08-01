@@ -26,13 +26,13 @@ class TestNFeBrasil(TransactionCase):
         self.currency_real = self.env.ref('base.BRL')
         self.main_company.write({
             'name': 'Trustcode',
-            'legal_name': 'Trustcode Tecnologia da Informação',
+            'legal_name': u'Trustcode Tecnologia da Informação',
             'cnpj_cpf': '92.743.275/0001-33',
             'inscr_mun': '51212300',
             'zip': '88037-240',
-            'street': 'Vinicius de Moraes',
+            'street': u'Vinicius de Moraes',
             'number': '42',
-            'district': 'Córrego Grande',
+            'district': u'Córrego Grande',
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sp').id,
             'city_id': self.env.ref('br_base.city_4205407').id,
@@ -71,9 +71,9 @@ class TestNFeBrasil(TransactionCase):
         })
         default_partner = {
             'name': 'Nome Parceiro',
-            'legal_name': 'Razão Social',
+            'legal_name': u'Razão Social',
             'zip': '88037-240',
-            'street': 'Endereço Rua',
+            'street': u'Endereço Rua',
             'number': '42',
             'district': 'Centro',
             'phone': '(48) 9801-6226',

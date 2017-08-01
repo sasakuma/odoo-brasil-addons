@@ -26,8 +26,10 @@ STATE = {'edit': [('readonly', False)]}
 class InvoiceElectronicItem(models.Model):
     _inherit = 'invoice.eletronic.item'
 
-    codigo_servico_paulistana = fields.Char(
-        string='Código NFSe Paulistana', size=5, readonly=True, states=STATE)
+    codigo_servico_paulistana = fields.Char(string=u'Código NFSe Paulistana',
+                                            size=5,
+                                            readonly=True,
+                                            states=STATE)
 
 
 class InvoiceElectronic(models.Model):
