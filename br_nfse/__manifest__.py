@@ -34,6 +34,9 @@
         'views/account_fiscal_position.xml',
         'reports/danfse_default.xml',
     ],
+    'demo': [
+        'demo/product_demo.xml',
+    ],
     'installable': True,
     'application': True,
 }
