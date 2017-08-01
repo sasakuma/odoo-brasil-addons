@@ -7,7 +7,8 @@ import re
 import logging
 import requests
 
-from odoo import api, fields, models, _
+from odoo import api, fields, models
+from odoo.tools.translate import _
 from odoo.exceptions import UserError
 
 
@@ -15,24 +16,25 @@ _logger = logging.getLogger(__name__)
 
 
 class BrZip(models.Model):
-    """ Este objeto persiste todos os códigos postais que podem ser
-    utilizados para pesquisar e auxiliar o preenchimento dos endereços.
-    """
-    _name = 'br.zip'
-    _description = 'CEP'
-    _rec_name = 'zip'
 
-    zip = fields.Char('CEP', size=8, required=True)
-    street_type = fields.Char('Tipo', size=26)
-    street = fields.Char('Logradouro', size=72)
-    district = fields.Char('Bairro', size=72)
-    country_id = fields.Many2one('res.country', 'Country')
-    state_id = fields.Many2one(
-        'res.country.state', 'Estado',
-        domain="[('country_id','=',country_id)]")
-    city_id = fields.Many2one(
-        'res.state.city', 'Cidade',
-        required=True, domain="[('state_id','=',state_id)]")
+    _name = 'br.zip'
+    _rec_name = 'zip'
+    _description = u'Este objeto persiste todos os códigos postais que ' \
+                   u'podem ser utilizados para pesquisar e auxiliar o ' \
+                   u'preenchimento dos endereços.'
+
+    zip = fields.Char(string=u'CEP', size=8, required=True)
+    street_type = fields.Char(string=u'Tipo', size=26)
+    street = fields.Char(string=u'Logradouro', size=72)
+    district = fields.Char(string=u'Bairro', size=72)
+    country_id = fields.Many2one('res.country', string=u'Country')
+    state_id = fields.Many2one('res.country.state',
+                               string=u'Estado',
+                               domain="[('country_id','=',country_id)]")
+    city_id = fields.Many2one('res.state.city',
+                              string=u'Cidade',
+                              required=True,
+                              domain="[('state_id','=',state_id)]")
 
     def set_domain(self, country_id=False, state_id=False,
                    city_id=False, district=False,
@@ -95,7 +97,7 @@ class BrZip(models.Model):
             if zip_code and len(zip_code) == 8:
                 self._search_by_cep(zip_code)
             elif zip_code:
-                raise UserError('Digite o cep corretamente')
+                raise UserError(u'Digite o CEP corretamente')
             else:
                 self._search_by_address(state_id, city_id, street)
 

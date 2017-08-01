@@ -19,7 +19,9 @@
         'wizard/br_zip_search_view.xml',
         'security/ir.model.access.csv',
     ],
-    'test': ['test/zip_demo.yml'],
+    'test': [
+        'test/zip_demo.yml',
+    ],
     'category': 'Localization',
     'installable': True,
 }
