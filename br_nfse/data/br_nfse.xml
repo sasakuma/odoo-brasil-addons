@@ -8,10 +8,11 @@
             <field name="name">Nota Fiscal Eletronica de Serviço</field>
             <field name="electronic">True</field>
         </record>
+
         <record id="fiscal_document_002" model="br_account.fiscal.document">
             <field name="code">002</field>
             <field name="name">Nota Avulsa de Serviço</field>
-            <field name="fiscal_type">service</field>
+            <field name="electronic">False</field>
         </record>
 
         <record id="nfes_internal_sequence_1" model="ir.sequence">
