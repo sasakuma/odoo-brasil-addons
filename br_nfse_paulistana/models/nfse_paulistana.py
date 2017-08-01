@@ -344,8 +344,7 @@ class InvoiceElectronic(models.Model):
 
         aux = []
 
-        if self.invoice_id.invoice_model == '001' and \
-                self.webservice_nfse == 'nfse_paulistana':
+        if self.invoice_id.invoice_model == '001' and self.webservice_nfse == 'nfse_paulistana':  # noqa: 501
 
             observacao_nfse = (u'(#) Esta NFS-e foi emitida com respaldo na '
                                u'Lei nº 14.097/2005; ')
@@ -381,7 +380,7 @@ class InvoiceElectronic(models.Model):
                     # Partner estabelecido na cidade de SP
                     issqn_tipo = self.eletronic_item_ids[0].issqn_codigo
 
-                    if self.partner_id.city_id.ibge_code == '50308'\
+                    if self.partner_id.city_id.ibge_code == '50308' \
                             and issqn_tipo == 'R':
                         observacao_nfse = (u'(#) O ISS desta NFS-e será RETIDO'
                                            u' pelo Tomador de Serviço que '
@@ -450,8 +449,7 @@ class InvoiceElectronic(models.Model):
     def get_reg_code(self):
         """ Retorna codigo data_emissaoucnpjcpf presente no header do danfse"""
 
-        if self.invoice_id.invoice_model == '001' and \
-                self.webservice_nfse == 'nfse_paulistana':
+        if self.invoice_id.invoice_model == '001' and self.webservice_nfse == 'nfse_paulistana':  # noqa: 501
 
             cnpj_cpf = self.company_id.partner_id.cnpj_cpf.replace('.', '')
             cnpj_cpf = cnpj_cpf.replace('-', '')

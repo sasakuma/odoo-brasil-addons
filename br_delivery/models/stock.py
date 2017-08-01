@@ -14,5 +14,5 @@ class StockPicking(models.Model):
     incoterm = fields.Many2one(
         'stock.incoterms', 'Tipo do Frete',
         help="Incoterm which stands for 'International Commercial terms"
-        "implies its a series of sales terms which are used in the "
-        "commercial transaction.")
+             "implies its a series of sales terms which are used in the "
+             "commercial transaction.")

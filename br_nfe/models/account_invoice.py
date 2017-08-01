@@ -43,8 +43,9 @@ class AccountInvoice(models.Model):
                 [('invoice_id', '=', item.id)])
             for doc in docs:
                 if doc.state in ('done', 'denied', 'cancel'):
-                    raise UserError('Nota fiscal já emitida para esta fatura - \
-                                    Duplique a fatura para continuar')
+                    raise UserError(u'Nota fiscal já emitida para esta '
+                                    u'fatura - Duplique a fatura para '
+                                    u'continuar')
         return super(AccountInvoice, self).action_invoice_draft()
 
     @api.multi
@@ -52,12 +53,17 @@ class AccountInvoice(models.Model):
         super(AccountInvoice, self).action_number()
         sequence = True
         while sequence:
-            sequence = self.env['invoice.eletronic.inutilized'].search([
+            search_1 = self.env['invoice.eletronic.inutilized'].search([
                 ('numeration_start', '<=', self.internal_number),
-                ('numeration_end', '>=', self.internal_number)], limit=1) or \
-                self.env['invoice.eletronic'].search([
-                    ('numero', '=', self.internal_number)
-                ], order='numero desc', limit=1)
+                ('numeration_end', '>=', self.internal_number)],
+                limit=1)
+
+            search_2 = self.env['invoice.eletronic'].search([
+                ('numero', '=', self.internal_number)],
+                order='numero desc',
+                limit=1)
+
+            sequence = search_1 or search_2
             if sequence:
                 self.internal_number += 1
         return True
@@ -164,14 +170,11 @@ class AccountInvoice(models.Model):
         return res
 
     def _prepare_edoc_item_vals(self, invoice_line):
-        vals = super(AccountInvoice, self).\
-            _prepare_edoc_item_vals(invoice_line)
-        vals['cest'] = invoice_line.product_id.cest or \
-            invoice_line.fiscal_classification_id.cest or ''
-        vals['classe_enquadramento_ipi'] = \
-            invoice_line.fiscal_classification_id.classe_enquadramento or ''
-        vals['codigo_enquadramento_ipi'] = \
-            invoice_line.fiscal_classification_id.codigo_enquadramento or '999'
+        vals = super(AccountInvoice, self)._prepare_edoc_item_vals(invoice_line)  # noqa: 501
+
+        vals['cest'] = invoice_line.product_id.cest or invoice_line.fiscal_classification_id.cest or ''  # noqa: 501
+        vals['classe_enquadramento_ipi'] = invoice_line.fiscal_classification_id.classe_enquadramento or ''  # noqa: 501
+        vals['codigo_enquadramento_ipi'] = invoice_line.fiscal_classification_id.codigo_enquadramento or '999'  # noqa: 501
         vals['tem_difal'] = invoice_line.tem_difal
         vals['icms_bc_uf_dest'] = invoice_line.icms_bc_uf_dest
         vals['icms_aliquota_interestadual'] = \

@@ -51,14 +51,16 @@ class AccountInvoice(models.Model):
         res['service_type_id'] = service.id
         res['icms_origem'] = line.product_id.origin
 
-        valor = 0
         if line.product_id.fiscal_type == 'service':
             valor = line.product_id.lst_price * (
                 service.federal_nacional + service.estadual_imposto +
                 service.municipal_imposto) / 100
         else:
-            nacional = ncm.federal_nacional if line.product_id.origin in \
-                ('1', '2', '3', '8') else ncm.federal_importado
+            if line.product_id.origin in ('1', '2', '3', '8'):
+                nacional = ncm.federal_nacional
+            else:
+                nacional = ncm.federal_importado
+
             valor = line.product_id.lst_price * (
                 nacional + ncm.estadual_imposto +
                 ncm.municipal_imposto) / 100

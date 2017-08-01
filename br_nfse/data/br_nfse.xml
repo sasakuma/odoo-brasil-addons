@@ -52,7 +52,7 @@
             <field name="active">True</field>
             <field name="fiscal_type">service</field>
         </record>
-      
+
     </data>
 
 </odoo>

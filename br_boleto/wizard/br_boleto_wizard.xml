@@ -9,12 +9,12 @@
                 <group>
                     <group>
                         <field name="move_line_id" string='Vencimento'/>
-                        <field name="date_change" />
+                        <field name="date_change"/>
                     </group>
                 </group>
                 <footer>
                     <button name="imprimir_boleto" type="object" string="Reimprimir" class="oe_highlight"/>
-                        or
+                    or
                     <button special="cancel" string="Cancelar"/>
                 </footer>
             </form>
@@ -22,11 +22,11 @@
     </record>
 
     <act_window id="br_boleto_action"
-        name="Alterar / Reimprimir Boleto"
-        src_model="account.invoice"
-        res_model="br.boleto.wizard"
-        view_mode="form"
-        target="new"
-        key2="client_action_multi"/>
+                name="Alterar / Reimprimir Boleto"
+                src_model="account.invoice"
+                res_model="br.boleto.wizard"
+                view_mode="form"
+                target="new"
+                key2="client_action_multi"/>
 
 </odoo>

@@ -8,8 +8,8 @@
         <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
         <field name="arch" type="xml">
             <field name="delivery_type" position="after">
-                <field name="antt_code" />
-                <field colspan="4" name="vehicle_ids" nolabel="1" widget="one2many_list" />
+                <field name="antt_code"/>
+                <field colspan="4" name="vehicle_ids" nolabel="1" widget="one2many_list"/>
             </field>
         </field>
     </record>

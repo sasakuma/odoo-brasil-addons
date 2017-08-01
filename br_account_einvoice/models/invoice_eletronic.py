@@ -17,7 +17,6 @@ from odoo.addons.br_account.models.cst import CST_PIS_COFINS
 from odoo.addons.br_account.models.cst import ORIGEM_PROD
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
 
-
 STATE = {'edit': [('readonly', False)]}
 
 
@@ -41,7 +40,7 @@ class InvoiceEletronic(models.Model):
         string=u'State', default='draft', readonly=True, states=STATE)
     tipo_operacao = fields.Selection(
         [('entrada', 'Entrada'),
-         ('saida', 'Saída')],
+         ('saida', u'Saída')],
         string=u'Tipo de Operação', readonly=True, states=STATE)
     model = fields.Selection(
         [('55', '55 - NFe'),
@@ -76,25 +75,25 @@ class InvoiceEletronic(models.Model):
         string=u'Finalidade', help=u"Finalidade da emissão de NFe",
         readonly=True, states=STATE)
     invoice_id = fields.Many2one(
-        'account.invoice', string=u'Fatura', readonly=True, states=STATE)
+        'account.invoice', string='Fatura', readonly=True, states=STATE)
     partner_id = fields.Many2one(
-        'res.partner', string=u'Parceiro', readonly=True, states=STATE)
+        'res.partner', string='Parceiro', readonly=True, states=STATE)
     commercial_partner_id = fields.Many2one(
         'res.partner', string='Commercial Entity',
         related='partner_id.commercial_partner_id', store=True)
     partner_shipping_id = fields.Many2one(
-        'res.partner', string=u'Entrega', readonly=True, states=STATE)
+        'res.partner', string='Entrega', readonly=True, states=STATE)
     payment_term_id = fields.Many2one(
-        'account.payment.term', string=u'Forma pagamento',
+        'account.payment.term', string='Forma pagamento',
         readonly=True, states=STATE)
     fiscal_position_id = fields.Many2one(
         'account.fiscal.position', string=u'Posição Fiscal',
         readonly=True, states=STATE)
     eletronic_item_ids = fields.One2many(
-        'invoice.eletronic.item', 'invoice_eletronic_id', string=u"Linhas",
+        'invoice.eletronic.item', 'invoice_eletronic_id', string="Linhas",
         readonly=True, states=STATE)
     eletronic_event_ids = fields.One2many(
-        'invoice.eletronic.event', 'invoice_eletronic_id', string=u"Eventos",
+        'invoice.eletronic.event', 'invoice_eletronic_id', string="Eventos",
         readonly=True, states=STATE)
     valor_bruto = fields.Monetary(
         string=u'Total Produtos', readonly=True, states=STATE)
@@ -343,8 +342,8 @@ class InvoiceEletronic(models.Model):
             comment_end_string="</%doc>",
             line_statement_prefix="%",
             line_comment_prefix="##",
-            trim_blocks=True,               # do not output newline after
-            autoescape=True,                # XML/HTML automatic escaping
+            trim_blocks=True,  # do not output newline after
+            autoescape=True,  # XML/HTML automatic escaping
         )
         mako_template_env.globals.update({
             'str': str,
@@ -544,9 +543,9 @@ class InvoiceEletronicItem(models.Model):
     valor_liquido = fields.Monetary(
         string=u'Valor Líquido', digits=dp.get_precision('Account'),
         readonly=True, states=STATE)
-    indicador_total = fields.Selection([('0', '0 - Não'),
-                                        ('1', '1 - Sim')],
-                                       string="Compõe Total da Nota?",
+    indicador_total = fields.Selection([('0', u'0 - Não'),
+                                        ('1', u'1 - Sim')],
+                                       string=u"Compõe Total da Nota?",
                                        default='1',
                                        readonly=True,
                                        states=STATE)
@@ -583,10 +582,11 @@ class InvoiceEletronicItem(models.Model):
 
     icms_st_tipo_base = fields.Selection(
         [('0', u'0- Preço tabelado ou máximo  sugerido'),
-         ('1', u'1 - Lista Negativa (valor)'),
-         ('2', u'2 - Lista Positiva (valor)'),
-         ('3', u'3 - Lista Neutra (valor)'),
-         ('4', u'4 - Margem Valor Agregado (%)'), ('5', '5 - Pauta (valor)')],
+         ('1', '1 - Lista Negativa (valor)'),
+         ('2', '2 - Lista Positiva (valor)'),
+         ('3', '3 - Lista Neutra (valor)'),
+         ('4', u'4 - Margem Valor Agregado (%)'),
+         ('5', '5 - Pauta (valor)')],
         string='Tipo Base ICMS ST', required=True, default='4',
         readonly=True, states=STATE)
     icms_st_aliquota_mva = fields.Float(

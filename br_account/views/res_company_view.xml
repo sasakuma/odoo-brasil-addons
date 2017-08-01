@@ -4,22 +4,22 @@
         <record id="view_br_account_company_form" model="ir.ui.view">
             <field name="name">br_account.company</field>
             <field name="model">res.company</field>
-            <field name="inherit_id" ref="base.view_company_form" />
+            <field name="inherit_id" ref="base.view_company_form"/>
             <field name="arch" type="xml">
                 <notebook position="inside">
                     <page name="fiscal" string="Dados Fiscais">
                         <group name="regime_fiscal" string="Regime Tributário">
-                            <field name="fiscal_type" nolabel="1" />
+                            <field name="fiscal_type" nolabel="1"/>
                             <group name="simples_nacional" string="Simples Nacional" attrs="{'invisible': [('fiscal_type', '!=', '1')]}">
-                                <field name="annual_revenue" string="Faturamento dos últimos 12 meses" />
+                                <field name="annual_revenue" string="Faturamento dos últimos 12 meses"/>
                             </group>
                             <group string="Escritório de contabilidade">
-                                <field name="accountant_id" nolabel="1" />
+                                <field name="accountant_id" nolabel="1"/>
                             </group>
                         </group>
                         <!--<group  string="Séries de Documentos Fiscais">-->
-                            <!--<field name="fiscal_document_for_product_id" />-->
-                            <!--<field name="document_serie_id" />-->
+                        <!--<field name="fiscal_document_for_product_id" />-->
+                        <!--<field name="document_serie_id" />-->
                         <!--</group>-->
                         <group name="cnae" string="CNAE">
                             <field name="cnae_main_id"/>

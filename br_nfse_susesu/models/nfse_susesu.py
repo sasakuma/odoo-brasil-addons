@@ -118,7 +118,7 @@ class InvoiceEletronic(models.Model):
                 'numero': self.numero,
                 'data_emissao': dt_emissao,
                 'aliquota_atividade':
-                fmt_number(self.eletronic_item_ids[0].issqn_aliquota),
+                    fmt_number(self.eletronic_item_ids[0].issqn_aliquota),
                 'codigo_atividade': codigo_servico,
                 'valor_pis': fmt_number(self.valor_pis_servicos),
                 'valor_cofins': fmt_number(self.valor_cofins_servicos),
@@ -126,15 +126,15 @@ class InvoiceEletronic(models.Model):
                 'valor_inss': fmt_number(self.valor_retencao_inss),
                 'valor_ir': fmt_number(self.valor_retencao_irrf),
                 'aliquota_pis':
-                fmt_number(self.eletronic_item_ids[0].pis_aliquota),
+                    fmt_number(self.eletronic_item_ids[0].pis_aliquota),
                 'aliquota_cofins':
-                fmt_number(self.eletronic_item_ids[0].cofins_aliquota),
+                    fmt_number(self.eletronic_item_ids[0].cofins_aliquota),
                 'aliquota_csll':
-                fmt_number(self.eletronic_item_ids[0].csll_aliquota),
+                    fmt_number(self.eletronic_item_ids[0].csll_aliquota),
                 'aliquota_inss':
-                fmt_number(self.eletronic_item_ids[0].inss_aliquota),
+                    fmt_number(self.eletronic_item_ids[0].inss_aliquota),
                 'aliquota_ir':
-                fmt_number(self.eletronic_item_ids[0].irrf_aliquota),
+                    fmt_number(self.eletronic_item_ids[0].irrf_aliquota),
                 'valor_deducao': '0,00',
                 'descricao': descricao,
                 'observacoes': self.informacoes_complementares,

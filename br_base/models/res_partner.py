@@ -32,11 +32,12 @@ class ResPartner(models.Model):
     rg_fisica = fields.Char('RG', size=16, copy=False)
     inscr_mun = fields.Char('Inscr. Municipal', size=18)
     suframa = fields.Char('Suframa', size=18)
-    legal_name = fields.Char(
-        u'Razão Social', size=60, help="Nome utilizado em documentos fiscais")
-    city_id = fields.Many2one(
-        'res.state.city', u'Município',
-        domain="[('state_id','=',state_id)]")
+    legal_name = fields.Char(string=u'Razão Social',
+                             size=60,
+                             help="Nome utilizado em documentos fiscais")
+    city_id = fields.Many2one('res.state.city',
+                              u'Município',
+                              domain="[('state_id','=',state_id)]")
     district = fields.Char('Bairro', size=32)
     number = fields.Char(u'Número', size=10)
 
@@ -61,23 +62,29 @@ class ResPartner(models.Model):
             args = {
                 'state_code': address.state_id and address.state_id.code or '',
                 'state_name': address.state_id and address.state_id.name or '',
-                'country_code': address.country_id and
-                address.country_id.code or '',
-                'country_name': address.country_id and
-                address.country_id.name or '',
-                'company_name': address.parent_id and
-                address.parent_id.name or '',
-                'city_name': address.city_id and
-                address.city_id.name or '',
+                'country_code': address.country_id and address.country_id.code or '',  # noqa 501
+                'country_name': address.country_id and address.country_id.name or '',  # noqa 501
+                'company_name': address.parent_id and address.parent_id.name or '',  # noqa 501
+                'city_name': address.city_id and address.city_id.name or '',
             }
-            address_field = ['title', 'street', 'street2', 'zip', 'city',
-                             'number', 'district']
+            address_field = [
+                'title',
+                'street',
+                'street2',
+                'zip',
+                'city',
+                'number',
+                'district',
+            ]
             for field in address_field:
                 args[field] = getattr(address, field) or ''
+
             if without_company:
                 args['company_name'] = ''
+
             elif address.parent_id:
                 address_format = '%(company_name)s\n' + address_format
+
             return address_format % args
 
     @api.one
@@ -134,7 +141,7 @@ class ResPartner(models.Model):
 
         if len(partner_ids) > 0:
             raise UserError(_(u'Já existe um parceiro cadastrado com'
-                            u'esta Inscrição Estadual/RG!'))
+                              u'esta Inscrição Estadual/RG!'))
         return True
 
     @api.onchange('cnpj_cpf')
@@ -143,13 +150,12 @@ class ResPartner(models.Model):
         if self.cnpj_cpf and country_code.upper() == 'BR':
             val = re.sub('[^0-9]', '', self.cnpj_cpf)
             if len(val) == 14:
-                cnpj_cpf = "%s.%s.%s/%s-%s"\
-                    % (val[0:2], val[2:5], val[5:8], val[8:12], val[12:14])
-                self.cnpj_cpf = cnpj_cpf
+                self.cnpj_cpf = "%s.%s.%s/%s-%s" % (
+                    val[0:2], val[2:5], val[5:8], val[8:12],
+                    val[12:14])  # noqa 501
             elif not self.is_company and len(val) == 11:
-                cnpj_cpf = "%s.%s.%s-%s"\
-                    % (val[0:3], val[3:6], val[6:9], val[9:11])
-                self.cnpj_cpf = cnpj_cpf
+                self.cnpj_cpf = "%s.%s.%s-%s" % (
+                    val[0:3], val[3:6], val[6:9], val[9:11])  # noqa 501
             else:
                 raise UserError(_(u'Verifique o CNPJ/CPF'))
 
@@ -168,14 +174,13 @@ class ResPartner(models.Model):
         if self.zip:
             val = re.sub('[^0-9]', '', self.zip)
             if len(val) == 8:
-                zip = "%s-%s" % (val[0:5], val[5:8])
-                self.zip = zip
+                self.zip = "%s-%s" % (val[0:5], val[5:8])
 
     @api.model
     def _address_fields(self):
         """ Returns the list of address fields that are synced from the parent
         when the `use_parent_address` flag is set.
-        Extenção para os novos campos do endereço """
+        Extensão para os novos campos do endereço """
         address_fields = super(ResPartner, self)._address_fields()
         return list(address_fields + ['city_id', 'number', 'district'])
 
@@ -199,8 +204,8 @@ class ResPartner(models.Model):
                                          estado=self.state_id.ibge_code)
 
             obj = resposta['object']
-            if "Body" in dir(obj) and \
-               "consultaCadastro2Result" in dir(obj.Body):
+            if "Body" in dir(obj) and "consultaCadastro2Result" in dir(
+                    obj.Body):  # noqa: 501
                 info = obj.Body.consultaCadastro2Result.retConsCad.infCons
                 if info.cStat == 111 or info.cStat == 112:
                     if not self.inscr_est:
@@ -212,6 +217,7 @@ class ResPartner(models.Model):
                         if prop not in dir(obj):
                             return None
                         return getattr(obj, prop)
+
                     self.legal_name = get_value(info.infCad, 'xNome')
                     if "ender" not in dir(info.infCad):
                         return

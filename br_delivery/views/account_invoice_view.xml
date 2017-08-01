@@ -10,7 +10,7 @@
                 <separator colspan="4" string="Dados da Transportadora"/>
                 <field name="carrier_id"/>
                 <field name="vehicle_id"/>
-                <field name="incoterm" widget="selection" />
+                <field name="incoterm" widget="selection"/>
             </field>
         </field>
     </record>
@@ -24,7 +24,7 @@
                 <separator colspan="4" string="Dados da Transportadora"/>
                 <field colspan="4" name="carrier_id"/>
                 <field name="vehicle_id"/>
-                <field name="incoterm" widget="selection" />
+                <field name="incoterm" widget="selection"/>
             </field>
         </field>
     </record>

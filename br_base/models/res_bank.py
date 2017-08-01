@@ -29,7 +29,7 @@ class ResBank(models.Model):
 
     acc_number_format = fields.Text(help="""You can enter here the format as\
     the bank accounts are referenced in ofx files for the import of bank\
-    statements.\nYou can use the python patern string with the entire bank \
+    statements.\nYou can use the python pattern string with the entire bank \
     account field.\nValid Fields:\n
           %(bra_number): Bank Branch Number\n
           %(bra_number_dig): Bank Branch Number's Digit\n
@@ -65,8 +65,8 @@ class ResPartnerBank(models.Model):
     def _compute_sanitized_acc_number(self):
         for bank_account in self:
             if bank_account.bank_id:
-                acc_number_format = bank_account.bank_id.acc_number_format \
-                    or '%(acc_number)s'
+                acc_number_format = \
+                    bank_account.bank_id.acc_number_format or '%(acc_number)s'
                 args = {
                     'bra_number': bank_account.bra_number or '',
                     'bra_number_dig': bank_account.bra_number_dig or '',

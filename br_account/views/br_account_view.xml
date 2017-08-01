@@ -28,7 +28,7 @@
                 <field name="name"/>
                 <field name="manufacturer_code"/>
                 <field name="amount_discount"/>
-                <field name="drawback_number" />
+                <field name="drawback_number"/>
             </tree>
         </field>
     </record>
@@ -151,10 +151,10 @@
                         <field name="name"/>
                         <field name="internal_type"/>
                         <field name="parent_id"/>
-                        <field name="federal_nacional" />
-                        <field name="federal_importado" />
-                        <field name="estadual_imposto" />
-                        <field name="municipal_imposto" />
+                        <field name="federal_nacional"/>
+                        <field name="federal_importado"/>
+                        <field name="estadual_imposto"/>
+                        <field name="municipal_imposto"/>
                     </group>
                 </sheet>
             </form>
@@ -193,10 +193,10 @@
             <form string="CFOP">
                 <sheet>
                     <group>
-                        <field name="code" select="1" />
-                        <field name="name" select="1" />
-                        <field name="small_name" select="2" />
-                        <field name="type" select="2" />
+                        <field name="code" select="1"/>
+                        <field name="name" select="1"/>
+                        <field name="small_name" select="2"/>
+                        <field name="type" select="2"/>
                         <field name="internal_type" select="2"/>
                         <field name="parent_id"/>
                     </group>
@@ -213,15 +213,15 @@
         <field name="model">br_account.cfop</field>
         <field name="arch" type="xml">
             <search string="CFOP">
-                <filter string="Entrada" icon="terp-accessories-archiver+" domain="[('type', '=', 'input')]" />
+                <filter string="Entrada" icon="terp-accessories-archiver+" domain="[('type', '=', 'input')]"/>
                 <filter string="Saída" icon="terp-accessories-archiver-minus" domain="[('type','=','output')]"/>
                 <separator orientation="vertical"/>
                 <field name="code"/>
                 <field name="name"/>
                 <field name="small_name"/>
                 <newline/>
-                <group  expand='0' string='Agrupar Por...' groups="base.group_extended">
-                    <filter string='Tipo' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'type'}" />
+                <group expand='0' string='Agrupar Por...' groups="base.group_extended">
+                    <filter string='Tipo' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'type'}"/>
                 </group>
             </search>
         </field>
@@ -233,7 +233,7 @@
         <field name="arch" type="xml">
             <tree string="CFOP">
                 <field name="code" select="1"/>
-                <field name="name" select="1" />
+                <field name="name" select="1"/>
                 <field name="type" select="2"/>
             </tree>
         </field>
@@ -258,7 +258,7 @@
         <field name="arch" type="xml">
             <form string="Observações Fiscais">
                 <group>
-                    <field name="name" />
+                    <field name="name"/>
                     <field name="document_id"/>
                     <field name="tipo"/>
                 </group>
@@ -355,16 +355,16 @@
 
     <menuitem id="menu_br_account_fiscal_manager" name="Cadastros" parent="menu_br_account" sequence="0"/>
 
-    <menuitem id="br_account_cfop_menu" name="CFOP" parent="br_account.menu_br_account_fiscal_manager" action="br_account_cfop_action" sequence="10" />
-    <menuitem id="br_account_cfop_structure_menu" name="Estrutura do CFOP" parent="br_account.menu_br_account_fiscal_manager" action="br_account_cfop_structure_action" sequence="20" />
+    <menuitem id="br_account_cfop_menu" name="CFOP" parent="br_account.menu_br_account_fiscal_manager" action="br_account_cfop_action" sequence="10"/>
+    <menuitem id="br_account_cfop_structure_menu" name="Estrutura do CFOP" parent="br_account.menu_br_account_fiscal_manager" action="br_account_cfop_structure_action" sequence="20"/>
 
-    <menuitem id="menu_action_cnae_form" name="CNAE" parent="menu_br_account_fiscal_manager" action="action_br_account_cnae_form" sequence="30" />
+    <menuitem id="menu_action_cnae_form" name="CNAE" parent="menu_br_account_fiscal_manager" action="action_br_account_cnae_form" sequence="30"/>
 
-    <menuitem id="menu_action_cnae_structure" name="Estrutura do CNAE" parent="menu_br_account_fiscal_manager" action="action_br_account_cnae_structure" sequence="40" />
+    <menuitem id="menu_action_cnae_structure" name="Estrutura do CNAE" parent="menu_br_account_fiscal_manager" action="action_br_account_cnae_structure" sequence="40"/>
 
-    <menuitem id="menu_action_service_type_form" name="Tipo de Serviço" parent="menu_br_account_fiscal_manager" action="action_br_account_service_type_form" sequence="50" />
+    <menuitem id="menu_action_service_type_form" name="Tipo de Serviço" parent="menu_br_account_fiscal_manager" action="action_br_account_service_type_form" sequence="50"/>
 
-    <menuitem id="menu_action_service_type_structure" name="Estrutura de Tipo de Serviço" parent="menu_br_account_fiscal_manager" action="action_br_account_service_type_structure" sequence="60" />
+    <menuitem id="menu_action_service_type_structure" name="Estrutura de Tipo de Serviço" parent="menu_br_account_fiscal_manager" action="action_br_account_service_type_structure" sequence="60"/>
 
     <menuitem id="menu_action_br_account_fiscal_document_form" name="Documento Fiscal" parent="menu_br_account" action="action_br_account_fiscal_document_form"/>
 

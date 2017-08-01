@@ -6,7 +6,6 @@ from odoo.tests.common import TransactionCase
 
 
 class TestBaseBr(TransactionCase):
-
     def setUp(self):
         super(TestBaseBr, self).setUp()
         self.main_company = self.env.ref('base.main_company')

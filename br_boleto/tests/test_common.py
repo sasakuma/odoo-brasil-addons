@@ -6,7 +6,6 @@ from odoo.tests.common import TransactionCase
 
 
 class TestBoleto(TransactionCase):
-
     def _return_payment_mode(self):
         pass
 
@@ -69,20 +68,20 @@ class TestBoleto(TransactionCase):
         })
         invoice_line_data = [
             (0, 0,
-                {
-                    'product_id': self.default_product.id,
-                    'quantity': 10.0,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                    'cfop_id': self.env.ref(
-                        'br_data_account_product.cfop_5101').id,
-                    'icms_cst_normal': '40',
-                    'icms_csosn_simples': '102',
-                    'ipi_cst': '50',
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
-                }
+             {
+                 'product_id': self.default_product.id,
+                 'quantity': 10.0,
+                 'account_id': self.revenue_account.id,
+                 'name': 'product test 5',
+                 'price_unit': 100.00,
+                 'cfop_id': self.env.ref(
+                     'br_data_account_product.cfop_5101').id,
+                 'icms_cst_normal': '40',
+                 'icms_csosn_simples': '102',
+                 'ipi_cst': '50',
+                 'pis_cst': '01',
+                 'cofins_cst': '01',
+             }
              ),
         ]
         default_invoice = {

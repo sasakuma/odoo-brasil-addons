@@ -27,7 +27,7 @@ class AccountInvoice(models.Model):
 
     invoice_eletronic_ids = fields.One2many(
         'invoice.eletronic', 'invoice_id',
-        'Documentos Eletrônicos', readonly=True)
+        u'Documentos Eletrônicos', readonly=True)
     invoice_model = fields.Char(
         string="Modelo de Fatura", related="fiscal_document_id.code",
         readonly=True)
@@ -47,8 +47,8 @@ class AccountInvoice(models.Model):
             dummy, view_id = self.env['ir.model.data'].get_object_reference(
                 'br_account_einvoice', 'br_account_invoice_eletronic_form')
             vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
-            vals['view_id'] = (view_id, u'sped.eletronic.doc.form')
-            vals['views'][1] = (view_id, u'form')
+            vals['view_id'] = (view_id, 'sped.eletronic.doc.form')
+            vals['views'][1] = (view_id, 'form')
             vals['views'] = [vals['views'][1], vals['views'][0]]
             edoc = self.env['invoice.eletronic'].search(
                 [('invoice_id', '=', self.id)], limit=1)

@@ -38,7 +38,7 @@ ORIGEM_PROD = [
     ('5', u'5 - Nacional, mercadoria ou bem com Conteúdo de Importação inferior ou igual a 40%'),  # noqa
     ('6', u'6 - Estrangeira - Importação direta, sem similar nacional, constante em lista da CAMEX e gás natural'),  # noqa
     ('7', u'7 - Estrangeira - Adquirida no mercado interno, sem similar nacional, constante lista CAMEX e gás natural'),  # noqa
-    ('8', u'8 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 70%')  # noqa
+    ('8', u'8 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 70%'),  # noqa
 ]
 
 CST_IPI = [
@@ -67,7 +67,7 @@ CST_PIS_COFINS = [
     ('06', u'06 - Operação Tributável a Alíquota Zero'),
     ('07', u'07 - Operação Isenta da Contribuição'),
     ('08', u'08 - Operação sem Incidência da Contribuição'),
-    ('09', u'09 - Operação com Suspensão da Contribuiçã'),
+    ('09', u'09 - Operação com Suspensão da Contribuição'),
     ('49', u'49 - Outras Operações de Saída'),
     ('50', u'50 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Tributada no Mercado Interno'),  # noqa
     ('51', u'51 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Não-Tributada no Mercado Interno'),  # noqa

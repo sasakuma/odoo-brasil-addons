@@ -4,14 +4,15 @@
 
 import os
 import base64
-# from mock import patch
+from mock import patch
 from odoo.tests.common import TransactionCase
 from odoo.exceptions import UserError
-# from pytrustnfe.xml import sanitize_response
+
+
+from pytrustnfe.xml import sanitize_response
 
 
 class TestNFeBrasil(TransactionCase):
-
     caminho = os.path.dirname(__file__)
 
     def setUp(self):
@@ -20,13 +21,13 @@ class TestNFeBrasil(TransactionCase):
         self.currency_real = self.env.ref('base.BRL')
         self.main_company.write({
             'name': 'Trustcode',
-            'legal_name': 'Trustcode Tecnologia da Informação',
+            'legal_name': u'Trustcode Tecnologia da Informação',
             'cnpj_cpf': '92.743.275/0001-33',
             'inscr_est': '219.882.606',
             'zip': '88037-240',
             'street': 'Vinicius de Moraes',
             'number': '42',
-            'district': 'Córrego Grande',
+            'district': u'Córrego Grande',
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sc').id,
             'city_id': self.env.ref('br_base.city_4205407').id,
@@ -83,9 +84,9 @@ class TestNFeBrasil(TransactionCase):
         })
         default_partner = {
             'name': 'Nome Parceiro',
-            'legal_name': 'Razão Social',
+            'legal_name': u'Razão Social',
             'zip': '88037-240',
-            'street': 'Endereço Rua',
+            'street': u'Endereço Rua',
             'number': '42',
             'district': 'Centro',
             'phone': '(48) 9801-6226',
@@ -162,61 +163,61 @@ class TestNFeBrasil(TransactionCase):
         })
         invoice_line_incomplete = [
             (0, 0,
-                {
-                    'product_id': self.default_product.id,
-                    'quantity': 10.0,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                }
+             {
+                 'product_id': self.default_product.id,
+                 'quantity': 10.0,
+                 'account_id': self.revenue_account.id,
+                 'name': 'product test 5',
+                 'price_unit': 100.00,
+             }
              ),
             (0, 0,
-                {
-                    'product_id': self.service.id,
-                    'quantity': 10.0,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                    'product_type': self.service.fiscal_type,
-                }
+             {
+                 'product_id': self.service.id,
+                 'quantity': 10.0,
+                 'account_id': self.revenue_account.id,
+                 'name': 'product test 5',
+                 'price_unit': 100.00,
+                 'product_type': self.service.fiscal_type,
+             }
              )
         ]
         invoice_line_data = [
             (0, 0,
-                {
-                    'product_id': self.default_product.id,
-                    'quantity': 10.0,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                    'cfop_id': self.env.ref(
-                        'br_data_account_product.cfop_5101').id,
-                    'icms_cst_normal': '40',
-                    'icms_csosn_simples': '102',
-                    'ipi_cst': '50',
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
-                }
+             {
+                 'product_id': self.default_product.id,
+                 'quantity': 10.0,
+                 'account_id': self.revenue_account.id,
+                 'name': 'product test 5',
+                 'price_unit': 100.00,
+                 'cfop_id': self.env.ref(
+                     'br_data_account_product.cfop_5101').id,
+                 'icms_cst_normal': '40',
+                 'icms_csosn_simples': '102',
+                 'ipi_cst': '50',
+                 'pis_cst': '01',
+                 'cofins_cst': '01',
+             }
              ),
             (0, 0,
-                {
-                    'product_id': self.service.id,
-                    'quantity': 10.0,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                    'product_type': self.service.fiscal_type,
-                    # 'service_type_id':
-                    # self.fiscal_position_id.service_type_id.id,
-                    'cfop_id': self.env.ref(
-                        'br_data_account_product.cfop_5101').id,
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
-                }
+             {
+                 'product_id': self.service.id,
+                 'quantity': 10.0,
+                 'account_id': self.revenue_account.id,
+                 'name': 'product test 5',
+                 'price_unit': 100.00,
+                 'product_type': self.service.fiscal_type,
+                 # 'service_type_id':
+                 # self.fiscal_position_id.service_type_id.id,
+                 'cfop_id': self.env.ref(
+                     'br_data_account_product.cfop_5101').id,
+                 'pis_cst': '01',
+                 'cofins_cst': '01',
+             }
              )
         ]
         default_invoice = {
-            'name': "Teste Validação",
+            'name': u"Teste Validação",
             'reference_type': "none",
             'fiscal_document_id': self.env.ref(
                 'br_data_account.fiscal_document_55').id,
@@ -226,7 +227,7 @@ class TestNFeBrasil(TransactionCase):
             'invoice_line_ids': invoice_line_data
         }
         self.inv_incomplete = self.env['account.invoice'].create(dict(
-            name="Teste Validação",
+            name=u"Teste Validação",
             reference_type="none",
             fiscal_document_id=self.env.ref(
                 'br_data_account.fiscal_document_55').id,
@@ -266,175 +267,179 @@ class TestNFeBrasil(TransactionCase):
             partner_id=self.partner_exterior.id
         ))
 
-    # def test_computed_fields(self):
-    #     for invoice in self.invoices:
-    #         self.assertEquals(invoice.total_edocs, 0)
-    #         self.assertEquals(invoice.nfe_number, 0)
-    #         self.assertEquals(invoice.nfe_exception_number, 0)
-    #         self.assertEquals(invoice.nfe_exception, False)
-    #         self.assertEquals(invoice.sending_nfe, False)
-    #
-    #         # Confirmando a fatura deve gerar um documento eletrônico
-    #         invoice.action_invoice_open()
-    #
-    #         # Verifica algumas propriedades computadas que dependem do edoc
-    #         self.assertEquals(invoice.total_edocs, 1)
-    #         self.assertTrue(invoice.nfe_number != 0)
-    #         self.assertTrue(invoice.nfe_exception_number != 0)
-    #         self.assertEquals(invoice.nfe_exception, False)
-    #         self.assertEquals(invoice.sending_nfe, True)
+    def test_computed_fields(self):
+        for invoice in self.invoices:
+            self.assertEquals(invoice.total_edocs, 0)
+            self.assertEquals(invoice.nfe_number, 0)
+            self.assertEquals(invoice.nfe_exception_number, 0)
+            self.assertEquals(invoice.nfe_exception, False)
+            self.assertEquals(invoice.sending_nfe, False)
 
-    # def test_print_actions(self):
-    #     for invoice in self.invoices:
-    #         # Antes de confirmar a fatura
-    #         with self.assertRaises(UserError):
-    #             invoice.action_preview_danfe()
-    #
-    #         # Testa a impressão normal quando não é documento eletrônico
-    #         invoice.fiscal_document_id.code = '00'
-    #         vals_print = invoice.invoice_print()
-    #         self.assertEquals(
-    #             vals_print['report_name'], 'account.report_invoice')
-    #         invoice.fiscal_document_id.code = '55'
-    #
-    #         # Confirmando a fatura deve gerar um documento eletrônico
-    #         invoice.action_invoice_open()
-    #
-    #         danfe = invoice.action_preview_danfe()
-    #         self.assertEquals(
-    #             danfe['report_name'], 'br_nfe.main_template_br_nfe_danfe')
-    #         self.assertEquals(danfe['report_type'], 'qweb-html')
-    #
-    #         danfe = invoice.invoice_print()
-    #         self.assertEquals(
-    #             danfe['report_name'], 'br_nfe.main_template_br_nfe_danfe')
-    #         self.assertEquals(danfe['report_type'], 'qweb-pdf')
+            # Confirmando a fatura deve gerar um documento eletrônico
+            invoice.action_invoice_open()
 
-    # def test_check_invoice_eletronic_values(self):
-    #     for invoice in self.invoices:
-    #         # Confirmando a fatura deve gerar um documento eletrônico
-    #         invoice.action_invoice_open()
-    #
-    #         inv_eletr = self.env['invoice.eletronic'].search(
-    #             [('invoice_id', '=', invoice.id)])
-    #
-    #         # TODO Validar os itens que foi setado no invoice e verficar
-    #         # com o documento eletronico
-    #         self.assertEquals(inv_eletr.partner_id, invoice.partner_id)
+            # Verifica algumas propriedades computadas que dependem do edoc
+            self.assertEquals(invoice.total_edocs, 1)
+            self.assertTrue(invoice.nfe_number != 0)
+            self.assertTrue(invoice.nfe_exception_number != 0)
+            self.assertEquals(invoice.nfe_exception, False)
+            self.assertEquals(invoice.sending_nfe, True)
+
+    def test_print_actions(self):
+        for invoice in self.invoices:
+            # Antes de confirmar a fatura
+            with self.assertRaises(UserError):
+                invoice.action_preview_danfe()
+
+            # Testa a impressão normal quando não é documento eletrônico
+            invoice.fiscal_document_id.code = '00'
+            vals_print = invoice.invoice_print()
+            self.assertEquals(
+                vals_print['report_name'], 'account.report_invoice')
+            invoice.fiscal_document_id.code = '55'
+
+            # Confirmando a fatura deve gerar um documento eletrônico
+            invoice.action_invoice_open()
+
+            danfe = invoice.action_preview_danfe()
+            self.assertEquals(
+                danfe['report_name'], 'br_nfe.main_template_br_nfe_danfe')
+            self.assertEquals(danfe['report_type'], 'qweb-html')
+
+            danfe = invoice.invoice_print()
+            self.assertEquals(
+                danfe['report_name'], 'br_nfe.main_template_br_nfe_danfe')
+            self.assertEquals(danfe['report_type'], 'qweb-pdf')
+
+    def test_check_invoice_eletronic_values(self):
+        for invoice in self.invoices:
+            # Confirmando a fatura deve gerar um documento eletrônico
+            invoice.action_invoice_open()
+
+            inv_eletr = self.env['invoice.eletronic'].search(
+                [('invoice_id', '=', invoice.id)])
+
+            # TODO Validar os itens que foi setado no invoice e verficar
+            # com o documento eletronico
+            self.assertEquals(inv_eletr.partner_id, invoice.partner_id)
 
     def test_nfe_validation(self):
         with self.assertRaises(UserError):
             self.inv_incomplete.action_invoice_open()
 
-    # def test_send_nfe(self):
-    #     for invoice in self.invoices:
-    #         # Confirmando a fatura deve gerar um documento eletrônico
-    #         invoice.action_invoice_open()
-    #
-    #         invoice_eletronic = self.env['invoice.eletronic'].search(
-    #             [('invoice_id', '=', invoice.id)])
-    #         with self.assertRaises(Exception):
-    #             invoice_eletronic.action_send_eletronic_invoice()
+            def test_send_nfe(self):
+                for invoice in self.invoices:
+                    # Confirmando a fatura deve gerar um documento eletrônico
+                    invoice.action_invoice_open()
 
-    # @patch('odoo.addons.br_nfe.models.invoice_eletronic.retorno_autorizar_nfe')
-    # @patch('odoo.addons.br_nfe.models.invoice_eletronic.autorizar_nfe')
-    # def test_wrong_xml_schema(self, autorizar, ret_autorizar):
-    #     for invoice in self.invoices:
-    #         # Confirmando a fatura deve gerar um documento eletrônico
-    #         invoice.action_invoice_open()
-    #
-    #         # Lote recebido com sucesso
-    #         xml_recebido = open(os.path.join(
-    #             self.caminho, 'xml/lote-recebido-sucesso.xml'), 'r').read()
-    #         resp = sanitize_response(xml_recebido)
-    #         autorizar.return_value = {
-    #             'object': resp[1],
-    #             'sent_xml': '<xml />',
-    #             'received_xml': xml_recebido
-    #         }
-    #
-    #         # Consultar recibo com erro 225
-    #         xml_recebido = open(os.path.join(
-    #             self.caminho, 'xml/recibo-erro-schema-225.xml'), 'r').read()
-    #         resp_ret = sanitize_response(xml_recebido)
-    #         ret_autorizar.return_value = {
-    #             'object': resp_ret[1],
-    #             'sent_xml': '<xml />',
-    #             'received_xml': xml_recebido
-    #         }
-    #
-    #         invoice_eletronic = self.env['invoice.eletronic'].search(
-    #             [('invoice_id', '=', invoice.id)])
-    #         invoice_eletronic.action_send_eletronic_invoice()
-    #         self.assertEquals(invoice_eletronic.state, 'error')
-    #         self.assertEquals(invoice_eletronic.codigo_retorno, '225')
+                    invoice_eletronic = self.env['invoice.eletronic'].search(
+                        [('invoice_id', '=', invoice.id)])
+                    with self.assertRaises(Exception):
+                        invoice_eletronic.action_send_eletronic_invoice()
 
-    # @patch('odoo.addons.br_nfe.models.invoice_eletronic.retorno_autorizar_nfe')
-    # @patch('odoo.addons.br_nfe.models.invoice_eletronic.autorizar_nfe')
-    # def test_nfe_with_concept_error(self, autorizar, ret_autorizar):
-    #     for invoice in self.invoices:
-    #         # Confirmando a fatura deve gerar um documento eletrônico
-    #         invoice.action_invoice_open()
-    #
-    #         # Lote recebido com sucesso
-    #         xml_recebido = open(os.path.join(
-    #             self.caminho, 'xml/lote-recebido-sucesso.xml'), 'r').read()
-    #         resp = sanitize_response(xml_recebido)
-    #         autorizar.return_value = {
-    #             'object': resp[1],
-    #             'sent_xml': '<xml />',
-    #             'received_xml': xml_recebido
-    #         }
-    #
-    #         # Consultar recibo com erro 694 - Nao informado o DIFAL
-    #         xml_recebido = open(os.path.join(
-    #             self.caminho, 'xml/recibo-erro-694.xml'), 'r').read()
-    #         resp_ret = sanitize_response(xml_recebido)
-    #         ret_autorizar.return_value = {
-    #             'object': resp_ret[1],
-    #             'sent_xml': '<xml />',
-    #             'received_xml': xml_recebido
-    #         }
-    #
-    #         invoice_eletronic = self.env['invoice.eletronic'].search(
-    #             [('invoice_id', '=', invoice.id)])
-    #
-    #         invoice_eletronic.action_send_eletronic_invoice()
-    #         self.assertEquals(invoice_eletronic.state, 'error')
-    #         self.assertEquals(invoice_eletronic.codigo_retorno, '694')
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.retorno_autorizar_nfe')
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.autorizar_nfe')
+    def test_wrong_xml_schema(self, autorizar, ret_autorizar):
+        for invoice in self.invoices:
+            # Confirmando a fatura deve gerar um documento eletrônico
+            invoice.action_invoice_open()
 
-    # @patch('odoo.addons.br_nfe.models.invoice_eletronic.recepcao_evento_cancelamento') # noqa
-    # def test_nfe_cancelamento_ok(self, cancelar):
-    #     for invoice in self.invoices:
-    #         # Confirmando a fatura deve gerar um documento eletrônico
-    #         invoice.action_invoice_open()
-    #
-    #         # Lote recebido com sucesso
-    #         xml_recebido = open(os.path.join(
-    #             self.caminho, 'xml/cancelamento-sucesso.xml'), 'r').read()
-    #         resp = sanitize_response(xml_recebido)
-    #         cancelar.return_value = {
-    #             'object': resp[1],
-    #             'sent_xml': '<xml />',
-    #             'received_xml': xml_recebido
-    #         }
-    #
-    #         invoice_eletronic = self.env['invoice.eletronic'].search(
-    #             [('invoice_id', '=', invoice.id)])
-    #         invoice_eletronic.action_cancel_document(
-    #             justificativa="Cancelamento de teste")
-    #
-    #         self.assertEquals(invoice_eletronic.state, 'cancel')
-    #         self.assertEquals(invoice_eletronic.codigo_retorno, "155")
-    #         self.assertEquals(invoice_eletronic.mensagem_retorno,
-    #                           "Cancelamento homologado fora de prazo")
+            # Lote recebido com sucesso
+            xml_recebido = open(os.path.join(
+                self.caminho, 'xml/lote-recebido-sucesso.xml'),
+                'r').read()
+            resp = sanitize_response(xml_recebido)
+            autorizar.return_value = {
+                'object': resp[1],
+                'sent_xml': '<xml />',
+                'received_xml': xml_recebido
+            }
 
-    # def test_invoice_eletronic_functions(self):
-    #     for invoice in self.invoices:
-    #         # Confirmando a fatura deve gerar um documento eletrônico
-    #         invoice.action_invoice_open()
-    #         invoice_eletronic = self.env['invoice.eletronic'].search(
-    #             [('invoice_id', '=', invoice.id)])
-    #
-    #         url = invoice_eletronic.barcode_url()
-    #         self.assertTrue(invoice_eletronic.chave_nfe in url)
+            # Consultar recibo com erro 225
+            xml_recebido = open(os.path.join(
+                self.caminho, 'xml/recibo-erro-schema-225.xml'),
+                'r').read()
+            resp_ret = sanitize_response(xml_recebido)
+            ret_autorizar.return_value = {
+                'object': resp_ret[1],
+                'sent_xml': '<xml />',
+                'received_xml': xml_recebido
+            }
+
+            invoice_eletronic = self.env['invoice.eletronic'].search(
+                [('invoice_id', '=', invoice.id)])
+            invoice_eletronic.action_send_eletronic_invoice()
+            self.assertEquals(invoice_eletronic.state, 'error')
+            self.assertEquals(invoice_eletronic.codigo_retorno, '225')
+
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.retorno_autorizar_nfe')
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.autorizar_nfe')
+    def test_nfe_with_concept_error(self, autorizar, ret_autorizar):
+        for invoice in self.invoices:
+            # Confirmando a fatura deve gerar um documento eletrônico
+            invoice.action_invoice_open()
+
+            # Lote recebido com sucesso
+            xml_recebido = open(os.path.join(
+                self.caminho, 'xml/lote-recebido-sucesso.xml'),
+                'r').read()
+            resp = sanitize_response(xml_recebido)
+            autorizar.return_value = {
+                'object': resp[1],
+                'sent_xml': '<xml />',
+                'received_xml': xml_recebido
+            }
+
+            # Consultar recibo com erro 694 - Nao informado o DIFAL
+            xml_recebido = open(os.path.join(
+                self.caminho, 'xml/recibo-erro-694.xml'), 'r').read()
+            resp_ret = sanitize_response(xml_recebido)
+            ret_autorizar.return_value = {
+                'object': resp_ret[1],
+                'sent_xml': '<xml />',
+                'received_xml': xml_recebido
+            }
+
+            invoice_eletronic = self.env['invoice.eletronic'].search(
+                [('invoice_id', '=', invoice.id)])
+
+            invoice_eletronic.action_send_eletronic_invoice()
+            self.assertEquals(invoice_eletronic.state, 'error')
+            self.assertEquals(invoice_eletronic.codigo_retorno, '694')
+
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.recepcao_evento_cancelamento')  # noqa
+    def test_nfe_cancelamento_ok(self, cancelar):
+        for invoice in self.invoices:
+            # Confirmando a fatura deve gerar um documento eletrônico
+            invoice.action_invoice_open()
+
+            # Lote recebido com sucesso
+            xml_recebido = open(os.path.join(
+                self.caminho, 'xml/cancelamento-sucesso.xml'),
+                'r').read()
+            resp = sanitize_response(xml_recebido)
+            cancelar.return_value = {
+                'object': resp[1],
+                'sent_xml': '<xml />',
+                'received_xml': xml_recebido
+            }
+
+            invoice_eletronic = self.env['invoice.eletronic'].search(
+                [('invoice_id', '=', invoice.id)])
+            invoice_eletronic.action_cancel_document(
+                justificativa="Cancelamento de teste")
+
+            self.assertEquals(invoice_eletronic.state, 'cancel')
+            self.assertEquals(invoice_eletronic.codigo_retorno, "155")
+            self.assertEquals(invoice_eletronic.mensagem_retorno,
+                              "Cancelamento homologado fora de prazo")
+
+    def test_invoice_eletronic_functions(self):
+        for invoice in self.invoices:
+            # Confirmando a fatura deve gerar um documento eletrônico
+            invoice.action_invoice_open()
+            invoice_eletronic = self.env['invoice.eletronic'].search(
+                [('invoice_id', '=', invoice.id)])
+
+            url = invoice_eletronic.barcode_url()
+            self.assertTrue(invoice_eletronic.chave_nfe in url)

@@ -11,24 +11,24 @@
                         <page string="Dados do produto">
                             <group>
                                 <group>
-                                    <field name="state" invisible="1" />
-                                    <field name="product_id" />
-                                    <field name="uom_id" />
-                                    <field name="quantidade" />
-                                    <field name="preco_unitario" />
-                                    <field name="valor_bruto" />
-                                    <field name="desconto" />
-                                    <field name="seguro" />
-                                    <field name="frete" />
-                                    <field name="outras_despesas" />
-                                    <field name="valor_liquido" />
-                                    <field name="indicador_total" />
+                                    <field name="state" invisible="1"/>
+                                    <field name="product_id"/>
+                                    <field name="uom_id"/>
+                                    <field name="quantidade"/>
+                                    <field name="preco_unitario"/>
+                                    <field name="valor_bruto"/>
+                                    <field name="desconto"/>
+                                    <field name="seguro"/>
+                                    <field name="frete"/>
+                                    <field name="outras_despesas"/>
+                                    <field name="valor_liquido"/>
+                                    <field name="indicador_total"/>
                                 </group>
                                 <group>
-                                    <field name="tipo_produto" />
-                                    <field name="cfop" />
-                                    <field name="ncm" />
-                                    <field name="tributos_estimados" />
+                                    <field name="tipo_produto"/>
+                                    <field name="cfop"/>
+                                    <field name="ncm"/>
+                                    <field name="tributos_estimados"/>
                                 </group>
                             </group>
                         </page>
@@ -36,21 +36,21 @@
                         <page name="icms" string="ICMS" attrs="{'invisible': [('tipo_produto', '=', 'service')]}">
                             <group name="detalhes_icms" string="Detalhes do ICMS">
                                 <group>
-                                    <field name="icms_cst" />
+                                    <field name="icms_cst"/>
                                     <field name="origem"/>
                                     <field name="icms_tipo_base"/>
-                                    <field name="icms_aliquota_diferimento" />
-                                    <field name="icms_valor_diferido" />
-                                    <field name="icms_motivo_desoneracao" />
-                                    <field name="icms_valor_desonerado" />
+                                    <field name="icms_aliquota_diferimento"/>
+                                    <field name="icms_valor_diferido"/>
+                                    <field name="icms_motivo_desoneracao"/>
+                                    <field name="icms_valor_desonerado"/>
                                 </group>
                                 <group>
                                     <field name="icms_base_calculo"/>
                                     <field name="icms_aliquota_reducao_base"/>
-                                    <field name="icms_aliquota" />
+                                    <field name="icms_aliquota"/>
                                     <field name="icms_valor"/>
-                                    <field name="icms_aliquota_credito" />
-                                    <field name="icms_valor_credito" />
+                                    <field name="icms_aliquota_credito"/>
+                                    <field name="icms_valor_credito"/>
                                 </group>
                             </group>
                             <group name="substituicao_icms" string="Substituição Tributária ICMS">
@@ -59,7 +59,7 @@
                                     <field name="icms_st_aliquota_mva"/>
                                     <field name="icms_st_base_calculo"/>
                                     <field name="icms_st_aliquota_reducao_base"/>
-                                    <field name="icms_st_aliquota" />
+                                    <field name="icms_st_aliquota"/>
                                     <field name="icms_st_valor"/>
                                 </group>
                             </group>
@@ -68,7 +68,7 @@
                             <group>
                                 <field name="issqn_base_calculo"/>
                                 <field name="issqn_aliquota"/>
-                                <field name="issqn_codigo" />
+                                <field name="issqn_codigo"/>
                                 <field name="issqn_valor"/>
                                 <field name="issqn_valor_retencao"/>
                             </group>
@@ -97,13 +97,13 @@
                         <page name="ipi" string="IPI" attrs="{'invisible': [('tipo_produto','==', 'service')]}">
                             <group string="Detalhes do IPI">
                                 <group>
-                                    <field name="ipi_cst" />
+                                    <field name="ipi_cst"/>
                                 </group>
                                 <group>
-                                    <field name="ipi_valor" />
+                                    <field name="ipi_valor"/>
                                     <field name="ipi_base_calculo"/>
-                                    <field name="ipi_reducao_bc" />
-                                    <field name="ipi_aliquota" />
+                                    <field name="ipi_reducao_bc"/>
+                                    <field name="ipi_aliquota"/>
                                     <field name="ipi_valor"/>
                                 </group>
                             </group>
@@ -111,7 +111,7 @@
                         <page name="pis" string="PIS">
                             <group string="Detalhes do PIS">
                                 <group>
-                                    <field name="pis_cst" />
+                                    <field name="pis_cst"/>
                                 </group>
                                 <group>
                                     <field name="pis_base_calculo"/>
@@ -159,14 +159,17 @@
                         <button name="action_back_to_draft" states="edit,error" string="Rascunho" type="object"/>
                         <button name="action_edit_edoc" states="draft,error" string="Habilitar Edição" type="object" groups="br_account_einvoice.group_edit_edoc"/>
                         <button name="action_cancel_document" confirm="Confirma o cancelamento do documento?" class="oe_highlight" states="done" string="Cancelar" type="object"/>
-                        <button name="send_email_nfe" string="Reenviar Email" type="object" attrs="{'invisible': [('state', '!=', 'done')]}" />
-                        <field name="state" widget="statusbar" statusbar_visible="draft,done" />
+                        <button name="send_email_nfe" string="Reenviar Email" type="object" attrs="{'invisible': [('state', '!=', 'done')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
                     </header>
                     <div name="alertas" class="alert alert-info" role="alert" style="margin-bottom:0px;">
                         <div class="row">
                             <div class="col-md-6 col-md-offset-1">
-                                <b>Situação: </b><field name="codigo_retorno" class="oe_inline" readonly="1"/><br />
-                                <b>Mensagem: </b><field name="mensagem_retorno"  class="oe_inline" readonly="1" />
+                                <b>Situação:</b>
+                                <field name="codigo_retorno" class="oe_inline" readonly="1"/>
+                                <br/>
+                                <b>Mensagem:</b>
+                                <field name="mensagem_retorno" class="oe_inline" readonly="1"/>
                             </div>
                         </div>
                     </div>
@@ -179,10 +182,10 @@
                                 <field name="partner_shipping_id"/>
                             </group>
                             <group>
-                                <field name="tipo_operacao" />
+                                <field name="tipo_operacao"/>
                                 <field name="payment_term_id"/>
                                 <field name="fiscal_position_id"/>
-                                <field name="email_sent" />
+                                <field name="email_sent"/>
                             </group>
                         </group>
                         <notebook>
@@ -212,13 +215,13 @@
                                 <group>
                                     <field name="eletronic_item_ids" nolabel="1">
                                         <tree name="eletronic_items">
-                                            <field name="state" invisible="1" />
-                                            <field name="product_id" />
-                                            <field name="uom_id" />
-                                            <field name="cfop" />
-                                            <field name="quantidade" />
-                                            <field name="preco_unitario" />
-                                            <field name="valor_liquido" />
+                                            <field name="state" invisible="1"/>
+                                            <field name="product_id"/>
+                                            <field name="uom_id"/>
+                                            <field name="cfop"/>
+                                            <field name="quantidade"/>
+                                            <field name="preco_unitario"/>
+                                            <field name="valor_liquido"/>
                                         </tree>
                                     </field>
                                 </group>
@@ -226,62 +229,62 @@
                             <page name="totais" string="Totais">
                                 <group>
                                     <group name="totais" string="Totais">
-                                        <field name="valor_bruto" />
-                                        <field name="valor_frete" />
-                                        <field name="valor_seguro" />
-                                        <field name="valor_desconto" />
-                                        <field name="valor_despesas" />
-                                        <field name="valor_final" />
+                                        <field name="valor_bruto"/>
+                                        <field name="valor_frete"/>
+                                        <field name="valor_seguro"/>
+                                        <field name="valor_desconto"/>
+                                        <field name="valor_despesas"/>
+                                        <field name="valor_final"/>
                                     </group>
                                     <group name="impostos" string="Impostos">
-                                        <field name="valor_bc_icms" />
-                                        <field name="valor_icms" />
-                                        <field name="valor_icms_deson" />
-                                        <field name="valor_bc_icmsst" />
-                                        <field name="valor_icmsst" />
-                                        <field name="valor_ii" />
-                                        <field name="valor_ipi" />
-                                        <field name="valor_pis" />
-                                        <field name="valor_cofins" />
-                                        <field name="valor_estimado_tributos" />
+                                        <field name="valor_bc_icms"/>
+                                        <field name="valor_icms"/>
+                                        <field name="valor_icms_deson"/>
+                                        <field name="valor_bc_icmsst"/>
+                                        <field name="valor_icmsst"/>
+                                        <field name="valor_ii"/>
+                                        <field name="valor_ipi"/>
+                                        <field name="valor_pis"/>
+                                        <field name="valor_cofins"/>
+                                        <field name="valor_estimado_tributos"/>
                                     </group>
                                 </group>
                                 <group>
                                     <group name="servico" string="Totais de Serviço">
-                                        <field name="valor_servicos" />
-                                        <field name="valor_bc_issqn" />
-                                        <field name="valor_issqn" />
-                                        <field name="valor_pis_servicos" />
-                                        <field name="valor_cofins_servicos" />
+                                        <field name="valor_servicos"/>
+                                        <field name="valor_bc_issqn"/>
+                                        <field name="valor_issqn"/>
+                                        <field name="valor_pis_servicos"/>
+                                        <field name="valor_cofins_servicos"/>
                                     </group>
                                     <group name="retencoes" string="Retenções">
-                                        <field name="valor_retencao_issqn" />
-                                        <field name="valor_retencao_pis" />
-                                        <field name="valor_retencao_cofins" />
-                                        <field name="valor_bc_irrf" />
-                                        <field name="valor_retencao_irrf" />
-                                        <field name="valor_bc_csll" />
-                                        <field name="valor_retencao_csll" />
-                                        <field name="valor_bc_inss" />
-                                        <field name="valor_retencao_inss" />
+                                        <field name="valor_retencao_issqn"/>
+                                        <field name="valor_retencao_pis"/>
+                                        <field name="valor_retencao_cofins"/>
+                                        <field name="valor_bc_irrf"/>
+                                        <field name="valor_retencao_irrf"/>
+                                        <field name="valor_bc_csll"/>
+                                        <field name="valor_retencao_csll"/>
+                                        <field name="valor_bc_inss"/>
+                                        <field name="valor_retencao_inss"/>
                                     </group>
                                 </group>
                             </page>
                             <page string="Observações">
                                 <group>
-                                    <field name="informacoes_legais" />
-                                    <field name="informacoes_complementares" />
+                                    <field name="informacoes_legais"/>
+                                    <field name="informacoes_complementares"/>
                                 </group>
                             </page>
                             <page name="eventos" string="Eventos">
                                 <group>
                                     <field name="eletronic_event_ids" nolabel="1">
                                         <tree name="Eventos">
-                                            <field name="state" invisible="1" />
-                                            <field name="code" />
-                                            <field name="name" />
-                                            <field name="create_date" />
-                                           <field name="create_uid" />
+                                            <field name="state" invisible="1"/>
+                                            <field name="code"/>
+                                            <field name="name"/>
+                                            <field name="create_date"/>
+                                            <field name="create_uid"/>
                                         </tree>
                                     </field>
                                 </group>
@@ -301,7 +304,7 @@
             <field name="model">invoice.eletronic</field>
             <field name="arch" type="xml">
                 <tree string="Documentos Eletrônicos">
-                    <field name="state" />
+                    <field name="state"/>
                     <field name="model"/>
                     <field name="numero"/>
                     <field name="partner_id"/>
@@ -329,7 +332,7 @@
             <field name="view_id" ref="sped_base_eletronic_doc_tree"/>
         </record>
 
-        <menuitem id="menu_action_sped_base_eletronic_doc"  parent="br_account.menu_br_account"
+        <menuitem id="menu_action_sped_base_eletronic_doc" parent="br_account.menu_br_account"
                   action="action_sped_base_eletronic_doc" sequence="5"/>
 
     </data>

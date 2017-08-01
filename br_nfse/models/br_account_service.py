@@ -18,7 +18,6 @@ class BrAccountServiceType(models.Model):
 
 
 class BrAccountNFSeSourceOperation(models.Model):
-
     _name = 'br_account.nfse.source.operation'
 
     code = fields.Char(string=u'Código', required=True)

@@ -32,7 +32,7 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def _prepare_eletronic_invoice_values(self):
-        vals = super(InvoiceEletronic, self)\
+        vals = super(InvoiceEletronic, self) \
             ._prepare_eletronic_invoice_values()
         if self.model != '65':
             return vals

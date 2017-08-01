@@ -41,7 +41,7 @@ class InvoiceEletronic(models.Model):
             item.retencoes_federais = total
 
     retencoes_federais = fields.Monetary(
-        string="Retenções Federais", compute=_compute_total_retencoes)
+        string=u"Retenções Federais", compute=_compute_total_retencoes)
 
     @api.multi
     def _hook_validation(self):

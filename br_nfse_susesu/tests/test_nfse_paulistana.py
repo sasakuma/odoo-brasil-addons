@@ -17,7 +17,6 @@ except ImportError:
 
 
 class TestNFeBrasil(TransactionCase):
-
     caminho = os.path.dirname(__file__)
 
     def setUp(self):
@@ -32,7 +31,7 @@ class TestNFeBrasil(TransactionCase):
             'zip': '88037-240',
             'street': 'Vinicius de Moraes',
             'number': '42',
-            'district': 'Córrego Grande',
+            'district': u'Córrego Grande',
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sp').id,
             'city_id': self.env.ref('br_base.city_4205407').id,
@@ -117,19 +116,19 @@ class TestNFeBrasil(TransactionCase):
         })
         invoice_line_data = [
             (0, 0,
-                {
-                    'product_id': self.service.id,
-                    'quantity': 10.0,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                    'product_type': self.service.fiscal_type,
-                    # 'service_type_id': self.service.service_type_id.id,
-                    'cfop_id': self.env.ref(
-                        'br_data_account_product.cfop_5101').id,
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
-                }
+             {
+                 'product_id': self.service.id,
+                 'quantity': 10.0,
+                 'account_id': self.revenue_account.id,
+                 'name': 'product test 5',
+                 'price_unit': 100.00,
+                 'product_type': self.service.fiscal_type,
+                 # 'service_type_id': self.service.service_type_id.id,
+                 'cfop_id': self.env.ref(
+                     'br_data_account_product.cfop_5101').id,
+                 'pis_cst': '01',
+                 'cofins_cst': '01',
+             }
              )
         ]
         default_invoice = {
@@ -158,7 +157,6 @@ class TestNFeBrasil(TransactionCase):
     def test_computed_fields(self):
 
         for invoice in self.invoices:
-
             self.assertEquals(invoice.total_edocs, 0)
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()

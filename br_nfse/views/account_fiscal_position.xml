@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-     <!--Inherit Form View to Modify it -->
+    <!--Inherit Form View to Modify it -->
     <record id="br_account_position_form" model="ir.ui.view">
         <field name="name">br_nfse.fiscal.position.form</field>
         <field name="model">account.fiscal.position</field>

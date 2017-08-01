@@ -9,7 +9,7 @@ from odoo import models, fields
 
 
 class ResStateCity(models.Model):
-    """ Este objeto persite todos os municípios relacionado a um estado.
+    """ Este objeto persiste todos os municípios relacionado a um estado.
     No Brasil é necessário em alguns documentos fiscais informar o código
     do IBGE dos município envolvidos da transação.
     """

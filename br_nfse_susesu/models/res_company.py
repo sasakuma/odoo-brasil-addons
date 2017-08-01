@@ -4,7 +4,6 @@
 
 from odoo import fields, models
 
-
 NFSE_WEBSERVICES = [
     ('nfse_paulistana', 'Nota Fiscal Paulistana'),
     ('nfse_simpliss', 'SIMPLISS'),

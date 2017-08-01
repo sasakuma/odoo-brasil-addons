@@ -5,9 +5,9 @@
         <field name="model">res.company</field>
         <field name="inherit_id" ref="br_base.view_company_form_inherited"/>
         <field name="arch" type="xml">
-            <field name="nfe_a1_password" position="after" >
-                <field name="tipo_ambiente" />
-                <field name="cabecalho_danfe" />
+            <field name="nfe_a1_password" position="after">
+                <field name="tipo_ambiente"/>
+                <field name="cabecalho_danfe"/>
             </field>
         </field>
     </record>

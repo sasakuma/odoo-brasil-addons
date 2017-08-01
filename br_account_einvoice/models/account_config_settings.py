@@ -13,8 +13,10 @@ class AccountConfigSettings(models.TransientModel):
         domain=[('model_id.model', '=', 'account.invoice')])
 
     def get_default_nfe_email_template(self, fields):
-        return {'nfe_email_template':
-                self.env.user.company_id.nfe_email_template.id}
+        return {
+            'nfe_email_template':
+                self.env.user.company_id.nfe_email_template.id,
+        }
 
     @api.multi
     def set_default_nfe_email_template(self):

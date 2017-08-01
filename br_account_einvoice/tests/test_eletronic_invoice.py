@@ -7,7 +7,6 @@ from odoo.exceptions import UserError
 
 
 class TestEletronicInvoice(TransactionCase):
-
     def setUp(self):
         super(TestEletronicInvoice, self).setUp()
         self.main_company = self.env.ref('base.main_company')
@@ -70,23 +69,23 @@ class TestEletronicInvoice(TransactionCase):
         })
         invoice_line_incomplete = [
             (0, 0,
-                {
-                    'product_id': self.default_product.id,
-                    'quantity': 10.0,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                }
+             {
+                 'product_id': self.default_product.id,
+                 'quantity': 10.0,
+                 'account_id': self.revenue_account.id,
+                 'name': 'product test 5',
+                 'price_unit': 100.00,
+             }
              ),
             (0, 0,
-                {
-                    'product_id': self.service.id,
-                    'quantity': 10.0,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                    'product_type': self.service.fiscal_type,
-                }
+             {
+                 'product_id': self.service.id,
+                 'quantity': 10.0,
+                 'account_id': self.revenue_account.id,
+                 'name': 'product test 5',
+                 'price_unit': 100.00,
+                 'product_type': self.service.fiscal_type,
+             }
              )
         ]
         self.inv_incomplete = self.env['account.invoice'].create(dict(

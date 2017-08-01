@@ -13,4 +13,4 @@ class BrAccountServiceType(models.Model):
 
     codigo_tributacao_municipio = fields.Char(
         string=u"Cód. Tribut. Munic.", size=20,
-        help="Código de Tributação no Munípio")
+        help=u"Código de Tributação no Munípio")

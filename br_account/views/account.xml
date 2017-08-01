@@ -47,9 +47,9 @@
                             <field name="title_type_id"
                                    attrs="{'readonly':[('reconciled','=', True)]}"/>
                             <!--<field name="pin_date"-->
-                                   <!--attrs="{'readonly':[('reconciled','=', True)]}"/>-->
+                            <!--attrs="{'readonly':[('reconciled','=', True)]}"/>-->
                             <!--<field name="amount_day"-->
-                                   <!--attrs="{'readonly':[('reconciled','=', True)]}"/>-->
+                            <!--attrs="{'readonly':[('reconciled','=', True)]}"/>-->
                         </group>
                         <group name="dates" string="Dates">
                             <field name="date_maturity"
@@ -93,7 +93,7 @@
                 </attribute>
             </field>
 
-             <field name="full_reconcile_id" position="attributes">
+            <field name="full_reconcile_id" position="attributes">
                 <attribute name="attrs">
                     {'readonly': [('reconciled','=',True)]}
                 </attribute>

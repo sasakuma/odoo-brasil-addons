@@ -33,7 +33,7 @@ class InutilizedNfe(models.Model):
                                 readonly=True, states=STATE)
     erro = fields.Text('Erros', readonly=True)
     state = fields.Selection([
-        ('draft', 'Provisório'),
+        ('draft', u'Provisório'),
         ('done', 'Enviado'),
         ('error', 'Erro'),
         ('edit', 'Editando'), ],
@@ -42,7 +42,7 @@ class InutilizedNfe(models.Model):
         ('55', '55 - NFe'),
         ('65', '65 - NFCe'), ],
         string='Modelo', required=True, readonly=True, states=STATE)
-    serie = fields.Many2one('br_account.document.serie', string='Série',
+    serie = fields.Many2one('br_account.document.serie', string=u'Série',
                             required=True, readonly=True, states=STATE)
 
     @api.model
@@ -57,23 +57,23 @@ class InutilizedNfe(models.Model):
             ('numero', '<=', self.numeration_end)
         ])
         if docs:
-            errors.append('Não é possível invalidar essa série pois já existem'
-                          ' documentos com essa numeração.')
+            errors.append(u'Não é possível invalidar essa série pois já '
+                          u'existem documentos com essa numeração.')
         if self.numeration_start > self.numeration_end:
-            errors.append('O Começo da Numeração deve ser menor que o '
-                          'Fim da Numeração')
+            errors.append(u'O Começo da Numeração deve ser menor que o '
+                          u'Fim da Numeração')
         if self.numeration_start < 0 or self.numeration_end < 0:
-            errors.append('Não é possível cancelar uma série negativa.')
+            errors.append(u'Não é possível cancelar uma série negativa.')
         if self.numeration_end - self.numeration_start >= 10000:
-            errors.append('Número máximo de numeração a inutilizar ultrapassou'
-                          ' o limite.')
+            errors.append(u'Número máximo de numeração a inutilizar '
+                          u'ultrapassou o limite.')
         if len(self.justificativa) < 15:
-            errors.append('A Justificativa deve ter no mínimo 15 caracteres')
+            errors.append(u'A Justificativa deve ter no mínimo 15 caracteres')
         if len(self.justificativa) > 255:
-            errors.append('A Justificativa deve ter no máximo 255 caracteres')
+            errors.append(u'A Justificativa deve ter no máximo 255 caracteres')
         if not self.env.user.company_id.nfe_a1_file:
-            errors.append('A empresa não possui um certificado de NFe '
-                          'cadastrado')
+            errors.append(u'A empresa não possui um certificado de NFe '
+                          u'cadastrado')
         if not self.env.user.company_id.cnpj_cpf:
             errors.append('Cadastre o CNPJ da empresa.')
         estado = self.env.user.company_id.state_id
@@ -111,8 +111,8 @@ class InutilizedNfe(models.Model):
         self._create_attachment('inutilizacao-recibo', self,
                                 resposta['received_xml'])
         if hasattr(resposta['object'].Body, 'Fault'):
-            raise UserError('Não foi possível concluir a operação.')
-        inf_inut = resposta['object'].Body.nfeInutilizacaoNF2Result.\
+            raise UserError(u'Não foi possível concluir a operação.')
+        inf_inut = resposta['object'].Body.nfeInutilizacaoNF2Result. \
             retInutNFe.infInut
         status = inf_inut.cStat
         if status == 102:

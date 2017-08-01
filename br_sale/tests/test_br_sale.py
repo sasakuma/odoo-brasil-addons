@@ -6,7 +6,6 @@ from odoo.tests.common import TransactionCase
 
 
 class TestSaleOrder(TransactionCase):
-
     def setUp(self):
         super(TestSaleOrder, self).setUp()
         self.main_company = self.env.ref('base.main_company')
@@ -174,33 +173,33 @@ class TestSaleOrder(TransactionCase):
         })
         order_line_data = [
             (0, 0,
-                {
-                    'product_id': self.default_product.id,
-                    'product_uom': self.default_product.uom_id.id,
-                    'product_uom_qty': 10.0,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                    'cfop_id': self.env.ref(
-                        'br_data_account_product.cfop_5101').id,
-                    'icms_cst_normal': '40',
-                    'icms_csosn_simples': '102',
-                    'ipi_cst': '50',
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
-                }
+             {
+                 'product_id': self.default_product.id,
+                 'product_uom': self.default_product.uom_id.id,
+                 'product_uom_qty': 10.0,
+                 'name': 'product test 5',
+                 'price_unit': 100.00,
+                 'cfop_id': self.env.ref(
+                     'br_data_account_product.cfop_5101').id,
+                 'icms_cst_normal': '40',
+                 'icms_csosn_simples': '102',
+                 'ipi_cst': '50',
+                 'pis_cst': '01',
+                 'cofins_cst': '01',
+             }
              ),
             (0, 0,
-                {
-                    'product_id': self.service.id,
-                    'product_uom': self.service.uom_id.id,
-                    'product_uom_qty': 10.0,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                    'cfop_id': self.env.ref(
-                        'br_data_account_product.cfop_5101').id,
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
-                }
+             {
+                 'product_id': self.service.id,
+                 'product_uom': self.service.uom_id.id,
+                 'product_uom_qty': 10.0,
+                 'name': 'product test 5',
+                 'price_unit': 100.00,
+                 'cfop_id': self.env.ref(
+                     'br_data_account_product.cfop_5101').id,
+                 'pis_cst': '01',
+                 'cofins_cst': '01',
+             }
              )
         ]
         default_saleorder = {

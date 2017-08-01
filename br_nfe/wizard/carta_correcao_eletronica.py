@@ -8,6 +8,7 @@ import re
 from datetime import datetime
 from odoo import api, fields, models
 from odoo.exceptions import UserError
+
 _logger = logging.getLogger(__name__)
 try:
     from pytrustnfe.nfe import recepcao_evento_carta_correcao
@@ -19,11 +20,11 @@ except ImportError:
 class WizardCartaCorrecaoEletronica(models.TransientModel):
     _name = 'wizard.carta.correcao.eletronica'
 
-    state = fields.Selection([('drat', 'Provisório'), ('error', 'Erro')],
-                             string="Situação")
-    correcao = fields.Text(string="Correção", max_length=1000, required=True)
+    state = fields.Selection([('drat', u'Provisório'), ('error', 'Erro')],
+                             string=u"Situação")
+    correcao = fields.Text(string=u"Correção", max_length=1000, required=True)
     eletronic_doc_id = fields.Many2one(
-        'invoice.eletronic', string="Documento Eletrônico")
+        'invoice.eletronic', string=u"Documento Eletrônico")
     message = fields.Char(string="Mensagem", size=300, readonly=True)
     sent_xml = fields.Binary(string="Xml Envio", readonly=True)
     sent_xml_name = fields.Char(string="Xml Envio", size=30, readonly=True)
@@ -33,11 +34,11 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
 
     def valida_carta_correcao_eletronica(self):
         if len(self.correcao) < 15:
-            raise UserError('Motivo de Correção deve ter mais de ' +
-                            '15 caracteres')
+            raise UserError(u'Motivo de Correção deve ter mais de '
+                            u'15 caracteres')
         if len(self.correcao) > 1000:
-            raise UserError('Motivo de Correção deve ter menos de ' +
-                            '1000 caracteres')
+            raise UserError(u'Motivo de Correção deve ter menos de '
+                            u'1000 caracteres')
 
     @api.multi
     def send_letter(self):
@@ -48,9 +49,9 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
             'invoice_id': self.eletronic_doc_id.id,
             'CNPJ': re.sub(
                 "[^0-9]", "", self.eletronic_doc_id.company_id.cnpj_cpf or ''),
-            'cOrgao':  self.eletronic_doc_id.company_id.state_id.ibge_code,
+            'cOrgao': self.eletronic_doc_id.company_id.state_id.ibge_code,
             'tpAmb': self.eletronic_doc_id.company_id.tipo_ambiente,
-            'estado':  self.eletronic_doc_id.company_id.state_id.ibge_code,
+            'estado': self.eletronic_doc_id.company_id.state_id.ibge_code,
             'ambiente': int(self.eletronic_doc_id.company_id.tipo_ambiente),
             'dhEvento': datetime.now().strftime('%Y-%m-%dT%H:%M:%S-00:00'),
             'chNFe': self.eletronic_doc_id.chave_nfe,
@@ -106,7 +107,7 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
                 "type": "ir.actions.act_window",
                 "res_model": "wizard.carta.correcao.eletronica",
                 "views": [[False, "form"]],
-                "name": "Carta de Correção",
+                "name": u"Carta de Correção",
                 "target": "new",
                 "res_id": self.id,
             }

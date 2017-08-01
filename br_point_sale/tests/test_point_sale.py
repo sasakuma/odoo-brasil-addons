@@ -9,7 +9,6 @@ from odoo.tests.common import TransactionCase
 
 
 class TestPointSaleBR(TransactionCase):
-
     caminho = os.path.dirname(__file__)
 
     def setUp(self):
@@ -18,13 +17,13 @@ class TestPointSaleBR(TransactionCase):
         self.currency_real = self.env.ref('base.BRL')
         self.main_company.write({
             'name': 'Trustcode',
-            'legal_name': 'Trustcode Tecnologia da Informação',
+            'legal_name': u'Trustcode Tecnologia da Informação',
             'cnpj_cpf': '92.743.275/0001-33',
             'inscr_est': '219.882.606',
             'zip': '88037-240',
             'street': 'Vinicius de Moraes',
             'number': '42',
-            'district': 'Córrego Grande',
+            'district': u'Córrego Grande',
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sc').id,
             'city_id': self.env.ref('br_base.city_4205407').id,
@@ -105,14 +104,14 @@ class TestPointSaleBR(TransactionCase):
         })
         cash_journal = [
             (0, 0,
-                {
-                    'name': 'CASH',
-                    'code': 'CASH',
-                    'type': 'cash',
-                    'metodo_pagamento': '01',
-                    'default_debit_account_id': self.revenue_account.id,
-                    'default_credit_account_id': self.receivable_acc.id,
-                })]
+             {
+                 'name': 'CASH',
+                 'code': 'CASH',
+                 'type': 'cash',
+                 'metodo_pagamento': '01',
+                 'default_debit_account_id': self.revenue_account.id,
+                 'default_credit_account_id': self.receivable_acc.id,
+             })]
         # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
         # IMPOSTOS - PIS, COFINS E ICMS(COM E SEM REDUCAO)
@@ -146,56 +145,56 @@ class TestPointSaleBR(TransactionCase):
         # REGRA ICMS (COM E SEM REDUCAO)
         icms_rule = [
             (0, 0,
-                {
-                    'name': 'ICMS SEM REDUCAO',
-                    'tax_id': self.icms_inter.id,
-                    'cfop_id': self.env.ref(
-                        'br_data_account_product.cfop_5101').id,
-                    'tipo_produto': 'product',
-                    'domain': 'icms'
-                }),
+             {
+                 'name': 'ICMS SEM REDUCAO',
+                 'tax_id': self.icms_inter.id,
+                 'cfop_id': self.env.ref(
+                     'br_data_account_product.cfop_5101').id,
+                 'tipo_produto': 'product',
+                 'domain': 'icms'
+             }),
             (0, 0,
-                {
-                    'name': 'ICMS SEM REDUCAO',
-                    'tax_id': self.icms_inter.id,
-                    'cfop_id': self.env.ref(
-                        'br_data_account_product.cfop_5101').id,
-                    'tipo_produto': 'product',
-                    'reducao_icms': 5.00,
-                    'product_ids': [(4, self.product_b.id, 0)],
-                    'domain': 'icms'
-                })]
+             {
+                 'name': 'ICMS SEM REDUCAO',
+                 'tax_id': self.icms_inter.id,
+                 'cfop_id': self.env.ref(
+                     'br_data_account_product.cfop_5101').id,
+                 'tipo_produto': 'product',
+                 'reducao_icms': 5.00,
+                 'product_ids': [(4, self.product_b.id, 0)],
+                 'domain': 'icms'
+             })]
         # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
         # REGRA PIS
         pis_rule = [
             (0, 0,
-                {
-                    'name': 'PIS',
-                    'tax_id': self.pis.id,
-                    'cfop_id': self.env.ref(
-                        'br_data_account_product.cfop_5101').id,
-                    'tipo_produto': 'product',
-                    'domain': 'pis'
-                })]
+             {
+                 'name': 'PIS',
+                 'tax_id': self.pis.id,
+                 'cfop_id': self.env.ref(
+                     'br_data_account_product.cfop_5101').id,
+                 'tipo_produto': 'product',
+                 'domain': 'pis'
+             })]
         # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
         # REGRA PIS
         cofins_rule = [
             (0, 0,
-                {
-                    'name': 'COFINS',
-                    'tax_id': self.cofins.id,
-                    'cfop_id': self.env.ref(
-                        'br_data_account_product.cfop_5101').id,
-                    'tipo_produto': 'product',
-                    'domain': 'cofins'
-                })]
+             {
+                 'name': 'COFINS',
+                 'tax_id': self.cofins.id,
+                 'cfop_id': self.env.ref(
+                     'br_data_account_product.cfop_5101').id,
+                 'tipo_produto': 'product',
+                 'domain': 'cofins'
+             })]
         # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
         # NFC-E <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         self.nfe_seq = self.env['ir.sequence'].create({
-            'name': 'Série 1 - Nota Fiscal Eletrônica',
+            'name': u'Série 1 - Nota Fiscal Eletrônica',
             'implementation': 'no_gap',
             'padding': 1,
             'number_increment': 1,
@@ -208,7 +207,7 @@ class TestPointSaleBR(TransactionCase):
         self.nfe_serie = self.env['br_account.document.serie'].create({
             'code': '1',
             'active': True,
-            'name': 'Série 1 - Nota Fiscal Eletrônica',
+            'name': u'Série 1 - Nota Fiscal Eletrônica',
             'fiscal_document_id': self.nfe_doc.id,
             'fiscal_type': 'product',
             'internal_sequence_id': self.nfe_seq.id,

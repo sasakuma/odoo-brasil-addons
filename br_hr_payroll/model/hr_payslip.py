@@ -18,7 +18,7 @@ class HrPayslip(models.Model):
         dom = dt.day
         adjusted_dom = dom + first_day.weekday()
 
-        return int(ceil(adjusted_dom/7.0))
+        return int(ceil(adjusted_dom / 7.0))
 
     @api.model
     def get_worked_day_lines(self, contract_ids, date_from, date_to):

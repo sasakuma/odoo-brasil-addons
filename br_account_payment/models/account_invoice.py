@@ -4,7 +4,6 @@
 
 from odoo import api, fields, models
 
-
 FIELD_STATE = {'draft': [('readonly', False)]}
 
 
@@ -17,7 +16,7 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def finalize_invoice_move_lines(self, move_lines):
-        res = super(AccountInvoice, self).\
+        res = super(AccountInvoice, self). \
             finalize_invoice_move_lines(move_lines)
 
         for invoice_line in res:

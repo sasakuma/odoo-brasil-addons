@@ -59,7 +59,7 @@ class SaleOrderLine(models.Model):
             'aliquota_icms_proprio': self.aliquota_icms_proprio,
             'icms_aliquota_reducao_base': self.icms_aliquota_reducao_base,
             'icms_st_aliquota_reducao_base':
-            self.icms_st_aliquota_reducao_base,
+                self.icms_st_aliquota_reducao_base,
             'ipi_reducao_bc': self.ipi_reducao_bc,
             'icms_st_aliquota_deducao': self.icms_st_aliquota_deducao,
         }
@@ -142,31 +142,39 @@ class SaleOrderLine(models.Model):
         string=u'Redução Base ICMS (%)', digits=dp.get_precision('Account'))
     icms_st_aliquota_reducao_base = fields.Float(
         string=u'Redução Base ICMS ST(%)', digits=dp.get_precision('Account'))
-    icms_st_aliquota_deducao = fields.Float(
-        string=u"% Dedução", help="Alíquota interna ou interestadual aplicada \
-         sobre o valor da operação para deduzir do ICMS ST - Para empresas \
-         do Simples Nacional", digits=dp.get_precision('Account'))
+    icms_st_aliquota_deducao = fields.Float(string=u"% Dedução",
+                                            help=u"Alíquota interna ou interestadual "  # noqa: 501
+                                                 u"aplicada sobre o valor da operação para "  # noqa: 501
+                                                 u"deduzir do ICMS ST - Para empresas do"  # noqa: 501
+                                                 u" Simples Nacional",
+                                            digits=dp.get_precision('Account'))
+
     tem_difal = fields.Boolean(string="Possui Difal")
 
     ipi_cst = fields.Char(string='CST IPI', size=5)
-    ipi_reducao_bc = fields.Float(
-        string=u'Redução Base IPI (%)', digits=dp.get_precision('Account'))
+    ipi_reducao_bc = fields.Float(string=u'Redução Base IPI (%)',
+                                  digits=dp.get_precision('Account'))
 
     pis_cst = fields.Char(string='CST PIS', size=5)
     cofins_cst = fields.Char(string='CST COFINS', size=5)
 
-    valor_desconto = fields.Float(
-        compute='_compute_amount', string='Vlr. Desc. (-)', store=True,
-        digits=dp.get_precision('Sale Price'))
-    valor_bruto = fields.Float(
-        compute='_compute_amount', string='Vlr. Bruto', store=True,
-        digits=dp.get_precision('Sale Price'))
-    price_without_tax = fields.Float(
-        compute='_compute_amount', string=u'Preço Base', store=True,
-        digits=dp.get_precision('Sale Price'))
+    valor_desconto = fields.Float(compute='_compute_amount',
+                                  string='Vlr. Desc. (-)',
+                                  store=True,
+                                  digits=dp.get_precision('Sale Price'))
+    valor_bruto = fields.Float(compute='_compute_amount',
+                               string='Vlr. Bruto',
+                               store=True,
+                               digits=dp.get_precision('Sale Price'))
 
-    detalhes_calculo = fields.Text(
-        string=u"Detalhes Cálculo", compute='_compute_detalhes', store=True)
+    price_without_tax = fields.Float(compute='_compute_amount',
+                                     string=u'Preço Base',
+                                     store=True,
+                                     digits=dp.get_precision('Sale Price'))
+
+    detalhes_calculo = fields.Text(string=u"Detalhes Cálculo",
+                                   compute='_compute_detalhes',
+                                   store=True)
 
     fiscal_position_id = fields.Many2one(
         comodel_name='account.fiscal.position',
@@ -180,7 +188,7 @@ class SaleOrderLine(models.Model):
             self.update({
                 'icms_st_aliquota_mva': ncm.icms_st_aliquota_mva,
                 'icms_st_aliquota_reducao_base':
-                ncm.icms_st_aliquota_reducao_base,
+                    ncm.icms_st_aliquota_reducao_base,
                 'ipi_cst': ncm.ipi_cst,
                 'ipi_reducao_bc': ncm.ipi_reducao_bc,
                 'tax_id': [(6, None, [x.id for x in taxes if x])]
@@ -191,8 +199,8 @@ class SaleOrderLine(models.Model):
         res = super(SaleOrderLine, self)._compute_tax_id()
         for line in self:
             line._update_tax_from_ncm()
-            fpos = line.order_id.fiscal_position_id or \
-                line.order_id.partner_id.property_account_position_id
+            fpos = (line.order_id.fiscal_position_id or
+                    line.order_id.partner_id.property_account_position_id)
             if fpos:
                 vals = fpos.map_tax_extra_values(
                     line.company_id, line.product_id, line.order_id.partner_id)
@@ -204,17 +212,17 @@ class SaleOrderLine(models.Model):
                 empty = line.env['account.tax'].browse()
                 ipi = line.tax_id.filtered(lambda x: x.domain == 'ipi')
                 icmsst = line.tax_id.filtered(lambda x: x.domain == 'icmsst')
-                tax_ids = vals.get('tax_icms_id', empty) | \
-                    vals.get('tax_icms_st_id', icmsst) | \
-                    vals.get('tax_icms_inter_id', empty) | \
-                    vals.get('tax_icms_intra_id', empty) | \
-                    vals.get('tax_icms_fcp_id', empty) | \
-                    vals.get('tax_simples_id', empty) | \
-                    vals.get('tax_ipi_id', ipi) | \
-                    vals.get('tax_pis_id', empty) | \
-                    vals.get('tax_cofins_id', empty) | \
-                    vals.get('tax_ii_id', empty) | \
-                    vals.get('tax_issqn_id', empty)
+                tax_ids = (vals.get('tax_icms_id', empty) |
+                           vals.get('tax_icms_st_id', icmsst) |
+                           vals.get('tax_icms_inter_id', empty) |
+                           vals.get('tax_icms_intra_id', empty) |
+                           vals.get('tax_icms_fcp_id', empty) |
+                           vals.get('tax_simples_id', empty) |
+                           vals.get('tax_ipi_id', ipi) |
+                           vals.get('tax_pis_id', empty) |
+                           vals.get('tax_cofins_id', empty) |
+                           vals.get('tax_ii_id', empty) |
+                           vals.get('tax_issqn_id', empty))
 
                 line.update({
                     'tax_id': [(6, None, [x.id for x in tax_ids if x])]
@@ -275,8 +283,10 @@ class SaleOrderLine(models.Model):
             res['tributos_estimados_municipais'] = \
                 self.price_subtotal * (service.municipal_imposto / 100)
         else:
-            federal = ncm.federal_nacional if self.product_id.origin in \
-                ('1', '2', '3', '8') else ncm.federal_importado
+            if self.product_id.origin in ('1', '2', '3', '8'):
+                federal = ncm.federal_nacional
+            else:
+                federal = ncm.federal_importado
 
             res['tributos_estimados_federais'] = \
                 self.price_subtotal * (federal / 100)
@@ -285,9 +295,9 @@ class SaleOrderLine(models.Model):
             res['tributos_estimados_municipais'] = \
                 self.price_subtotal * (ncm.municipal_imposto / 100)
 
-        res['tributos_estimados'] = res['tributos_estimados_federais'] + \
-            res['tributos_estimados_estaduais'] + \
-            res['tributos_estimados_municipais']
+        res['tributos_estimados'] = (res['tributos_estimados_federais'] +
+                                     res['tributos_estimados_estaduais'] +
+                                     res['tributos_estimados_municipais'])
 
         res['incluir_ipi_base'] = self.incluir_ipi_base
         res['icms_aliquota'] = icms.amount or 0.0

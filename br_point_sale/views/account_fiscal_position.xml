@@ -5,8 +5,8 @@
         <field name="model">account.fiscal.position</field>
         <field name="inherit_id" ref="br_nfe.view_br_nfe_account_fiscal_position_form"/>
         <field name="arch" type="xml">
-            <field name="ind_pres" position="after" >
-                <field name="nfe_serie" />
+            <field name="ind_pres" position="after">
+                <field name="nfe_serie"/>
             </field>
         </field>
     </record>

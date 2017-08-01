@@ -13,10 +13,10 @@ class PosOrder(models.Model):
 
     numero_controle = fields.Integer()
 
-#    total_bruto = fields.Float() TODO
-#    total_without_tax = fields.Float() TODO
-#    total_tax = fields.Float() TODO
-#    total_desconto = fields.Float() TODO
+    #    total_bruto = fields.Float() TODO
+    #    total_without_tax = fields.Float() TODO
+    #    total_tax = fields.Float() TODO
+    #    total_desconto = fields.Float() TODO
 
     @api.depends('statement_ids', 'lines.price_subtotal_incl',
                  'lines.discount')
@@ -43,16 +43,16 @@ class PosOrder(models.Model):
                 line.order_id.partner_id)
 
             empty = self.env['account.tax'].browse()
-            tax_ids = values.get('tax_icms_id', empty) | \
-                values.get('tax_icms_st_id', empty) | \
-                values.get('tax_icms_inter_id', empty) | \
-                values.get('tax_icms_intra_id', empty) | \
-                values.get('tax_icms_fcp_id', empty) | \
-                values.get('tax_ipi_id', empty) | \
-                values.get('tax_pis_id', empty) | \
-                values.get('tax_cofins_id', empty) | \
-                values.get('tax_ii_id', empty) | \
-                values.get('tax_issqn_id', empty)
+            tax_ids = (values.get('tax_icms_id', empty) |
+                       values.get('tax_icms_st_id', empty) |
+                       values.get('tax_icms_inter_id', empty) |
+                       values.get('tax_icms_intra_id', empty) |
+                       values.get('tax_icms_fcp_id', empty) |
+                       values.get('tax_ipi_id', empty) |
+                       values.get('tax_pis_id', empty) |
+                       values.get('tax_cofins_id', empty) |
+                       values.get('tax_ii_id', empty) |
+                       values.get('tax_issqn_id', empty))
 
             other_taxes = line.tax_ids.filtered(lambda x: not x.domain)
             tax_ids |= other_taxes
@@ -96,8 +96,7 @@ class PosOrder(models.Model):
             # - ICMS ST -
             'icms_st_aliquota': 0,
             'icms_st_aliquota_mva': 0,
-            'icms_st_aliquota_reducao_base': pos_line.\
-            icms_st_aliquota_reducao_base,
+            'icms_st_aliquota_reducao_base': pos_line.icms_st_aliquota_reducao_base,  # noqa: 501
             'icms_st_base_calculo': 0,
             'icms_st_valor': 0,
             # - Simples Nacional -
@@ -148,8 +147,7 @@ class PosOrder(models.Model):
             'fiscal_position_id': pos.fiscal_position_id.id,
             'ind_final': pos.fiscal_position_id.ind_final,
             'ind_pres': pos.fiscal_position_id.ind_pres,
-            'metodo_pagamento': pos.statement_ids[0].journal_id.
-            metodo_pagamento
+            'metodo_pagamento': pos.statement_ids[0].journal_id.metodo_pagamento  # noqa: 501
         }
 
         base_icms = 0
@@ -233,7 +231,7 @@ class PosOrderLine(models.Model):
             'icms_st_aliquota_mva': self.icms_st_aliquota_mva,
             'icms_aliquota_reducao_base': self.icms_aliquota_reducao_base,
             'icms_st_aliquota_reducao_base':
-            self.icms_st_aliquota_reducao_base,
+                self.icms_st_aliquota_reducao_base,
             'icms_base_calculo': self.base_icms,
             'pis_base_calculo': self.base_pis,
             'cofins_base_calculo': self.base_cofins,
@@ -276,9 +274,7 @@ class PosOrderLine(models.Model):
             line.cofins_cst = values.get('cofins_cst', False)
             line.valor_bruto = line.qty * line.price_unit
             line.valor_desconto = line.valor_bruto * line.discount / 100
-            taxes_ids = line.tax_ids.filtered(
-                lambda tax: tax.company_id.id == line.order_id.
-                company_id.id)
+            taxes_ids = line.tax_ids.filtered(lambda tax: tax.company_id.id == line.order_id.company_id.id)  # noqa: 501
             fiscal_position_id = line.order_id.fiscal_position_id
             if fiscal_position_id:
                 taxes_ids = fiscal_position_id.map_tax(

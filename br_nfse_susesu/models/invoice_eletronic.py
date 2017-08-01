@@ -13,7 +13,6 @@ from . import res_company
 
 _logger = logging.getLogger(__name__)
 
-
 STATE = {'edit': [('readonly', False)]}
 
 

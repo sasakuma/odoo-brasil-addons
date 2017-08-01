@@ -16,6 +16,7 @@ class AccountMoveLine(models.Model):
         for item in self:
             item.payment_value = item.debit \
                 if item.user_type_id.type == 'receivable' else item.credit * -1
+
     payment_value = fields.Monetary(
         string="Valor", compute=_compute_payment_value, store=True,
         currency_field='company_currency_id')
@@ -35,6 +36,5 @@ class AccountMoveLine(models.Model):
             'default_move_line_id': self.id,
         }
         if self.invoice_id:
-            vals['context']['default_invoice_ids'] = [
-                (4, self.invoice_id.id, None)],
+            vals['context']['default_invoice_ids'] = [(4, self.invoice_id.id, None)],  # noqa: 501
         return vals

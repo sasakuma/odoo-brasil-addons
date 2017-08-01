@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<!-- HR SALARY RULES-->
+    <!-- HR SALARY RULES-->
     <record id="br_hr_payroll.hr_salary_rule_inss" model="hr.salary.rule">
         <field name="account_credit" search="[('code', '=', '2.1.4.03.007')]"/>
     </record>

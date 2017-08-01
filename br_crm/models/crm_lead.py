@@ -77,9 +77,7 @@ class CrmLead(models.Model):
         if self.cnpj:
             val = re.sub('[^0-9]', '', self.cnpj)
             if len(val) == 14:
-                cnpj_cpf = "%s.%s.%s/%s-%s"\
-                    % (val[0:2], val[2:5], val[5:8], val[8:12], val[12:14])
-                self.cnpj = cnpj_cpf
+                self.cnpj_cpf = "%s.%s.%s/%s-%s" % (val[0:2], val[2:5], val[5:8], val[8:12], val[12:14])  # noqa: 501
             else:
                 raise Warning(_(u'Verifique o CNPJ'))
 
@@ -88,9 +86,7 @@ class CrmLead(models.Model):
         if self.cpf:
             val = re.sub('[^0-9]', '', self.cpf)
             if len(val) == 11:
-                cnpj_cpf = "%s.%s.%s-%s"\
-                    % (val[0:3], val[3:6], val[6:9], val[9:11])
-                self.cpf = cnpj_cpf
+                self.cpf = "%s.%s.%s-%s" % (val[0:3], val[3:6], val[6:9], val[9:11])  # noqa: 501
             else:
                 raise Warning(_(u'Verifique o CPF'))
 
@@ -130,13 +126,13 @@ class CrmLead(models.Model):
                 'inscr_est': self.inscr_est,
                 'inscr_mun': self.inscr_mun,
                 'suframa': self.suframa,
-                })
+            })
         else:
             value.update({
                 'legal_name': self.name_surname,
                 'cnpj_cpf': self.cpf,
                 'inscr_est': self.rg,
-                })
+            })
         if partner:
             partner.write(value)
         return partner

@@ -8,7 +8,6 @@ from odoo.addons.br_cnab.tests.test_cnab_common import TestCnab
 
 
 class TestCnabSicoob(TestCnab):
-
     def _return_payment_mode(self):
         super(TestCnabSicoob, self)._return_payment_mode()
         sequencia = self.env['ir.sequence'].create({
@@ -160,25 +159,25 @@ class TestCnabSicoob(TestCnab):
         for line in cnab:
             self.assertEquals(len(line), 240)  # 8 linhas
 
-        # TODO Descomentar e implementar teste
+            # TODO Descomentar e implementar teste
 
-        # cnab_header_arquivo = cnab[0]
-        # cnab_header_lote = cnab[1]
-        # cnab_header_arquivo_erros = \
-        #     self.sicoob_validate_header_arquivo(cnab_header_arquivo)
-        # cnab_header_lote_erros = \
-        #     self.sicoob_validate_header_lote(cnab_header_lote)
-        # segmentos = cnab[2:-2]
-        # dict_segmentos = dict()
-        # dict_segmentos['P'] = []
-        # dict_segmentos['Q'] = []
-        # dict_segmentos['R'] = []
-        # for seg in segmentos:
-        #     dict_segmentos[seg[13]] += [seg.replace('\r\n', '')]
-        #
-        # if cnab_header_arquivo_erros != 'SUCESSO':
-        #     raise UserError('Header de Arquivo:' + '\n * ' +
-        #                     cnab_header_arquivo_erros)
-        # elif cnab_header_lote_erros != 'SUCESSO':
-        #     raise UserError('Header de Lote:' + '\n * ' +
-        #                     cnab_header_lote_erros)
+            # cnab_header_arquivo = cnab[0]
+            # cnab_header_lote = cnab[1]
+            # cnab_header_arquivo_erros = \
+            #     self.sicoob_validate_header_arquivo(cnab_header_arquivo)
+            # cnab_header_lote_erros = \
+            #     self.sicoob_validate_header_lote(cnab_header_lote)
+            # segmentos = cnab[2:-2]
+            # dict_segmentos = dict()
+            # dict_segmentos['P'] = []
+            # dict_segmentos['Q'] = []
+            # dict_segmentos['R'] = []
+            # for seg in segmentos:
+            #     dict_segmentos[seg[13]] += [seg.replace('\r\n', '')]
+            #
+            # if cnab_header_arquivo_erros != 'SUCESSO':
+            #     raise UserError('Header de Arquivo:' + '\n * ' +
+            #                     cnab_header_arquivo_erros)
+            # elif cnab_header_lote_erros != 'SUCESSO':
+            #     raise UserError('Header de Lote:' + '\n * ' +
+            #                     cnab_header_lote_erros)

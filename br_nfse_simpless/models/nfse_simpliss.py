@@ -21,7 +21,6 @@ try:
 except ImportError:
     _logger.debug('Cannot import pytrustnfe')
 
-
 STATE = {'edit': [('readonly', False)]}
 
 
@@ -128,7 +127,7 @@ class InvoiceEletronic(models.Model):
                 'natureza_operacao': '1',  # Tributada no municipio
                 'regime_tributacao': '7',  # Estimativa
                 'optante_simples':  # 1 - Sim, 2 - Não
-                '2' if self.company_id.fiscal_type == '3' else '1',
+                            '2' if self.company_id.fiscal_type == '3' else '1',
                 'incentivador_cultural': '2',  # 2 - Não
                 'status': '1',  # 1 - Normal
                 'valor_servico': str("%.2f" % self.valor_final),
@@ -214,7 +213,7 @@ class InvoiceEletronic(models.Model):
             else:
                 self.codigo_retorno = \
                     retorno.ListaMensagemRetorno.MensagemRetorno.Codigo
-                self.mensagem_retorno = retorno.ListaMensagemRetorno.\
+                self.mensagem_retorno = retorno.ListaMensagemRetorno. \
                     MensagemRetorno.Mensagem
 
             self.env['invoice.eletronic.event'].create({

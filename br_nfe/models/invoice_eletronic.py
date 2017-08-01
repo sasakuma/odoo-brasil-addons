@@ -44,7 +44,7 @@ class InvoiceEletronic(models.Model):
             "type": "ir.actions.act_window",
             "res_model": "wizard.carta.correcao.eletronica",
             "views": [[False, "form"]],
-            "name": "Carta de Correção",
+            "name": u"Carta de Correção",
             "target": "new",
             "context": {'default_eletronic_doc_id': self.id},
         }
@@ -78,7 +78,7 @@ class InvoiceEletronic(models.Model):
         ('1', u'1 - Contribuinte ICMS'),
         ('2', u'2 - Contribuinte Isento de Cadastro'),
         ('9', u'9 - Não Contribuinte')],
-        string="Indicador IE Dest.", help="Indicador da IE do desinatário",
+        string="Indicador IE Dest.", help=u"Indicador da IE do destinatário",
         readonly=True, states=STATE)
     tipo_emissao = fields.Selection([
         ('1', u'1 - Emissão normal'),
@@ -91,7 +91,7 @@ class InvoiceEletronic(models.Model):
         ('6', u'6 - Contingência SVC-AN'),
         ('7', u'7 - Contingência SVC-RS'),
         ('9', u'9 - Contingência off-line da NFC-e')],
-        string="Tipo de Emissão", readonly=True, states=STATE, default='1')
+        string=u"Tipo de Emissão", readonly=True, states=STATE, default='1')
 
     # Transporte
     modalidade_frete = fields.Selection(
@@ -121,7 +121,7 @@ class InvoiceEletronic(models.Model):
     # Exportação
     uf_saida_pais_id = fields.Many2one(
         'res.country.state', domain=[('country_id.code', '=', 'BR')],
-        string="UF Saída do País", readonly=True, states=STATE)
+        string=u"UF Saída do País", readonly=True, states=STATE)
     local_embarque = fields.Char(
         string='Local de Embarque', size=60, readonly=True, states=STATE)
     local_despacho = fields.Char(
@@ -183,7 +183,7 @@ class InvoiceEletronic(models.Model):
     # CARTA DE CORRECAO
     cartas_correcao_ids = fields.One2many(
         'carta.correcao.eletronica.evento', 'eletronic_doc_id',
-        string="Cartas de Correção", readonly=True, states=STATE)
+        string=u"Cartas de Correção", readonly=True, states=STATE)
 
     def barcode_url(self):
         url = '<img style="width:380px;height:50px;margin:2px 1px;"\
@@ -213,7 +213,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             if not self.fiscal_position_id:
                 errors.append(u'Configure a posição fiscal')
             if self.company_id.accountant_id and not \
-               self.company_id.accountant_id.cnpj_cpf:
+                    self.company_id.accountant_id.cnpj_cpf:
                 errors.append(u'Emitente / CNPJ do escritório contabilidade')
 
             for eletr in self.eletronic_item_ids:
@@ -254,7 +254,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'uCom': '{:.6}'.format(item.uom_id.name or ''),
             'qCom': item.quantidade,
             'vUnCom': "%.02f" % item.preco_unitario,
-            'vProd':  "%.02f" % (item.preco_unitario * item.quantidade),
+            'vProd': "%.02f" % (item.preco_unitario * item.quantidade),
             'cEANTrib': item.product_id.barcode or '',
             'uTrib': '{:.6}'.format(item.uom_id.name or ''),
             'qTrib': item.quantidade,
@@ -304,7 +304,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         imposto = {
             'vTotTrib': "%.02f" % item.tributos_estimados,
             'ICMS': {
-                'orig':  item.origem,
+                'orig': item.origem,
                 'CST': item.icms_cst,
                 'modBC': item.icms_tipo_base,
                 'vBC': "%.02f" % item.icms_base_calculo,
@@ -452,7 +452,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'xPais': self.company_id.country_id.name,
                 'fone': re.sub('[^0-9]', '', self.company_id.phone or '')
             },
-            'IE':  re.sub('[^0-9]', '', self.company_id.inscr_est),
+            'IE': re.sub('[^0-9]', '', self.company_id.inscr_est),
             'CRT': self.company_id.fiscal_type,
         }
         if self.company_id.cnae_main_id and self.company_id.inscr_mun:
@@ -481,7 +481,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                     'fone': re.sub('[^0-9]', '', partner.phone or '')
                 },
                 'indIEDest': self.ind_ie_dest,
-                'IE':  re.sub('[^0-9]', '', partner.inscr_est or ''),
+                'IE': re.sub('[^0-9]', '', partner.inscr_est or ''),
             }
             if self.ambiente == 'homologacao':
                 dest['xNome'] = \
@@ -539,8 +539,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         transp = {
             'modFrete': self.modalidade_frete,
             'transporta': {
-                'xNome': self.transportadora_id.legal_name or
-                self.transportadora_id.name or '',
+                'xNome': (self.transportadora_id.legal_name or
+                          self.transportadora_id.name or ''),
                 'IE': re.sub('[^0-9]', '',
                              self.transportadora_id.inscr_est or ''),
                 'xEnder': "%s - %s, %s" % (self.transportadora_id.street,
@@ -590,7 +590,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             vencimento = fields.Datetime.from_string(dup.data_vencimento)
             duplicatas.append({
                 'nDup': dup.numero_duplicata,
-                'dVenc':  vencimento.strftime('%Y-%m-%d'),
+                'dVenc': vencimento.strftime('%Y-%m-%d'),
                 'vDup': "%.02f" % dup.valor
             })
         cobr = {
@@ -736,7 +736,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             while True:
                 time.sleep(2)
                 resposta_recibo = retorno_autorizar_nfe(certificado, **obj)
-                retorno = resposta_recibo['object'].Body.\
+                retorno = resposta_recibo['object'].Body. \
                     nfeRetAutorizacaoLoteResult.retConsReciNFe
                 if retorno.cStat != 105:
                     break
@@ -809,7 +809,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 self.nfe_processada = base64.encodestring(nfe_proc)
                 self.nfe_processada_name = "NFe%08d.xml" % self.numero
         else:
-            raise UserError('A NFe não está validada')
+            raise UserError(u'A NFe não está validada')
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
@@ -850,12 +850,11 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'nSeqEvento': self.sequencial_evento,
                 'nProt': self.protocolo_nfe,
                 'xJust': justificativa
-                }]
-            }
+            }]
+        }
         resp = recepcao_evento_cancelamento(certificado, **cancelamento)
         resposta = resp['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
-        if resposta.cStat == 128 and \
-           resposta.retEvento.infEvento.cStat in (135, 136, 155):
+        if resposta.cStat == 128 and resposta.retEvento.infEvento.cStat in (135, 136, 155):  # noqa: 501
             self.state = 'cancel'
             self.codigo_retorno = resposta.retEvento.infEvento.cStat
             self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo

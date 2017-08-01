@@ -9,7 +9,7 @@
                 <group name="main">
                     <field name="name"/>
                     <field name="company_id" groups="base.group_multi_company"/>
-                    <field name="bank_account_id" />
+                    <field name="bank_account_id"/>
                     <field name="active"/>
                 </group>
             </form>
@@ -35,7 +35,7 @@
     </record>
 
     <menuitem id="account_payment_mode_menu"
-        action="account_payment_mode_action"
-        parent="account.account_management_menu" />
+              action="account_payment_mode_action"
+              parent="account.account_management_menu"/>
 
 </odoo>
