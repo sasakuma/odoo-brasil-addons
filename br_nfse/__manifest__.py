@@ -16,6 +16,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
+        'product',
         'br_account_einvoice',
     ],
     'external_dependencies': {
