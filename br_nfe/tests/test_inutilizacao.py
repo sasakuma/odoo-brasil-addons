@@ -97,6 +97,7 @@ class TestInutilizacao(TransactionCase):
         self.fpos = self.env['account.fiscal.position'].create({
             'name': 'Venda'
         })
+
         invoice_line_data = [
             (0, 0,
              {
@@ -115,27 +116,22 @@ class TestInutilizacao(TransactionCase):
              }
              ),
         ]
+
+        fiscal_document = self.env.ref('br_data_account.fiscal_document_55')
+
+        self.serie = self.env['br_account.document.serie'].search(
+            [('fiscal_document_id', '=', fiscal_document.id)])
+
         self.default_invoice = {
             'name': u"Teste Validação",
             'reference_type': "none",
-            'fiscal_document_id': self.env.ref(
-                'br_data_account.fiscal_document_55').id,
+            'fiscal_document_id': fiscal_document.id,
+            'document_serie_id': self.serie.id,
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,
             'fiscal_position_id': self.fpos.id,
             'invoice_line_ids': invoice_line_data
         }
-        self.fiscal_doc = self.env['br_account.fiscal.document'].create(dict(
-            code='1',
-        ))
-        self.serie = self.env['br_account.document.serie'].create(dict(
-            code='1',
-            active=True,
-            name='serie teste',
-            fiscal_document_id=self.fiscal_doc.id,
-            fiscal_type='product',
-            company_id=self.main_company.id,
-        ))
 
     def tearDown(self):
         inutilized = self.env['invoice.eletronic.inutilized'].search([])
@@ -146,17 +142,25 @@ class TestInutilizacao(TransactionCase):
 
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_ok(self, inutilizar):
+
         with open(os.path.join(self.caminho,
                                'xml/inutilizacao_sent_xml.xml')) as f:
             sent_xml = f.read()
+
         with open(os.path.join(self.caminho,
                                'xml/inutilizacao_received_xml.xml')) as f:
             received_xml = f.read()
+
         _, obj = sanitize_response(received_xml)
-        inutilizar.return_value = {'received_xml': received_xml,
-                                   'sent_xml': sent_xml,
-                                   'object': obj}
+
+        inutilizar.return_value = {
+            'received_xml': received_xml,
+            'sent_xml': sent_xml,
+            'object': obj,
+        }
+
         justif = 'Sed lorem nibh, sodales ut ex a, tristique ullamcor'
+
         wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
             numeration_start=0,
             numeration_end=5,
@@ -164,8 +168,11 @@ class TestInutilizacao(TransactionCase):
             modelo='55',
             justificativa=justif
         ))
+
         wizard.action_inutilize_nfe()
+
         inut_inv = self.env['invoice.eletronic.inutilized'].search([])
+
         self.assertEqual(len(inut_inv), 1)
         self.assertEqual(inut_inv.numeration_start, 0)
         self.assertEqual(inut_inv.numeration_end, 5)
@@ -173,27 +180,38 @@ class TestInutilizacao(TransactionCase):
         self.assertEqual(inut_inv.name, u'Série Inutilizada 0 - 5')
         self.assertEqual(inut_inv.justificativa, justif)
         self.assertEqual(inut_inv.state, 'error')
+
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),
             partner_id=self.partner_fisica.id
         ))
+
         invoice.action_invoice_open()
+
         inv_eletr = self.env['invoice.eletronic'].search(
             [('invoice_id', '=', invoice.id)])
+
         self.assertEqual(inv_eletr.numero, 6)
 
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_2_sequences(self, inutilizar):
+
         with open(os.path.join(self.caminho,
                                'xml/inutilizacao_sent_xml.xml')) as f:
             sent_xml = f.read()
+
         with open(os.path.join(self.caminho,
                                'xml/inutilizacao_received_xml.xml')) as f:
             received_xml = f.read()
+
         _, obj = sanitize_response(received_xml)
-        inutilizar.return_value = {'received_xml': received_xml,
-                                   'sent_xml': sent_xml,
-                                   'object': obj}
+
+        inutilizar.return_value = {
+            'received_xml': received_xml,
+            'sent_xml': sent_xml,
+            'object': obj,
+        }
+
         wizard1 = self.env['wizard.inutilization.nfe.numeration'].create(
             dict(
                 numeration_start=0,
@@ -203,7 +221,9 @@ class TestInutilizacao(TransactionCase):
                 justificativa='Sed lorem nibh, sodales ut ex a, '
                               'tristique ullamcor'
             ))
+
         wizard1.action_inutilize_nfe()
+
         wizard2 = self.env['wizard.inutilization.nfe.numeration'].create(
             dict(
                 numeration_start=6,
@@ -213,29 +233,42 @@ class TestInutilizacao(TransactionCase):
                 justificativa='Sed lorem nibh, sodales ut ex a, '
                               'tristique ullamcor'
             ))
+
         wizard2.action_inutilize_nfe()
+
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),
             partner_id=self.partner_fisica.id
         ))
+
         invoice.action_invoice_open()
+
         inv_eletr = self.env['invoice.eletronic'].search(
             [('invoice_id', '=', invoice.id)])
+
         self.assertEqual(inv_eletr.numero, 10)
 
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_return_ok(self, inutilizar):
+
         with open(os.path.join(self.caminho,
                                'xml/inutilizacao_sent_xml.xml')) as f:
             sent_xml = f.read()
+
         with open(os.path.join(self.caminho,
                                'xml/inutilizacao_received_ok_xml.xml')) as f:
             received_xml = f.read()
+
         _, obj = sanitize_response(received_xml)
-        inutilizar.return_value = {'received_xml': received_xml,
-                                   'sent_xml': sent_xml,
-                                   'object': obj}
+
+        inutilizar.return_value = {
+            'received_xml': received_xml,
+            'sent_xml': sent_xml,
+            'object': obj,
+        }
+
         justif = 'Sed lorem nibh, sodales ut ex a, tristique ullamcor'
+
         wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
             numeration_start=0,
             numeration_end=5,
@@ -243,8 +276,11 @@ class TestInutilizacao(TransactionCase):
             modelo='55',
             justificativa=justif
         ))
+
         wizard.action_inutilize_nfe()
+
         inut_inv = self.env['invoice.eletronic.inutilized'].search([])
+
         self.assertEqual(len(inut_inv), 1)
         self.assertEqual(inut_inv.numeration_start, 0)
         self.assertEqual(inut_inv.numeration_end, 5)
@@ -252,16 +288,21 @@ class TestInutilizacao(TransactionCase):
         self.assertEqual(inut_inv.name, u'Série Inutilizada 0 - 5')
         self.assertEqual(inut_inv.justificativa, justif)
         self.assertEqual(inut_inv.state, 'done')
+
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),
             partner_id=self.partner_fisica.id
         ))
+
         invoice.action_invoice_open()
+
         inv_eletr = self.env['invoice.eletronic'].search(
             [('invoice_id', '=', invoice.id)])
+
         self.assertEqual(inv_eletr.numero, 6)
 
     def test_inutilizacao_wrong_sqnc(self):
+
         wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
             numeration_start=10,
             numeration_end=5,
@@ -289,6 +330,7 @@ class TestInutilizacao(TransactionCase):
             wizard.action_inutilize_nfe()
 
     def test_inutilizacao_justificativa_long(self):
+
         wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
             numeration_start=10,
             numeration_end=5,
@@ -296,6 +338,7 @@ class TestInutilizacao(TransactionCase):
             modelo='55',
             justificativa='Sed lorem' * 255,
         ))
+
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()
 
@@ -341,10 +384,13 @@ class TestInutilizacao(TransactionCase):
             modelo='55',
             justificativa='Sed lorem nibh, sodales ut ex a, tristique ullamcor'
         ))
+
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),
             partner_id=self.partner_fisica.id
         ))
+
         invoice.action_invoice_open()
+
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()
