@@ -7,7 +7,6 @@ from odoo.exceptions import ValidationError
 
 
 class TestCrm(TransactionCase):
-
     def test_cpf_valido(self):
         lead = self.env['crm.lead'].create({
             'name': 'Lead',
@@ -68,7 +67,7 @@ class TestCrm(TransactionCase):
             'cnpj_cpf': '22814429000155',
             'inscr_est': '112.632.165',
             'is_company': True,
-            'legal_name': 'Razão social',
+            'legal_name': u'Razão social',
             'suframa': '123456',
             'district': 'Centro',
             'city_id': self.env.ref('br_base.city_3205002').id,
@@ -94,7 +93,7 @@ class TestCrm(TransactionCase):
             'cnpj': '22814429000155',
             'inscr_est': '112.632.165',
             'inscr_mun': '123456',
-            'legal_name': 'Razão social',
+            'legal_name': u'Razão social',
             'suframa': '123456',
             'district': 'Centro',
             'city_id': self.env.ref('br_base.city_3205002').id,

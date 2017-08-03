@@ -11,12 +11,10 @@ from odoo import api, fields, models
 from odoo.tools.translate import _
 from odoo.exceptions import UserError
 
-
 _logger = logging.getLogger(__name__)
 
 
 class BrZip(models.Model):
-
     _name = 'br.zip'
     _rec_name = 'zip'
     _description = u'Este objeto persiste todos os códigos postais que ' \
@@ -44,8 +42,7 @@ class BrZip(models.Model):
             new_zip = re.sub('[^0-9]', '', zip_code or '')
             domain.append(('zip', '=', new_zip))
         else:
-            if not state_id or not city_id or \
-                    len(street or '') == 0:
+            if not state_id or not city_id or len(street or '') == 0:
                 raise UserError(
                     u'Necessário informar Estado, município e logradouro')
 
@@ -108,7 +105,7 @@ class BrZip(models.Model):
     def _search_by_cep(self, zip_code):
         try:
             url_viacep = 'http://viacep.com.br/ws/' + \
-                zip_code + '/json/unicode/'
+                         zip_code + '/json/unicode/'
             obj_viacep = requests.get(url_viacep)
             res = obj_viacep.json()
             if not res.get('erro', False):
@@ -131,7 +128,7 @@ class BrZip(models.Model):
         try:
             city = self.env['res.state.city'].browse(city_id)
             url_viacep = 'http://viacep.com.br/ws/' + city.state_id.code + \
-                '/' + city.name + '/' + street + '/json/unicode/'
+                         '/' + city.name + '/' + street + '/json/unicode/'
             obj_viacep = requests.get(url_viacep)
             results = obj_viacep.json()
             if results:

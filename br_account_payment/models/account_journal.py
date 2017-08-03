@@ -23,9 +23,9 @@ class AccountJournal(models.Model):
             lambda r: r.type == 'bank' and r.bank_account_id)
         for journal in journal_ids:
             bank_account = journal.bank_account_id
-            if not bank_account.acc_number_dig or\
-               not bank_account.bra_number or\
-               not bank_account.bra_number_dig:
+            if not bank_account.acc_number_dig or \
+                    not bank_account.bra_number or \
+                    not bank_account.bra_number_dig:
                 bank_account_vals = {
                     'acc_number_dig': vals.get('acc_number_dig'),
                     'bra_number': vals.get('bank_agency_number'),

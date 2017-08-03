@@ -3,7 +3,7 @@
 
     <data noupdate="1">
 
-         <record id="product_product_2" model="product.product">
+        <record id="product_product_2" model="product.product">
             <field name="name">Assessoria</field>
             <field name="categ_id" ref="product.product_category_3"/>
             <field name="standard_price">40.5</field>
@@ -14,7 +14,7 @@
             <field name="uom_po_id" ref="product.product_uom_hour"/>
             <field name="description_sale">Exemplo de serviço para faturamento.</field>
         </record>
-      
+
     </data>
 
 </odoo>

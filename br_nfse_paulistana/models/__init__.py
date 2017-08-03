@@ -5,4 +5,4 @@
 from . import br_account_service
 from . import account_invoice
 from . import res_company
-from . import nfse_paulistana
+from . import invoice_electronic

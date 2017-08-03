@@ -14,7 +14,7 @@
                             <field name="minimum_plot_value"/>
                             <field name="allow_cnab_sending"/>
                             <field name="company_currency_id"
-                                           invisible="1"/>
+                                   invisible="1"/>
                         </group>
                     </group>
                 </sheet>
@@ -42,7 +42,7 @@
     </record>
 
     <menuitem id="account_title_type_menu"
-        action="account_title_type_action"
-        parent="account.account_management_menu" />
+              action="account_title_type_action"
+              parent="account.account_management_menu"/>
 
 </odoo>

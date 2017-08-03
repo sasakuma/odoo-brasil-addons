@@ -6,7 +6,6 @@ from odoo.tests.common import TransactionCase
 
 
 class TestFiscalPosition(TransactionCase):
-
     def setUp(self):
         super(TestFiscalPosition, self).setUp()
 

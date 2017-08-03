@@ -4,7 +4,7 @@
 
 {
     'name': 'Envio de NF-e',
-    'summary': """Permite o envio de NF-e através das faturas do Odoo
+    'summary': u"""Permite o envio de NF-e através das faturas do Odoo
     Mantido por Trustcode""",
     'description': 'Envio de NF-e',
     'version': '10.0.1.0.0',
@@ -27,11 +27,11 @@
     'data': [
         'security/ir.model.access.csv',
         'views/account_fiscal_position.xml',
-        'views/invoice_eletronic.xml',
+        'views/invoice_electronic.xml',
         'views/account_invoice.xml',
         'views/res_company.xml',
         'views/res_partner.xml',
-        'views/invoice_eletronic_item.xml',
+        'views/invoice_electronic_item.xml',
         'views/inutilized_nfe.xml',
         'views/br_nfe.xml',
         'reports/br_nfe_reports.xml',

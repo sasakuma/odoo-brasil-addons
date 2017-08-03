@@ -32,6 +32,5 @@ class BrAccountInvoiceParcelWizard(models.TransientModel):
         active_ids = self.env.context.get('active_ids', []) or []
 
         for inv in self.env['account.invoice'].browse(active_ids):
-
             inv.generate_parcel_entry(self.financial_operation_id,
                                       self.title_type_id)

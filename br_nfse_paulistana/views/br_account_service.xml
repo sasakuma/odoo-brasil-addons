@@ -6,8 +6,8 @@
         <field name="model">br_account.service.type</field>
         <field name="inherit_id" ref="br_nfse.view_br_nfse_account_service_type_form"/>
         <field name="arch" type="xml">
-            <field name="internal_type" position="after" >
-                <field name="codigo_servico_paulistana" />
+            <field name="internal_type" position="after">
+                <field name="codigo_servico_paulistana"/>
             </field>
         </field>
     </record>

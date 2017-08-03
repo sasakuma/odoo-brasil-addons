@@ -31,7 +31,7 @@ class HrContract(models.Model):
 
     @api.multi
     def _get_worked_days(self):  # TODO Fazer validação se este número de
-                                # dias está certo
+        # dias está certo
         for item in self:
             item.workeddays = 22
 

@@ -3,10 +3,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    'name': 'Métodos de entrega no Brasil',
-    'summary': """Extende os módulos do Odoo e adiciona novos métodos de
+    'name': u'Métodos de entrega no Brasil',
+    'summary': u"""Extende os módulos do Odoo e adiciona novos métodos de
      entrega para o Brasil - Mantido por Trustcode""",
-    'description': 'Métodos de entrega no Brasil',
+    'description': u'Métodos de entrega no Brasil',
     'license': 'AGPL-3',
     'author': 'Akretion, OpenERP Brasil',
     'website': 'http://openerpbrasil.org',

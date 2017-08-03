@@ -6,7 +6,6 @@ from odoo.addons.br_account.tests.test_base import TestBaseBr
 
 
 class TestTaxBrasil(TestBaseBr):
-
     def test_simple_tax_pis_cofins(self):
         res = self.pis_500.compute_all(200.0)
         self.assertEquals(res['total_excluded'], 200.0)
@@ -231,8 +230,9 @@ class TestTaxBrasil(TestBaseBr):
         self.assertEquals(res['taxes'][1]['amount'], 6.0)  # Destinatário
 
     def test_difal_fcp(self):
-        taxes = self.icms_difal_inter_700 | self.icms_difal_intra_1700 | \
-            self.icms_fcp_200
+        taxes = (self.icms_difal_inter_700 |
+                 self.icms_difal_intra_1700 |
+                 self.icms_fcp_200)
         res = taxes.compute_all(100.0)
         self.assertEquals(res['total_excluded'], 100.0)
         self.assertEquals(res['total_included'], 100.0)
@@ -242,12 +242,15 @@ class TestTaxBrasil(TestBaseBr):
         self.assertEquals(res['taxes'][2]['amount'], 2.0)  # FCP
 
     def test_difal_fcp_reducao_frete_seguro_despesas(self):
-        taxes = self.icms_difal_inter_700 | self.icms_difal_intra_1700 | \
-            self.icms_fcp_200
-        res = taxes.with_context(
-            icms_aliquota_reducao_base=20,
-            valor_frete=5.0, outras_despesas=5.0,
-            valor_seguro=30.0).compute_all(100.0)
+        taxes = (self.icms_difal_inter_700 |
+                 self.icms_difal_intra_1700 |
+                 self.icms_fcp_200)
+
+        res = taxes.with_context(icms_aliquota_reducao_base=20,
+                                 valor_frete=5.0,
+                                 outras_despesas=5.0,
+                                 valor_seguro=30.0).compute_all(100.0)
+
         self.assertEquals(res['total_excluded'], 100.0)
         self.assertEquals(res['total_included'], 100.0)
         self.assertEquals(len(res['taxes']), 3)

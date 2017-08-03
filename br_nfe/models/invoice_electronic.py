@@ -28,8 +28,8 @@ except ImportError:
 STATE = {'edit': [('readonly', False)]}
 
 
-class InvoiceEletronic(models.Model):
-    _inherit = 'invoice.eletronic'
+class InvoiceElectronic(models.Model):
+    _inherit = 'invoice.electronic'
 
     @api.multi
     @api.depends('chave_nfe')
@@ -44,9 +44,9 @@ class InvoiceEletronic(models.Model):
             "type": "ir.actions.act_window",
             "res_model": "wizard.carta.correcao.eletronica",
             "views": [[False, "form"]],
-            "name": "Carta de Correção",
+            "name": u"Carta de Correção",
             "target": "new",
-            "context": {'default_eletronic_doc_id': self.id},
+            "context": {'default_electronic_doc_id': self.id},
         }
 
     state = fields.Selection(selection_add=[('denied', 'Denegado')])
@@ -78,7 +78,7 @@ class InvoiceEletronic(models.Model):
         ('1', u'1 - Contribuinte ICMS'),
         ('2', u'2 - Contribuinte Isento de Cadastro'),
         ('9', u'9 - Não Contribuinte')],
-        string="Indicador IE Dest.", help="Indicador da IE do desinatário",
+        string="Indicador IE Dest.", help=u"Indicador da IE do destinatário",
         readonly=True, states=STATE)
     tipo_emissao = fields.Selection([
         ('1', u'1 - Emissão normal'),
@@ -91,7 +91,7 @@ class InvoiceEletronic(models.Model):
         ('6', u'6 - Contingência SVC-AN'),
         ('7', u'7 - Contingência SVC-RS'),
         ('9', u'9 - Contingência off-line da NFC-e')],
-        string="Tipo de Emissão", readonly=True, states=STATE, default='1')
+        string=u"Tipo de Emissão", readonly=True, states=STATE, default='1')
 
     # Transporte
     modalidade_frete = fields.Selection(
@@ -112,16 +112,16 @@ class InvoiceEletronic(models.Model):
         help="Registro Nacional de Transportador de Carga")
 
     reboque_ids = fields.One2many(
-        'nfe.reboque', 'invoice_eletronic_id',
+        'nfe.reboque', 'invoice_electronic_id',
         string="Reboques", readonly=True, states=STATE)
     volume_ids = fields.One2many(
-        'nfe.volume', 'invoice_eletronic_id',
+        'nfe.volume', 'invoice_electronic_id',
         string="Volumes", readonly=True, states=STATE)
 
     # Exportação
     uf_saida_pais_id = fields.Many2one(
         'res.country.state', domain=[('country_id.code', '=', 'BR')],
-        string="UF Saída do País", readonly=True, states=STATE)
+        string=u"UF Saída do País", readonly=True, states=STATE)
     local_embarque = fields.Char(
         string='Local de Embarque', size=60, readonly=True, states=STATE)
     local_despacho = fields.Char(
@@ -138,7 +138,7 @@ class InvoiceEletronic(models.Model):
         string=u"Valor Líquido", readonly=True, states=STATE)
 
     duplicata_ids = fields.One2many(
-        'nfe.duplicata', 'invoice_eletronic_id',
+        'nfe.duplicata', 'invoice_electronic_id',
         string="Duplicatas", readonly=True, states=STATE)
 
     # Compras
@@ -177,21 +177,20 @@ class InvoiceEletronic(models.Model):
 
     # Documentos Relacionados
     fiscal_document_related_ids = fields.One2many(
-        'br_account.document.related', 'invoice_eletronic_id',
+        'br_account.document.related', 'invoice_electronic_id',
         'Documentos Fiscais Relacionados', readonly=True, states=STATE)
 
     # CARTA DE CORRECAO
     cartas_correcao_ids = fields.One2many(
-        'carta.correcao.eletronica.evento', 'eletronic_doc_id',
-        string="Cartas de Correção", readonly=True, states=STATE)
+        'carta.correcao.eletronica.evento', 'electronic_doc_id',
+        string=u"Cartas de Correção", readonly=True, states=STATE)
 
     def barcode_url(self):
-        url = '<img style="width:380px;height:50px;margin:2px 1px;"\
-src="/report/barcode/Code128/' + self.chave_nfe + '" />'
+        url = '<img style="width:380px;height:50px;margin:2px 1px;" src="/report/barcode/Code128/' + self.chave_nfe + '" />'  # noqa: 501
         return url
 
     def can_unlink(self):
-        res = super(InvoiceEletronic, self).can_unlink()
+        res = super(InvoiceElectronic, self).can_unlink()
         if self.state == 'denied':
             return False
         return res
@@ -202,21 +201,21 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             if item.state in ('denied'):
                 raise UserError(
                     u'Documento Eletrônico Denegado - Proibido excluir')
-        super(InvoiceEletronic, self).unlink()
+        super(InvoiceElectronic, self).unlink()
 
     @api.multi
     def _hook_validation(self):
-        errors = super(InvoiceEletronic, self)._hook_validation()
+        errors = super(InvoiceElectronic, self)._hook_validation()
         if self.model == '55':
             if not self.company_id.partner_id.inscr_est:
                 errors.append(u'Emitente / Inscrição Estadual')
             if not self.fiscal_position_id:
                 errors.append(u'Configure a posição fiscal')
             if self.company_id.accountant_id and not \
-               self.company_id.accountant_id.cnpj_cpf:
+                    self.company_id.accountant_id.cnpj_cpf:
                 errors.append(u'Emitente / CNPJ do escritório contabilidade')
 
-            for eletr in self.eletronic_item_ids:
+            for eletr in self.electronic_item_ids:
                 prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
                                               eletr.product_id.name)
                 if not eletr.cfop:
@@ -237,8 +236,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         return errors
 
     @api.multi
-    def _prepare_eletronic_invoice_item(self, item, invoice):
-        res = super(InvoiceEletronic, self)._prepare_eletronic_invoice_item(
+    def _prepare_electronic_invoice_item(self, item, invoice):
+        res = super(InvoiceElectronic, self)._prepare_electronic_invoice_item(
             item, invoice)
         if self.model not in ('55', '65'):
             return res
@@ -254,7 +253,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'uCom': '{:.6}'.format(item.uom_id.name or ''),
             'qCom': item.quantidade,
             'vUnCom': "%.02f" % item.preco_unitario,
-            'vProd':  "%.02f" % (item.preco_unitario * item.quantidade),
+            'vProd': "%.02f" % (item.preco_unitario * item.quantidade),
             'cEANTrib': item.product_id.barcode or '',
             'uTrib': '{:.6}'.format(item.uom_id.name or ''),
             'qTrib': item.quantidade,
@@ -304,7 +303,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         imposto = {
             'vTotTrib': "%.02f" % item.tributos_estimados,
             'ICMS': {
-                'orig':  item.origem,
+                'orig': item.origem,
                 'CST': item.icms_cst,
                 'modBC': item.icms_tipo_base,
                 'vBC': "%.02f" % item.icms_base_calculo,
@@ -355,8 +354,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'infAdProd': item.informacao_adicional}
 
     @api.multi
-    def _prepare_eletronic_invoice_values(self):
-        res = super(InvoiceEletronic, self)._prepare_eletronic_invoice_values()
+    def _prepare_electronic_invoice_values(self):
+        res = super(InvoiceElectronic, self)._prepare_electronic_invoice_values()  # noqa: 501
         if self.model not in ('55', '65'):
             return res
 
@@ -452,7 +451,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'xPais': self.company_id.country_id.name,
                 'fone': re.sub('[^0-9]', '', self.company_id.phone or '')
             },
-            'IE':  re.sub('[^0-9]', '', self.company_id.inscr_est),
+            'IE': re.sub('[^0-9]', '', self.company_id.inscr_est),
             'CRT': self.company_id.fiscal_type,
         }
         if self.company_id.cnae_main_id and self.company_id.inscr_mun:
@@ -481,7 +480,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                     'fone': re.sub('[^0-9]', '', partner.phone or '')
                 },
                 'indIEDest': self.ind_ie_dest,
-                'IE':  re.sub('[^0-9]', '', partner.inscr_est or ''),
+                'IE': re.sub('[^0-9]', '', partner.inscr_est or ''),
             }
             if self.ambiente == 'homologacao':
                 dest['xNome'] = \
@@ -506,10 +505,10 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                     '[^0-9]', '', self.company_id.accountant_id.cnpj_cpf)
             })
 
-        eletronic_items = []
-        for item in self.eletronic_item_ids:
-            eletronic_items.append(
-                self._prepare_eletronic_invoice_item(item, self))
+        electronic_items = []
+        for item in self.electronic_item_ids:
+            electronic_items.append(
+                self._prepare_electronic_invoice_item(item, self))
         total = {
             # ICMS
             'vBC': "%.02f" % self.valor_bc_icms,
@@ -539,8 +538,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         transp = {
             'modFrete': self.modalidade_frete,
             'transporta': {
-                'xNome': self.transportadora_id.legal_name or
-                self.transportadora_id.name or '',
+                'xNome': (self.transportadora_id.legal_name or
+                          self.transportadora_id.name or ''),
                 'IE': re.sub('[^0-9]', '',
                              self.transportadora_id.inscr_est or ''),
                 'xEnder': "%s - %s, %s" % (self.transportadora_id.street,
@@ -590,7 +589,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             vencimento = fields.Datetime.from_string(dup.data_vencimento)
             duplicatas.append({
                 'nDup': dup.numero_duplicata,
-                'dVenc':  vencimento.strftime('%Y-%m-%d'),
+                'dVenc': vencimento.strftime('%Y-%m-%d'),
                 'vDup': "%.02f" % dup.valor
             })
         cobr = {
@@ -620,7 +619,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'emit': emit,
             'dest': dest,
             'autXML': autorizados,
-            'detalhes': eletronic_items,
+            'detalhes': electronic_items,
             'total': total,
             'transp': transp,
             'infAdic': infAdic,
@@ -644,7 +643,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         }
 
     def _find_attachment_ids_email(self):
-        atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
+        atts = super(InvoiceElectronic, self)._find_attachment_ids_email()
         if self.model not in ('55'):
             return atts
 
@@ -686,7 +685,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
     @api.multi
     def action_post_validate(self):
-        super(InvoiceEletronic, self).action_post_validate()
+        super(InvoiceElectronic, self).action_post_validate()
         if self.model not in ('55', '65'):
             return
         for item in self:
@@ -703,15 +702,15 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             item.chave_nfe = gerar_chave(ChaveNFe(**chave_dict))
 
     @api.multi
-    def action_send_eletronic_invoice(self):
+    def action_send_electronic_invoice(self):
         self.state = 'error'
         self.data_emissao = datetime.now()
-        super(InvoiceEletronic, self).action_send_eletronic_invoice()
+        super(InvoiceElectronic, self).action_send_electronic_invoice()
 
         if self.model not in ('55', '65'):
             return
 
-        nfe_values = self._prepare_eletronic_invoice_values()
+        nfe_values = self._prepare_electronic_invoice_values()
         lote = self._prepare_lote(self.id, nfe_values)
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
         cert_pfx = base64.decodestring(cert)
@@ -736,7 +735,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             while True:
                 time.sleep(2)
                 resposta_recibo = retorno_autorizar_nfe(certificado, **obj)
-                retorno = resposta_recibo['object'].Body.\
+                retorno = resposta_recibo['object'].Body. \
                     nfeRetAutorizacaoLoteResult.retConsReciNFe
                 if retorno.cStat != 105:
                     break
@@ -766,10 +765,10 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 self.write({'state': 'denied',
                             'nfe_exception': True})
 
-        self.env['invoice.eletronic.event'].create({
+        self.env['invoice.electronic.event'].create({
             'code': self.codigo_retorno,
             'name': self.mensagem_retorno,
-            'invoice_eletronic_id': self.id,
+            'invoice_electronic_id': self.id,
         })
         self._create_attachment('nfe-envio', self, resposta['sent_xml'])
         self._create_attachment('nfe-ret', self, resposta['received_xml'])
@@ -789,16 +788,16 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
     def generate_nfe_proc(self):
         if self.state in ['cancel', 'done', 'denied']:
             recibo = self.env['ir.attachment'].search([
-                ('res_model', '=', 'invoice.eletronic'),
+                ('res_model', '=', 'invoice.electronic'),
                 ('res_id', '=', self.id),
                 ('datas_fname', 'like', 'rec-ret')])
             if not recibo:
                 recibo = self.env['ir.attachment'].search([
-                    ('res_model', '=', 'invoice.eletronic'),
+                    ('res_model', '=', 'invoice.electronic'),
                     ('res_id', '=', self.id),
                     ('datas_fname', 'like', 'nfe-ret')])
             nfe_envio = self.env['ir.attachment'].search([
-                ('res_model', '=', 'invoice.eletronic'),
+                ('res_model', '=', 'invoice.electronic'),
                 ('res_id', '=', self.id),
                 ('datas_fname', 'like', 'nfe-envio')])
             if nfe_envio.datas and recibo.datas:
@@ -809,12 +808,12 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 self.nfe_processada = base64.encodestring(nfe_proc)
                 self.nfe_processada_name = "NFe%08d.xml" % self.numero
         else:
-            raise UserError('A NFe não está validada')
+            raise UserError(u'A NFe não está validada')
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
         if self.model not in ('55', '65'):
-            return super(InvoiceEletronic, self).action_cancel_document(
+            return super(InvoiceElectronic, self).action_cancel_document(
                 justificativa=justificativa)
 
         if not justificativa:
@@ -850,12 +849,11 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'nSeqEvento': self.sequencial_evento,
                 'nProt': self.protocolo_nfe,
                 'xJust': justificativa
-                }]
-            }
+            }]
+        }
         resp = recepcao_evento_cancelamento(certificado, **cancelamento)
         resposta = resp['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
-        if resposta.cStat == 128 and \
-           resposta.retEvento.infEvento.cStat in (135, 136, 155):
+        if resposta.cStat == 128 and resposta.retEvento.infEvento.cStat in (135, 136, 155):  # noqa: 501
             self.state = 'cancel'
             self.codigo_retorno = resposta.retEvento.infEvento.cStat
             self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo
@@ -868,10 +866,10 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 self.codigo_retorno = resposta.cStat
                 self.mensagem_retorno = resposta.xMotivo
 
-        self.env['invoice.eletronic.event'].create({
+        self.env['invoice.electronic.event'].create({
             'code': self.codigo_retorno,
             'name': self.mensagem_retorno,
-            'invoice_eletronic_id': self.id,
+            'invoice_electronic_id': self.id,
         })
         self._create_attachment('canc', self, resp['sent_xml'])
         self._create_attachment('canc-ret', self, resp['received_xml'])

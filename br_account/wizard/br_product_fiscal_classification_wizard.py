@@ -60,7 +60,7 @@ citação estiver marcado é necessário informá-lo!')
                     code = code.zfill(8)
                     code = code[:4] + '.' + code[4:6] + '.' + code[6:]
                     try:
-                        service = self.env['product.fiscal.classification'].\
+                        service = self.env['product.fiscal.classification']. \
                             search([('code', '=', code)])
                         service.update(ncm_tax)
                     except Exception as e:

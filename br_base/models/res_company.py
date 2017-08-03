@@ -22,7 +22,6 @@ except ImportError:
 
 
 class ResCompany(models.Model):
-
     _inherit = 'res.company'
 
     @api.one
@@ -103,62 +102,71 @@ class ResCompany(models.Model):
             _logger.error(
                 'Erro desconhecido ao consultar certificado', exc_info=True)
 
-    cnpj_cpf = fields.Char(
-        compute=_get_br_data, inverse=_set_br_cnpj_cpf, size=18,
-        string='CNPJ')
+    cnpj_cpf = fields.Char(compute=_get_br_data,
+                           inverse=_set_br_cnpj_cpf,
+                           size=18,
+                           string='CNPJ')
 
-    inscr_est = fields.Char(
-        compute=_get_br_data, inverse=_set_br_inscr_est, size=16,
-        string='Inscr. Estadual')
+    inscr_est = fields.Char(compute=_get_br_data,
+                            inverse=_set_br_inscr_est,
+                            size=16,
+                            string='Inscr. Estadual')
 
-    inscr_mun = fields.Char(
-        compute=_get_br_data, inverse=_set_br_inscr_mun, size=18,
-        string='Inscr. Municipal')
+    inscr_mun = fields.Char(compute=_get_br_data,
+                            inverse=_set_br_inscr_mun,
+                            size=18,
+                            string='Inscr. Municipal')
 
-    suframa = fields.Char(
-        compute=_get_br_data, inverse=_set_br_suframa, size=18,
-        string='Suframa')
+    suframa = fields.Char(compute=_get_br_data,
+                          inverse=_set_br_suframa,
+                          size=18,
+                          string='Suframa')
 
-    legal_name = fields.Char(
-        compute=_get_br_data, inverse=_set_br_legal_name, size=128,
-        string=u'Razão Social')
+    legal_name = fields.Char(compute=_get_br_data,
+                             inverse=_set_br_legal_name,
+                             size=128,
+                             string=u'Razão Social')
 
-    city_id = fields.Many2one(
-        compute=_get_address_data, inverse='_set_city_id',
-        comodel_name='res.state.city', string="City", multi='address')
+    city_id = fields.Many2one(compute=_get_address_data,
+                              inverse='_set_city_id',
+                              comodel_name='res.state.city',
+                              string="City",
+                              multi='address')
 
-    district = fields.Char(
-        compute=_get_address_data, inverse='_set_br_district', size=32,
-        string="Bairro", multi='address')
+    district = fields.Char(compute=_get_address_data,
+                           inverse='_set_br_district',
+                           size=32,
+                           string='Bairro',
+                           multi='address')
 
-    number = fields.Char(
-        compute=_get_address_data, inverse='_set_br_number', size=10,
-        string=u"Número", multi='address')
+    number = fields.Char(compute=_get_address_data,
+                         inverse='_set_br_number',
+                         size=10,
+                         string=u'Número',
+                         multi='address')
 
     nfe_a1_file = fields.Binary('Arquivo NFe A1')
     nfe_a1_password = fields.Char('Senha NFe A1', size=64)
 
     cert_state = fields.Selection(
-        [('not_loaded', 'Não carregado'),
+        [('not_loaded', u'Não carregado'),
          ('expired', 'Expirado'),
-         ('invalid_password', 'Senha Inválida'),
+         ('invalid_password', u'Senha Inválida'),
          ('unknown', 'Desconhecido'),
-         ('valid', 'Válido')],
-        string="Situação Cert.", compute=_compute_expiry_date,
+         ('valid', u'Válido')],
+        string=u'Situação Cert.', compute=_compute_expiry_date,
         default='not_loaded')
     cert_information = fields.Text(
-        string="Informações Cert.", compute=_compute_expiry_date)
+        string=u'Informações Cert.', compute=_compute_expiry_date)
     cert_expire_date = fields.Date(
-        string="Validade Cert.", compute=_compute_expiry_date)
+        string='Validade Cert.', compute=_compute_expiry_date)
 
     @api.onchange('cnpj_cpf')
     def onchange_mask_cnpj_cpf(self):
         if self.cnpj_cpf:
             val = re.sub('[^0-9]', '', self.cnpj_cpf)
             if len(val) == 14:
-                cnpj_cpf = "%s.%s.%s/%s-%s"\
-                    % (val[0:2], val[2:5], val[5:8], val[8:12], val[12:14])
-                self.cnpj_cpf = cnpj_cpf
+                self.cnpj_cpf = "%s.%s.%s/%s-%s" % (val[0:2], val[2:5], val[5:8], val[8:12], val[12:14])  # noqa: 501
 
     @api.onchange('city_id')
     def onchange_city_id(self):

@@ -18,7 +18,6 @@ except ImportError:
 
 
 class TestBase(TransactionCase):
-
     caminho = os.path.dirname(__file__)
 
     def test_parceiro_cpf_valido(self):
@@ -157,7 +156,7 @@ class TestBase(TransactionCase):
             'is_company': True,
             'state_id': self.env.ref('base.state_br_sc').id,
             'city_id': self.env.ref('br_base.city_3205002').id,
-            'country_id':  self.env.ref('base.us').id
+            'country_id': self.env.ref('base.us').id
         })
         partner._display_address()
         partner.country_id = self.env.ref('base.br').id
@@ -201,7 +200,7 @@ class TestBase(TransactionCase):
 
         company.cnpj_cpf = '62.565.938/0001-06'
         company.suframa = '456'
-        company.legal_name = 'Razão Social'
+        company.legal_name = u'Razão Social'
         company.inscr_est = 'ISENTO'
         company.inscr_mun = '987654'
         company.number = 12
@@ -220,7 +219,7 @@ class TestBase(TransactionCase):
 
         company.partner_id.cnpj_cpf = '62.565.938/0001-06'
         company.partner_id.suframa = '456'
-        company.partner_id.legal_name = 'Razão Social'
+        company.partner_id.legal_name = u'Razão Social'
         company.partner_id.inscr_est = 'ISENTO'
         company.partner_id.inscr_mun = '987654'
         company.partner_id.number = 12

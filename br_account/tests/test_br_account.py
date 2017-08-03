@@ -6,7 +6,6 @@ from odoo.tests.common import TransactionCase
 
 
 class TestBrAccountInvoiceParcel(TransactionCase):
-
     def setUp(self):
         super(TestBrAccountInvoiceParcel, self).setUp()
 
@@ -21,7 +20,6 @@ class TestBrAccountInvoiceParcel(TransactionCase):
         self.parcel = self.env['br_account.invoice.parcel'].create(vals)
 
     def test_update_date_maturity(self):
-
         new_date = '2017-07-20'
 
         # Ficamos a data de vencimento da parcela

@@ -35,7 +35,7 @@ class AccountInvoice(models.Model):
                 if not item.commercial_partner_id.name:
                     error += u'Cliente - Nome\n'
                 if item.commercial_partner_id.is_company and \
-                   not item.commercial_partner_id.legal_name:
+                        not item.commercial_partner_id.legal_name:
                     error += u'Cliente - Razão Social\n'
                 if not item.commercial_partner_id.cnpj_cpf:
                     error += u'Cliente - CNPJ/CPF \n'

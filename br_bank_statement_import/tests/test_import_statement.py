@@ -9,7 +9,6 @@ from odoo.exceptions import UserError
 
 
 class TestImportStatement(TransactionCase):
-
     caminho = os.path.dirname(__file__)
 
     def setUp(self):

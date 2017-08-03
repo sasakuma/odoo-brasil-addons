@@ -2,11 +2,11 @@
 <odoo>
     <data>
         <report
-            id="report_br_nfe_danfe"
-            string="Impressão de Danfe"
-            model="invoice.eletronic"
-            report_type="qweb-pdf"
-            file="br_nfe.main_template_br_nfe_danfe"
-            name="br_nfe.main_template_br_nfe_danfe" />
+                id="report_br_nfe_danfe"
+                string="Impressão de Danfe"
+                model="invoice.electronic"
+                report_type="qweb-pdf"
+                file="br_nfe.main_template_br_nfe_danfe"
+                name="br_nfe.main_template_br_nfe_danfe"/>
     </data>
 </odoo>

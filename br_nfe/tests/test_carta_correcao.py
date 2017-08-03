@@ -12,7 +12,6 @@ from pytrustnfe.xml import sanitize_response
 
 
 class TestCartaCorrecao(TransactionCase):
-
     caminho = os.path.dirname(__file__)
 
     def setUp(self):
@@ -21,13 +20,13 @@ class TestCartaCorrecao(TransactionCase):
         self.currency_real = self.env.ref('base.BRL')
         self.main_company.write({
             'name': 'Trustcode',
-            'legal_name': 'Trustcode Tecnologia da Informação',
+            'legal_name': u'Trustcode Tecnologia da Informação',
             'cnpj_cpf': '92.743.275/0001-33',
             'inscr_est': '219.882.606',
             'zip': '88037-240',
             'street': 'Vinicius de Moraes',
             'number': '42',
-            'district': 'Córrego Grande',
+            'district': u'Córrego Grande',
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sc').id,
             'city_id': self.env.ref('br_base.city_4205407').id,
@@ -84,9 +83,9 @@ class TestCartaCorrecao(TransactionCase):
         })
         default_partner = {
             'name': 'Nome Parceiro',
-            'legal_name': 'Razão Social',
+            'legal_name': u'Razão Social',
             'zip': '88037-240',
-            'street': 'Endereço Rua',
+            'street': u'Endereço Rua',
             'number': '42',
             'district': 'Centro',
             'phone': '(48) 9801-6226',
@@ -118,39 +117,39 @@ class TestCartaCorrecao(TransactionCase):
         })
         invoice_line_data = [
             (0, 0,
-                {
-                    'product_id': self.default_product.id,
-                    'quantity': 10.0,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                    'cfop_id': self.env.ref(
-                        'br_data_account_product.cfop_5101').id,
-                    'icms_cst_normal': '40',
-                    'icms_csosn_simples': '102',
-                    'ipi_cst': '50',
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
-                }
+             {
+                 'product_id': self.default_product.id,
+                 'quantity': 10.0,
+                 'account_id': self.revenue_account.id,
+                 'name': 'product test 5',
+                 'price_unit': 100.00,
+                 'cfop_id': self.env.ref(
+                     'br_data_account_product.cfop_5101').id,
+                 'icms_cst_normal': '40',
+                 'icms_csosn_simples': '102',
+                 'ipi_cst': '50',
+                 'pis_cst': '01',
+                 'cofins_cst': '01',
+             }
              ),
             (0, 0,
-                {
-                    'product_id': self.service.id,
-                    'quantity': 10.0,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                    'product_type': self.service.fiscal_type,
-                    # 'service_type_id': self.service.service_type_id.id,
-                    'cfop_id': self.env.ref(
-                        'br_data_account_product.cfop_5101').id,
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
-                }
+             {
+                 'product_id': self.service.id,
+                 'quantity': 10.0,
+                 'account_id': self.revenue_account.id,
+                 'name': 'product test 5',
+                 'price_unit': 100.00,
+                 'product_type': self.service.fiscal_type,
+                 # 'service_type_id': self.service.service_type_id.id,
+                 'cfop_id': self.env.ref(
+                     'br_data_account_product.cfop_5101').id,
+                 'pis_cst': '01',
+                 'cofins_cst': '01',
+             }
              )
         ]
         default_invoice = {
-            'name': "Teste Validação",
+            'name': u"Teste Validação",
             'reference_type': "none",
             'fiscal_document_id': self.env.ref(
                 'br_data_account.fiscal_document_55').id,
@@ -169,30 +168,30 @@ class TestCartaCorrecao(TransactionCase):
             'tipo_operacao': 'saida',
             'fiscal_position_id': self.fpos_consumo.id,
             'code': '1',
-            'name': 'Teste Carta Correção',
+            'name': u'Teste Carta Correção',
             'company_id': self.main_company.id,
             'chave_nfe': '35161221332917000163550010000000041158176721',
         }
-        self.eletronic_doc = self.env['invoice.eletronic'].create(
+        self.electronic_doc = self.env['invoice.electronic'].create(
             invoice_eletronic)
         carta_wizard_short = {
             'correcao': 'short',
-            'eletronic_doc_id': self.eletronic_doc.id,
+            'electronic_doc_id': self.electronic_doc.id,
         }
         carta_wizard_long = {
             'correcao': 'long' * 1000,
-            'eletronic_doc_id': self.eletronic_doc.id,
+            'electronic_doc_id': self.electronic_doc.id,
         }
         carta_wizard_right = {
             'correcao': 'Teste de Carta de Correcao' * 10,
-            'eletronic_doc_id': self.eletronic_doc.id,
+            'electronic_doc_id': self.electronic_doc.id,
         }
-        self.carta_wizard_short = self.\
-            env['wizard.carta.correcao.eletronica']. create(carta_wizard_short)
-        self.carta_wizard_long = self.\
-            env['wizard.carta.correcao.eletronica']. create(carta_wizard_long)
-        self.carta_wizard_right = self.\
-            env['wizard.carta.correcao.eletronica']. create(carta_wizard_right)
+        self.carta_wizard_short = self. \
+            env['wizard.carta.correcao.eletronica'].create(carta_wizard_short)
+        self.carta_wizard_long = self. \
+            env['wizard.carta.correcao.eletronica'].create(carta_wizard_long)
+        self.carta_wizard_right = self. \
+            env['wizard.carta.correcao.eletronica'].create(carta_wizard_right)
 
     def test_valida_carta_correcao_eletronica(self):
         # Testa validação de carta muito curta (< 15 char)
@@ -202,7 +201,7 @@ class TestCartaCorrecao(TransactionCase):
         with self.assertRaises(UserError):
             self.carta_wizard_long.send_letter()
 
-    @patch('odoo.addons.br_nfe.wizard.carta_correcao_eletronica.recepcao_evento_carta_correcao') # noqa
+    @patch('odoo.addons.br_nfe.wizard.carta_correcao_eletronica.recepcao_evento_carta_correcao')  # noqa
     def test_carta_correca_eletronica(self, recepcao):
         # Mock o retorno da CCE
         xml_recebido = open(os.path.join(

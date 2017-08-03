@@ -6,7 +6,6 @@ from odoo.addons.br_account.tests.test_base import TestBaseBr
 
 
 class TestAccountInvoice(TestBaseBr):
-
     def setUp(self):
         super(TestAccountInvoice, self).setUp()
 

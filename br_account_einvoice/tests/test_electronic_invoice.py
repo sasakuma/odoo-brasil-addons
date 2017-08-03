@@ -6,10 +6,9 @@ from odoo.tests.common import TransactionCase
 from odoo.exceptions import UserError
 
 
-class TestEletronicInvoice(TransactionCase):
-
+class TestElectronicInvoice(TransactionCase):
     def setUp(self):
-        super(TestEletronicInvoice, self).setUp()
+        super(TestElectronicInvoice, self).setUp()
         self.main_company = self.env.ref('base.main_company')
         self.currency_real = self.env.ref('base.BRL')
 
@@ -70,23 +69,23 @@ class TestEletronicInvoice(TransactionCase):
         })
         invoice_line_incomplete = [
             (0, 0,
-                {
-                    'product_id': self.default_product.id,
-                    'quantity': 10.0,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                }
+             {
+                 'product_id': self.default_product.id,
+                 'quantity': 10.0,
+                 'account_id': self.revenue_account.id,
+                 'name': 'product test 5',
+                 'price_unit': 100.00,
+             }
              ),
             (0, 0,
-                {
-                    'product_id': self.service.id,
-                    'quantity': 10.0,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                    'product_type': self.service.fiscal_type,
-                }
+             {
+                 'product_id': self.service.id,
+                 'quantity': 10.0,
+                 'account_id': self.revenue_account.id,
+                 'name': 'product test 5',
+                 'price_unit': 100.00,
+                 'product_type': self.service.fiscal_type,
+             }
              )
         ]
         self.inv_incomplete = self.env['account.invoice'].create(dict(
@@ -100,22 +99,22 @@ class TestEletronicInvoice(TransactionCase):
             invoice_line_ids=invoice_line_incomplete
         ))
 
-    def test_basic_validation_for_eletronic_doc(self):
+    def test_basic_validation_for_electronic_doc(self):
         self.assertEquals(self.inv_incomplete.total_edocs, 0)
 
         vals = self.inv_incomplete.action_view_edocs()
         self.assertEquals(vals['type'], 'ir.actions.act_window')
-        self.assertEquals(vals['res_model'], 'invoice.eletronic')
+        self.assertEquals(vals['res_model'], 'invoice.electronic')
         self.assertEquals(vals['res_id'], 0)
 
         with self.assertRaises(UserError):
             self.inv_incomplete.action_invoice_open()
 
-        invoice_eletronic = self.env['invoice.eletronic'].search(
+        invoice_eletronic = self.env['invoice.electronic'].search(
             [('invoice_id', '=', self.inv_incomplete.id)])
 
         self.assertEquals(self.inv_incomplete.total_edocs, 0)
         vals = self.inv_incomplete.action_view_edocs()
         self.assertEquals(vals['type'], 'ir.actions.act_window')
-        self.assertEquals(vals['res_model'], 'invoice.eletronic')
+        self.assertEquals(vals['res_model'], 'invoice.electronic')
         self.assertEquals(vals['res_id'], invoice_eletronic.id)

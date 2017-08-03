@@ -6,7 +6,6 @@ from odoo.addons.sale.tests.test_sale_common import TestSale
 
 
 class TestBrSaleStock(TestSale):
-
     def test_sale_order_ratio_expenses(self):
         """ Test the sale order new fields
             - Invoice repeatedly while varrying delivered quantities and

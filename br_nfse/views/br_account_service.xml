@@ -6,9 +6,9 @@
         <field name="model">br_account.service.type</field>
         <field name="inherit_id" ref="br_account.view_br_account_service_type_form"/>
         <field name="arch" type="xml">
-            <field name="internal_type" position="after" >
+            <field name="internal_type" position="after">
                 <!--<field name="codigo_servico_paulistana" />-->
-                <field name="codigo_tributacao_municipio" />
+                <field name="codigo_tributacao_municipio"/>
             </field>
         </field>
     </record>

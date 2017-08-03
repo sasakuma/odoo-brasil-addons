@@ -17,7 +17,6 @@ except ImportError:
 
 
 class TestNFeBrasil(TransactionCase):
-
     caminho = os.path.dirname(__file__)
 
     def setUp(self):
@@ -118,19 +117,19 @@ class TestNFeBrasil(TransactionCase):
         })
         invoice_line_data = [
             (0, 0,
-                {
-                    'product_id': self.service.id,
-                    'quantity': 10.0,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                    'product_type': self.service.fiscal_type,
-                    # 'service_type_id': self.service.service_type_id.id,
-                    'cfop_id': self.env.ref(
-                        'br_data_account_product.cfop_5101').id,
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
-                }
+             {
+                 'product_id': self.service.id,
+                 'quantity': 10.0,
+                 'account_id': self.revenue_account.id,
+                 'name': 'product test 5',
+                 'price_unit': 100.00,
+                 'product_type': self.service.fiscal_type,
+                 # 'service_type_id': self.service.service_type_id.id,
+                 'cfop_id': self.env.ref(
+                     'br_data_account_product.cfop_5101').id,
+                 'pis_cst': '01',
+                 'cofins_cst': '01',
+             }
              )
         ]
         default_invoice = {
@@ -159,7 +158,6 @@ class TestNFeBrasil(TransactionCase):
     def test_computed_fields(self):
 
         for invoice in self.invoices:
-
             self.assertEquals(invoice.total_edocs, 0)
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -167,13 +165,13 @@ class TestNFeBrasil(TransactionCase):
             # Verifica algumas propriedades computadas que dependem do edoc
             self.assertEquals(invoice.total_edocs, 1)
 
-    def test_check_invoice_eletronic_values(self):
+    def test_check_invoice_electronic_values(self):
 
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
 
-            inv_eletr = self.env['invoice.eletronic'].search(
+            inv_eletr = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
 
             # TODO Validar os itens que foi setado no invoice e verficar
@@ -196,12 +194,12 @@ class TestNFeBrasil(TransactionCase):
                 'sent_xml': '<xml />',
                 'received_xml': xml_recebido
             }
-            invoice_eletronic = self.env['invoice.eletronic'].search(
+            invoice_electronic = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
-            invoice_eletronic.action_send_eletronic_invoice()
-            self.assertEqual(invoice_eletronic.state, 'done')
-            self.assertEqual(invoice_eletronic.codigo_retorno, '100')
-            self.assertEqual(len(invoice_eletronic.eletronic_event_ids), 1)
+            invoice_electronic.action_send_electronic_invoice()
+            self.assertEqual(invoice_electronic.state, 'done')
+            self.assertEqual(invoice_electronic.codigo_retorno, '100')
+            self.assertEqual(len(invoice_electronic.electronic_event_ids), 1)
 
     @mock.patch('pytrustnfe.nfse.paulistana.cancelamento_nfe')
     def test_nfse_cancel(self, cancelar):
@@ -220,16 +218,16 @@ class TestNFeBrasil(TransactionCase):
                 'received_xml': xml_recebido
             }
 
-            invoice_eletronic = self.env['invoice.eletronic'].search(
+            invoice_electronic = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
-            invoice_eletronic.verify_code = '123'
-            invoice_eletronic.numero_nfse = '123'
-            invoice_eletronic.action_cancel_document(
+            invoice_electronic.verify_code = '123'
+            invoice_electronic.numero_nfse = '123'
+            invoice_electronic.action_cancel_document(
                 justificativa="Cancelamento de teste")
 
-            self.assertEquals(invoice_eletronic.state, 'cancel')
-            self.assertEquals(invoice_eletronic.codigo_retorno, "100")
-            self.assertEquals(invoice_eletronic.mensagem_retorno,
+            self.assertEquals(invoice_electronic.state, 'cancel')
+            self.assertEquals(invoice_electronic.codigo_retorno, "100")
+            self.assertEquals(invoice_electronic.mensagem_retorno,
                               "Nota Fiscal Paulistana Cancelada")
 
     @mock.patch('pytrustnfe.nfse.paulistana.cancelamento_nfe')
@@ -249,15 +247,15 @@ class TestNFeBrasil(TransactionCase):
                 'received_xml': xml_recebido
             }
 
-            invoice_eletronic = self.env['invoice.eletronic'].search(
+            invoice_electronic = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
-            invoice_eletronic.verify_code = '123'
-            invoice_eletronic.numero_nfse = '123'
-            invoice_eletronic.action_cancel_document(
+            invoice_electronic.verify_code = '123'
+            invoice_electronic.numero_nfse = '123'
+            invoice_electronic.action_cancel_document(
                 justificativa="Cancelamento de teste")
 
             # Draft because I didn't send it
-            self.assertEquals(invoice_eletronic.state, 'cancel')
-            self.assertEquals(invoice_eletronic.codigo_retorno, '100')
-            self.assertEquals(invoice_eletronic.mensagem_retorno,
+            self.assertEquals(invoice_electronic.state, 'cancel')
+            self.assertEquals(invoice_electronic.codigo_retorno, '100')
+            self.assertEquals(invoice_electronic.mensagem_retorno,
                               'Nota Fiscal Paulistana Cancelada')

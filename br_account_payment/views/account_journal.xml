@@ -7,13 +7,13 @@
         <field name="inherit_id" ref="account.view_account_journal_form"/>
         <field name="arch" type="xml">
             <field name="bank_id" position="before">
-                <field name="bank_agency_number" />
-                <field name="acc_partner_id" />
+                <field name="bank_agency_number"/>
+                <field name="acc_partner_id"/>
             </field>
             <field name="bank_statements_source" position="before">
-                <field name="acc_number_dig" />
-                <field name="bank_agency_dig" />
-                <field name="bank_currency_id" />
+                <field name="acc_number_dig"/>
+                <field name="bank_agency_dig"/>
+                <field name="bank_currency_id"/>
             </field>
         </field>
     </record>
@@ -23,19 +23,19 @@
         <field name="inherit_id" ref="account.view_account_bank_journal_form"/>
         <field name="arch" type="xml">
             <field name="bank_acc_number" position="after">
-                <span class="oe_read_only"> - </span>
+                <span class="oe_read_only">-</span>
                 <label for="acc_number_dig" required="1" class="oe_edit_only"/>
-                <field name="acc_number_dig" />
+                <field name="acc_number_dig"/>
             </field>
             <field name="bank_id" position="after">
-                <field name="acc_partner_id" />
+                <field name="acc_partner_id"/>
             </field>
             <field name="bank_id" position="before">
-                <field name="bank_agency_number" />
-                <field name="bank_agency_dig" />
+                <field name="bank_agency_number"/>
+                <field name="bank_agency_dig"/>
             </field>
             <field name="display_on_footer" position="before">
-                <field name="bank_currency_id" />
+                <field name="bank_currency_id"/>
             </field>
         </field>
     </record>

@@ -9,7 +9,7 @@ from odoo.exceptions import UserError
 class CancelNFe(models.TransientModel):
     _name = 'wizard.cancel.nfe'
 
-    edoc_id = fields.Many2one('invoice.eletronic', string="Documento")
+    edoc_id = fields.Many2one('invoice.electronic', string="Documento")
     justificativa = fields.Text('Justificativa', size=255, required=True)
 
     @api.multi

@@ -9,10 +9,10 @@
             </xpath>
             <field name="data_file" position="before">
                 <group>
-                    <field name="force_format" />
-                    <field name="file_format" attrs="{'invisible': [('force_format', '=', False)]}" />
-                    <field name="force_journal_account" />
-                    <field name="journal_id" attrs="{'invisible': [('force_journal_account', '=', False)]}" />
+                    <field name="force_format"/>
+                    <field name="file_format" attrs="{'invisible': [('force_format', '=', False)]}"/>
+                    <field name="force_journal_account"/>
+                    <field name="journal_id" attrs="{'invisible': [('force_journal_account', '=', False)]}"/>
                 </group>
             </field>
         </field>

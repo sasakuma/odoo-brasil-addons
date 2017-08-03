@@ -29,7 +29,8 @@ class BrZipSearch(models.TransientModel):
     state = fields.Selection([('init', 'init'),
                               ('done', 'done')],
                              string=u'Situação',
-                             readonly=True, default='init')
+                             readonly=True,
+                             default='init')
     address_id = fields.Integer(string=u'Id do Objeto',
                                 invisible=True)
     object_name = fields.Char(string=u'Nome do Objeto',
@@ -72,8 +73,7 @@ class BrZipSearch(models.TransientModel):
         # MAP zip to zip.search.result
         zip_result_ids = obj_zip_result.map_to_zip_result(
             zips.ids, data['object_name'], data['address_id'])
-        self.write(
-            {'state': 'done', 'zip_ids': [[6, 0, zip_result_ids]]})
+        self.write({'state': 'done', 'zip_ids': [[6, 0, zip_result_ids]]})
 
         return {
             'type': 'ir.actions.act_window',

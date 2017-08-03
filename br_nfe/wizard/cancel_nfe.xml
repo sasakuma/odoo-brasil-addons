@@ -12,15 +12,19 @@
                 <div>
                     <strong>Regras para cancelamento !</strong>
                     <ul>
-                        <li>O fato gerador não pode ter ocorrido. O cancelamento, portanto, só é válido se for registrado antes da saída da mercadoria do estabelecimento</li>
-                        <li>O destinatário não pode ter realizado a Ciência da Emissão, passo necessário para o download do arquivo XML da nota fiscal.</li>
+                        <li>O fato gerador não pode ter ocorrido. O cancelamento, portanto, só é válido se for
+                            registrado antes da saída da mercadoria do estabelecimento
+                        </li>
+                        <li>O destinatário não pode ter realizado a Ciência da Emissão, passo necessário para o download
+                            do arquivo XML da nota fiscal.
+                        </li>
                         <li>Número mínimo de 15 caracteres e máximo de 255 caracteres na justificativa</li>
                     </ul>
                 </div>
                 <footer>
                     <button name="action_cancel_nfe"
-                        string="Enviar Cancelamento" type="object"
-                        class="oe_highlight" />
+                            string="Enviar Cancelamento" type="object"
+                            class="oe_highlight"/>
                     <button string="Cancelar" special="cancel"/>
                 </footer>
             </form>

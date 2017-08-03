@@ -6,7 +6,7 @@
         <field name="model">nfe.volume</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="quantidade_volumes" />
+                <field name="quantidade_volumes"/>
                 <field name="especie"/>
                 <field name="marca"/>
                 <field name="numeracao"/>
@@ -21,7 +21,7 @@
         <field name="model">nfe.reboque</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="placa_veiculo" />
+                <field name="placa_veiculo"/>
                 <field name="uf_veiculo"/>
                 <field name="rntc"/>
                 <field name="vagao"/>
@@ -35,7 +35,7 @@
         <field name="model">nfe.duplicata</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="numero_duplicata" />
+                <field name="numero_duplicata"/>
                 <field name="data_vencimento"/>
                 <field name="valor"/>
             </tree>

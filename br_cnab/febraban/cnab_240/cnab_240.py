@@ -67,12 +67,10 @@ class Cnab240(Cnab):
         """
         cnpj_cpf = re.sub('[^0-9]', '',
                           self.order.payment_mode_id.company_id.cnpj_cpf)
-        cedente_conta_dv = self.order.payment_mode_id.bank_account_id.\
-            acc_number_dig
+        cedente_conta_dv = self.order.payment_mode_id.bank_account_id.acc_number_dig  # noqa: 501
         cedente_conta_dv = str(cedente_conta_dv)
         return {
-            'controle_banco': int(self.order.payment_mode_id.
-                                  bank_account_id.bank_bic),
+            'controle_banco': int(self.order.payment_mode_id.bank_account_id.bank_bic),  # noqa: 501
             'arquivo_data_de_geracao': self.data_hoje(),
             'arquivo_hora_de_geracao': self.hora_agora(),
             'arquivo_sequencia': self.order.file_number,
@@ -80,21 +78,16 @@ class Cnab240(Cnab):
             'cedente_inscricao_numero': int(cnpj_cpf),
             'cedente_agencia': int(
                 self.order.payment_mode_id.bank_account_id.bra_number),
-            'cedente_conta': int(self.order.payment_mode_id.bank_account_id.
-                                 acc_number),
+            'cedente_conta': int(self.order.payment_mode_id.bank_account_id.acc_number),  # noqa: 501
             'cedente_conta_dv': cedente_conta_dv,
-            'cedente_convenio': self.order.payment_mode_id.bank_account_id.
-            codigo_convenio,
-            'cedente_agencia_dv': self.order.payment_mode_id.
-            bank_account_id.bra_number_dig,
+            'cedente_convenio': self.order.payment_mode_id.bank_account_id.codigo_convenio,  # noqa: 501
+            'cedente_agencia_dv': self.order.payment_mode_id.bank_account_id.bra_number_dig,  # noqa: 501
             'cedente_nome': self.order.user_id.company_id.legal_name,
             # DV ag e conta
-            'cedente_dv_ag_cc': (self.order.payment_mode_id.
-                                 bank_account_id.bra_number_dig),
+            'cedente_dv_ag_cc': self.order.payment_mode_id.bank_account_id.bra_number_dig,  # noqa: 501
             'arquivo_codigo': 1,  # Remessa/Retorno
             'servico_operacao': u'R',
-            'nome_banco': unicode(self.order.payment_mode_id.bank_account_id.
-                                  bank_name)
+            'nome_banco': unicode(self.order.payment_mode_id.bank_account_id.bank_name)  # noqa: 501
         }
 
     def get_file_numeration(self):
@@ -152,21 +145,14 @@ class Cnab240(Cnab):
         # Era cedente_agencia_conta_dv agora é cedente_dv_ag_cc
 
         return {
-            'controle_banco': int(self.order.payment_mode_id.bank_account_id.
-                                  bank_bic),
-            'cedente_agencia': int(self.order.payment_mode_id.bank_account_id.
-                                   bra_number),
-            'cedente_conta': int(self.order.payment_mode_id.bank_account_id.
-                                 acc_number),
-            'cedente_conta_dv': self.order.payment_mode_id.bank_account_id.
-            acc_number_dig,
-            'cedente_agencia_dv': self.order.payment_mode_id.bank_account_id.
-            bra_number_dig,
-            'cedente_nome':
-            self.order.payment_mode_id.bank_account_id.partner_id.legal_name,
+            'controle_banco': int(self.order.payment_mode_id.bank_account_id.bank_bic),  # noqa: 501
+            'cedente_agencia': int(self.order.payment_mode_id.bank_account_id.bra_number),  # noqa: 501
+            'cedente_conta': int(self.order.payment_mode_id.bank_account_id.acc_number),  # noqa: 501
+            'cedente_conta_dv': self.order.payment_mode_id.bank_account_id.acc_number_dig,  # noqa: 501
+            'cedente_agencia_dv': self.order.payment_mode_id.bank_account_id.bra_number_dig,  # noqa: 501
+            'cedente_nome': self.order.payment_mode_id.bank_account_id.partner_id.legal_name,  # noqa: 501
             # DV ag e cc
-            'cedente_dv_ag_cc': (self.order.payment_mode_id.bank_account_id.
-                                 bra_number_dig),
+            'cedente_dv_ag_cc': self.order.payment_mode_id.bank_account_id.bra_number_dig,  # noqa: 501
             'identificacao_titulo': u'0000000',  # TODO
             'identificacao_titulo_banco': u'0000000',  # TODO
             'identificacao_titulo_empresa': (' ' * 25),
@@ -186,16 +172,16 @@ class Cnab240(Cnab):
             'codigo_juros': 2,
             'juros_mora_data': self.format_date(
                 line.date_maturity),
-            'juros_mora_taxa':  Decimal(
+            'juros_mora_taxa': Decimal(
                 str(self.order.payment_mode_id.late_payment_interest)
-                ).quantize(Decimal('1.00')),
+            ).quantize(Decimal('1.00')),
             # Multa padrão em percentual no Odoo, valor '2'
             'codigo_multa': '2',
             'data_multa': self.format_date(
                 line.date_maturity),
-            'juros_multa':  Decimal(
+            'juros_multa': Decimal(
                 str(self.order.payment_mode_id.late_payment_fee)).quantize(
-                    Decimal('1.00')),
+                Decimal('1.00')),
             # TODO Remover taxa dia - deixar apenas taxa normal
             'juros_mora_taxa_dia': Decimal('0.00'),
             'valor_abatimento': Decimal('0.00'),

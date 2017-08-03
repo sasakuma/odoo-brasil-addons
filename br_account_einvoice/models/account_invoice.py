@@ -22,17 +22,21 @@ class AccountInvoice(models.Model):
     @api.multi
     def _compute_total_edocs(self):
         for item in self:
-            item.total_edocs = self.env['invoice.eletronic'].search_count(
+            item.total_edocs = self.env['invoice.electronic'].search_count(
                 [('invoice_id', '=', item.id)])
 
-    invoice_eletronic_ids = fields.One2many(
-        'invoice.eletronic', 'invoice_id',
-        'Documentos Eletrônicos', readonly=True)
-    invoice_model = fields.Char(
-        string="Modelo de Fatura", related="fiscal_document_id.code",
-        readonly=True)
+    invoice_electronic_ids = fields.One2many('invoice.electronic',
+                                             'invoice_id',
+                                             string=u'Documentos Eletrônicos',
+                                             readonly=True)
+
+    invoice_model = fields.Char(string="Modelo de Fatura",
+                                related="fiscal_document_id.code",
+                                readonly=True)
+
     total_edocs = fields.Integer(string="Total NFe",
                                  compute=_compute_total_edocs)
+
     internal_number = fields.Integer(
         'Invoice Number', readonly=True,
         states={'draft': [('readonly', False)]},
@@ -43,20 +47,20 @@ class AccountInvoice(models.Model):
     def action_view_edocs(self):
         if self.total_edocs == 1:
             dummy, act_id = self.env['ir.model.data'].get_object_reference(
-                'br_account_einvoice', 'action_sped_base_eletronic_doc')
+                'br_account_einvoice', 'action_sped_base_electronic_doc')
             dummy, view_id = self.env['ir.model.data'].get_object_reference(
-                'br_account_einvoice', 'br_account_invoice_eletronic_form')
+                'br_account_einvoice', 'br_account_invoice_electronic_form')
             vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
-            vals['view_id'] = (view_id, u'sped.eletronic.doc.form')
-            vals['views'][1] = (view_id, u'form')
+            vals['view_id'] = (view_id, 'sped.electronic.doc.form')
+            vals['views'][1] = (view_id, 'form')
             vals['views'] = [vals['views'][1], vals['views'][0]]
-            edoc = self.env['invoice.eletronic'].search(
+            edoc = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', self.id)], limit=1)
             vals['res_id'] = edoc.id
             return vals
         else:
             dummy, act_id = self.env['ir.model.data'].get_object_reference(
-                'br_account_einvoice', 'action_sped_base_eletronic_doc')
+                'br_account_einvoice', 'action_sped_base_electronic_doc')
             vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
             return vals
 
@@ -199,12 +203,12 @@ class AccountInvoice(models.Model):
             'valor_retencao_inss': invoice.inss_retention,
         }
 
-        eletronic_items = []
+        electronic_items = []
         for inv_line in invoice.invoice_line_ids:
-            eletronic_items.append((0, 0,
+            electronic_items.append((0, 0,
                                     self._prepare_edoc_item_vals(inv_line)))
 
-        vals['eletronic_item_ids'] = eletronic_items
+        vals['electronic_item_ids'] = electronic_items
         return vals
 
     @api.multi
@@ -215,16 +219,17 @@ class AccountInvoice(models.Model):
             if item.is_electronic:
                 edoc_vals = self._prepare_edoc_vals(item)
                 if edoc_vals:
-                    eletronic = self.env['invoice.eletronic'].create(edoc_vals)
-                    eletronic.validate_invoice()
-                    eletronic.action_post_validate()
+                    electronic = \
+                        self.env['invoice.electronic'].create(edoc_vals)
+                    electronic.validate_invoice()
+                    electronic.action_post_validate()
         return res
 
     @api.multi
     def action_cancel(self):
         res = super(AccountInvoice, self).action_cancel()
         for item in self:
-            edocs = self.env['invoice.eletronic'].search(
+            edocs = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', item.id)])
             for edoc in edocs:
                 if edoc.state == 'done':

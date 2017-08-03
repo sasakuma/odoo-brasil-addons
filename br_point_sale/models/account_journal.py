@@ -5,7 +5,6 @@
 
 from odoo import fields, models
 
-
 metodos = [
     ('01', u'Dinheiro'),
     ('02', u'Cheque'),
@@ -22,4 +21,4 @@ metodos = [
 class AccountJournal(models.Model):
     _inherit = 'account.journal'
 
-    metodo_pagamento = fields.Selection(metodos, string='Método de Pagamento')
+    metodo_pagamento = fields.Selection(metodos, string=u'Método de Pagamento')

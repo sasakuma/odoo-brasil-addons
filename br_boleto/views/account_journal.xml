@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="account.view_account_journal_form"/>
         <field name="arch" type="xml">
             <field name="bank_id" position="after">
-                <field name="acc_codigo_convenio" />
+                <field name="acc_codigo_convenio"/>
             </field>
         </field>
     </record>
@@ -18,9 +18,9 @@
         <field name="inherit_id" ref="account.view_account_bank_journal_form"/>
         <field name="arch" type="xml">
             <field name="outbound_payment_method_ids" position="after">
-                <field name="acc_codigo_convenio" />
+                <field name="acc_codigo_convenio"/>
             </field>
         </field>
     </record>
- 
+
 </odoo>

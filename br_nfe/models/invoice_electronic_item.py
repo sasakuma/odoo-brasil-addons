@@ -7,8 +7,8 @@ from odoo import api, fields, models
 STATE = {'edit': [('readonly', False)]}
 
 
-class InvoiceEletronicItem(models.Model):
-    _inherit = "invoice.eletronic.item"
+class InvoiceElectronicItem(models.Model):
+    _inherit = "invoice.electronic.item"
 
     @api.multi
     @api.depends('icms_cst', 'origem')
@@ -28,7 +28,7 @@ class InvoiceEletronicItem(models.Model):
 
     import_declaration_ids = fields.One2many(
         'br_account.import.declaration',
-        'invoice_eletronic_line_id', u'Declaração de Importação')
+        'invoice_electronic_line_id', u'Declaração de Importação')
 
     # ----------- ICMS INTERESTADUAL -----------
     tem_difal = fields.Boolean(string=u'Difal?', readonly=True, states=STATE)
@@ -48,4 +48,4 @@ class InvoiceEletronicItem(models.Model):
         string=u'ICMS Destino', readonly=True, states=STATE)
     icms_fcp_uf_dest = fields.Monetary(
         string=u'Valor FCP', readonly=True, states=STATE)
-    informacao_adicional = fields.Text(string="Informação Adicional")
+    informacao_adicional = fields.Text(string=u"Informação Adicional")

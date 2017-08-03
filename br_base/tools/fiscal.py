@@ -29,7 +29,6 @@ PARAMETERS = {
 
 
 def validate_ie_param(uf, inscr_est):
-
     if uf not in PARAMETERS:
         return True
 
@@ -175,7 +174,7 @@ def validate_ie_go(inscr_est):
     # Pega apenas os 8 primeiros dígitos da inscrição estadual e
     # define os valores de 'p' e 'd'
     inscr_est_int = int(inscr_est[:8])
-    if inscr_est_int >= 10103105 and inscr_est_int <= 10119997:
+    if 10103105 <= inscr_est_int <= 10119997:
         inscr_est_d = 1
     else:
         inscr_est_d = 0

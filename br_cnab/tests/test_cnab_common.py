@@ -6,7 +6,6 @@ from odoo.tests.common import TransactionCase
 
 
 class TestCnab(TransactionCase):
-
     def _return_payment_mode(self):
         pass
 
@@ -22,7 +21,7 @@ class TestCnab(TransactionCase):
             'zip': '88037-240',
             'street': 'Vinicius de Moraes',
             'number': '42',
-            'district': 'Córrego Grande',
+            'district': u'Córrego Grande',
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sc').id,
             'city_id': self.env.ref('br_base.city_4205407').id,
@@ -85,20 +84,20 @@ class TestCnab(TransactionCase):
         })
         invoice_line_data = [
             (0, 0,
-                {
-                    'product_id': self.default_product.id,
-                    'quantity': 10.0,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                    'cfop_id': self.env.ref(
-                        'br_data_account_product.cfop_5101').id,
-                    'icms_cst_normal': '40',
-                    'icms_csosn_simples': '102',
-                    'ipi_cst': '50',
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
-                }
+             {
+                 'product_id': self.default_product.id,
+                 'quantity': 10.0,
+                 'account_id': self.revenue_account.id,
+                 'name': 'product test 5',
+                 'price_unit': 100.00,
+                 'cfop_id': self.env.ref(
+                     'br_data_account_product.cfop_5101').id,
+                 'icms_cst_normal': '40',
+                 'icms_csosn_simples': '102',
+                 'ipi_cst': '50',
+                 'pis_cst': '01',
+                 'cofins_cst': '01',
+             }
              ),
         ]
         default_invoice = {

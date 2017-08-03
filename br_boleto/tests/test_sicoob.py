@@ -7,7 +7,6 @@ from odoo.addons.br_boleto.tests.test_common import TestBoleto
 
 
 class TestBoletoSicoob(TestBoleto):
-
     def _return_payment_mode(self):
         super(TestBoletoSicoob, self)._return_payment_mode()
         sequencia = self.env['ir.sequence'].create({

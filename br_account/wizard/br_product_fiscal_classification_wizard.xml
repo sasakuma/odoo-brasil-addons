@@ -8,11 +8,11 @@
             <form string="Importar Classificações Fiscais (NCM)">
                 <group>
                     <group>
-                        <field name="product_fiscal_class_csv" />
-                        <field name="ncm_csv_delimiter" />
+                        <field name="product_fiscal_class_csv"/>
+                        <field name="ncm_csv_delimiter"/>
                     </group>
                     <group>
-                        <field name="has_quote_char" />
+                        <field name="has_quote_char"/>
                         <field name="ncm_quote_char" attrs="{'invisible': [('has_quote_char','!=', True)]}"/>
                     </group>
                 </group>
@@ -25,7 +25,7 @@
         </field>
     </record>
 
-    <record id="br_product_fiscal_classification_action"  model="ir.actions.act_window">
+    <record id="br_product_fiscal_classification_action" model="ir.actions.act_window">
         <field name="name">Importar Classificações Fiscais (NCM)</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">product.fiscal.classification.wizard</field>

@@ -59,12 +59,12 @@ class PurchaseOrderLine(models.Model):
             'aliquota_icms_proprio': self.aliquota_icms_proprio,
             'icms_aliquota_reducao_base': self.icms_aliquota_reducao_base,
             'icms_st_aliquota_reducao_base':
-            self.icms_st_aliquota_reducao_base,
+                self.icms_st_aliquota_reducao_base,
             'ipi_reducao_bc': self.ipi_reducao_bc,
             'icms_st_aliquota_deducao': self.icms_st_aliquota_deducao,
         }
 
-    @api.depends('taxes_id', 'product_qty',  'price_unit',
+    @api.depends('taxes_id', 'product_qty', 'price_unit',
                  'icms_aliquota_reducao_base', 'icms_st_aliquota_reducao_base',
                  'ipi_reducao_bc', 'icms_st_aliquota_deducao',
                  'incluir_ipi_base', 'icms_st_aliquota_mva')
@@ -100,10 +100,12 @@ class PurchaseOrderLine(models.Model):
         string=u'Redução Base ICMS (%)', digits=dp.get_precision('Account'))
     icms_st_aliquota_reducao_base = fields.Float(
         string=u'Redução Base ICMS ST(%)', digits=dp.get_precision('Account'))
-    icms_st_aliquota_deducao = fields.Float(
-        string=u"% Dedução", help="Alíquota interna ou interestadual aplicada \
-         sobre o valor da operação para deduzir do ICMS ST - Para empresas \
-         do Simples Nacional", digits=dp.get_precision('Account'))
+    icms_st_aliquota_deducao = fields.Float(string=u"% Dedução",
+                                            help=u"Alíquota interna ou interestadual "  # noqa: 501
+                                                 u"aplicada sobre o valor da operação para "  # noqa: 501
+                                                 u"deduzir do ICMS ST - Para empresas "  # noqa: 501
+                                                 u"do Simples Nacional",
+                                            digits=dp.get_precision('Account'))
     tem_difal = fields.Boolean(string="Possui Difal")
 
     ipi_cst = fields.Char(string='CST IPI', size=5)
@@ -124,7 +126,7 @@ class PurchaseOrderLine(models.Model):
             self.update({
                 'icms_st_aliquota_mva': ncm.icms_st_aliquota_mva,
                 'icms_st_aliquota_reducao_base':
-                ncm.icms_st_aliquota_reducao_base,
+                    ncm.icms_st_aliquota_reducao_base,
                 'ipi_cst': ncm.ipi_cst,
                 'ipi_reducao_bc': ncm.ipi_reducao_bc,
                 'taxes_id': [(6, None, [x.id for x in taxes if x])]
@@ -139,8 +141,8 @@ class PurchaseOrderLine(models.Model):
     def _compute_tax_id(self):
         for line in self:
             line._update_tax_from_ncm()
-            fpos = line.order_id.fiscal_position_id or \
-                line.order_id.partner_id.property_account_position_id
+            fpos = (line.order_id.fiscal_position_id or
+                    line.order_id.partner_id.property_account_position_id)
             if fpos:
                 vals = fpos.map_tax_extra_values(
                     line.company_id, line.product_id, line.order_id.partner_id)
@@ -152,16 +154,16 @@ class PurchaseOrderLine(models.Model):
                 empty = line.env['account.tax'].browse()
                 ipi = line.taxes_id.filtered(lambda x: x.domain == 'ipi')
                 icmsst = line.taxes_id.filtered(lambda x: x.domain == 'icmsst')
-                tax_ids = vals.get('tax_icms_id', empty) | \
-                    vals.get('tax_icms_st_id', icmsst) | \
-                    vals.get('tax_icms_inter_id', empty) | \
-                    vals.get('tax_icms_intra_id', empty) | \
-                    vals.get('tax_icms_fcp_id', empty) | \
-                    vals.get('tax_ipi_id', ipi) | \
-                    vals.get('tax_pis_id', empty) | \
-                    vals.get('tax_cofins_id', empty) | \
-                    vals.get('tax_ii_id', empty) | \
-                    vals.get('tax_issqn_id', empty)
+                tax_ids = (vals.get('tax_icms_id', empty) |
+                           vals.get('tax_icms_st_id', icmsst) |
+                           vals.get('tax_icms_inter_id', empty) |
+                           vals.get('tax_icms_intra_id', empty) |
+                           vals.get('tax_icms_fcp_id', empty) |
+                           vals.get('tax_ipi_id', ipi) |
+                           vals.get('tax_pis_id', empty) |
+                           vals.get('tax_cofins_id', empty) |
+                           vals.get('tax_ii_id', empty) |
+                           vals.get('tax_issqn_id', empty))
 
                 line.update({
                     'taxes_id': [(6, None, [x.id for x in tax_ids if x])]

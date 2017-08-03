@@ -37,7 +37,7 @@ class BrAccountCFOP(models.Model):
 
     _sql_constraints = [
         ('br_account_cfop_code_uniq', 'unique (code)',
-            u'Já existe um CFOP com esse código !')
+         u'Já existe um CFOP com esse código !')
     ]
 
     @api.model
@@ -241,7 +241,7 @@ class AccountDocumentRelated(models.Model):
         'account.invoice', 'Documento Fiscal', ondelete='cascade')
     document_type = fields.Selection(
         [('nf', 'NF'), ('nfe', 'NF-e'), ('cte', 'CT-e'),
-            ('nfrural', 'NF Produtor'), ('cf', 'Cupom Fiscal')],
+         ('nfrural', 'NF Produtor'), ('cf', 'Cupom Fiscal')],
         'Tipo Documento', required=True)
     access_key = fields.Char('Chave de Acesso', size=44)
     serie = fields.Char(u'Série', size=12)
@@ -328,14 +328,13 @@ class BrAccountFiscalObservation(models.Model):
     sequence = fields.Integer(u'Sequência', default=1, required=True)
     name = fields.Char(u'Descrição', required=True, size=50)
     message = fields.Text(u'Mensagem', required=True)
-    tipo = fields.Selection([('fiscal', 'Observação Fiscal'),
-                             ('observacao', 'Observação')], string=u"Tipo")
+    tipo = fields.Selection([('fiscal', u'Observação Fiscal'),
+                             ('observacao', u'Observação')], string=u"Tipo")
     document_id = fields.Many2one(
         'br_account.fiscal.document', string="Documento Fiscal")
 
 
 class BrAccountInvoiceParcel(models.Model):
-
     _name = 'br_account.invoice.parcel'
     _description = 'Classe que representa as parcelas da Fatura'
 

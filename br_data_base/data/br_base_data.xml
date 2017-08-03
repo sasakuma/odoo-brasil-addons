@@ -332,7 +332,7 @@
         </record>
 
         <record id="base.gi" model="res.country">
-        <field name="bc_code">02933</field>
+            <field name="bc_code">02933</field>
         </record>
 
         <record id="base.gl" model="res.country">

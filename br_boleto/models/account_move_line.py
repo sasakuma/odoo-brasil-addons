@@ -79,7 +79,7 @@ class AccountMoveLine(models.Model):
 
     @api.multi
     def open_wizard_print_boleto(self):
-        return({
+        return ({
             'name': 'Alterar / Reimprimir Boleto',
             'type': 'ir.actions.act_window',
             'res_model': 'br.boleto.wizard',

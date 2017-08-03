@@ -8,12 +8,12 @@
             <form string="Pesquisar CEP" version="7.0">
                 <group colspan="8" col="8" states="init">
                     <!-- <separator colspan="8" string="Pesquisar Endereço"/>  -->
-                    <field colspan="8" name="zip" />
-                    <field colspan="8" name="street" />
-                    <field colspan="4" name="district" />
-                    <field colspan="4" name="country_id" required="True" />
-                    <field colspan="4" name="state_id" required="True" />
-                    <field colspan="4" name="city_id" required="True" />
+                    <field colspan="8" name="zip"/>
+                    <field colspan="8" name="street"/>
+                    <field colspan="4" name="district"/>
+                    <field colspan="4" name="country_id" required="True"/>
+                    <field colspan="4" name="state_id" required="True"/>
+                    <field colspan="4" name="city_id" required="True"/>
                     <field colspan="4" name="state" invisible="1"/>
                 </group>
                 <group colspan="8" col="8" states="done">

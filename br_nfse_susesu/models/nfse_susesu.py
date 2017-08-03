@@ -25,21 +25,21 @@ except ImportError:
     _logger.debug('Cannot import pytrustnfe')
 
 
-class InvoiceEletronic(models.Model):
-    _inherit = 'invoice.eletronic'
+class InvoiceElectronic(models.Model):
+    _inherit = 'invoice.electronic'
 
     url_danfe = fields.Char(
         string=u'Url de Impressão Danfe', size=500, readonly=True)
 
     @api.multi
     def _hook_validation(self):
-        errors = super(InvoiceEletronic, self)._hook_validation()
+        errors = super(InvoiceElectronic, self)._hook_validation()
 
         if self.model == '001' and self.webservice_nfse == 'nfse_susesu':
             issqn_codigo = ''
             if not self.company_id.inscr_mun:
                 errors.append(u'Inscrição municipal obrigatória')
-            for eletr in self.eletronic_item_ids:
+            for eletr in self.electronic_item_ids:
                 prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
                                               eletr.product_id.name)
                 if eletr.tipo_produto == 'product':
@@ -57,8 +57,8 @@ class InvoiceEletronic(models.Model):
         return errors
 
     @api.multi
-    def _prepare_eletronic_invoice_values(self):
-        res = super(InvoiceEletronic, self)._prepare_eletronic_invoice_values()
+    def _prepare_electronic_invoice_values(self):
+        res = super(InvoiceElectronic, self)._prepare_electronic_invoice_values()
 
         if self.model == '001' and self.webservice_nfse == 'nfse_susesu':
             tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
@@ -100,7 +100,7 @@ class InvoiceEletronic(models.Model):
 
             descricao = ''
             codigo_servico = ''
-            for item in self.eletronic_item_ids:
+            for item in self.electronic_item_ids:
                 descricao += item.name + '\n'
                 codigo_servico = item.issqn_codigo
 
@@ -118,7 +118,7 @@ class InvoiceEletronic(models.Model):
                 'numero': self.numero,
                 'data_emissao': dt_emissao,
                 'aliquota_atividade':
-                fmt_number(self.eletronic_item_ids[0].issqn_aliquota),
+                    fmt_number(self.electronic_item_ids[0].issqn_aliquota),
                 'codigo_atividade': codigo_servico,
                 'valor_pis': fmt_number(self.valor_pis_servicos),
                 'valor_cofins': fmt_number(self.valor_cofins_servicos),
@@ -126,15 +126,15 @@ class InvoiceEletronic(models.Model):
                 'valor_inss': fmt_number(self.valor_retencao_inss),
                 'valor_ir': fmt_number(self.valor_retencao_irrf),
                 'aliquota_pis':
-                fmt_number(self.eletronic_item_ids[0].pis_aliquota),
+                    fmt_number(self.electronic_item_ids[0].pis_aliquota),
                 'aliquota_cofins':
-                fmt_number(self.eletronic_item_ids[0].cofins_aliquota),
+                    fmt_number(self.electronic_item_ids[0].cofins_aliquota),
                 'aliquota_csll':
-                fmt_number(self.eletronic_item_ids[0].csll_aliquota),
+                    fmt_number(self.electronic_item_ids[0].csll_aliquota),
                 'aliquota_inss':
-                fmt_number(self.eletronic_item_ids[0].inss_aliquota),
+                    fmt_number(self.electronic_item_ids[0].inss_aliquota),
                 'aliquota_ir':
-                fmt_number(self.eletronic_item_ids[0].irrf_aliquota),
+                    fmt_number(self.electronic_item_ids[0].irrf_aliquota),
                 'valor_deducao': '0,00',
                 'descricao': descricao,
                 'observacoes': self.informacoes_complementares,
@@ -143,7 +143,7 @@ class InvoiceEletronic(models.Model):
         return res
 
     def _find_attachment_ids_email(self):
-        atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
+        atts = super(InvoiceElectronic, self)._find_attachment_ids_email()
 
         if self.model == '001' and self.webservice_nfse == 'nfse_susesu':
 
@@ -187,18 +187,18 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_post_validate(self):
-        super(InvoiceEletronic, self).action_post_validate()
+        super(InvoiceElectronic, self).action_post_validate()
 
         if self.model == '001' and self.webservice_nfse == 'nfse_susesu':
-            nfse_values = self._prepare_eletronic_invoice_values()
+            nfse_values = self._prepare_electronic_invoice_values()
             xml_enviar = xml_enviar_nota_retorna_url(nfse=nfse_values)
 
             self.xml_to_send = base64.encodestring(xml_enviar)
             self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
 
     @api.multi
-    def action_send_eletronic_invoice(self):
-        super(InvoiceEletronic, self).action_send_eletronic_invoice()
+    def action_send_electronic_invoice(self):
+        super(InvoiceElectronic, self).action_send_electronic_invoice()
 
         if self.model == '001' and self.webservice_nfse == 'nfse_susesu':
             self.state = 'error'
@@ -217,21 +217,21 @@ class InvoiceEletronic(models.Model):
                 self.codigo_retorno = codigo
                 self.mensagem_retorno = mensagem
 
-            self.env['invoice.eletronic.event'].create({
+            self.env['invoice.electronic.event'].create({
                 'code': self.codigo_retorno,
                 'name': self.mensagem_retorno,
-                'invoice_eletronic_id': self.id,
+                'invoice_electronic_id': self.id,
             })
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
 
         # if self.model not in ('009'):
-        #     return super(InvoiceEletronic, self).action_cancel_document(
+        #     return super(InvoiceElectronic, self).action_cancel_document(
         #         justificativa=justificativa)
 
         if self.model == '001' and self.webservice_nfse == 'nfse_susesu':
             raise UserError(u'Não é possível cancelar NFSe automaticamente!')
         else:
-            return super(InvoiceEletronic, self).action_cancel_document(
+            return super(InvoiceElectronic, self).action_cancel_document(
                 justificativa=justificativa, context=context)
