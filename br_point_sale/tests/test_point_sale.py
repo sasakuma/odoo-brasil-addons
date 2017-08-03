@@ -287,7 +287,7 @@ class TestPointSaleBR(TransactionCase):
         order_1['data'] = data_1
         order = self.env['pos.order'].create_from_ui([order_1])
         order = self.env['pos.order'].browse(order[0])
-        order_edoc = self.env['invoice.eletronic'].search(
+        order_edoc = self.env['invoice.electronic'].search(
             [('numero_controle', '=', order.numero_controle)])
         self.assertEquals(
             order_edoc.valor_icms, 4.21,

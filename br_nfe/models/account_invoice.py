@@ -12,7 +12,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def _compute_nfe_number(self):
         for item in self:
-            docs = self.env['invoice.eletronic'].search(
+            docs = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', item.id)])
             if docs:
                 item.nfe_number = docs[0].numero
@@ -39,7 +39,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_invoice_draft(self):
         for item in self:
-            docs = self.env['invoice.eletronic'].search(
+            docs = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', item.id)])
             for doc in docs:
                 if doc.state in ('done', 'denied', 'cancel'):
@@ -53,12 +53,12 @@ class AccountInvoice(models.Model):
         super(AccountInvoice, self).action_number()
         sequence = True
         while sequence:
-            search_1 = self.env['invoice.eletronic.inutilized'].search([
+            search_1 = self.env['invoice.electronic.inutilized'].search([
                 ('numeration_start', '<=', self.internal_number),
                 ('numeration_end', '>=', self.internal_number)],
                 limit=1)
 
-            search_2 = self.env['invoice.eletronic'].search([
+            search_2 = self.env['invoice.electronic'].search([
                 ('numero', '=', self.internal_number)],
                 order='numero desc',
                 limit=1)
@@ -69,7 +69,7 @@ class AccountInvoice(models.Model):
         return True
 
     def action_preview_danfe(self):
-        docs = self.env['invoice.eletronic'].search(
+        docs = self.env['invoice.electronic'].search(
             [('invoice_id', '=', self.id)])
         if not docs:
             raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
@@ -80,7 +80,7 @@ class AccountInvoice(models.Model):
 
     def invoice_print(self):
         if self.fiscal_document_id.code == '55':
-            docs = self.env['invoice.eletronic'].search(
+            docs = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', self.id)])
             return self.env['report'].get_action(
                 docs.ids, 'br_nfe.main_template_br_nfe_danfe')

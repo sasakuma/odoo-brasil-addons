@@ -27,11 +27,11 @@
     'data': [
         'security/ir.model.access.csv',
         'views/account_fiscal_position.xml',
-        'views/invoice_eletronic.xml',
+        'views/invoice_electronic.xml',
         'views/account_invoice.xml',
         'views/res_company.xml',
         'views/res_partner.xml',
-        'views/invoice_eletronic_item.xml',
+        'views/invoice_electronic_item.xml',
         'views/inutilized_nfe.xml',
         'views/br_nfe.xml',
         'reports/br_nfe_reports.xml',

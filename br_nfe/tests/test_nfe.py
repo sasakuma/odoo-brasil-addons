@@ -305,13 +305,13 @@ class TestNFeBrasil(TransactionCase):
                 danfe['report_name'], 'br_nfe.main_template_br_nfe_danfe')
             self.assertEquals(danfe['report_type'], 'qweb-pdf')
 
-    def test_check_invoice_eletronic_values(self):
+    def test_check_invoice_electronic_values(self):
 
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
 
-            inv_eletr = self.env['invoice.eletronic'].search(
+            inv_eletr = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
 
             # TODO Validar os itens que foi setado no invoice e verficar
@@ -327,13 +327,13 @@ class TestNFeBrasil(TransactionCase):
                     # Confirmando a fatura deve gerar um documento eletrônico
                     invoice.action_invoice_open()
 
-                    invoice_eletronic = self.env['invoice.eletronic'].search(
+                    invoice_eletronic = self.env['invoice.electronic'].search(
                         [('invoice_id', '=', invoice.id)])
                     with self.assertRaises(Exception):
-                        invoice_eletronic.action_send_eletronic_invoice()
+                        invoice_eletronic.action_send_electronic_invoice()
 
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.retorno_autorizar_nfe')
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.autorizar_nfe')
+    @patch('odoo.addons.br_nfe.models.invoice_electronic.retorno_autorizar_nfe')  # noqa: 501
+    @patch('odoo.addons.br_nfe.models.invoice_electronic.autorizar_nfe')
     def test_wrong_xml_schema(self, autorizar, ret_autorizar):
 
         for invoice in self.invoices:
@@ -363,14 +363,14 @@ class TestNFeBrasil(TransactionCase):
                 'received_xml': xml_recebido
             }
 
-            invoice_eletronic = self.env['invoice.eletronic'].search(
+            invoice_eletronic = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
-            invoice_eletronic.action_send_eletronic_invoice()
+            invoice_eletronic.action_send_electronic_invoice()
             self.assertEquals(invoice_eletronic.state, 'error')
             self.assertEquals(invoice_eletronic.codigo_retorno, '225')
 
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.retorno_autorizar_nfe')
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.autorizar_nfe')
+    @patch('odoo.addons.br_nfe.models.invoice_electronic.retorno_autorizar_nfe')  # noqa: 501
+    @patch('odoo.addons.br_nfe.models.invoice_electronic.autorizar_nfe')
     def test_nfe_with_concept_error(self, autorizar, ret_autorizar):
 
         for invoice in self.invoices:
@@ -399,14 +399,14 @@ class TestNFeBrasil(TransactionCase):
                 'received_xml': xml_recebido
             }
 
-            invoice_eletronic = self.env['invoice.eletronic'].search(
+            invoice_eletronic = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
 
-            invoice_eletronic.action_send_eletronic_invoice()
+            invoice_eletronic.action_send_electronic_invoice()
             self.assertEquals(invoice_eletronic.state, 'error')
             self.assertEquals(invoice_eletronic.codigo_retorno, '694')
 
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.recepcao_evento_cancelamento')  # noqa
+    @patch('odoo.addons.br_nfe.models.invoice_electronic.recepcao_evento_cancelamento')  # noqa
     def test_nfe_cancelamento_ok(self, cancelar):
 
         for invoice in self.invoices:
@@ -425,7 +425,7 @@ class TestNFeBrasil(TransactionCase):
                 'received_xml': xml_recebido
             }
 
-            invoice_eletronic = self.env['invoice.eletronic'].search(
+            invoice_eletronic = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
 
             invoice_eletronic.action_cancel_document(
@@ -440,7 +440,7 @@ class TestNFeBrasil(TransactionCase):
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
-            invoice_electronic = self.env['invoice.eletronic'].search(
+            invoice_electronic = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
 
             url = invoice_electronic.barcode_url()

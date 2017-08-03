@@ -25,7 +25,7 @@ class InutilizationNFeNumeration(models.TransientModel):
         name = u'Série Inutilizada {inicio} - {fim}'.format(
             inicio=self.numeration_start, fim=self.numeration_end
         )
-        inut_inv = self.env['invoice.eletronic.inutilized'].create(dict(
+        inut_inv = self.env['invoice.electronic.inutilized'].create(dict(
             name=name,
             numeration_start=self.numeration_start,
             numeration_end=self.numeration_end,

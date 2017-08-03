@@ -6,9 +6,9 @@ from odoo.tests.common import TransactionCase
 from odoo.exceptions import UserError
 
 
-class TestEletronicInvoice(TransactionCase):
+class TestElectronicInvoice(TransactionCase):
     def setUp(self):
-        super(TestEletronicInvoice, self).setUp()
+        super(TestElectronicInvoice, self).setUp()
         self.main_company = self.env.ref('base.main_company')
         self.currency_real = self.env.ref('base.BRL')
 
@@ -99,22 +99,22 @@ class TestEletronicInvoice(TransactionCase):
             invoice_line_ids=invoice_line_incomplete
         ))
 
-    def test_basic_validation_for_eletronic_doc(self):
+    def test_basic_validation_for_electronic_doc(self):
         self.assertEquals(self.inv_incomplete.total_edocs, 0)
 
         vals = self.inv_incomplete.action_view_edocs()
         self.assertEquals(vals['type'], 'ir.actions.act_window')
-        self.assertEquals(vals['res_model'], 'invoice.eletronic')
+        self.assertEquals(vals['res_model'], 'invoice.electronic')
         self.assertEquals(vals['res_id'], 0)
 
         with self.assertRaises(UserError):
             self.inv_incomplete.action_invoice_open()
 
-        invoice_eletronic = self.env['invoice.eletronic'].search(
+        invoice_eletronic = self.env['invoice.electronic'].search(
             [('invoice_id', '=', self.inv_incomplete.id)])
 
         self.assertEquals(self.inv_incomplete.total_edocs, 0)
         vals = self.inv_incomplete.action_view_edocs()
         self.assertEquals(vals['type'], 'ir.actions.act_window')
-        self.assertEquals(vals['res_model'], 'invoice.eletronic')
+        self.assertEquals(vals['res_model'], 'invoice.electronic')
         self.assertEquals(vals['res_id'], invoice_eletronic.id)

@@ -8,8 +8,8 @@ from odoo import fields, models
 class CartaCorrecaoEletronicaEvento(models.Model):
     _name = 'carta.correcao.eletronica.evento'
 
-    eletronic_doc_id = fields.Many2one(
-        'invoice.eletronic', string=u"Documento Eletrônico")
+    electronic_doc_id = fields.Many2one(
+        'invoice.electronic', string=u"Documento Eletrônico")
 
     # Fields CCe
     id_cce = fields.Char(string="ID", size=60)

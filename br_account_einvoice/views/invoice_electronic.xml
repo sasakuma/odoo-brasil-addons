@@ -2,9 +2,9 @@
 <openerp>
     <data>
 
-        <record id="invoice_eletronic_item_form" model="ir.ui.view">
-            <field name="name">invoice.eletronic.item.form</field>
-            <field name="model">invoice.eletronic.item</field>
+        <record id="invoice_electronic_item_form" model="ir.ui.view">
+            <field name="name">invoice.electronic.item.form</field>
+            <field name="model">invoice.electronic.item</field>
             <field name="arch" type="xml">
                 <form string="Item Documento">
                     <notebook>
@@ -149,13 +149,13 @@
             </field>
         </record>
 
-        <record id="br_account_invoice_eletronic_form" model="ir.ui.view">
-            <field name="name">br.account.invoice.eletronic.form</field>
-            <field name="model">invoice.eletronic</field>
+        <record id="br_account_invoice_electronic_form" model="ir.ui.view">
+            <field name="name">br.account.invoice.electronic.form</field>
+            <field name="model">invoice.electronic</field>
             <field name="arch" type="xml">
                 <form string="Documento Eletrônico">
                     <header>
-                        <button name="action_send_eletronic_invoice" states="draft" string="Enviar" type="object" class="oe_highlight"/>
+                        <button name="action_send_electronic_invoice" states="draft" string="Enviar" type="object" class="oe_highlight"/>
                         <button name="action_back_to_draft" states="edit,error" string="Rascunho" type="object"/>
                         <button name="action_edit_edoc" states="draft,error" string="Habilitar Edição" type="object" groups="br_account_einvoice.group_edit_edoc"/>
                         <button name="action_cancel_document" confirm="Confirma o cancelamento do documento?" class="oe_highlight" states="done" string="Cancelar" type="object"/>
@@ -213,8 +213,8 @@
                             </page>
                             <page name="itens" string="Itens">
                                 <group>
-                                    <field name="eletronic_item_ids" nolabel="1">
-                                        <tree name="eletronic_items">
+                                    <field name="electronic_item_ids" nolabel="1">
+                                        <tree name="electronic_items">
                                             <field name="state" invisible="1"/>
                                             <field name="product_id"/>
                                             <field name="uom_id"/>
@@ -278,7 +278,7 @@
                             </page>
                             <page name="eventos" string="Eventos">
                                 <group>
-                                    <field name="eletronic_event_ids" nolabel="1">
+                                    <field name="electronic_event_ids" nolabel="1">
                                         <tree name="Eventos">
                                             <field name="state" invisible="1"/>
                                             <field name="code"/>
@@ -299,9 +299,9 @@
             </field>
         </record>
 
-        <record id="sped_base_eletronic_doc_tree" model="ir.ui.view">
-            <field name="name">sped.eletronic.doc.form</field>
-            <field name="model">invoice.eletronic</field>
+        <record id="sped_base_electronic_doc_tree" model="ir.ui.view">
+            <field name="name">sped.electronic.doc.form</field>
+            <field name="model">invoice.electronic</field>
             <field name="arch" type="xml">
                 <tree string="Documentos Eletrônicos">
                     <field name="state"/>
@@ -313,9 +313,9 @@
             </field>
         </record>
 
-        <record id="sped_base_eletronic_doc_search" model="ir.ui.view">
-            <field name="name">sped.eletronic.doc.search</field>
-            <field name="model">invoice.eletronic</field>
+        <record id="sped_base_electronic_doc_search" model="ir.ui.view">
+            <field name="name">sped.electronic.doc.search</field>
+            <field name="model">invoice.electronic</field>
             <field name="arch" type="xml">
                 <search>
                     <field name="invoice_id"/>
@@ -323,17 +323,17 @@
             </field>
         </record>
 
-        <record id="action_sped_base_eletronic_doc" model="ir.actions.act_window">
+        <record id="action_sped_base_electronic_doc" model="ir.actions.act_window">
             <field name="name">Documentos Eletrônicos</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">invoice.eletronic</field>
+            <field name="res_model">invoice.electronic</field>
             <field name="view_mode">tree,form</field>
             <field name="view_type">form</field>
-            <field name="view_id" ref="sped_base_eletronic_doc_tree"/>
+            <field name="view_id" ref="sped_base_electronic_doc_tree"/>
         </record>
 
-        <menuitem id="menu_action_sped_base_eletronic_doc" parent="br_account.menu_br_account"
-                  action="action_sped_base_eletronic_doc" sequence="5"/>
+        <menuitem id="menu_action_sped_base_electronic_doc" parent="br_account.menu_br_account"
+                  action="action_sped_base_electronic_doc" sequence="5"/>
 
     </data>
 </openerp>

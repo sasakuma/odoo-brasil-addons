@@ -22,7 +22,7 @@ STATE = {'edit': [('readonly', False)], 'draft': [('readonly', False)]}
 
 
 class InutilizedNfe(models.Model):
-    _name = 'invoice.eletronic.inutilized'
+    _name = 'invoice.electronic.inutilized'
 
     name = fields.Char('Nome', required=True, readonly=True, states=STATE)
     numeration_start = fields.Integer('Numero Inicial', required=True,
@@ -52,7 +52,7 @@ class InutilizedNfe(models.Model):
 
     def validate_hook(self):
         errors = []
-        docs = self.env['invoice.eletronic'].search([
+        docs = self.env['invoice.electronic'].search([
             ('numero', '>=', self.numeration_start),
             ('numero', '<=', self.numeration_end)
         ])
@@ -151,6 +151,6 @@ class InutilizedNfe(models.Model):
                 'datas': base64.b64encode(data),
                 'datas_fname': file_name,
                 'description': u'',
-                'res_model': 'invoice.eletronic.inutilized',
+                'res_model': 'invoice.electronic.inutilized',
                 'res_id': event.id
             })

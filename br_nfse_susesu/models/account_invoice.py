@@ -61,7 +61,7 @@ class AccountInvoice(models.Model):
         return res
 
     def action_preview_danfse(self):
-        docs = self.env['invoice.eletronic'].search(
+        docs = self.env['invoice.electronic'].search(
             [('invoice_id', '=', self.id)])
         if not docs:
             raise UserError(u'Não existe um E-Doc relacionado à esta fatura')

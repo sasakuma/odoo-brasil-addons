@@ -134,9 +134,9 @@ class TestInutilizacao(TransactionCase):
         }
 
     def tearDown(self):
-        inutilized = self.env['invoice.eletronic.inutilized'].search([])
+        inutilized = self.env['invoice.electronic.inutilized'].search([])
         for number in inutilized:
-            self.env['invoice.eletronic.inutilized'].update([
+            self.env['invoice.electronic.inutilized'].update([
                 (2, number.id, 0),
             ])
 
@@ -171,7 +171,7 @@ class TestInutilizacao(TransactionCase):
 
         wizard.action_inutilize_nfe()
 
-        inut_inv = self.env['invoice.eletronic.inutilized'].search([])
+        inut_inv = self.env['invoice.electronic.inutilized'].search([])
 
         self.assertEqual(len(inut_inv), 1)
         self.assertEqual(inut_inv.numeration_start, 0)
@@ -188,7 +188,7 @@ class TestInutilizacao(TransactionCase):
 
         invoice.action_invoice_open()
 
-        inv_eletr = self.env['invoice.eletronic'].search(
+        inv_eletr = self.env['invoice.electronic'].search(
             [('invoice_id', '=', invoice.id)])
 
         self.assertEqual(inv_eletr.numero, 6)
@@ -243,7 +243,7 @@ class TestInutilizacao(TransactionCase):
 
         invoice.action_invoice_open()
 
-        inv_eletr = self.env['invoice.eletronic'].search(
+        inv_eletr = self.env['invoice.electronic'].search(
             [('invoice_id', '=', invoice.id)])
 
         self.assertEqual(inv_eletr.numero, 10)
@@ -279,7 +279,7 @@ class TestInutilizacao(TransactionCase):
 
         wizard.action_inutilize_nfe()
 
-        inut_inv = self.env['invoice.eletronic.inutilized'].search([])
+        inut_inv = self.env['invoice.electronic.inutilized'].search([])
 
         self.assertEqual(len(inut_inv), 1)
         self.assertEqual(inut_inv.numeration_start, 0)
@@ -296,7 +296,7 @@ class TestInutilizacao(TransactionCase):
 
         invoice.action_invoice_open()
 
-        inv_eletr = self.env['invoice.eletronic'].search(
+        inv_eletr = self.env['invoice.electronic'].search(
             [('invoice_id', '=', invoice.id)])
 
         self.assertEqual(inv_eletr.numero, 6)

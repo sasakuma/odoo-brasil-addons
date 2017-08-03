@@ -20,8 +20,8 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
 STATE = {'edit': [('readonly', False)]}
 
 
-class InvoiceEletronic(models.Model):
-    _name = 'invoice.eletronic'
+class InvoiceElectronic(models.Model):
+    _name = 'invoice.electronic'
 
     _inherit = ['mail.thread']
 
@@ -89,11 +89,11 @@ class InvoiceEletronic(models.Model):
     fiscal_position_id = fields.Many2one(
         'account.fiscal.position', string=u'Posição Fiscal',
         readonly=True, states=STATE)
-    eletronic_item_ids = fields.One2many(
-        'invoice.eletronic.item', 'invoice_eletronic_id', string="Linhas",
+    electronic_item_ids = fields.One2many(
+        'invoice.electronic.item', 'invoice_electronic_id', string="Linhas",
         readonly=True, states=STATE)
-    eletronic_event_ids = fields.One2many(
-        'invoice.eletronic.event', 'invoice_eletronic_id', string="Eventos",
+    electronic_event_ids = fields.One2many(
+        'invoice.electronic.event', 'invoice_electronic_id', string="Eventos",
         readonly=True, states=STATE)
     valor_bruto = fields.Monetary(
         string=u'Total Produtos', readonly=True, states=STATE)
@@ -192,7 +192,7 @@ class InvoiceEletronic(models.Model):
                 'datas': base64.b64encode(data),
                 'datas_fname': file_name,
                 'description': u'',
-                'res_model': 'invoice.eletronic',
+                'res_model': 'invoice.electronic',
                 'res_id': event.id
             })
 
@@ -301,7 +301,7 @@ class InvoiceEletronic(models.Model):
                 errors.append(u'Destinatário / Endereço - Cód. do BC do país')
 
         # produtos
-        for eletr in self.eletronic_item_ids:
+        for eletr in self.electronic_item_ids:
             if eletr.product_id:
                 if not eletr.product_id.default_code:
                     errors.append(
@@ -395,15 +395,15 @@ class InvoiceEletronic(models.Model):
         self._compute_legal_information()
 
     @api.multi
-    def _prepare_eletronic_invoice_item(self, item, invoice):
+    def _prepare_electronic_invoice_item(self, item, invoice):
         return {}
 
     @api.multi
-    def _prepare_eletronic_invoice_values(self):
+    def _prepare_electronic_invoice_values(self):
         return {}
 
     @api.multi
-    def action_send_eletronic_invoice(self):
+    def action_send_electronic_invoice(self):
         pass
 
     @api.multi
@@ -429,7 +429,7 @@ class InvoiceEletronic(models.Model):
             if not item.can_unlink():
                 raise UserError(
                     u'Documento Eletrônico enviado - Proibido excluir')
-        super(InvoiceEletronic, self).unlink()
+        super(InvoiceElectronic, self).unlink()
 
     def log_exception(self, exc):
         self.codigo_retorno = -1
@@ -440,13 +440,13 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def cron_send_nfe(self):
-        inv_obj = self.env['invoice.eletronic'].with_context({
+        inv_obj = self.env['invoice.electronic'].with_context({
             'lang': self.env.user.lang, 'tz': self.env.user.tz})
         states = self._get_state_to_send()
         nfes = inv_obj.search([('state', 'in', states)])
         for item in nfes:
             try:
-                item.action_send_eletronic_invoice()
+                item.action_send_electronic_invoice()
             except Exception as e:
                 item.log_exception(e)
 
@@ -467,7 +467,7 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def send_email_nfe_queue(self):
         after = datetime.now() + timedelta(days=-1)
-        nfe_queue = self.env['invoice.eletronic'].search(
+        nfe_queue = self.env['invoice.electronic'].search(
             [('data_emissao', '>=', after.strftime(DATETIME_FORMAT)),
              ('email_sent', '=', False),
              ('state', '=', 'done')], limit=5)
@@ -476,32 +476,32 @@ class InvoiceEletronic(models.Model):
             nfe.email_sent = True
 
 
-class InvoiceEletronicEvent(models.Model):
-    _name = 'invoice.eletronic.event'
+class InvoiceElectronicEvent(models.Model):
+    _name = 'invoice.electronic.event'
     _order = 'id desc'
 
     code = fields.Char(string=u'Código', readonly=True, states=STATE)
     name = fields.Char(string=u'Mensagem', readonly=True, states=STATE)
-    invoice_eletronic_id = fields.Many2one(
-        'invoice.eletronic', string=u"Fatura Eletrônica",
+    invoice_electronic_id = fields.Many2one(
+        'invoice.electronic', string=u"Fatura Eletrônica",
         readonly=True, states=STATE)
     state = fields.Selection(
-        related='invoice_eletronic_id.state', string="State")
+        related='invoice_electronic_id.state', string="State")
 
 
-class InvoiceEletronicItem(models.Model):
-    _name = 'invoice.eletronic.item'
+class InvoiceElectronicItem(models.Model):
+    _name = 'invoice.electronic.item'
 
     name = fields.Char(u'Nome', size=100, readonly=True, states=STATE)
     company_id = fields.Many2one(
         'res.company', u'Empresa', index=True, readonly=True, states=STATE)
-    invoice_eletronic_id = fields.Many2one(
-        'invoice.eletronic', string=u'Documento', readonly=True, states=STATE)
+    invoice_electronic_id = fields.Many2one(
+        'invoice.electronic', string=u'Documento', readonly=True, states=STATE)
     currency_id = fields.Many2one(
         'res.currency', related='company_id.currency_id',
         string="Company Currency")
     state = fields.Selection(
-        related='invoice_eletronic_id.state', string="State")
+        related='invoice_electronic_id.state', string="State")
 
     product_id = fields.Many2one(
         'product.product', string=u'Produto', readonly=True, states=STATE)

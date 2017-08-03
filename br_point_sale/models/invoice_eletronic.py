@@ -6,8 +6,8 @@ from odoo import api, fields, models
 from .account_journal import metodos
 
 
-class InvoiceEletronic(models.Model):
-    _inherit = 'invoice.eletronic'
+class InvoiceElectronic(models.Model):
+    _inherit = 'invoice.electronic'
 
     qrcode_hash = fields.Char(string='QR-Code hash')
     qrcode_url = fields.Char(string='QR-Code URL')
@@ -15,7 +15,7 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def _hook_validation(self):
-        errors = super(InvoiceEletronic, self)._hook_validation()
+        errors = super(InvoiceElectronic, self)._hook_validation()
         if self.model != '65':
             return errors
         if not self.company_id.partner_id.inscr_est:
@@ -31,9 +31,9 @@ class InvoiceEletronic(models.Model):
         return errors
 
     @api.multi
-    def _prepare_eletronic_invoice_values(self):
-        vals = super(InvoiceEletronic, self) \
-            ._prepare_eletronic_invoice_values()
+    def _prepare_electronic_invoice_values(self):
+        vals = super(InvoiceElectronic, self) \
+            ._prepare_electronic_invoice_values()
         if self.model != '65':
             return vals
         codigo_seguranca = {

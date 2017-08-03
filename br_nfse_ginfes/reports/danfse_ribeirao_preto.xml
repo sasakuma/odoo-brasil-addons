@@ -4,7 +4,7 @@
     <report
             id="report_br_nfse_danfe_ginfes_rebeirao_preto"
             string="Nota de Serviço - Ginfes"
-            model="invoice.eletronic"
+            model="invoice.electronic"
             menu="False"
             report_type="qweb-html"
             file="br_nfse.main_template_br_nfse_danfe_ginfes_rebeirao_preto"
@@ -255,7 +255,7 @@
             </div>
             <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px; min-height:150px;">
                 <div class="col-xs-12">
-                    <t t-foreach="doc.eletronic_item_ids" t-as="line">
+                    <t t-foreach="doc.electronic_item_ids" t-as="line">
                         <p t-field="line.name"></p>
                     </t>
                     <span t-field="doc.informacoes_legais"></span>
@@ -269,10 +269,10 @@
             </div>
             <div class="row" style="border: 1px solid black; padding: 0px;">
                 <div class="col-xs-12">
-                    <span t-field="doc.eletronic_item_ids[0].issqn_codigo"/>
+                    <span t-field="doc.electronic_item_ids[0].issqn_codigo"/>
                     -
-                    <!--<span t-field="doc.eletronic_item_ids[0].product_id.service_type_id.name" />-->
-                    <span t-field="doc.eletronic_item_ids[0].fiscal_position_id.service_type_id.name"/>
+                    <!--<span t-field="doc.electronic_item_ids[0].product_id.service_type_id.name" />-->
+                    <span t-field="doc.electronic_item_ids[0].fiscal_position_id.service_type_id.name"/>
                 </div>
             </div>
             <div class="row" style="border: 1px solid black; padding: 0px;">
@@ -414,7 +414,7 @@
                     (x) Alíquota %
                 </div>
                 <div class="col-xs-2 linha direita">
-                    <span t-field="doc.eletronic_item_ids[0].issqn_aliquota"/>
+                    <span t-field="doc.electronic_item_ids[0].issqn_aliquota"/>
                 </div>
             </div>
 

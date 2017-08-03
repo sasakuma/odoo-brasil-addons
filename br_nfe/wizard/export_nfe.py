@@ -51,7 +51,7 @@ class ExportNfe(models.TransientModel):
         if self.model:
             search_vals.append(('model', 'in', [self.model.code]))
 
-        invoice_ids = self.env['invoice.eletronic'].search(search_vals)
+        invoice_ids = self.env['invoice.electronic'].search(search_vals)
         xmls = []
         for invoice in invoice_ids:
             if not invoice.nfe_processada:

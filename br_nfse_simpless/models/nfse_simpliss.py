@@ -24,31 +24,31 @@ except ImportError:
 STATE = {'edit': [('readonly', False)]}
 
 
-class InvoiceEletronic(models.Model):
-    _inherit = 'invoice.eletronic'
+class InvoiceElectronic(models.Model):
+    _inherit = 'invoice.electronic'
 
     state = fields.Selection(
         selection_add=[('waiting', 'Aguardando processamento')])
 
     def can_unlink(self):
-        res = super(InvoiceEletronic, self).can_unlink()
+        res = super(InvoiceElectronic, self).can_unlink()
         if self.state in ('waiting'):
             return False
         return res
 
     def _get_state_to_send(self):
-        res = super(InvoiceEletronic, self)._get_state_to_send()
+        res = super(InvoiceElectronic, self)._get_state_to_send()
         return res + ('waiting',)
 
     @api.multi
     def _hook_validation(self):
-        errors = super(InvoiceEletronic, self)._hook_validation()
+        errors = super(InvoiceElectronic, self)._hook_validation()
 
         if self.model == '001' and self.webservice_nfse == 'nfse_simpliss':
             issqn_codigo = ''
             if not self.company_id.inscr_mun:
                 errors.append(u'Inscrição municipal obrigatória')
-            for eletr in self.eletronic_item_ids:
+            for eletr in self.electronic_item_ids:
                 prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
                                               eletr.product_id.name)
                 if eletr.tipo_produto == 'product':
@@ -66,8 +66,8 @@ class InvoiceEletronic(models.Model):
         return errors
 
     @api.multi
-    def _prepare_eletronic_invoice_values(self):
-        res = super(InvoiceEletronic, self)._prepare_eletronic_invoice_values()
+    def _prepare_electronic_invoice_values(self):
+        res = super(InvoiceElectronic, self)._prepare_electronic_invoice_values()
 
         if self.model == '001' and self.webservice_nfse == 'nfse_simpliss':
             tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
@@ -110,7 +110,7 @@ class InvoiceEletronic(models.Model):
             itens_servico = []
             descricao = ''
             codigo_servico = ''
-            for item in self.eletronic_item_ids:
+            for item in self.electronic_item_ids:
                 descricao += item.name + '\n'
                 itens_servico.append({
                     'descricao': item.name,
@@ -142,7 +142,7 @@ class InvoiceEletronic(models.Model):
                 'valor_iss_retido': str("%.2f" % self.valor_retencao_issqn),
                 'base_calculo': str("%.2f" % self.valor_final),
                 'aliquota_issqn': str(
-                    "%.2f" % self.eletronic_item_ids[0].issqn_aliquota),
+                    "%.2f" % self.electronic_item_ids[0].issqn_aliquota),
                 'valor_liquido_nfse': str("%.2f" % self.valor_final),
                 'codigo_servico': codigo_servico,
                 'cnae_servico': prestador['cnae'],
@@ -167,7 +167,7 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_post_validate(self):
-        super(InvoiceEletronic, self).action_post_validate()
+        super(InvoiceElectronic, self).action_post_validate()
 
         if self.model == '001' and self.webservice_nfse == 'nfse_simpliss':
             cert = self.company_id.with_context(
@@ -177,15 +177,15 @@ class InvoiceEletronic(models.Model):
             certificado = Certificado(
                 cert_pfx, self.company_id.nfe_a1_password)
 
-            nfse_values = self._prepare_eletronic_invoice_values()
+            nfse_values = self._prepare_electronic_invoice_values()
             xml_enviar = xml_gerar_nfse(certificado, nfse=nfse_values)
 
             self.xml_to_send = base64.encodestring(xml_enviar)
             self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
 
     @api.multi
-    def action_send_eletronic_invoice(self):
-        super(InvoiceEletronic, self).action_send_eletronic_invoice()
+    def action_send_electronic_invoice(self):
+        super(InvoiceElectronic, self).action_send_electronic_invoice()
 
         if self.model == '001' and self.webservice_nfse == 'nfse_simpliss':
             self.state = 'error'
@@ -216,10 +216,10 @@ class InvoiceEletronic(models.Model):
                 self.mensagem_retorno = retorno.ListaMensagemRetorno. \
                     MensagemRetorno.Mensagem
 
-            self.env['invoice.eletronic.event'].create({
+            self.env['invoice.electronic.event'].create({
                 'code': self.codigo_retorno,
                 'name': self.mensagem_retorno,
-                'invoice_eletronic_id': self.id,
+                'invoice_electronic_id': self.id,
             })
             if recebe_lote:
                 self._create_attachment(
@@ -266,14 +266,14 @@ class InvoiceEletronic(models.Model):
                 self.codigo_retorno = '100'
                 self.mensagem_retorno = u'Nota Fiscal de Serviço Cancelada'
 
-            self.env['invoice.eletronic.event'].create({
+            self.env['invoice.electronic.event'].create({
                 'code': self.codigo_retorno,
                 'name': self.mensagem_retorno,
-                'invoice_eletronic_id': self.id,
+                'invoice_electronic_id': self.id,
             })
             self._create_attachment('canc', self, cancel['sent_xml'])
             self._create_attachment('canc-ret', self, cancel['received_xml'])
 
         else:
-            return super(InvoiceEletronic, self).action_cancel_document(
+            return super(InvoiceElectronic, self).action_cancel_document(
                 justificativa=justificativa, context=context)

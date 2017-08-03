@@ -4,8 +4,10 @@
 
 {
     'name': 'Account E-Invoice',
-    'summary': """Base Module for the Brazilian Invoice Eletronic""",
-    'description': """Base Module for the Brazilian Invoice Eletronic""",
+    'summary': """Base Module for the Brazilian Invoice electronic_doc_id""",
+    'description': """
+    Base Module for the Brazilian Invoice electronic_doc_id
+    """,
     'version': '10.0.1.0.0',
     'category': 'account',
     'author': 'Trustcode',
@@ -24,7 +26,7 @@
         'data/nfe_cron.xml',
         'data/br_account_einvoice.xml',
         'security/ir.model.access.csv',
-        'views/invoice_eletronic.xml',
+        'views/invoice_electronic.xml',
         'views/account_invoice.xml',
         'views/account_config_settings.xml',
     ],

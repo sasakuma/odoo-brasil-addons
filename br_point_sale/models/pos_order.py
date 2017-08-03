@@ -64,8 +64,8 @@ class PosOrder(models.Model):
                 if value and key in line._fields:
                     line.update({key: value})
         foo = self._prepare_edoc_vals(res)
-        eletronic = self.env['invoice.eletronic'].create(foo)
-        eletronic.action_post_validate()
+        electronic = self.env['invoice.electronic'].create(foo)
+        electronic.action_post_validate()
         return res
 
     def _prepare_edoc_item_vals(self, pos_line):
@@ -153,15 +153,15 @@ class PosOrder(models.Model):
         base_icms = 0
         base_cofins = 0
         base_pis = 0
-        eletronic_items = []
+        electronic_items = []
         for pos_line in pos.lines:
-            eletronic_items.append((0, 0,
+            electronic_items.append((0, 0,
                                     self._prepare_edoc_item_vals(pos_line)))
             base_icms += pos_line.base_icms
             base_pis += pos_line.base_pis
             base_cofins += pos_line.base_cofins
 
-        vals['eletronic_item_ids'] = eletronic_items
+        vals['electronic_item_ids'] = electronic_items
         vals['valor_icms'] = pos.total_icms
         vals['valor_pis'] = pos.total_pis
         vals['valor_cofins'] = pos.total_cofins
@@ -176,7 +176,7 @@ class PosOrder(models.Model):
     @api.multi
     def _compute_total_edocs(self):
         for item in self:
-            item.total_edocs = self.env['invoice.eletronic'].search_count(
+            item.total_edocs = self.env['invoice.electronic'].search_count(
                 [('numero_controle', '=', self.numero_controle)])
 
     total_edocs = fields.Integer(string="Total NFe",
@@ -185,14 +185,14 @@ class PosOrder(models.Model):
     @api.multi
     def action_view_edocs(self):
         if self.total_edocs == 1:
-            edoc = self.env['invoice.eletronic'].search(
+            edoc = self.env['invoice.electronic'].search(
                 [('numero_controle', '=', self.numero_controle)], limit=1)
             dummy, act_id = self.env['ir.model.data'].get_object_reference(
-                'br_account_einvoice', 'action_sped_base_eletronic_doc')
+                'br_account_einvoice', 'action_sped_base_electronic_doc')
             dummy, view_id = self.env['ir.model.data'].get_object_reference(
-                'br_account_einvoice', 'br_account_invoice_eletronic_form')
+                'br_account_einvoice', 'br_account_invoice_electronic_form')
             vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
-            vals['view_id'] = (view_id, u'sped.eletronic.doc.form')
+            vals['view_id'] = (view_id, u'sped.electronic.doc.form')
             vals['views'][1] = (view_id, u'form')
             vals['views'] = [vals['views'][1], vals['views'][0]]
             vals['res_id'] = edoc.id
@@ -200,7 +200,7 @@ class PosOrder(models.Model):
             return vals
         else:
             dummy, act_id = self.env['ir.model.data'].get_object_reference(
-                'br_account_einvoice', 'action_sped_base_eletronic_doc')
+                'br_account_einvoice', 'action_sped_base_electronic_doc')
             vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
             return vals
 

@@ -32,7 +32,7 @@ class AccountInvoice(models.Model):
 
                 # Apenas documentos eletronicos que estao como 'draft' (RPS)
                 # ou ja foram enviados 'done' (são NFSe)
-                docs = self.env['invoice.eletronic'].search([
+                docs = self.env['invoice.electronic'].search([
                     ('invoice_id', '=', self.id),
                     ('state', 'in', ['draft', 'done']),
                 ])
@@ -41,7 +41,7 @@ class AccountInvoice(models.Model):
                     # Se não encontrarmos nenhum documento eletronico enviado
                     # ou provisorio, imprimimos um documento eletronico
                     # que foram cancelados
-                    docs = self.env['invoice.eletronic'].search([
+                    docs = self.env['invoice.electronic'].search([
                         ('invoice_id', '=', self.id),
                         ('state', 'in', ['cancel']),
                     ])

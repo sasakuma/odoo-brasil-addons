@@ -8,28 +8,28 @@ from odoo import api, fields, models
 class ImportDeclaration(models.Model):
     _inherit = 'br_account.import.declaration'
 
-    invoice_eletronic_line_id = fields.Many2one(
-        'invoice.eletronic.item', u'Linha de Documento Eletrônico',
+    invoice_electronic_line_id = fields.Many2one(
+        'invoice.electronic.item', u'Linha de Documento Eletrônico',
         ondelete='cascade', index=True)
 
 
 class AccountDocumentRelated(models.Model):
     _inherit = 'br_account.document.related'
 
-    invoice_eletronic_id = fields.Many2one(
-        'invoice.eletronic', u'Documento Eletrônico', ondelete='cascade')
+    invoice_electronic_id = fields.Many2one(
+        'invoice.electronic', u'Documento Eletrônico', ondelete='cascade')
 
     @api.onchange('invoice_related_id')
     def onchange_br_nfe_invoice_related_id(self):
-        if len(self.invoice_related_id.invoice_eletronic_ids) > 0:
+        if len(self.invoice_related_id.invoice_electronic_ids) > 0:
             self.access_key = \
-                self.invoice_related_id.invoice_eletronic_ids[0].chave_nfe
+                self.invoice_related_id.invoice_electronic_ids[0].chave_nfe
 
 
 class NfeReboque(models.Model):
     _name = 'nfe.reboque'
 
-    invoice_eletronic_id = fields.Many2one('invoice.eletronic', string="NFe")
+    invoice_electronic_id = fields.Many2one('invoice.electronic', string="NFe")
     placa_veiculo = fields.Char(string="Placa", size=7)
     uf_veiculo = fields.Char(string=u"UF Veículo", size=2)
     rntc = fields.Char(string="RNTC", size=20,
@@ -41,7 +41,7 @@ class NfeReboque(models.Model):
 class NfeVolume(models.Model):
     _name = 'nfe.volume'
 
-    invoice_eletronic_id = fields.Many2one('invoice.eletronic', string="NFe")
+    invoice_electronic_id = fields.Many2one('invoice.electronic', string="NFe")
     quantidade_volumes = fields.Integer(string="Qtde. Volumes")
     especie = fields.Char(string=u"Espécie", size=60)
     marca = fields.Char(string="Marca", size=60)
@@ -54,9 +54,9 @@ class NFeCobrancaDuplicata(models.Model):
     _name = 'nfe.duplicata'
     _order = 'data_vencimento'
 
-    invoice_eletronic_id = fields.Many2one('invoice.eletronic', string="NFe")
+    invoice_electronic_id = fields.Many2one('invoice.electronic', string="NFe")
     currency_id = fields.Many2one(
-        'res.currency', related='invoice_eletronic_id.currency_id',
+        'res.currency', related='invoice_electronic_id.currency_id',
         string="EDoc Currency", readonly=True)
     numero_duplicata = fields.Char(string=u"Número Duplicata", size=60)
     data_vencimento = fields.Date(string="Data Vencimento")

@@ -172,19 +172,19 @@ class TestCartaCorrecao(TransactionCase):
             'company_id': self.main_company.id,
             'chave_nfe': '35161221332917000163550010000000041158176721',
         }
-        self.eletronic_doc = self.env['invoice.eletronic'].create(
+        self.electronic_doc = self.env['invoice.electronic'].create(
             invoice_eletronic)
         carta_wizard_short = {
             'correcao': 'short',
-            'eletronic_doc_id': self.eletronic_doc.id,
+            'electronic_doc_id': self.electronic_doc.id,
         }
         carta_wizard_long = {
             'correcao': 'long' * 1000,
-            'eletronic_doc_id': self.eletronic_doc.id,
+            'electronic_doc_id': self.electronic_doc.id,
         }
         carta_wizard_right = {
             'correcao': 'Teste de Carta de Correcao' * 10,
-            'eletronic_doc_id': self.eletronic_doc.id,
+            'electronic_doc_id': self.electronic_doc.id,
         }
         self.carta_wizard_short = self. \
             env['wizard.carta.correcao.eletronica'].create(carta_wizard_short)
@@ -201,8 +201,7 @@ class TestCartaCorrecao(TransactionCase):
         with self.assertRaises(UserError):
             self.carta_wizard_long.send_letter()
 
-    @patch(
-        'odoo.addons.br_nfe.wizard.carta_correcao_eletronica.recepcao_evento_carta_correcao')  # noqa
+    @patch('odoo.addons.br_nfe.wizard.carta_correcao_eletronica.recepcao_evento_carta_correcao')  # noqa
     def test_carta_correca_eletronica(self, recepcao):
         # Mock o retorno da CCE
         xml_recebido = open(os.path.join(

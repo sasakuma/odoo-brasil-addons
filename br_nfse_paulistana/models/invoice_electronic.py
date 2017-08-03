@@ -24,7 +24,7 @@ STATE = {'edit': [('readonly', False)]}
 
 
 class InvoiceElectronicItem(models.Model):
-    _inherit = 'invoice.eletronic.item'
+    _inherit = 'invoice.electronic.item'
 
     codigo_servico_paulistana = fields.Char(string=u'Código NFSe Paulistana',
                                             size=5,
@@ -33,7 +33,7 @@ class InvoiceElectronicItem(models.Model):
 
 
 class InvoiceElectronic(models.Model):
-    _inherit = 'invoice.eletronic'
+    _inherit = 'invoice.electronic'
 
     webservice_nfse = fields.Selection(selection_add=[
         ('nfse_paulistana', 'Nota Fiscal Paulistana'),
@@ -65,7 +65,7 @@ class InvoiceElectronic(models.Model):
             issqn_codigo = ''
             if not self.company_id.inscr_mun:
                 errors.append(u'Inscrição municipal obrigatória')
-            for eletr in self.eletronic_item_ids:
+            for eletr in self.electronic_item_ids:
                 prod = u'Produto: %s - %s' % (eletr.product_id.default_code,
                                               eletr.product_id.name)
                 if eletr.tipo_produto == 'product':
@@ -90,9 +90,9 @@ class InvoiceElectronic(models.Model):
         return errors
 
     @api.multi
-    def _prepare_eletronic_invoice_values(self):
+    def _prepare_electronic_invoice_values(self):
         res = \
-            super(InvoiceElectronic, self)._prepare_eletronic_invoice_values()
+            super(InvoiceElectronic, self)._prepare_electronic_invoice_values()
 
         if self.model == '001' and self.webservice_nfse == 'nfse_paulistana':
             tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
@@ -136,7 +136,7 @@ class InvoiceElectronic(models.Model):
 
             descricao = ''
             codigo_servico = ''
-            for item in self.eletronic_item_ids:
+            for item in self.electronic_item_ids:
                 descricao += item.name + '\n'
                 codigo_servico = item.codigo_servico_paulistana
 
@@ -215,13 +215,13 @@ class InvoiceElectronic(models.Model):
         return res
 
     @api.multi
-    def action_send_eletronic_invoice(self):
-        super(InvoiceElectronic, self).action_send_eletronic_invoice()
+    def action_send_electronic_invoice(self):
+        super(InvoiceElectronic, self).action_send_electronic_invoice()
 
         if self.model == '001' and self.webservice_nfse == 'nfse_paulistana':
             self.state = 'error'
 
-            nfse_values = self._prepare_eletronic_invoice_values()
+            nfse_values = self._prepare_electronic_invoice_values()
             cert = self.company_id.with_context(
                 {'bin_size': False}).nfe_a1_file
             cert_pfx = base64.decodestring(cert)
@@ -253,10 +253,10 @@ class InvoiceElectronic(models.Model):
                 self.codigo_retorno = retorno.Erro.Codigo
                 self.mensagem_retorno = retorno.Erro.Descricao
 
-            self.env['invoice.eletronic.event'].create({
+            self.env['invoice.electronic.event'].create({
                 'code': self.codigo_retorno,
                 'name': self.mensagem_retorno,
-                'invoice_eletronic_id': self.id,
+                'invoice_electronic_id': self.id,
             })
             self._create_attachment('nfse-envio', self, resposta['sent_xml'])
             self._create_attachment('nfse-ret', self, resposta['received_xml'])
@@ -305,10 +305,10 @@ class InvoiceElectronic(models.Model):
                 self.codigo_retorno = retorno.Erro.Codigo
                 self.mensagem_retorno = retorno.Erro.Descricao
 
-            self.env['invoice.eletronic.event'].create({
+            self.env['invoice.electronic.event'].create({
                 'code': self.codigo_retorno,
                 'name': self.mensagem_retorno,
-                'invoice_eletronic_id': self.id,
+                'invoice_electronic_id': self.id,
             })
 
             if self.ambiente == 'producao':
@@ -362,7 +362,7 @@ class InvoiceElectronic(models.Model):
 
                     aux.append(observacao_nfse)
 
-                docs = self.env['invoice.eletronic'].search([
+                docs = self.env['invoice.electronic'].search([
                     ('invoice_id', '=', self.invoice_id.id),
                     ('state', '=', 'cancel'),
                 ])
@@ -378,7 +378,7 @@ class InvoiceElectronic(models.Model):
                     aux.append(observacao_nfse)
 
                     # Partner estabelecido na cidade de SP
-                    issqn_tipo = self.eletronic_item_ids[0].issqn_codigo
+                    issqn_tipo = self.electronic_item_ids[0].issqn_codigo
 
                     if self.partner_id.city_id.ibge_code == '50308' \
                             and issqn_tipo == 'R':
@@ -393,7 +393,7 @@ class InvoiceElectronic(models.Model):
                                        u'do Município de São Paulo; ')
                     aux.append(observacao_nfse)
 
-                    issqn_tipo = self.eletronic_item_ids[0].issqn_codigo
+                    issqn_tipo = self.electronic_item_ids[0].issqn_codigo
 
                     if issqn_tipo == 'R':
                         observacao_nfse = (u'(#) O ISS desta NFS-e será RETIDO'
@@ -411,7 +411,7 @@ class InvoiceElectronic(models.Model):
                     aux.append(observacao_nfse)
 
             elif self.state == 'cancel':
-                event = self.eletronic_event_ids.search([
+                event = self.electronic_event_ids.search([
                     ('name', '=', 'Nota Fiscal Paulistana Cancelada')])
 
                 observacao_nfse = (u'(#) Esta NFS-e foi CANCELADA em: %s; '
