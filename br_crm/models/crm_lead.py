@@ -77,7 +77,7 @@ class CrmLead(models.Model):
         if self.cnpj:
             val = re.sub('[^0-9]', '', self.cnpj)
             if len(val) == 14:
-                self.cnpj_cpf = "%s.%s.%s/%s-%s" % (val[0:2], val[2:5], val[5:8], val[8:12], val[12:14])  # noqa: 501
+                self.cnpj = "%s.%s.%s/%s-%s" % (val[0:2], val[2:5], val[5:8], val[8:12], val[12:14])  # noqa: 501
             else:
                 raise Warning(_(u'Verifique o CNPJ'))
 
@@ -97,13 +97,16 @@ class CrmLead(models.Model):
 
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
+
         if self.partner_id:
             val = re.sub('[^0-9]', '', self.partner_id.cnpj_cpf or '')
             self.legal_name = self.partner_id.legal_name
+
             if len(val) == 11:
                 self.cpf = self.partner_id.cnpj_cpf
             else:
                 self.cnpj = self.partner_id.cnpj_cpf
+
             self.inscr_est = self.partner_id.inscr_est
             self.suframa = self.partner_id.suframa
             self.number = self.partner_id.number
