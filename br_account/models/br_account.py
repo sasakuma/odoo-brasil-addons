@@ -378,7 +378,7 @@ class BrAccountInvoiceParcel(models.Model):
     def _onchange_date_maturity(self):
         # Calcula a quantidade de dias baseado na data de vencimento
         for rec in self:
-            if rec.invoice_id.state == 'draft':
+            if rec.invoice_id.state == 'draft' and rec.date_maturity:
                 d2 = datetime.strptime(rec.invoice_id.pre_invoice_date,
                                        '%Y-%m-%d')
                 d1 = datetime.strptime(rec.date_maturity, '%Y-%m-%d')
