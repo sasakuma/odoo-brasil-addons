@@ -133,7 +133,7 @@ class TestNFeBrasil(TransactionCase):
              )
         ]
         default_invoice = {
-            'name': "Teste Validação",
+            'name': u"Teste Validação",
             'reference_type': "none",
             'fiscal_document_id': self.env.ref(
                 'br_nfse.fiscal_document_001').id,
