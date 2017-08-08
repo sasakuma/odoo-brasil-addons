@@ -9,3 +9,4 @@ from . import test_fiscal_position
 from . import test_import_ibpt
 from . import test_reconciliation
 from . import test_account_customer_invoice
+from . import test_br_account

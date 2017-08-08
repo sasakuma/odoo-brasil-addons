@@ -6,6 +6,7 @@ from odoo.addons.br_account.tests.test_base import TestBaseBr
 
 
 class TestAccountInvoice(TestBaseBr):
+
     def setUp(self):
         super(TestAccountInvoice, self).setUp()
 
@@ -48,24 +49,19 @@ class TestAccountInvoice(TestBaseBr):
         payment_term = self.env.ref('account.account_payment_term_net')
 
         default_invoice = {
-            'name': u"Teste Validação",
+            'name': 'Teste Fatura',
+            'partner_id': self.partner.id,
             'reference_type': "none",
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,
             'payment_term_id': payment_term.id,
-            'invoice_line_ids': invoice_line_data
+            'invoice_line_ids': invoice_line_data,
         }
 
-        self.invoices = self.env['account.invoice'].create(dict(
-            default_invoice.items(),
-            partner_id=self.partner.id
-        ))
-
-        self.title_type_id = self.env.ref('br_account.account_title_type_2')
-        self.financial_operation_id = self.env.ref(
-            'br_account.account_financial_operation_6')
+        self.invoices = self.env['account.invoice'].create(default_invoice)
 
     def test_compute_total_values(self):
+
         for invoice in self.invoices:
             self.assertEquals(invoice.amount_total, 650.0)
             self.assertEquals(invoice.amount_total_signed, 650.0)
@@ -83,6 +79,7 @@ class TestAccountInvoice(TestBaseBr):
             self.assertEquals(len(invoice.receivable_move_line_ids), 1)
 
     def test_invoice_pis_cofins_taxes(self):
+
         for invoice in self.invoices:
 
             first_item = invoice.invoice_line_ids[0]
@@ -135,6 +132,7 @@ class TestAccountInvoice(TestBaseBr):
             self.assertEquals(invoice.cofins_value, 97.5)
 
     def test_invoice_issqn_and_ii_taxes(self):
+
         for invoice in self.invoices:
             prod_item = invoice.invoice_line_ids[0]
             serv_item = invoice.invoice_line_ids[1]
@@ -169,6 +167,7 @@ class TestAccountInvoice(TestBaseBr):
             self.assertEquals(invoice.issqn_value, 25.0)
 
     def test_invoice_icms_normal_tax(self):
+
         for invoice in self.invoices:
 
             first_item = invoice.invoice_line_ids[0]
@@ -203,6 +202,7 @@ class TestAccountInvoice(TestBaseBr):
             self.assertEquals(invoice.icms_value, 110.5)
 
     def test_invoice_icms_reducao_base_tax(self):
+
         for invoice in self.invoices:
 
             first_item = invoice.invoice_line_ids[0]
@@ -241,13 +241,16 @@ class TestAccountInvoice(TestBaseBr):
 
     def test_generate_parcel_entry(self):
 
+        title_type_id = self.env.ref('br_account.account_title_type_2')
+        financial_operation_id = \
+            self.env.ref('br_account.account_financial_operation_6')
+
         for inv in self.invoices:
 
             inv.pre_invoice_date = '2017-07-01'
 
             # Criamos as parcelas
-            inv.generate_parcel_entry(self.financial_operation_id,
-                                      self.title_type_id)
+            inv.generate_parcel_entry(financial_operation_id, title_type_id)
 
             self.assertEqual(len(inv.parcel_ids), 1)
 
@@ -256,7 +259,6 @@ class TestAccountInvoice(TestBaseBr):
                 self.assertEqual(parcel.name, '01')
                 self.assertEqual(parcel.parceling_value, inv.amount_total)
                 self.assertEqual(parcel.financial_operation_id.id,
-                                 self.financial_operation_id.id)
-                self.assertEqual(parcel.title_type_id.id,
-                                 self.title_type_id.id)
+                                 financial_operation_id.id)
+                self.assertEqual(parcel.title_type_id.id, title_type_id.id)
                 self.assertEqual(parcel.amount_days, 30)
