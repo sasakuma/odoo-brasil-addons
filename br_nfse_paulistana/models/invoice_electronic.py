@@ -339,8 +339,8 @@ class InvoiceElectronic(models.Model):
                 justificativa=justificativa, context=context)
 
     @api.multi
-    def action_print_danfse(self):
-        action = super(InvoiceElectronic, self).action_print_danfse()
+    def action_print_invoice_report(self):
+        action = super(InvoiceElectronic, self).action_print_invoice_report()
 
         if self.model == '001' and self.webservice_nfse == 'nfse_paulistana':
 

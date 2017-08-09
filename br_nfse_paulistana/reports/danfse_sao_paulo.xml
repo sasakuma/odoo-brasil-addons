@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <odoo>
 
-    <report
-            id="report_br_nfse_danfe_paulistana"
+    <report id="report_br_nfse_danfe_paulistana"
             string="Nota de Serviço - Paulistana"
             model="invoice.electronic"
             menu="False"

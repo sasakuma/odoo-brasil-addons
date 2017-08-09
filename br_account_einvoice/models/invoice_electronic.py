@@ -395,6 +395,15 @@ class InvoiceElectronic(models.Model):
         self._compute_legal_information()
 
     @api.multi
+    def action_print_invoice_report(self):
+        action = {
+            "type": "ir.actions.act_url",
+            "url": '',
+            "target": "_blank",
+        }
+        return action
+
+    @api.multi
     def _prepare_electronic_invoice_item(self, item, invoice):
         return {}
 

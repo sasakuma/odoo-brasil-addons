@@ -442,9 +442,12 @@ class InvoiceElectronic(models.Model):
                 'pICMSInterPart': "%.02f" % item.icms_aliquota_inter_part,
                 'vFCPUFDest': "%.02f" % item.icms_fcp_uf_dest,
                 'vICMSUFDest': "%.02f" % item.icms_uf_dest,
-                'vICMSUFRemet': "%.02f" % item.icms_uf_remet, }
-        return {'prod': prod, 'imposto': imposto,
-                'infAdProd': item.informacao_adicional}
+                'vICMSUFRemet': "%.02f" % item.icms_uf_remet,
+            }
+        return {
+            'prod': prod, 'imposto': imposto,
+            'infAdProd': item.informacao_adicional,
+        }
 
     @api.multi
     def _prepare_electronic_invoice_values(self):
@@ -993,3 +996,14 @@ class InvoiceElectronic(models.Model):
         })
         self._create_attachment('canc', self, resp['sent_xml'])
         self._create_attachment('canc-ret', self, resp['received_xml'])
+
+    @api.multi
+    def action_print_invoice_report(self):
+        action = super(InvoiceElectronic, self).action_print_invoice_report()
+
+        if self.model == '55':
+            report = self.env.ref('br_nfe.report_br_nfe_danfe').report_name
+            action = self.env['report'].get_action(self.ids, report)
+            action['report_type'] = 'qweb-pdf'
+
+        return action
