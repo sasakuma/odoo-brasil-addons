@@ -12,7 +12,37 @@
                 <field name="webservice_nfse" invisible="1"/>
                 <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
                      attrs="{'invisible': ['|', ('ambiente_nfse', '==', '1'), ('invoice_model', '!=', '001')]}">
-                    A Nota de Serviço está em ambiente de homologação
+                    A NFSe está em ambiente de homologação
+                </div>
+                <div class="alert alert-success" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('invoice_model', '!=', '001'),('sending_nfe', '==', False)]}">
+                    Sua
+                    <b>NFSe de número
+                        <field name="nfse_number" class="oe_inline"/>
+                    </b>
+                    está na fila de envio.
+                    <button name="action_view_edocs"
+                            type="object"
+                            class="label label-primary"
+                            context="{'search_default_invoice_id': id }"
+                            string="Visualizar Fila">
+                    </button>
+                    ou
+                    <button name="action_view_edocs" type="object" class="label label-primary"
+                            context="{'search_default_invoice_id': id }" string="Enviar Agora">
+                    </button>
+                </div>
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('invoice_model', '!=', '001'),('nfe_exception', '==', False)]}">
+                    Ocorreu um erro com a
+                    <b>NFSe de número <field name="nfse_exception_number" class="oe_inline"/>.
+                    </b>
+                    <button name="action_view_edocs"
+                            type="object"
+                            class="label label-primary"
+                            context="{'search_default_invoice_id': id }"
+                            string="Visualizar NFe">
+                    </button>
+                    <br/>
+                    <field name="nfse_status"/>
                 </div>
             </div>
             <div name="button_box" position="inside">

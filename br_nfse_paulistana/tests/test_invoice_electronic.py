@@ -159,11 +159,20 @@ class TestNFeBrasil(TransactionCase):
 
         for invoice in self.invoices:
             self.assertEquals(invoice.total_edocs, 0)
+            self.assertEquals(invoice.nfse_number, 0)
+            self.assertEquals(invoice.nfse_exception_number, 0)
+            self.assertEquals(invoice.nfse_exception, False)
+            self.assertEquals(invoice.sending_nfse, False)
+
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
 
             # Verifica algumas propriedades computadas que dependem do edoc
             self.assertEquals(invoice.total_edocs, 1)
+            self.assertTrue(invoice.nfse_number != 0)
+            self.assertTrue(invoice.nfse_exception_number != 0)
+            self.assertEquals(invoice.nfse_exception, False)
+            self.assertEquals(invoice.sending_nfse, True)
 
     def test_check_invoice_electronic_values(self):
 
