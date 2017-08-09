@@ -161,7 +161,7 @@ class TestCartaCorrecao(TransactionCase):
         }
         self.account_invoice = self.env['account.invoice'].create(
             default_invoice)
-        invoice_eletronic = {
+        invoice_electronic = {
             'model': '55',
             'invoice_id': self.account_invoice.id,
             'partner_id': self.partner_fisica.id,
@@ -173,7 +173,7 @@ class TestCartaCorrecao(TransactionCase):
             'chave_nfe': '35161221332917000163550010000000041158176721',
         }
         self.electronic_doc = self.env['invoice.electronic'].create(
-            invoice_eletronic)
+            invoice_electronic)
         carta_wizard_short = {
             'correcao': 'short',
             'electronic_doc_id': self.electronic_doc.id,
