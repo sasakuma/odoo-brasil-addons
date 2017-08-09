@@ -232,12 +232,12 @@ class TestNFeBrasil(TransactionCase):
             invoice_electronic.verify_code = '123'
             invoice_electronic.numero_nfse = '123'
             invoice_electronic.action_cancel_document(
-                justificativa="Cancelamento de teste")
+                justificativa='Cancelamento de teste')
 
             self.assertEquals(invoice_electronic.state, 'cancel')
-            self.assertEquals(invoice_electronic.codigo_retorno, "100")
+            self.assertEquals(invoice_electronic.codigo_retorno, '100')
             self.assertEquals(invoice_electronic.mensagem_retorno,
-                              "Nota Fiscal Paulistana Cancelada")
+                              'Nota Fiscal Paulistana Cancelada')
 
     @mock.patch('pytrustnfe.nfse.paulistana.cancelamento_nfe')
     def test_nfse_cancelamento_erro(self, cancelar):
@@ -261,7 +261,7 @@ class TestNFeBrasil(TransactionCase):
             invoice_electronic.verify_code = '123'
             invoice_electronic.numero_nfse = '123'
             invoice_electronic.action_cancel_document(
-                justificativa="Cancelamento de teste")
+                justificativa='Cancelamento de teste')
 
             # Draft because I didn't send it
             self.assertEquals(invoice_electronic.state, 'cancel')

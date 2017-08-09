@@ -91,8 +91,7 @@ class InvoiceElectronic(models.Model):
 
     @api.multi
     def _prepare_electronic_invoice_values(self):
-        res = \
-            super(InvoiceElectronic, self)._prepare_electronic_invoice_values()
+        res = super(InvoiceElectronic, self)._prepare_electronic_invoice_values()  # noqa: 501
 
         if self.model == '001' and self.webservice_nfse == 'nfse_paulistana':
             tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
@@ -238,20 +237,31 @@ class InvoiceElectronic(models.Model):
 
             retorno = resposta['object']
 
-            if retorno.Cabecalho.Sucesso:
-                self.state = 'done'
-                self.codigo_retorno = '100'
-                self.mensagem_retorno = \
-                    'Nota Fiscal Paulistana emitida com sucesso'
+            values = {}
 
-                if self.ambiente == 'producao':  # Apenas producão tem essa tag
-                    self.verify_code = \
-                        retorno.ChaveNFeRPS.ChaveNFe.CodigoVerificacao
-                    self.numero_nfse = retorno.ChaveNFeRPS.ChaveNFe.NumeroNFe
+            if retorno.Cabecalho.Sucesso:
+                values.update({
+                    'state': 'done',
+                    'codigo_retorno': '100',
+                    'mensagem_retorno': 'Nota Fiscal Paulistana emitida com '
+                                        'sucesso',
+                })
+
+                if self.ambiente == 'producao':  # Apenas producao tem essa tag
+                    values.update({
+                        'verify_code': retorno.ChaveNFeRPS.ChaveNFe.CodigoVerificacao,  # noqa: 501
+                        'numero_nfse': retorno.ChaveNFeRPS.ChaveNFe.NumeroNFe,
+                    })
+
+                self.write(values)
 
             else:
-                self.codigo_retorno = retorno.Erro.Codigo
-                self.mensagem_retorno = retorno.Erro.Descricao
+                values.update({
+                    'codigo_retorno': retorno.Erro.Codigo,
+                    'mensagem_retorno': retorno.Erro.Descricao,
+                })
+
+                self.write(values)
 
             self.env['invoice.electronic.event'].create({
                 'code': self.codigo_retorno,
@@ -297,13 +307,21 @@ class InvoiceElectronic(models.Model):
                 # assim, simulamos um retorno em sucedido
                 retorno.Cabecalho.Sucesso = True
 
+            values = {}
+
             if retorno.Cabecalho.Sucesso:
-                self.state = 'cancel'
-                self.codigo_retorno = '100'
-                self.mensagem_retorno = 'Nota Fiscal Paulistana Cancelada'
+                values.update({
+                    'state': 'cancel',
+                    'codigo_retorno': '100',
+                    'mensagem_retorno': 'Nota Fiscal Paulistana Cancelada',
+                })
             else:
-                self.codigo_retorno = retorno.Erro.Codigo
-                self.mensagem_retorno = retorno.Erro.Descricao
+                values.update({
+                    'codigo_retorno': retorno.Erro.Codigo,
+                    'mensagem_retorno': retorno.Erro.Descricao,
+                })
+
+            self.write(values)
 
             self.env['invoice.electronic.event'].create({
                 'code': self.codigo_retorno,
