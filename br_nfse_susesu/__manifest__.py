@@ -27,7 +27,7 @@
         'data/br_nfse.xml',
         'views/br_account_service.xml',
         'views/account_invoice.xml',
-        'views/invoice_eletronic.xml',
+        'views/invoice_electronic.xml',
         'views/res_company.xml',
         # 'views/account_fiscal_position.xml',
         'reports/danfse_default.xml',

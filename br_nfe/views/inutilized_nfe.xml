@@ -2,7 +2,7 @@
 <odoo>
 
     <record model="ir.ui.view" id="invoice_electronic_inutilized_tree">
-        <field name="name">invoice_eletronic.inutilized.tree</field>
+        <field name="name">invoice_electronic.inutilized.tree</field>
         <field name="model">invoice.electronic.inutilized</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
@@ -17,7 +17,7 @@
     </record>
 
     <record model="ir.ui.view" id="invoice_electronic_inutilized_form">
-        <field name="name">invoice_eletronic.inutilized.form</field>
+        <field name="name">invoice_electronic.inutilized.form</field>
         <field name="model">invoice.electronic.inutilized</field>
         <field name="type">form</field>
         <field name="arch" type="xml">

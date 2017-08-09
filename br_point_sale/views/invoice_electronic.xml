@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="br_point_sale_invoince_electronic^" model="ir.ui.view">
-        <field name="name">br_point_sale.invoice_eletronic</field>
+    <record id="br_point_sale_invoice_electronic" model="ir.ui.view">
+        <field name="name">br_point_sale.invoice_electronic</field>
         <field name="model">invoice.electronic</field>
         <field name="inherit_id" ref="br_nfe.view_br_nfe_invoice_electronic_form"/>
         <field name="arch" type="xml">

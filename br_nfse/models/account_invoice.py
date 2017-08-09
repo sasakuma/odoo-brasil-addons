@@ -9,6 +9,19 @@ from odoo.exceptions import UserError
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
+    @api.multi
+    def _compute_nfse_number(self):
+        for invoice in self:
+            docs = self.env['invoice.electronic'].search(
+                [('invoice_id', '=', invoice.id)])
+            if docs:
+                invoice.nfse_number = docs[0].numero
+                invoice.nfse_exception_number = docs[0].numero
+                invoice.nfse_exception = (docs[0].state in ('error', 'denied'))
+                invoice.sending_nfse = docs[0].state == 'draft'
+                invoice.nfse_status = '%s - %s' % (docs[0].codigo_retorno,
+                                                   docs[0].mensagem_retorno)
+
     ambiente_nfse = fields.Selection(string='Ambiente NFSe',
                                      related='company_id.tipo_ambiente_nfse',
                                      readonly=True)
@@ -17,6 +30,21 @@ class AccountInvoice(models.Model):
                                        readonly=True,
                                        states={'draft': [('readonly', False)]},
                                        string='Webservice NFSe')
+
+    sending_nfse = fields.Boolean(string='Enviando NFSe?',
+                                  compute='_compute_nfse_number')
+
+    nfse_exception = fields.Boolean(string='Problemas na NFSe?',
+                                    compute='_compute_nfse_number')
+
+    nfse_status = fields.Char(string='Mensagem NFSe',
+                              compute='_compute_nfse_number')
+
+    nfse_number = fields.Integer(string=u'Número NFSe',
+                                 compute='_compute_nfse_number')
+
+    nfse_exception_number = fields.Integer(string=u'Número NFSe',
+                                           compute='_compute_nfse_number')
 
     @api.onchange('fiscal_document_id')
     def _onchange_fiscal_document_id(self):

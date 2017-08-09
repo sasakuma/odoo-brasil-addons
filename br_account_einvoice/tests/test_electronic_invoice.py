@@ -102,19 +102,19 @@ class TestElectronicInvoice(TransactionCase):
     def test_basic_validation_for_electronic_doc(self):
         self.assertEquals(self.inv_incomplete.total_edocs, 0)
 
-        vals = self.inv_incomplete.action_view_edocs()
-        self.assertEquals(vals['type'], 'ir.actions.act_window')
-        self.assertEquals(vals['res_model'], 'invoice.electronic')
-        self.assertEquals(vals['res_id'], 0)
+        values = self.inv_incomplete.action_view_edocs()
+        self.assertEquals(values['type'], 'ir.actions.act_window')
+        self.assertEquals(values['res_model'], 'invoice.electronic')
+        self.assertEquals(values['res_id'], 0)
 
         with self.assertRaises(UserError):
             self.inv_incomplete.action_invoice_open()
 
-        invoice_eletronic = self.env['invoice.electronic'].search(
+        invoice_electronic = self.env['invoice.electronic'].search(
             [('invoice_id', '=', self.inv_incomplete.id)])
 
         self.assertEquals(self.inv_incomplete.total_edocs, 0)
-        vals = self.inv_incomplete.action_view_edocs()
-        self.assertEquals(vals['type'], 'ir.actions.act_window')
-        self.assertEquals(vals['res_model'], 'invoice.electronic')
-        self.assertEquals(vals['res_id'], invoice_eletronic.id)
+        values = self.inv_incomplete.action_view_edocs()
+        self.assertEquals(values['type'], 'ir.actions.act_window')
+        self.assertEquals(values['res_model'], 'invoice.electronic')
+        self.assertEquals(values['res_id'], invoice_electronic.id)

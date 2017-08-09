@@ -5,6 +5,7 @@
 import re
 import base64
 import logging
+import time
 from lxml import etree
 from StringIO import StringIO
 from datetime import datetime
@@ -35,155 +36,248 @@ class InvoiceElectronic(models.Model):
     @api.depends('chave_nfe')
     def _format_danfe_key(self):
         for item in self:
-            item.chave_nfe_danfe = re.sub("(.{4})", "\\1.",
-                                          item.chave_nfe, 10, re.DOTALL)
+            item.chave_nfe_danfe = re.sub("(.{4})", "\\1.", item.chave_nfe, 10, re.DOTALL)  # noqa: 501
 
     @api.multi
     def generate_correction_letter(self):
         return {
-            "type": "ir.actions.act_window",
-            "res_model": "wizard.carta.correcao.eletronica",
-            "views": [[False, "form"]],
-            "name": u"Carta de Correção",
-            "target": "new",
-            "context": {'default_electronic_doc_id': self.id},
+            'type': 'ir.actions.act_window',
+            'res_model': 'wizard.carta.correcao.eletronica',
+            'views': [[False, 'form']],
+            'name': u'Carta de Correção',
+            'target': 'new',
+            'context': {'default_electronic_doc_id': self.id},
         }
 
     state = fields.Selection(selection_add=[('denied', 'Denegado')])
-    ambiente_nfe = fields.Selection(
-        string="Ambiente NFe", related="company_id.tipo_ambiente",
-        readonly=True)
-    ind_final = fields.Selection([
-        ('0', u'Não'),
-        ('1', u'Sim')
-    ], u'Consumidor Final', readonly=True, states=STATE, required=False,
-        help=u'Indica operação com Consumidor final.', default='0')
-    ind_pres = fields.Selection([
-        ('0', u'Não se aplica'),
-        ('1', u'Operação presencial'),
-        ('2', u'Operação não presencial, pela Internet'),
-        ('3', u'Operação não presencial, Teleatendimento'),
-        ('4', u'NFC-e em operação com entrega em domicílio'),
-        ('9', u'Operação não presencial, outros'),
-    ], u'Indicador de Presença', readonly=True, states=STATE, required=False,
-        help=u'Indicador de presença do comprador no\n'
-             u'estabelecimento comercial no momento\n'
-             u'da operação.', default='0')
-    ind_dest = fields.Selection([
-        ('1', u'1 - Operação Interna'),
-        ('2', u'2 - Operação Interestadual'),
-        ('3', u'3 - Operação com exterior')],
-        string=u"Indicador Destinatário", readonly=True, states=STATE)
-    ind_ie_dest = fields.Selection([
-        ('1', u'1 - Contribuinte ICMS'),
-        ('2', u'2 - Contribuinte Isento de Cadastro'),
-        ('9', u'9 - Não Contribuinte')],
-        string="Indicador IE Dest.", help=u"Indicador da IE do destinatário",
-        readonly=True, states=STATE)
-    tipo_emissao = fields.Selection([
-        ('1', u'1 - Emissão normal'),
-        ('2', u'2 - Contingência FS-IA, com impressão do DANFE em formulário \
-         de segurança'),
-        ('3', u'3 - Contingência SCAN'),
-        ('4', u'4 - Contingência DPEC'),
-        ('5', u'5 - Contingência FS-DA, com impressão do DANFE em \
-         formulário de segurança'),
-        ('6', u'6 - Contingência SVC-AN'),
-        ('7', u'7 - Contingência SVC-RS'),
-        ('9', u'9 - Contingência off-line da NFC-e')],
-        string=u"Tipo de Emissão", readonly=True, states=STATE, default='1')
+
+    ambiente_nfe = fields.Selection(string='Ambiente NFe',
+                                    related='company_id.tipo_ambiente',
+                                    readonly=True)
+
+    ind_final = fields.Selection([('0', u'Não'),
+                                  ('1', u'Sim')],
+                                 string=u'Consumidor Final',
+                                 readonly=True,
+                                 states=STATE,
+                                 required=False,
+                                 default='0',
+                                 help=u'Indica operação com Consumidor final.')
+
+    ind_pres = fields.Selection([('0', u'Não se aplica'),
+                                 ('1', u'Operação presencial'),
+                                 ('2', u'Operação não presencial, '
+                                       u'pela Internet'),
+                                 ('3', u'Operação não presencial, '
+                                       u'Teleatendimento'),
+                                 ('4', u'NFC-e em operação com entrega em '
+                                       u'domicílio'),
+                                 ('9', u'Operação não presencial, outros')],
+                                string=u'Indicador de Presença',
+                                readonly=True,
+                                states=STATE,
+                                required=False,
+                                default='0',
+                                help=u'Indicador de presença do comprador no\n'
+                                     u'estabelecimento comercial no momento\n'
+                                     u'da operação.')
+
+    ind_dest = fields.Selection([('1', u'1 - Operação Interna'),
+                                 ('2', u'2 - Operação Interestadual'),
+                                 ('3', u'3 - Operação com exterior')],
+                                string=u'Indicador Destinatário',
+                                readonly=True,
+                                states=STATE)
+
+    ind_ie_dest = fields.Selection([('1', u'1 - Contribuinte ICMS'),
+                                    ('2', u'2 - Contribuinte Isento de '
+                                          u'Cadastro'),
+                                    ('9', u'9 - Não Contribuinte')],
+                                   string=u'Indicador IE Dest.',
+                                   help=u'Indicador da IE do destinatário',
+                                   readonly=True,
+                                   states=STATE)
+
+    tipo_emissao = fields.Selection([('1', u'1 - Emissão normal'),
+                                     ('2', u'2 - Contingência FS-IA, '
+                                           u'com impressão do DANFE em '
+                                           u'formulário de segurança'),
+                                     ('3', u'3 - Contingência SCAN'),
+                                     ('4', u'4 - Contingência DPEC'),
+                                     ('5', u'5 - Contingência FS-DA, com '
+                                           u'impressão do DANFE em formulário '
+                                           u'de segurança'),
+                                     ('6', u'6 - Contingência SVC-AN'),
+                                     ('7', u'7 - Contingência SVC-RS'),
+                                     ('9', u'9 - Contingência off-line da NFC-e')],  # noqa: 501
+                                    string=u'Tipo de Emissão',
+                                    readonly=True,
+                                    states=STATE,
+                                    default='1')
 
     # Transporte
-    modalidade_frete = fields.Selection(
-        [('0', u'0 - Emitente'),
-         ('1', u'1 - Destinatário'),
-         ('2', u'2 - Terceiros'),
-         ('9', u'9 - Sem Frete')],
-        string=u'Modalidade do frete', default="9",
-        readonly=True, states=STATE)
-    transportadora_id = fields.Many2one(
-        'res.partner', string="Transportadora", readonly=True, states=STATE)
-    placa_veiculo = fields.Char(
-        string=u'Placa do Veículo', size=7, readonly=True, states=STATE)
-    uf_veiculo = fields.Char(
-        string='UF da Placa', size=2, readonly=True, states=STATE)
-    rntc = fields.Char(
-        string="RNTC", size=20, readonly=True, states=STATE,
-        help="Registro Nacional de Transportador de Carga")
+    modalidade_frete = fields.Selection([('0', u'0 - Emitente'),
+                                         ('1', u'1 - Destinatário'),
+                                         ('2', u'2 - Terceiros'),
+                                         ('9', u'9 - Sem Frete')],
+                                        string=u'Modalidade do frete',
+                                        default='9',
+                                        readonly=True,
+                                        states=STATE)
 
-    reboque_ids = fields.One2many(
-        'nfe.reboque', 'invoice_electronic_id',
-        string="Reboques", readonly=True, states=STATE)
-    volume_ids = fields.One2many(
-        'nfe.volume', 'invoice_electronic_id',
-        string="Volumes", readonly=True, states=STATE)
+    transportadora_id = fields.Many2one('res.partner',
+                                        string='Transportadora',
+                                        readonly=True,
+                                        states=STATE)
+
+    placa_veiculo = fields.Char(string=u'Placa do Veículo',
+                                size=7,
+                                readonly=True,
+                                states=STATE)
+
+    uf_veiculo = fields.Char(string='UF da Placa',
+                             size=2,
+                             readonly=True,
+                             states=STATE)
+
+    rntc = fields.Char(string='RNTC',
+                       size=20,
+                       readonly=True,
+                       states=STATE,
+                       help='Registro Nacional de Transportador de Carga')
+
+    reboque_ids = fields.One2many(comodel_name='nfe.reboque',
+                                  inverse_name='invoice_electronic_id',
+                                  string='Reboques',
+                                  readonly=True,
+                                  states=STATE)
+
+    volume_ids = fields.One2many(comodel_name='nfe.volume',
+                                 inverse_name='invoice_electronic_id',
+                                 string='Volumes',
+                                 readonly=True,
+                                 states=STATE)
 
     # Exportação
-    uf_saida_pais_id = fields.Many2one(
-        'res.country.state', domain=[('country_id.code', '=', 'BR')],
-        string=u"UF Saída do País", readonly=True, states=STATE)
-    local_embarque = fields.Char(
-        string='Local de Embarque', size=60, readonly=True, states=STATE)
-    local_despacho = fields.Char(
-        string='Local de Despacho', size=60, readonly=True, states=STATE)
+    uf_saida_pais_id = fields.Many2one('res.country.state',
+                                       domain=[('country_id.code', '=', 'BR')],
+                                       string=u'UF Saída do País',
+                                       readonly=True,
+                                       states=STATE)
+
+    local_embarque = fields.Char(string='Local de Embarque',
+                                 size=60,
+                                 readonly=True,
+                                 states=STATE)
+
+    local_despacho = fields.Char(string='Local de Despacho',
+                                 size=60,
+                                 readonly=True,
+                                 states=STATE)
 
     # Cobrança
-    numero_fatura = fields.Char(
-        string="Fatura", readonly=True, states=STATE)
-    fatura_bruto = fields.Monetary(
-        string="Valor Original", readonly=True, states=STATE)
-    fatura_desconto = fields.Monetary(
-        string="Desconto", readonly=True, states=STATE)
-    fatura_liquido = fields.Monetary(
-        string=u"Valor Líquido", readonly=True, states=STATE)
+    numero_fatura = fields.Char(string='Fatura',
+                                readonly=True,
+                                states=STATE)
 
-    duplicata_ids = fields.One2many(
-        'nfe.duplicata', 'invoice_electronic_id',
-        string="Duplicatas", readonly=True, states=STATE)
+    fatura_bruto = fields.Monetary(string='Valor Original',
+                                   readonly=True,
+                                   states=STATE)
+
+    fatura_desconto = fields.Monetary(string='Desconto',
+                                      readonly=True,
+                                      states=STATE)
+
+    fatura_liquido = fields.Monetary(string=u'Valor Líquido',
+                                     readonly=True,
+                                     states=STATE)
+
+    duplicata_ids = fields.One2many(comodel_name='nfe.duplicata',
+                                    inverse_name='invoice_electronic_id',
+                                    string='Duplicatas',
+                                    readonly=True,
+                                    states=STATE)
 
     # Compras
-    nota_empenho = fields.Char(
-        string="Nota de Empenho", size=22, readonly=True, states=STATE)
-    pedido_compra = fields.Char(
-        string="Pedido Compra", size=60, readonly=True, states=STATE)
-    contrato_compra = fields.Char(
-        string="Contrato Compra", size=60, readonly=True, states=STATE)
+    nota_empenho = fields.Char(string='Nota de Empenho',
+                               size=22,
+                               readonly=True,
+                               states=STATE)
 
-    sequencial_evento = fields.Integer(
-        string=u"Sequêncial Evento", default=1, readonly=True, states=STATE)
-    recibo_nfe = fields.Char(
-        string="Recibo NFe", size=50, readonly=True, states=STATE)
-    chave_nfe = fields.Char(
-        string="Chave NFe", size=50, readonly=True, states=STATE)
-    chave_nfe_danfe = fields.Char(
-        string="Chave Formatado", compute="_format_danfe_key")
-    protocolo_nfe = fields.Char(
-        string="Protocolo", size=50, readonly=True, states=STATE,
-        help=u"Protocolo de autorização da NFe")
-    nfe_processada = fields.Binary(string="Xml da NFe", readonly=True)
-    nfe_processada_name = fields.Char(
-        string="Xml da NFe", size=100, readonly=True)
+    pedido_compra = fields.Char(string='Pedido Compra',
+                                size=60,
+                                readonly=True,
+                                states=STATE)
 
-    valor_icms_uf_remet = fields.Monetary(
-        string="ICMS Remetente", readonly=True, states=STATE,
-        help='Valor total do ICMS Interestadual para a UF do Remetente')
-    valor_icms_uf_dest = fields.Monetary(
-        string="ICMS Destino", readonly=True, states=STATE,
-        help='Valor total do ICMS Interestadual para a UF de destino')
-    valor_icms_fcp_uf_dest = fields.Monetary(
-        string="Total ICMS FCP", readonly=True, states=STATE,
-        help=u'Total total do ICMS relativo Fundo de Combate à Pobreza (FCP) \
-        da UF de destino')
+    contrato_compra = fields.Char(string='Contrato Compra',
+                                  size=60,
+                                  readonly=True,
+                                  states=STATE)
+
+    sequencial_evento = fields.Integer(string=u'Sequêncial Evento',
+                                       default=1,
+                                       readonly=True,
+                                       states=STATE)
+
+    recibo_nfe = fields.Char(string='Recibo NFe',
+                             size=50,
+                             readonly=True,
+                             states=STATE)
+
+    chave_nfe = fields.Char(string='Chave NFe',
+                            size=50,
+                            readonly=True,
+                            states=STATE)
+
+    chave_nfe_danfe = fields.Char(string='Chave Formatado',
+                                  compute='_format_danfe_key')
+
+    protocolo_nfe = fields.Char(string='Protocolo',
+                                size=50,
+                                readonly=True,
+                                states=STATE,
+                                help=u'Protocolo de autorização da NFe')
+
+    nfe_processada = fields.Binary(string='Xml da NFe', readonly=True)
+
+    nfe_processada_name = fields.Char(string='Xml da NFe',
+                                      size=100,
+                                      readonly=True)
+
+    valor_icms_uf_remet = fields.Monetary(string='ICMS Remetente',
+                                          readonly=True,
+                                          states=STATE,
+                                          help='Valor total do ICMS '
+                                               'Interestadual para a UF do '
+                                               'Remetente')
+
+    valor_icms_uf_dest = fields.Monetary(string='ICMS Destino',
+                                         readonly=True,
+                                         states=STATE,
+                                         help='Valor total do ICMS '
+                                              'Interestadual para a UF de '
+                                              'destino')
+
+    valor_icms_fcp_uf_dest = fields.Monetary(string='Total ICMS FCP',
+                                             readonly=True,
+                                             states=STATE,
+                                             help=u'Total total do ICMS '
+                                                  u'relativo Fundo de Combate '
+                                                  u'à Pobreza (FCP) da UF de '
+                                                  u'destino')
 
     # Documentos Relacionados
-    fiscal_document_related_ids = fields.One2many(
-        'br_account.document.related', 'invoice_electronic_id',
-        'Documentos Fiscais Relacionados', readonly=True, states=STATE)
+    fiscal_document_related_ids = fields.One2many(comodel_name='br_account.document.related',  # noqa: 501
+                                                  inverse_name='invoice_electronic_id',  # noqa: 501
+                                                  string='Documentos Fiscais Relacionados',  # noqa: 501
+                                                  readonly=True, states=STATE)
 
     # CARTA DE CORRECAO
-    cartas_correcao_ids = fields.One2many(
-        'carta.correcao.eletronica.evento', 'electronic_doc_id',
-        string=u"Cartas de Correção", readonly=True, states=STATE)
+    cartas_correcao_ids = fields.One2many(comodel_name='carta.correcao.eletronica.evento',  # noqa: 501
+                                          inverse_name='electronic_doc_id',
+                                          string=u'Cartas de Correção',
+                                          readonly=True,
+                                          states=STATE)
 
     def barcode_url(self):
         url = '<img style="width:380px;height:50px;margin:2px 1px;" src="/report/barcode/Code128/' + self.chave_nfe + '" />'  # noqa: 501
@@ -191,14 +285,12 @@ class InvoiceElectronic(models.Model):
 
     def can_unlink(self):
         res = super(InvoiceElectronic, self).can_unlink()
-        if self.state == 'denied':
-            return False
-        return res
+        return False if self.state == 'denied' else res
 
     @api.multi
     def unlink(self):
         for item in self:
-            if item.state in ('denied'):
+            if item.state == 'denied':
                 raise UserError(
                     u'Documento Eletrônico Denegado - Proibido excluir')
         super(InvoiceElectronic, self).unlink()
@@ -206,6 +298,7 @@ class InvoiceElectronic(models.Model):
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceElectronic, self)._hook_validation()
+
         if self.model == '55':
             if not self.company_id.partner_id.inscr_est:
                 errors.append(u'Emitente / Inscrição Estadual')
@@ -237,8 +330,8 @@ class InvoiceElectronic(models.Model):
 
     @api.multi
     def _prepare_electronic_invoice_item(self, item, invoice):
-        res = super(InvoiceElectronic, self)._prepare_electronic_invoice_item(
-            item, invoice)
+        res = super(InvoiceElectronic, self)._prepare_electronic_invoice_item(item, invoice)  # noqa: 501
+
         if self.model not in ('55', '65'):
             return res
 
@@ -356,6 +449,7 @@ class InvoiceElectronic(models.Model):
     @api.multi
     def _prepare_electronic_invoice_values(self):
         res = super(InvoiceElectronic, self)._prepare_electronic_invoice_values()  # noqa: 501
+
         if self.model not in ('55', '65'):
             return res
 
@@ -384,6 +478,7 @@ class InvoiceElectronic(models.Model):
             'indPres': self.ind_pres or '1',
             'procEmi': 0
         }
+
         # Documentos Relacionados
         documentos = []
         for doc in self.fiscal_document_related_ids:
@@ -432,6 +527,7 @@ class InvoiceElectronic(models.Model):
                 })
 
         ide['NFref'] = documentos
+
         emit = {
             'tipo': self.company_id.partner_id.company_type,
             'cnpj_cpf': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
@@ -441,9 +537,8 @@ class InvoiceElectronic(models.Model):
                 'xLgr': self.company_id.street,
                 'nro': self.company_id.number,
                 'xBairro': self.company_id.district,
-                'cMun': '%s%s' % (
-                    self.company_id.partner_id.state_id.ibge_code,
-                    self.company_id.partner_id.city_id.ibge_code),
+                'cMun': '%s%s' % (self.company_id.partner_id.state_id.ibge_code,  # noqa: 501
+                                  self.company_id.partner_id.city_id.ibge_code),  # noqa: 501
                 'xMun': self.company_id.city_id.name,
                 'UF': self.company_id.state_id.code,
                 'CEP': re.sub('[^0-9]', '', self.company_id.zip),
@@ -454,12 +549,14 @@ class InvoiceElectronic(models.Model):
             'IE': re.sub('[^0-9]', '', self.company_id.inscr_est),
             'CRT': self.company_id.fiscal_type,
         }
+
         if self.company_id.cnae_main_id and self.company_id.inscr_mun:
             emit['IM'] = re.sub('[^0-9]', '', self.company_id.inscr_mun or '')
-            emit['CNAE'] = re.sub(
-                '[^0-9]', '', self.company_id.cnae_main_id.code or '')
+            emit['CNAE'] = re.sub('[^0-9]', '', self.company_id.cnae_main_id.code or '')  # noqa: 501
+
         dest = None
         exporta = None
+
         if self.commercial_partner_id:
             partner = self.commercial_partner_id
             dest = {
@@ -483,12 +580,9 @@ class InvoiceElectronic(models.Model):
                 'IE': re.sub('[^0-9]', '', partner.inscr_est or ''),
             }
             if self.ambiente == 'homologacao':
-                dest['xNome'] = \
-                    u'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO -\
- SEM VALOR FISCAL'
+                dest['xNome'] = u'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL'  # noqa: 501
             if partner.country_id.id != self.company_id.country_id.id:
-                dest['idEstrangeiro'] = re.sub(
-                    '[^0-9]', '', partner.cnpj_cpf or '')
+                dest['idEstrangeiro'] = re.sub('[^0-9]', '', partner.cnpj_cpf or '')  # noqa: 501
                 dest['enderDest']['UF'] = 'EX'
                 dest['enderDest']['xMun'] = 'Exterior'
                 dest['enderDest']['cMun'] = '9999999'
@@ -628,19 +722,22 @@ class InvoiceElectronic(models.Model):
         }
         if len(duplicatas) > 0:
             vals['cobr'] = cobr
+
         return vals
 
     @api.multi
     def _prepare_lote(self, lote, nfe_values):
-        return {
+
+        values = {
             'idLote': lote,
             'indSinc': 0,
             'estado': self.company_id.partner_id.state_id.ibge_code,
             'ambiente': 1 if self.ambiente == 'producao' else 2,
             'NFes': [{
-                'infNFe': nfe_values
+                'infNFe': nfe_values,
             }]
         }
+        return values
 
     def _find_attachment_ids_email(self):
         atts = super(InvoiceElectronic, self)._find_attachment_ids_email()
@@ -651,26 +748,27 @@ class InvoiceElectronic(models.Model):
         nfe_xml = base64.decodestring(self.nfe_processada)
         logo = base64.decodestring(self.invoice_id.company_id.logo)
 
-        tmpLogo = StringIO()
-        tmpLogo.write(logo)
-        tmpLogo.seek(0)
+        tmp_logo = StringIO()
+        tmp_logo.write(logo)
+        tmp_logo.seek(0)
 
         xml_element = etree.fromstring(nfe_xml)
-        oDanfe = danfe(list_xml=[xml_element], logo=tmpLogo)
+        obj_danfe = danfe(list_xml=[xml_element], logo=tmp_logo)
 
-        tmpDanfe = StringIO()
-        oDanfe.writeto_pdf(tmpDanfe)
+        tmp_danfe = StringIO()
+        obj_danfe.writeto_pdf(tmp_danfe)
 
         if danfe:
             danfe_id = attachment_obj.create(dict(
                 name="Danfe-%08d.pdf" % self.numero,
                 datas_fname="Danfe-%08d.pdf" % self.numero,
-                datas=base64.b64encode(tmpDanfe.getvalue()),
+                datas=base64.b64encode(tmp_danfe.getvalue()),
                 mimetype='application/pdf',
                 res_model='account.invoice',
                 res_id=self.invoice_id.id,
             ))
             atts.append(danfe_id.id)
+
         if nfe_xml:
             xml_id = attachment_obj.create(dict(
                 name=self.nfe_processada_name,
@@ -681,13 +779,16 @@ class InvoiceElectronic(models.Model):
                 res_id=self.invoice_id.id,
             ))
             atts.append(xml_id.id)
+
         return atts
 
     @api.multi
     def action_post_validate(self):
         super(InvoiceElectronic, self).action_post_validate()
+
         if self.model not in ('55', '65'):
             return
+
         for item in self:
             chave_dict = {
                 'cnpj': re.sub('[^0-9]', '', item.company_id.cnpj_cpf),
@@ -731,7 +832,7 @@ class InvoiceElectronic(models.Model):
                 }
             }
             self.recibo_nfe = obj['obj']['numero_recibo']
-            import time
+
             while True:
                 time.sleep(2)
                 resposta_recibo = retorno_autorizar_nfe(certificado, **obj)
@@ -741,29 +842,39 @@ class InvoiceElectronic(models.Model):
                     break
 
         if retorno.cStat != 104:
-            self.codigo_retorno = retorno.cStat
-            self.mensagem_retorno = retorno.xMotivo
+            self.write({
+                'codigo_retorno': retorno.cStat,
+                'mensagem_retorno': retorno.xMotivo,
+            })
         else:
-            self.codigo_retorno = retorno.protNFe.infProt.cStat
-            self.mensagem_retorno = retorno.protNFe.infProt.xMotivo
+            values = {
+                'codigo_retorno': retorno.protNFe.infProt.cStat,
+                'mensagem_retorno': retorno.protNFe.infProt.xMotivo,
+            }
+
             if self.codigo_retorno == '100':
-                self.write({
+                values.update({
                     'state': 'done',
-                    'nfe_exception': False,
                     'protocolo_nfe': retorno.protNFe.infProt.nProt,
-                    'data_autorizacao': retorno.protNFe.infProt.dhRecbto})
+                    'data_autorizacao': retorno.protNFe.infProt.dhRecbto,
+                })
+
             # Duplicidade de NF-e significa que a nota já está emitida
             # TODO Buscar o protocolo de autorização, por hora só finalizar
-            if self.codigo_retorno == '204':
-                self.write({'state': 'done',
-                            'codigo_retorno': '100',
-                            'nfe_exception': False,
-                            'mensagem_retorno': 'Autorizado o uso da NF-e'})
+            elif self.codigo_retorno == '204':
+                values.update({
+                    'state': 'done',
+                    'codigo_retorno': '100',
+                    'mensagem_retorno': 'Autorizado o uso da NF-e',
+                })
 
             # Denegada e nota já está denegada
-            if self.codigo_retorno in ('302', '205'):
-                self.write({'state': 'denied',
-                            'nfe_exception': True})
+            elif self.codigo_retorno in ('302', '205'):
+                values.update({
+                    'state': 'denied',
+                })
+
+            self.write(values)
 
         self.env['invoice.electronic.event'].create({
             'code': self.codigo_retorno,
@@ -814,7 +925,7 @@ class InvoiceElectronic(models.Model):
     def action_cancel_document(self, context=None, justificativa=None):
         if self.model not in ('55', '65'):
             return super(InvoiceElectronic, self).action_cancel_document(
-                justificativa=justificativa)
+                context=context, justificativa=justificativa)
 
         if not justificativa:
             return {
@@ -853,18 +964,27 @@ class InvoiceElectronic(models.Model):
         }
         resp = recepcao_evento_cancelamento(certificado, **cancelamento)
         resposta = resp['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
+
         if resposta.cStat == 128 and resposta.retEvento.infEvento.cStat in (135, 136, 155):  # noqa: 501
-            self.state = 'cancel'
-            self.codigo_retorno = resposta.retEvento.infEvento.cStat
-            self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo
-            self.sequencial_evento += 1
+            values = {
+                'state': 'cancel',
+                'codigo_retorno': resposta.retEvento.infEvento.cStat,
+                'mensagem_retorno': resposta.retEvento.infEvento.xMotivo,
+                'sequencial_evento': self.sequencial_evento + 1,
+            }
+
+        elif resposta.cStat == 128:
+            values = {
+                'codigo_retorno': resposta.retEvento.infEvento.cStat,
+                'mensagem_retorno': resposta.retEvento.infEvento.xMotivo,
+            }
         else:
-            if resposta.cStat == 128:
-                self.codigo_retorno = resposta.retEvento.infEvento.cStat
-                self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo
-            else:
-                self.codigo_retorno = resposta.cStat
-                self.mensagem_retorno = resposta.xMotivo
+            values = {
+                'codigo_retorno': resposta.cStat,
+                'mensagem_retorno': resposta.xMotivo,
+            }
+
+        self.write(values)
 
         self.env['invoice.electronic.event'].create({
             'code': self.codigo_retorno,

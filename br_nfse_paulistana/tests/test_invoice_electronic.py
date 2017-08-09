@@ -159,11 +159,20 @@ class TestNFeBrasil(TransactionCase):
 
         for invoice in self.invoices:
             self.assertEquals(invoice.total_edocs, 0)
+            self.assertEquals(invoice.nfse_number, 0)
+            self.assertEquals(invoice.nfse_exception_number, 0)
+            self.assertEquals(invoice.nfse_exception, False)
+            self.assertEquals(invoice.sending_nfse, False)
+
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
 
             # Verifica algumas propriedades computadas que dependem do edoc
             self.assertEquals(invoice.total_edocs, 1)
+            self.assertTrue(invoice.nfse_number != 0)
+            self.assertTrue(invoice.nfse_exception_number != 0)
+            self.assertEquals(invoice.nfse_exception, False)
+            self.assertEquals(invoice.sending_nfse, True)
 
     def test_check_invoice_electronic_values(self):
 
@@ -223,12 +232,12 @@ class TestNFeBrasil(TransactionCase):
             invoice_electronic.verify_code = '123'
             invoice_electronic.numero_nfse = '123'
             invoice_electronic.action_cancel_document(
-                justificativa="Cancelamento de teste")
+                justificativa='Cancelamento de teste')
 
             self.assertEquals(invoice_electronic.state, 'cancel')
-            self.assertEquals(invoice_electronic.codigo_retorno, "100")
+            self.assertEquals(invoice_electronic.codigo_retorno, '100')
             self.assertEquals(invoice_electronic.mensagem_retorno,
-                              "Nota Fiscal Paulistana Cancelada")
+                              'Nota Fiscal Paulistana Cancelada')
 
     @mock.patch('pytrustnfe.nfse.paulistana.cancelamento_nfe')
     def test_nfse_cancelamento_erro(self, cancelar):
@@ -252,7 +261,7 @@ class TestNFeBrasil(TransactionCase):
             invoice_electronic.verify_code = '123'
             invoice_electronic.numero_nfse = '123'
             invoice_electronic.action_cancel_document(
-                justificativa="Cancelamento de teste")
+                justificativa='Cancelamento de teste')
 
             # Draft because I didn't send it
             self.assertEquals(invoice_electronic.state, 'cancel')
