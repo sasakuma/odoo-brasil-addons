@@ -11,41 +11,47 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def _compute_nfe_number(self):
-        for item in self:
+        for invoice in self:
             docs = self.env['invoice.electronic'].search(
-                [('invoice_id', '=', item.id)])
+                [('invoice_id', '=', invoice.id)])
             if docs:
-                item.nfe_number = docs[0].numero
-                item.nfe_exception_number = docs[0].numero
-                item.nfe_exception = (docs[0].state in ('error', 'denied'))
-                item.sending_nfe = docs[0].state == 'draft'
-                item.nfe_status = '%s - %s' % (
-                    docs[0].codigo_retorno, docs[0].mensagem_retorno)
+                invoice.nfe_number = docs[0].numero
+                invoice.nfe_exception_number = docs[0].numero
+                invoice.nfe_exception = (docs[0].state in ('error', 'denied'))
+                invoice.sending_nfe = docs[0].state == 'draft'
+                invoice.nfe_status = '%s - %s' % (docs[0].codigo_retorno, docs[0].mensagem_retorno)  # noqa: 501
 
-    ambiente_nfe = fields.Selection(
-        string="Ambiente NFe", related="company_id.tipo_ambiente",
-        readonly=True)
-    sending_nfe = fields.Boolean(
-        string="Enviando NFe?", compute="_compute_nfe_number")
-    nfe_exception = fields.Boolean(
-        string="Problemas na NFe?", compute="_compute_nfe_number")
-    nfe_status = fields.Char(
-        string="Mensagem NFe", compute="_compute_nfe_number")
-    nfe_number = fields.Integer(
-        string=u"Número NFe", compute="_compute_nfe_number")
-    nfe_exception_number = fields.Integer(
-        string=u"Número NFe", compute="_compute_nfe_number")
+    ambiente_nfe = fields.Selection(string='Ambiente NFe',
+                                    related='company_id.tipo_ambiente',
+                                    readonly=True)
+
+    sending_nfe = fields.Boolean(string='Enviando NFe?',
+                                 compute='_compute_nfe_number')
+
+    nfe_exception = fields.Boolean(string='Problemas na NFe?',
+                                   compute='_compute_nfe_number')
+
+    nfe_status = fields.Char(string='Mensagem NFe',
+                             compute='_compute_nfe_number')
+
+    nfe_number = fields.Integer(string=u'Número NFe',
+                                compute='_compute_nfe_number')
+
+    nfe_exception_number = fields.Integer(string=u'Número NFe',
+                                          compute='_compute_nfe_number')
 
     @api.multi
     def action_invoice_draft(self):
-        for item in self:
+        for invoice in self:
             docs = self.env['invoice.electronic'].search(
-                [('invoice_id', '=', item.id)])
+                [('invoice_id', '=', invoice.id)])
+
             for doc in docs:
                 if doc.state in ('done', 'denied', 'cancel'):
                     raise UserError(u'Nota fiscal já emitida para esta '
                                     u'fatura - Duplique a fatura para '
                                     u'continuar')
+
         return super(AccountInvoice, self).action_invoice_draft()
 
     @api.multi
@@ -53,28 +59,36 @@ class AccountInvoice(models.Model):
         super(AccountInvoice, self).action_number()
         sequence = True
         while sequence:
-            search_1 = self.env['invoice.electronic.inutilized'].search([
-                ('numeration_start', '<=', self.internal_number),
-                ('numeration_end', '>=', self.internal_number)],
-                limit=1)
 
-            search_2 = self.env['invoice.electronic'].search([
-                ('numero', '=', self.internal_number)],
-                order='numero desc',
-                limit=1)
+            domain = [('numeration_start', '<=', self.internal_number),
+                      ('numeration_end', '>=', self.internal_number)]
+
+            search_1 = self.env['invoice.electronic.inutilized'].search(domain,
+                                                                        limit=1)  # noqa: 501
+
+            domain = [('numero', '=', self.internal_number)]
+
+            search_2 = self.env['invoice.electronic'].search(domain,
+                                                             order='numero desc',  # noqa: 501
+                                                             limit=1)
 
             sequence = search_1 or search_2
+
             if sequence:
                 self.internal_number += 1
+
         return True
 
     def action_preview_danfe(self):
         docs = self.env['invoice.electronic'].search(
             [('invoice_id', '=', self.id)])
+
         if not docs:
             raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
+
         action = self.env['report'].get_action(
             docs.ids, 'br_nfe.main_template_br_nfe_danfe')
+
         action['report_type'] = 'qweb-html'
         return action
 
@@ -82,6 +96,7 @@ class AccountInvoice(models.Model):
         if self.fiscal_document_id.code == '55':
             docs = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', self.id)])
+
             return self.env['report'].get_action(
                 docs.ids, 'br_nfe.main_template_br_nfe_danfe')
         else:
@@ -120,10 +135,11 @@ class AccountInvoice(models.Model):
             res['ind_final'] = inv.fiscal_position_id.ind_final
 
         # Indicador IE Destinatário
-        ind_ie_dest = False
         if inv.commercial_partner_id.is_company:
+
             if inv.commercial_partner_id.inscr_est:
                 ind_ie_dest = '1'
+
             elif inv.commercial_partner_id.state_id.code in ('AM', 'BA', 'CE',
                                                              'GO', 'MG', 'MS',
                                                              'MT', 'PE', 'RN',
@@ -133,8 +149,10 @@ class AccountInvoice(models.Model):
                 ind_ie_dest = '2'
         else:
             ind_ie_dest = '9'
+
         if inv.commercial_partner_id.indicador_ie_dest:
             ind_ie_dest = inv.commercial_partner_id.indicador_ie_dest
+
         res['ind_ie_dest'] = ind_ie_dest
 
         # Duplicatas
