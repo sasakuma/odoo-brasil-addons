@@ -23,7 +23,7 @@
                     <button name="action_view_edocs"
                             type="object"
                             class="label label-primary"
-                            context="{'search_default_invoice_id': id }"
+                            context="{'search_default_invoice_id': id}"
                             string="Visualizar Fila">
                     </button>
                     ou
@@ -47,7 +47,7 @@
             </div>
             <div name="button_box" position="inside">
                 <button name="action_preview_danfse" type="object" class="oe_stat_button" icon="fa-file-pdf-o"
-                        string="Visualizar Danfse" attrs="{'invisible': ['|', ('state', '==', 'draft'), ('invoice_model', '!=', '001')]}">
+                        string="Visualizar Danfse" attrs="{'invisible': ['|', ('state', '==', 'draft'), '|',('invoice_model', '!=', '001'), ('nfe_exception', '==', True)]}">
                 </button>
             </div>
         </field>
