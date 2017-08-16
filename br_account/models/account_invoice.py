@@ -475,6 +475,12 @@ class AccountInvoice(models.Model):
         return action
 
     @api.multi
+    def invoice_validate(self):
+        res = super(AccountInvoice, self).invoice_validate()
+        self.action_number()
+        return res
+
+    @api.multi
     def action_invoice_open(self):
 
         if self.action_compare_total_parcel_value:
@@ -483,6 +489,27 @@ class AccountInvoice(models.Model):
             raise UserError(_('O valor total da fatura e total das '
                               'parcelas divergem! Por favor, gere as '
                               'parcelas novamente.'))
+
+    @api.multi
+    def action_number(self):
+
+        for invoice in self:
+
+            if invoice.fiscal_document_id:
+
+                if not invoice.document_serie_id:
+                    raise UserError(
+                        u'Configure uma série para a fatura')
+
+                elif not invoice.document_serie_id.internal_sequence_id:
+                    raise UserError(
+                        u'Configure a sequência para a numeração da nota')
+                else:
+                    seq_number = \
+                        invoice.document_serie_id.internal_sequence_id.next_by_id()  # noqa: 501
+                    self.internal_number = seq_number
+
+        return True
 
     @api.multi
     def action_compare_total_parcel_value(self):
