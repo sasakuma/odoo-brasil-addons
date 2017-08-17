@@ -64,20 +64,6 @@ class AccountInvoice(models.Model):
             vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
             return vals
 
-    @api.multi
-    def action_number(self):
-        for invoice in self:
-            if invoice.is_electronic:
-                if not invoice.document_serie_id.internal_sequence_id.id:
-                    raise UserError(
-                        u'Configure a sequência para a numeração da nota')
-
-                seq_number = \
-                    invoice.document_serie_id.internal_sequence_id.next_by_id()
-                self.write(
-                    {'internal_number': seq_number})
-        return True
-
     def _prepare_edoc_item_vals(self, line):
         vals = {
             'name': line.name,
@@ -214,7 +200,6 @@ class AccountInvoice(models.Model):
     @api.multi
     def invoice_validate(self):
         res = super(AccountInvoice, self).invoice_validate()
-        self.action_number()
         for item in self:
             if item.is_electronic:
                 edoc_vals = self._prepare_edoc_vals(item)

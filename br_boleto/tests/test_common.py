@@ -88,7 +88,9 @@ class TestBoleto(TransactionCase):
             'name': "Teste Validação",
             'reference_type': "none",
             'fiscal_document_id': self.env.ref(
-                'br_data_account.fiscal_document_01').id,
+                'br_data_account.fiscal_document_1B').id,
+            'document_serie_id': self.env.ref(
+                'br_data_account_product.br_document_serie_1_avulsa').id,
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,
             'fiscal_position_id': self.fpos.id,
