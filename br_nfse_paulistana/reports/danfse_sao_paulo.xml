@@ -235,7 +235,7 @@
                 <div class="col-xs-12" style="text-align:center;">
                     <strong>VALOR TOTAL DA NOTA =</strong>
                     <strong t-field="doc.valor_final"
-                            t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                            t-field-options="{'widget': 'monetary',  'display_currency': doc.currency_id}"></strong>
                     <br/>
                 </div>
             </div>
@@ -246,7 +246,7 @@
                     <br/>
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.invoice_id.inss_value"
-                                t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                                t-field-options="{'widget': 'monetary',  'display_currency': doc.currency_id}"></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>-</strong>
@@ -257,7 +257,7 @@
                     <br/>
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.ir_value"
-                                t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                                t-field-options="{'widget': 'monetary',  'display_currency': doc.currency_id}"></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>-</strong>
@@ -268,7 +268,7 @@
                     <br/>
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.csll_value"
-                                t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                                t-field-options="{'widget': 'monetary',  'display_currency': doc.currency_id}"></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>-</strong>
@@ -282,7 +282,7 @@
                     <br/>
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.cofins_valor"
-                                t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                                t-field-options="{'widget': 'monetary',  'display_currency': doc.currency_id}"></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>-</strong>
@@ -295,7 +295,7 @@
                     <br/>
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.pis_valor"
-                                t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                                t-field-options="{'widget': 'monetary',  'display_currency': doc.currency_id}"></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>-</strong>
@@ -324,7 +324,7 @@
                     <br/>
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.valor_bruto"
-                                t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                                t-field-options="{'widget': 'monetary',  'display_currency': doc.currency_id}"></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>*</strong>
@@ -349,7 +349,7 @@
                     <br/>
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.issqn_valor"
-                                t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                                t-field-options="{'widget': 'monetary',  'display_currency': doc.currency_id}"></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>*</strong>
