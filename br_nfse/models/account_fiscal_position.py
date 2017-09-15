@@ -11,3 +11,6 @@ class AccountFiscalPosition(models.Model):
     nfse_source_operation_id = fields.Many2one(
         comodel_name='br_account.nfse.source.operation',
         string=u'Natureza da Operação')
+
+    fiscal_document_id_code = fields.Char(string='Fiscal Document Code',
+                                          related='fiscal_document_id.code')
