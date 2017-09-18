@@ -105,12 +105,12 @@
                 <div class="col-xs-12" style="text-align:center;">
                     <strong>PRESTADOR DE SERVIÇOS</strong>
                 </div>
-                <div class="col-xs-1">
-                    <img style="margin-top:0px;height:100px;width:200px"
+                <div class="col-xs-2">
+                    <img style="margin-top:0px;height:100px;width:100%"
                          t-att-src="'data:image/png;base64,%s' % doc.company_id.logo"/>
                     <br/>
                 </div>
-                <div class="col-xs-11">
+                <div class="col-xs-10">
                     <div class="col-xs-6">
                         CNPJ:
                         <strong t-field="doc.company_id.partner_id.cnpj_cpf"></strong>
