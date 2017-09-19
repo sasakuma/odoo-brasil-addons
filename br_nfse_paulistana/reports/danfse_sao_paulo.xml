@@ -424,8 +424,6 @@
                         <span t-esc="doc.get_nfse_observation_text()"/>
                     </p>
                 </div>
-                <br/>
-                <span t-field="doc.informacoes_legais"></span>
             </div>
         </div>
     </template>
