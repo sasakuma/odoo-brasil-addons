@@ -389,6 +389,7 @@ class AccountInvoice(models.Model):
         self.fiscal_observation_ids = [(6, False, ob_ids)]
 
         self.fiscal_document_id = self.fiscal_position_id.fiscal_document_id.id
+        self.fiscal_comment = self.fiscal_position_id.note
 
     def move_line_from_payment_term(self, inv, total, total_currency):
 

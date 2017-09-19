@@ -26,10 +26,6 @@
                             context="{'search_default_invoice_id': id}"
                             string="Visualizar Fila">
                     </button>
-                    ou
-                    <button name="action_view_edocs" type="object" class="label label-primary"
-                            context="{'search_default_invoice_id': id }" string="Enviar Agora">
-                    </button>
                 </div>
                 <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('invoice_model', '!=', '001'),('nfe_exception', '==', False)]}">
                     Ocorreu um erro com a

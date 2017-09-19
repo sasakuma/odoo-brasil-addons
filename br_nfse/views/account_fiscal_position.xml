@@ -9,8 +9,9 @@
         <field name="arch" type="xml">
 
             <xpath expr="//field[@name='service_type_id']" position="after">
+                <field name="fiscal_document_id_code" invisible="1"/>
                 <field name="nfse_source_operation_id"
-                       attrs="{'required': [('position_type', '=', 'service')]}"
+                       attrs="{'required': [('position_type', '=', 'service'),('fiscal_document_id_code','=','001')]}"
                        options="{'no_create': True}"/>
             </xpath>
 

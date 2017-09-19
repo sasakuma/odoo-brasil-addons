@@ -105,12 +105,12 @@
                 <div class="col-xs-12" style="text-align:center;">
                     <strong>PRESTADOR DE SERVIÇOS</strong>
                 </div>
-                <div class="col-xs-1">
-                    <img style="margin-top:0px;height:100px;width:200px"
+                <div class="col-xs-2">
+                    <img style="margin-top:0px;height:100px;width:100%"
                          t-att-src="'data:image/png;base64,%s' % doc.company_id.logo"/>
                     <br/>
                 </div>
-                <div class="col-xs-11">
+                <div class="col-xs-10">
                     <div class="col-xs-6">
                         CNPJ:
                         <strong t-field="doc.company_id.partner_id.cnpj_cpf"></strong>
@@ -213,12 +213,47 @@
                 </div>
                 <div class="col-xs-12">
                     <br/>
-                    <t t-foreach="doc.electronic_item_ids" t-as="line">
-                        <p t-field="line.name"></p>
-                    </t>
-                    <span t-field="doc.informacoes_legais"></span>
-                    <span t-field="doc.informacoes_complementares"></span>
-                    <span t-field="doc.invoice_id.number"></span>
+                    <div class="col-xs-12">
+                        <t t-foreach="doc.electronic_item_ids" t-as="line">
+                            <p t-field="line.name"></p>
+                        </t>
+                    </div>
+
+                    <div class="col-xs-12" style="padding-top: 15px; padding-bottom: 15px">
+                        <div class="col-xs-3">
+                            Vencimento(s) / Parcela(s):
+                        </div>
+                        <div class="col-xs-9">
+                            <t t-foreach="doc.invoice_id.parcel_ids" t-as="parcel">
+                                <div class="col-xs-3">
+                                    <span t-field="parcel.date_maturity"/>
+                                </div>
+                                <div class="col-xs-9">
+                                    <span t-field="parcel.parceling_value"/>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div style="padding-top: 15px">
+                        <p>
+                            Valor aproximado dos tributos: Federal
+                            <span t-field="doc.invoice_id.invoice_line_ids[0].tributos_estimados_federais"
+                                  t-field-options="{'widget': 'monetary',  'display_currency': doc.currency_id}"/>
+                            (<span t-field="doc.fiscal_position_id.service_type_id.federal_nacional"/>%),
+                            Municipal
+                            <span t-field="doc.invoice_id.invoice_line_ids[0].tributos_estimados_municipais"
+                                  t-field-options="{'widget': 'monetary',  'display_currency': doc.currency_id}"/>
+                            (<span t-field="doc.fiscal_position_id.service_type_id.municipal_imposto"/>%),
+                            conforme lei 12.741/2012 Fonte: IBPT.
+                        </p>
+                        <p>
+                            Número do pedido interno: <span t-field="doc.invoice_id.number"/>
+                        </p>
+                    </div>
+
+                    <span t-field="doc.informacoes_legais" style="padding-top: 15px"/>
+                    <span t-field="doc.informacoes_complementares" style="padding-top: 15px; padding-bottom: 15px"/>
 
                     <t t-if="doc.state == 'cancel'">
                         <center>
@@ -235,7 +270,7 @@
                 <div class="col-xs-12" style="text-align:center;">
                     <strong>VALOR TOTAL DA NOTA =</strong>
                     <strong t-field="doc.valor_final"
-                            t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                            t-field-options="{'widget': 'monetary',  'display_currency': doc.currency_id}"></strong>
                     <br/>
                 </div>
             </div>
@@ -246,7 +281,7 @@
                     <br/>
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.invoice_id.inss_value"
-                                t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                                t-field-options="{'widget': 'monetary',  'display_currency': doc.currency_id}"></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>-</strong>
@@ -257,7 +292,7 @@
                     <br/>
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.ir_value"
-                                t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                                t-field-options="{'widget': 'monetary',  'display_currency': doc.currency_id}"></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>-</strong>
@@ -268,7 +303,7 @@
                     <br/>
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.csll_value"
-                                t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                                t-field-options="{'widget': 'monetary',  'display_currency': doc.currency_id}"></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>-</strong>
@@ -282,7 +317,7 @@
                     <br/>
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.cofins_valor"
-                                t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                                t-field-options="{'widget': 'monetary',  'display_currency': doc.currency_id}"></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>-</strong>
@@ -295,7 +330,7 @@
                     <br/>
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.pis_valor"
-                                t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                                t-field-options="{'widget': 'monetary',  'display_currency': doc.currency_id}"></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>-</strong>
@@ -324,7 +359,7 @@
                     <br/>
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.valor_bruto"
-                                t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                                t-field-options="{'widget': 'monetary',  'display_currency': doc.currency_id}"></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>*</strong>
@@ -349,7 +384,7 @@
                     <br/>
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.issqn_valor"
-                                t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                                t-field-options="{'widget': 'monetary',  'display_currency': doc.currency_id}"></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>*</strong>
