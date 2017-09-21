@@ -484,7 +484,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_invoice_open(self):
 
-        if self.action_compare_total_parcel_value:
+        if self.action_compare_total_parcel_value():
             return super(AccountInvoice, self).action_invoice_open()
         else:
             raise UserError(_('O valor total da fatura e total das '
