@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_br_account_document_serie_form" model="ir.ui.view">
+        <field name="name">br_account.document.serie</field>
+        <field name="model">br_account.document.serie</field>
+        <field name="arch" type="xml">
+            <form string="Serie de Documentos Fiscais">
+                <sheet>
+                    <group>
+                        <field name="code" select="1"/>
+                        <field name="active"/>
+                        <field name="name" select="1"/>
+                        <field name="fiscal_document_id" select="1"/>
+                        <field name="fiscal_type"/>
+                        <field name="internal_sequence_id" select="1"/>
+                        <field name="company_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_br_account_document_serie_tree" model="ir.ui.view">
+        <field name="name">br_account.document.serie</field>
+        <field name="model">br_account.document.serie</field>
+        <field name="arch" type="xml">
+            <tree string="Serie de Documentos Fiscais">
+                <field name="code" select="1"/>
+                <field name="name" select="1"/>
+                <field name="fiscal_document_id" select="1"/>
+                <field name="company_id" select="1"/>
+                <field name="active" select="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_br_account_document_serie_form" model="ir.actions.act_window">
+        <field name="name">Document Serie</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">br_account.document.serie</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_br_account_document_serie_tree"/>
+    </record>
+
+    <menuitem id="menu_action_document_serie_form"
+              name="Serie de Documento Fiscal"
+              parent="menu_br_account"
+              action="action_br_account_document_serie_form"/>
+
+</odoo>

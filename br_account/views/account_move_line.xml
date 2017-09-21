@@ -1,28 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record id="br_account_payment_term_form" model="ir.ui.view">
-        <field name="name">br_account.payment.term.form</field>
-        <field name="model">account.payment.term</field>
-        <field name="inherit_id" ref="account.view_payment_term_form"/>
-        <field name="arch" type="xml">
-            <field name="active" position="after">
-                <field name="indPag" required="1"/>
-            </field>
-        </field>
-    </record>
-
-    <record id="view_account_form" model="ir.ui.view">
-        <field name="name">br_account.account.account.form</field>
-        <field name="model">account.account</field>
-        <field name="inherit_id" ref="account.view_account_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='code']" position="after">
-                <field name="code_first_digit"/>
-            </xpath>
-        </field>
-    </record>
-
     <record id="view_move_line_form" model="ir.ui.view">
         <field name="name">account.move.line.form</field>
         <field name="model">account.move.line</field>
@@ -46,10 +24,6 @@
                                    attrs="{'readonly':[('reconciled','=', True)]}"/>
                             <field name="title_type_id"
                                    attrs="{'readonly':[('reconciled','=', True)]}"/>
-                            <!--<field name="pin_date"-->
-                            <!--attrs="{'readonly':[('reconciled','=', True)]}"/>-->
-                            <!--<field name="amount_day"-->
-                            <!--attrs="{'readonly':[('reconciled','=', True)]}"/>-->
                         </group>
                         <group name="dates" string="Dates">
                             <field name="date_maturity"
