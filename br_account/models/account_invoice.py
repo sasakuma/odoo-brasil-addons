@@ -421,8 +421,7 @@ class AccountInvoice(models.Model):
 
             if inv.currency_id != company_currency:
                 amount_currency = company_currency.with_context(
-                    ctx).compute(
-                    parcel.parceling_value, inv.currency_id)
+                    ctx).compute(parcel.parceling_value, inv.currency_id)
             else:
                 amount_currency = False
 
@@ -442,8 +441,8 @@ class AccountInvoice(models.Model):
                 'price': parcel.parceling_value_no_taxes,
                 'account_id': inv.account_id.id,
                 'date_maturity': parcel.date_maturity,
-                'amount_currency': diff_currency and amount_currency,
-                'currency_id': diff_currency and inv.currency_id.id,
+                'amount_currency': parcel.amount_currency,
+                'currency_id': parcel.currency_id,
                 'invoice_id': inv.id,
                 'financial_operation_id': parcel.financial_operation_id.id,
                 'title_type_id': parcel.title_type_id.id,
@@ -484,13 +483,12 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def action_invoice_open(self):
-
-        if self.action_compare_total_parcel_value():
-            return super(AccountInvoice, self).action_invoice_open()
-        else:
-            raise UserError(_('O valor total da fatura e total das '
-                              'parcelas divergem! Por favor, gere as '
-                              'parcelas novamente.'))
+        # if self.action_compare_total_parcel_value():
+        return super(AccountInvoice, self).action_invoice_open()
+        # else:
+        #     raise UserError(_('O valor total da fatura e total das '
+        #                       'parcelas divergem! Por favor, gere as '
+        #                       'parcelas novamente.'))
 
     @api.multi
     def action_number(self):
@@ -735,8 +733,9 @@ class AccountInvoice(models.Model):
                         'date_maturity': no_taxes[0],
                         'financial_operation_id': financial_operation.id,
                         'title_type_id': title_type.id,
-                        'company_currency_id': (diff_currency and
-                                                inv.currency_id.id),
+                        'amount_currency': (diff_currency and
+                                            inv.currency_id.id),
+                        'currency_id': diff_currency and inv.currency_id.id,
                         'invoice_id': inv.id,
                     }
 
