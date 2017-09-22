@@ -439,7 +439,7 @@ class AccountInvoice(models.Model):
             ml_list.append({
                 'type': 'dest',
                 'name': inv.name or '/',
-                'price': parcel.parceling_value,
+                'price': parcel.parceling_value_no_taxes,
                 'account_id': inv.account_id.id,
                 'date_maturity': parcel.date_maturity,
                 'amount_currency': diff_currency and amount_currency,
@@ -697,8 +697,12 @@ class AccountInvoice(models.Model):
                 aux = inv.with_context(ctx).payment_term_id.with_context(
                     currency_id=company_currency.id).compute(
                     total, inv.pre_invoice_date)
+                aux_taxes = inv.with_context(ctx).payment_term_id.with_context(
+                    currency_id=company_currency.id).compute(
+                    inv.amount_total, inv.pre_invoice_date)
 
-                lines = aux[0]
+                lines_no_taxes = aux[0]
+                lines_with_taxes = aux_taxes[0]
 
                 res_amount_currency = total_currency
                 ctx['date'] = inv.pre_invoice_date
@@ -706,24 +710,29 @@ class AccountInvoice(models.Model):
                 # Removemos as parcelas adicionadas anteriormente
                 inv.parcel_ids.unlink()
 
-                for i, t in enumerate(lines):
+                for i, t in enumerate(zip(lines_no_taxes, lines_with_taxes)):
+
+                    no_taxes = t[0]
+                    with_taxes = t[1]
+
                     if inv.currency_id != company_currency:
                         amount_currency = \
                             company_currency.with_context(ctx).compute(
-                                t[1], inv.currency_id)
+                                no_taxes[1], inv.currency_id)
                     else:
                         amount_currency = False
 
                     # last line: add the diff
                     res_amount_currency -= amount_currency or 0
 
-                    if i + 1 == len(lines):
+                    if i + 1 == len(lines_no_taxes):
                         amount_currency += res_amount_currency
 
                     values = {
                         'name': str(i + 1).zfill(2),
-                        'parceling_value': t[1],
-                        'date_maturity': t[0],
+                        'parceling_value': with_taxes[1],
+                        'parceling_value_no_taxes': no_taxes[1],
+                        'date_maturity': no_taxes[0],
                         'financial_operation_id': financial_operation.id,
                         'title_type_id': title_type.id,
                         'company_currency_id': (diff_currency and
