@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo.exceptions import UserError
+from odoo.tools.translate import _
 from odoo.addons.br_boleto.tests.test_common import TestBoleto
 
 
@@ -64,6 +65,28 @@ class TestBoletoSicoob(TestBoleto):
             'state_id': self.env.ref('base.state_br_sc').id,
             'city_id': self.env.ref('br_base.city_4205407').id,
         })
+
+    def teste_validation_partner_and_company(self):
+        error_partner = self.partner_fisica.validate()
+        error_company = self.main_company.validate()
+
+        self.assertEquals(error_partner, _('Client: %s\nMissing Fields:'
+                                           '\n-CNPJ/CPF \n-District\n-ZIP'
+                                           '\n-City\n-State\n\n\n') %
+                          self.partner_fisica.name)
+
+        self.assertEquals(error_company, _('Company: %s\n'
+                                           'Missing Fields:\n-Legal Name'
+                                           '\n-CNPJ/CPF \n-District\n-ZIP'
+                                           '\n-City\n-Street\n-Number'
+                                           '\n-State\n\n\n') %
+                          self.main_company.name)
+
+        self._update_main_company()
+        self._update_partner_fisica()
+
+        self.assertEquals(self.partner_fisica.validate(), '')
+        self.assertEquals(self.main_company.validate(), '')
 
     def test_raise_error_if_not_payment(self):
         self._update_main_company()

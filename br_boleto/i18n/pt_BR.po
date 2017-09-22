@@ -1,0 +1,711 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* br_boleto
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-09-21 20:47+0000\n"
+"PO-Revision-Date: 2017-09-21 17:52-0300\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: pt_BR\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#. module: br_boleto
+#: model:ir.ui.view,arch_db:br_boleto.view_br_boleto_account_payment_mode_form
+msgid "(Un)archiving a project automatically (un)archives its tasks and issues. Do you want to proceed?"
+msgstr "(Des)arquivar um projeto automaticamente (des)arquiva as suas tarefas e incidentes. Você quer prosseguir?"
+
+#. module: br_boleto
+#: code:addons/br_boleto/models/res_company.py:16
+#: code:addons/br_boleto/models/res_partner.py:16
+#, python-format
+msgid "-CNPJ/CPF \n"
+msgstr "-CNPJ/CPF \n"
+
+#. module: br_boleto
+#: code:addons/br_boleto/models/res_company.py:22
+#: code:addons/br_boleto/models/res_partner.py:22
+#, python-format
+msgid "-City\n"
+msgstr "-Cidade\n"
+
+#. module: br_boleto
+#: code:addons/br_boleto/models/res_company.py:18
+#: code:addons/br_boleto/models/res_partner.py:18
+#, python-format
+msgid "-District\n"
+msgstr "-Bairro\n"
+
+#. module: br_boleto
+#: code:addons/br_boleto/models/res_company.py:14
+#: code:addons/br_boleto/models/res_partner.py:14
+#, python-format
+msgid "-Legal Name\n"
+msgstr "-Razão Social\n"
+
+#. module: br_boleto
+#: code:addons/br_boleto/models/res_company.py:26
+#: code:addons/br_boleto/models/res_partner.py:26
+#, python-format
+msgid "-Number\n"
+msgstr "-Número\n"
+
+#. module: br_boleto
+#: code:addons/br_boleto/models/res_company.py:28
+#: code:addons/br_boleto/models/res_partner.py:28
+#, python-format
+msgid "-State\n"
+msgstr "-Estado\n"
+
+#. module: br_boleto
+#: code:addons/br_boleto/models/res_company.py:24
+#: code:addons/br_boleto/models/res_partner.py:24
+#, python-format
+msgid "-Street\n"
+msgstr "-Rua\n"
+
+#. module: br_boleto
+#: code:addons/br_boleto/models/res_company.py:20
+#: code:addons/br_boleto/models/res_partner.py:20
+#, python-format
+msgid "-ZIP\n"
+msgstr "-CEP\n"
+
+#. module: br_boleto
+#: selection:payment.order.line,state:0
+msgid "Aberto"
+msgstr "Aberto"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_mode_boleto_aceite
+msgid "Aceite"
+msgstr "Aceite"
+
+#. module: br_boleto
+#: code:addons/br_boleto/models/account_invoice.py:17
+#, python-format
+msgid ""
+"Action Blocked! To proceed is necessary fill the following fields:\n"
+" %s"
+msgstr ""
+"Ação Bloqueada! Para prosseguir é necessário preencher os seguintes campos:\n"
+" %s"
+
+#. module: br_boleto
+#: model:ir.actions.act_window,name:br_boleto.br_boleto_action
+#: model:ir.ui.view,arch_db:br_boleto.br_boleto_form_view_wizard
+msgid "Alterar / Reimprimir Boleto"
+msgstr "Alterar / Reimprimir Boleto"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_br_boleto_wizard_date_change
+msgid "Alterar Vencimento"
+msgstr "Alterar Vencimento"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_type:0
+msgid "Banco do Brasil"
+msgstr "Banco do Brasil"
+
+#. module: br_boleto
+#: model:ir.ui.view,arch_db:br_boleto.view_br_boleto_account_payment_mode_form
+msgid "Bank Account"
+msgstr "Conta Bancária"
+
+#. module: br_boleto
+#: model:ir.model,name:br_boleto.model_res_partner_bank
+msgid "Bank Accounts"
+msgstr "Contas Bancárias"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_type:0
+msgid "Banrisul"
+msgstr "Banrisul"
+
+#. module: br_boleto
+#: model:ir.ui.view,arch_db:br_boleto.view_move_line_form
+msgid "Billet"
+msgstr "Boleto"
+
+#. module: br_boleto
+#: model:ir.ui.view,arch_db:br_boleto.view_br_boleto_account_payment_mode_form
+msgid "Billing Order"
+msgstr "Boleto"
+
+#. module: br_boleto
+#: model:ir.actions.report.xml,name:br_boleto.action_insert_reports_print_button_account_invoice
+#: model:ir.actions.report.xml,name:br_boleto.action_insert_reports_print_button_account_move_line
+#: model:ir.model.fields,field_description:br_boleto.field_payment_mode_boleto_type
+msgid "Boleto"
+msgstr "Boleto"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_mode_boleto
+msgid "Boleto?"
+msgstr "Boleto?"
+
+#. module: br_boleto
+#: model:ir.ui.view,arch_db:br_boleto.account_move_line_form
+msgid "Boletos"
+msgstr "Boletos"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_type:0
+msgid "Bradesco"
+msgstr "Bradesco"
+
+#. module: br_boleto
+#: model:ir.ui.view,arch_db:br_boleto.view_br_boleto_account_payment_mode_form
+msgid "CNAB"
+msgstr "CNAB"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_especie:0
+msgid "CONTA DE PRESTAÇÃO DE SERVIÇOS"
+msgstr "CONTA DE PRESTAÇÃO DE SERVIÇOS"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_especie:0
+msgid "CONTRATO"
+msgstr "CONTRATO"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_especie:0
+msgid "COSSEGUROS"
+msgstr "COSSEGUROS"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_type:0
+msgid "Caixa Econômica"
+msgstr "Caixa Econômica"
+
+#. module: br_boleto
+#: selection:payment.order,state:0
+msgid "Cancelado"
+msgstr "Cancelado"
+
+#. module: br_boleto
+#: model:ir.ui.view,arch_db:br_boleto.br_boleto_form_view_wizard
+msgid "Cancelar"
+msgstr "Cancelar"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_mode_boleto_carteira
+msgid "Carteira"
+msgstr "Carteira"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_type:0
+msgid "Cecred"
+msgstr "Cecred"
+
+#. module: br_boleto
+#: model:ir.ui.view,arch_db:br_boleto.view_br_boleto_account_payment_mode_form
+msgid "Chart of Accounts"
+msgstr "Plano de Contas"
+
+#. module: br_boleto
+#: code:addons/br_boleto/models/res_partner.py:30
+#, python-format
+msgid ""
+"Client: %s\n"
+"Missing Fields:\n"
+"%s\n"
+"\n"
+msgstr ""
+"Cliente: %s\n"
+"Campos a preencher:\n"
+"%s\n"
+"\n"
+
+#. module: br_boleto
+#: code:addons/br_boleto/tests/test_sicoob.py:73
+#, python-format
+msgid ""
+"Client: %s\n"
+"Missing Fields:\n"
+"-CNPJ/CPF \n"
+"-District\n"
+"-ZIP\n"
+"-City\n"
+"-State\n"
+"\n"
+"\n"
+msgstr ""
+"Cliente: %s\n"
+"Campos a preencher:\n"
+"-CNPJ/CPF \n"
+"-Bairro\n"
+"-CEP\n"
+"-Cidade\n"
+"-Estado\n"
+"\n"
+"\n"
+
+#. module: br_boleto
+#: model:ir.model,name:br_boleto.model_res_company
+msgid "Companies"
+msgstr "Empresas"
+
+#. module: br_boleto
+#: code:addons/br_boleto/models/res_company.py:30
+#, python-format
+msgid ""
+"Company: %s\n"
+"Missing Fields:\n"
+"%s\n"
+"\n"
+msgstr ""
+"Companhia: %s\n"
+"Campos a preencher:\n"
+"%s\n"
+"\n"
+
+#. module: br_boleto
+#: code:addons/br_boleto/tests/test_sicoob.py:78
+#, python-format
+msgid ""
+"Company: %s\n"
+"Missing Fields:\n"
+"-Legal Name\n"
+"-CNPJ/CPF \n"
+"-District\n"
+"-ZIP\n"
+"-City\n"
+"-Street\n"
+"-Number\n"
+"-State\n"
+"\n"
+"\n"
+msgstr ""
+"Companhia: %s\n"
+"Campos a preencher:\n"
+"-Razão Social\n"
+"-CNPJ/CPF \n"
+"-Bairro\n"
+"-CEP\n"
+"-Cidade\n"
+"-Rua\n"
+"-Número\n"
+"-Estado\n"
+"\n"
+"\n"
+
+#. module: br_boleto
+#: selection:payment.order,state:0
+msgid "Confirmado"
+msgstr "Confirmado"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_br_boleto_wizard_create_uid
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_create_uid
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_line_create_uid
+msgid "Created by"
+msgstr "Criado por"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_br_boleto_wizard_create_date
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_create_date
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_line_create_date
+msgid "Created on"
+msgstr "Criado em"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_mode_boleto_cnab_code
+msgid "Código Convênio"
+msgstr "Código Convênio"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_account_journal_acc_codigo_convenio
+#: model:ir.model.fields,field_description:br_boleto.field_res_partner_bank_codigo_convenio
+msgid "Código de Beneficiário"
+msgstr "Código de Beneficiário"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_mode_boleto_protesto
+msgid "Códigos de Protesto"
+msgstr "Códigos de Protesto"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_especie:0
+msgid "DIVERSOS"
+msgstr "DIVERSOS"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_especie:0
+msgid "DOCUMENTO DE DÍVIDA"
+msgstr "DOCUMENTO DE DÍVIDA"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_especie:0
+msgid "DUPLICATA DE SERVIÇO"
+msgstr "DUPLICATA DE SERVIÇO"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_especie:0
+msgid "DUPLICATA MERCANTIL"
+msgstr "DUPLICATA MERCANTIL"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_br_boleto_wizard_display_name
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_display_name
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_line_display_name
+msgid "Display Name"
+msgstr "Nome para Exibição"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_especie:0
+msgid "ENCARGOS CONDOMINIAIS"
+msgstr "ENCARGOS CONDOMINIAIS"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_account_move_line_boleto_emitido
+msgid "Emitido"
+msgstr "Emitido"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_mode_boleto_especie
+msgid "Espécie do Título"
+msgstr "Espécie do Título"
+
+#. module: br_boleto
+#: selection:payment.order,state:0
+msgid "Fechado"
+msgstr "Fechado"
+
+#. module: br_boleto
+#: model:ir.ui.view,arch_db:br_boleto.view_br_boleto_invoice_form
+msgid "Gerar Boleto"
+msgstr "Gerar Boleto"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_type:0
+msgid "HSBC"
+msgstr "HSBC"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_br_boleto_wizard_id
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_id
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_line_id
+msgid "ID"
+msgstr "ID"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_mode_instrucoes
+msgid "Instruções"
+msgstr "Instruções"
+
+#. module: br_boleto
+#: model:ir.model,name:br_boleto.model_account_invoice
+msgid "Invoice"
+msgstr "Fatura"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_type:0
+msgid "Itaú"
+msgstr "Itaú"
+
+#. module: br_boleto
+#: model:ir.model,name:br_boleto.model_account_journal
+msgid "Journal"
+msgstr "Diário"
+
+#. module: br_boleto
+#: model:ir.model,name:br_boleto.model_account_move_line
+msgid "Journal Item"
+msgstr "Item de Diário"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_mode_late_payment_interest
+msgid "Juros de Mora ao Mês"
+msgstr "Juros de Mora ao Mês"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_especie:0
+msgid "LETRA DE CÂMBIO"
+msgstr "LETRA DE CÂMBIO"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_line_move_id
+msgid "Lançamento de Diário"
+msgstr "Lançamento de Diário"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_br_boleto_wizard___last_update
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order___last_update
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_line___last_update
+msgid "Last Modified on"
+msgstr "Última Modificação em"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_br_boleto_wizard_write_uid
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_line_write_uid
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_write_uid
+msgid "Last Updated by"
+msgstr "Última atualização por"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_br_boleto_wizard_write_date
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_line_write_date
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_write_date
+msgid "Last Updated on"
+msgstr "Última atualização em"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_line_ids
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_line_move_line_id
+#: model:ir.ui.view,arch_db:br_boleto.trustcode_payment_order_form_view
+msgid "Linhas de Cobrança"
+msgstr "Linhas de Cobrança"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_especie:0
+msgid "MENSALIDADE ESCOLAR"
+msgstr "MENSALIDADE ESCOLAR"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_mode_boleto_modalidade
+msgid "Modalidade"
+msgstr "Modalidade"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_line_payment_mode_id
+msgid "Modo de pagamento"
+msgstr "Modo de pagamento"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_currency_id
+msgid "Moeda"
+msgstr "Moeda"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_br_boleto_wizard_move_line_id
+msgid "Move line id"
+msgstr "Linha de Movimentação"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_especie:0
+msgid "NOTA DE DÉBITOS"
+msgstr "NOTA DE DÉBITOS"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_especie:0
+msgid "NOTA DE SEGURO"
+msgstr "NOTA DE SEGURO"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_especie:0
+msgid "NOTA PROMISSÓRIA"
+msgstr "NOTA PROMISSÓRIA"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_protesto:0
+msgid "Negativar (Dias Corridos)"
+msgstr "Negativar (Dias Corridos)"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_name
+msgid "Nome"
+msgstr "Nome"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_account_move_line_nosso_numero
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_line_nosso_numero
+msgid "Nosso Número"
+msgstr "Nosso Número"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_aceite:0
+msgid "Não"
+msgstr "Não"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_protesto:0
+msgid "Não Negativar"
+msgstr "Não Negativar"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_protesto:0
+msgid "Não protestar"
+msgstr "Não protestar"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_line_payment_order_id
+#: model:ir.ui.view,arch_db:br_boleto.trustcode_payment_order_form_view
+msgid "Ordem de Pagamento"
+msgstr "Ordem de Pagamento"
+
+#. module: br_boleto
+#: model:ir.actions.act_window,name:br_boleto.action_payment_order_form
+#: model:ir.ui.menu,name:br_boleto.menu_action_payment_order
+msgid "Ordens de Cobrança"
+msgstr "Ordens de Cobrança"
+
+#. module: br_boleto
+#: model:ir.ui.view,arch_db:br_boleto.trustcode_payment_order_tree_view
+msgid "Ordens de Pagamento"
+msgstr "Ordens de Pagamento"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_br_boleto_wizard_payment_due
+msgid "Pagamento Atrasado?"
+msgstr "Pagamento Atrasado?"
+
+#. module: br_boleto
+#: selection:payment.order.line,state:0
+msgid "Pago"
+msgstr "Pago"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_line_partner_id
+msgid "Parceiro"
+msgstr "Parceiro"
+
+#. module: br_boleto
+#: model:ir.model,name:br_boleto.model_res_partner
+msgid "Partner"
+msgstr "Parceiro"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_payment_mode_id
+msgid "Payment Mode"
+msgstr "Modo de Pagamento"
+
+#. module: br_boleto
+#: model:ir.model,name:br_boleto.model_payment_mode
+msgid "Payment Modes"
+msgstr "Modos de Pagamento"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_mode_late_payment_fee
+msgid "Percentual Multa"
+msgstr "Percentual Multa"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_mode_boleto_protesto_prazo
+msgid "Prazo protesto"
+msgstr "Prazo protesto"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_protesto:0
+msgid "Protestar (Dias Corridos)"
+msgstr "Protestar (Dias Corridos)"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_protesto:0
+msgid "Protestar (Dias Úteis)"
+msgstr "Protestar (Dias Úteis)"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_especie:0
+msgid "RECIBO"
+msgstr "RECIBO"
+
+#. module: br_boleto
+#: selection:payment.order,state:0
+msgid "Rascunho"
+msgstr "Rascunho"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_line_name
+msgid "Ref."
+msgstr "Ref."
+
+#. module: br_boleto
+#: model:ir.ui.view,arch_db:br_boleto.br_boleto_form_view_wizard
+msgid "Reimprimir"
+msgstr "Reimprimir"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_type:0
+msgid "Santander"
+msgstr "Santander"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_protesto:0
+msgid "Sem instrução"
+msgstr "Sem instrução"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_mode_nosso_numero_sequence
+msgid "Seq. do Nosso Número"
+msgstr "Seq. do Nosso Número"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_type:0
+msgid "Sicoob"
+msgstr "Sicoob"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_type:0
+msgid "Sicredi"
+msgstr "Sicredi"
+
+#. module: br_boleto
+#: selection:payment.mode,boleto_aceite:0
+msgid "Sim"
+msgstr "Sim"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_line_state
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_state
+msgid "Situação"
+msgstr "Situação"
+
+#. module: br_boleto
+#: model:ir.model.fields,help:br_boleto.field_payment_order_line_move_id
+msgid "The move of this entry line."
+msgstr "O movimento desta linha de entrada"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_amount_total
+msgid "Total"
+msgstr "Total"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_user_id
+msgid "User"
+msgstr "Usuário"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_line_value
+msgid "Valor"
+msgstr "Valor"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_mode_boleto_variacao
+msgid "Variação"
+msgstr "Variação"
+
+#. module: br_boleto
+#: model:ir.model.fields,field_description:br_boleto.field_payment_order_line_date_maturity
+#: model:ir.ui.view,arch_db:br_boleto.br_boleto_form_view_wizard
+msgid "Vencimento"
+msgstr "Vencimento"
+
+#. module: br_boleto
+#: model:ir.model,name:br_boleto.model_br_boleto_wizard
+msgid "br.boleto.wizard"
+msgstr "br.boleto.wizard"
+
+#. module: br_boleto
+#: model:ir.ui.view,arch_db:br_boleto.br_boleto_form_view_wizard
+msgid "or"
+msgstr "ou"
+
+#. module: br_boleto
+#: model:ir.model,name:br_boleto.model_payment_order
+msgid "payment.order"
+msgstr "payment.order"
+
+#. module: br_boleto
+#: model:ir.model,name:br_boleto.model_payment_order_line
+msgid "payment.order.line"
+msgstr "payment.order.line"

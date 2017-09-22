@@ -4,6 +4,8 @@
 
 from . import account_move_line
 from . import account_invoice
+from . import res_company
+from . import res_partner
 from . import res_partner_bank
 from . import payment_order
 from . import payment_mode
