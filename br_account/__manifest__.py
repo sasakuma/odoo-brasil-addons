@@ -34,6 +34,7 @@
         'views/br_account_fiscal_document.xml',
         'views/br_account_fiscal_observation.xml',
         'views/br_account_import_declaration_line.xml',
+        'views/br_account_invoice_parcel.xml',
         'views/br_account_service_type.xml',
         'views/product_template.xml',
         'views/res_company.xml',

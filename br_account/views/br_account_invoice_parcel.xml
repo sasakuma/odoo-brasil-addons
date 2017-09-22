@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_br_account_invoice_parcel_tree" model="ir.ui.view">
+        <field name="name">br_account.invoice.parcel.tree.view</field>
+        <field name="model">br_account.invoice.parcel</field>
+        <field name="arch" type="xml">
+            <tree string="Parcelas">
+                <field name="invoice_id" invisible="1"/>
+                <field name="company_currency_id" invisible="1"/>
+                <field name="date_maturity"/>
+                <field name="name"/>
+                <field name="parceling_value" sum="Valor Total"/>
+                <field name="financial_operation_id"/>
+                <field name="title_type_id"/>
+                <field name="pin_date"/>
+                <field name="amount_days"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_br_account_invoice_parcel_form" model="ir.ui.view">
+        <field name="name">br_account.invoice.parcel.form.view</field>
+        <field name="model">br_account.invoice.parcel</field>
+        <field name="arch" type="xml">
+            <form string="Parcelas">
+                <sheet>
+                    <group>
+                        <field name="invoice_id" invisible="1"/>
+                        <field name="company_currency_id" invisible="1"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="date_maturity"/>
+                        <field name="name"/>
+                        <field name="parceling_value"/>
+                        <field name="parceling_value_no_taxes"/>
+                        <field name="amount_currency" groups="base.group_multi_currency"/>
+                        <field name="financial_operation_id"/>
+                        <field name="title_type_id"/>
+                        <field name="pin_date"/>
+                        <field name="amount_days"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

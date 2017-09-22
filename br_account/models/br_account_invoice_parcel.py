@@ -12,6 +12,15 @@ class BrAccountInvoiceParcel(models.Model):
     _name = 'br_account.invoice.parcel'
     _description = 'Classe que representa as parcelas da Fatura'
 
+    @api.model
+    def _get_currency(self):
+        currency = False
+        context = self._context or {}
+        if context.get('default_journal_id', False):
+            currency = self.env['account.journal'].browse(
+                context['default_journal_id']).currency_id
+        return currency
+
     name = fields.Char(string='Parcela')
 
     invoice_id = fields.Many2one(comodel_name='account.invoice',
@@ -33,6 +42,17 @@ class BrAccountInvoiceParcel(models.Model):
                                                store=True,
                                                default=0.0,
                                                currency_field='company_currency_id')
+
+    amount_currency = fields.Monetary(string='Valor em outra moeda',
+                                      help="O valor da parcela expresso "
+                                           "em outra moeda opcional se houver"
+                                           " uma entrada multi-moeda.")
+
+    currency_id = fields.Many2one('res.currency',
+                                  string='Currency',
+                                  default=_get_currency,
+                                  help="Outra moeda opcional se houver uma "
+                                       "entra multi-moeda.")
 
     company_currency_id = fields.Many2one(comodel_name='res.currency',
                                           related='invoice_id.company_id.'
