@@ -27,6 +27,13 @@ class BrAccountInvoiceParcel(models.Model):
                                       default=0.0,
                                       currency_field='company_currency_id')
 
+    parceling_value_no_taxes = fields.Monetary(string='Valor sem taxas',
+                                               required=True,
+                                               readonly=True,
+                                               store=True,
+                                               default=0.0,
+                                               currency_field='company_currency_id')
+
     company_currency_id = fields.Many2one(comodel_name='res.currency',
                                           related='invoice_id.company_id.'
                                                   'currency_id',

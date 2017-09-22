@@ -51,6 +51,7 @@
                             <field name="date_maturity"/>
                             <field name="name"/>
                             <field name="parceling_value" sum="Valor Total"/>
+                            <field name="parceling_value_no_taxes" invisible="1"/>
                             <field name="financial_operation_id"/>
                             <field name="title_type_id"/>
                             <field name="pin_date"/>
