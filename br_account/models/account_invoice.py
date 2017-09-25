@@ -483,12 +483,16 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def action_invoice_open(self):
-        if self.compare_total_parcel_value():
-            return super(AccountInvoice, self).action_invoice_open()
+        if self.parcel_ids:
+            if self.compare_total_parcel_value():
+                return super(AccountInvoice, self).action_invoice_open()
+            else:
+                raise UserError(_('O valor total da fatura e total das '
+                                  'parcelas divergem! Por favor, gere as '
+                                  'parcelas novamente.'))
         else:
-            raise UserError(_('O valor total da fatura e total das '
-                              'parcelas divergem! Por favor, gere as '
-                              'parcelas novamente.'))
+            # Para fins de compatibilidade, chama o metodo de validar invoice
+            return super(AccountInvoice, self).action_invoice_open()
 
     @api.multi
     def action_number(self):
@@ -514,23 +518,21 @@ class AccountInvoice(models.Model):
     @api.multi
     def compare_total_parcel_value(self):
 
-        if self.parcel_ids:
+        # Obtemos o total dos valores da parcela
+        total = sum([p.parceling_value for p in self.parcel_ids])
 
-            # Obtemos o total dos valores da parcela
-            total = sum([p.parceling_value for p in self.parcel_ids])
+        # Obtemos a precisao configurada
+        prec = self.env['decimal.precision'].precision_get('Account')
 
-            # Obtemos a precisao configurada
-            prec = self.env['decimal.precision'].precision_get('Account')
-
-            # Comparamos o valor total da invoice e das parcelas
-            # a fim de verificar se os valores sao os mesmos
-            # float_compare retorna 0, se os valores forem iguais
-            # float_compare retorna -1, se amount_total for menor que total
-            # float_compare retorna 1, se amount_total for maior que total
-            if float_compare(self.amount_total, total, precision_digits=prec):
-                return False
-
-        return True
+        # Comparamos o valor total da invoice e das parcelas
+        # a fim de verificar se os valores sao os mesmos
+        # float_compare retorna 0, se os valores forem iguais
+        # float_compare retorna -1, se amount_total for menor que total
+        # float_compare retorna 1, se amount_total for maior que total
+        if float_compare(self.amount_total, total, precision_digits=prec):
+            return False
+        else:
+            return True
 
     @api.multi
     def action_invoice_cancel_paid(self):

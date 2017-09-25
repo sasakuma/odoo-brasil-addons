@@ -4,6 +4,8 @@
 
 from odoo.addons.br_account.tests.test_base import TestBaseBr
 
+from odoo.exceptions import UserError
+
 
 class TestAccountInvoice(TestBaseBr):
 
@@ -285,10 +287,6 @@ class TestAccountInvoice(TestBaseBr):
 
         for inv in self.invoices:
 
-            # Verificamos quando nao existe nenhuma parcela
-            self.assertFalse(inv.parcel_ids)
-            self.assertTrue(inv.compare_total_parcel_value())
-
             # Criamos as parcelas
             inv.generate_parcel_entry(self.financial_operation,
                                       self.title_type)
@@ -299,3 +297,25 @@ class TestAccountInvoice(TestBaseBr):
 
             self.assertTrue(inv.parcel_ids)
             self.assertFalse(inv.compare_total_parcel_value())
+
+    def test_action_invoice_open(self):
+
+        for inv in self.invoices:
+
+            # Verificamos quando nao existe nenhuma parcela
+            self.assertFalse(inv.parcel_ids)
+            self.assertTrue(inv.action_invoice_open())
+
+            # # Criamos as parcelas
+            inv.generate_parcel_entry(self.financial_operation,
+                                      self.title_type)
+
+            # O valor total das parcelas deve ser igual ao valor total
+            # da fatura
+            self.assertTrue(inv.action_invoice_open())
+
+            # Mudamos o valor da fatura para disparar o erro
+            inv.amount_total = '1000'
+
+            with self.assertRaises(UserError):
+                inv.action_invoice_open()
