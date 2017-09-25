@@ -483,12 +483,12 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def action_invoice_open(self):
-        # if self.action_compare_total_parcel_value():
-        return super(AccountInvoice, self).action_invoice_open()
-        # else:
-        #     raise UserError(_('O valor total da fatura e total das '
-        #                       'parcelas divergem! Por favor, gere as '
-        #                       'parcelas novamente.'))
+        if self.compare_total_parcel_value():
+            return super(AccountInvoice, self).action_invoice_open()
+        else:
+            raise UserError(_('O valor total da fatura e total das '
+                              'parcelas divergem! Por favor, gere as '
+                              'parcelas novamente.'))
 
     @api.multi
     def action_number(self):
@@ -512,7 +512,7 @@ class AccountInvoice(models.Model):
         return True
 
     @api.multi
-    def action_compare_total_parcel_value(self):
+    def compare_total_parcel_value(self):
 
         if self.parcel_ids:
 

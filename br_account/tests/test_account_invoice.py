@@ -56,6 +56,7 @@ class TestAccountInvoice(TestBaseBr):
             'account_id': self.receivable_account.id,
             'payment_term_id': payment_term.id,
             'invoice_line_ids': invoice_line_data,
+            'pre_invoice_date': '2017-07-01',
         }
 
         self.invoices = self.env['account.invoice'].create(default_invoice)
@@ -263,7 +264,7 @@ class TestAccountInvoice(TestBaseBr):
 
         for inv in self.invoices:
 
-            inv.pre_invoice_date = '2017-07-01'
+            # inv.pre_invoice_date = '2017-07-01'
 
             # Criamos as parcelas
             inv.generate_parcel_entry(self.financial_operation,
@@ -279,3 +280,22 @@ class TestAccountInvoice(TestBaseBr):
                                  self.financial_operation.id)
                 self.assertEqual(parcel.title_type_id.id, self.title_type.id)
                 self.assertEqual(parcel.amount_days, 30)
+
+    def test_compare_total_parcel_value(self):
+
+        for inv in self.invoices:
+
+            # Verificamos quando nao existe nenhuma parcela
+            self.assertFalse(inv.parcel_ids)
+            self.assertTrue(inv.compare_total_parcel_value())
+
+            # Criamos as parcelas
+            inv.generate_parcel_entry(self.financial_operation,
+                                      self.title_type)
+            self.assertTrue(inv.compare_total_parcel_value())
+
+            # Mudamos o valor da fatura para disparar o erro
+            inv.amount_total = '1000'
+
+            self.assertTrue(inv.parcel_ids)
+            self.assertFalse(inv.compare_total_parcel_value())
