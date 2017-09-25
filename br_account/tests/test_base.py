@@ -130,3 +130,8 @@ class TestBaseBr(TransactionCase):
             'amount': 60,
             'price_include': True,
         })
+
+        # Criamos as parcelas da invoice
+        self.title_type = self.env.ref('br_account.account_title_type_2')
+        self.financial_operation = self.env.ref(
+            'br_account.account_financial_operation_6')

@@ -72,6 +72,10 @@ class TestAccountInvoice(TestBaseBr):
             # Verifico as linhas recebiveis
             self.assertEquals(len(invoice.receivable_move_line_ids), 0)
 
+            # Cria parcelas
+            invoice.generate_parcel_entry(self.financial_operation,
+                                          self.title_type)
+
             # Valido a fatura
             invoice.action_invoice_open()
 
@@ -122,6 +126,10 @@ class TestAccountInvoice(TestBaseBr):
             self.assertEquals(invoice.pis_value, 32.5)
             self.assertEquals(invoice.cofins_value, 97.5)
 
+            # Cria parcelas
+            invoice.generate_parcel_entry(self.financial_operation,
+                                          self.title_type)
+
             # Valido a fatura
             invoice.action_invoice_open()
 
@@ -158,6 +166,10 @@ class TestAccountInvoice(TestBaseBr):
             self.assertEquals(invoice.ii_value, 90.0)
             self.assertEquals(invoice.issqn_value, 25.0)
 
+            # Cria parcelas
+            invoice.generate_parcel_entry(self.financial_operation,
+                                          self.title_type)
+
             # Valido a fatura
             invoice.action_invoice_open()
 
@@ -193,6 +205,10 @@ class TestAccountInvoice(TestBaseBr):
 
             self.assertEquals(invoice.icms_base, 650.0)
             self.assertEquals(invoice.icms_value, 110.5)
+
+            # Cria parcelas
+            invoice.generate_parcel_entry(self.financial_operation,
+                                          self.title_type)
 
             # Valido a fatura
             invoice.action_invoice_open()
@@ -232,6 +248,10 @@ class TestAccountInvoice(TestBaseBr):
             self.assertEquals(invoice.icms_base, 585.0)
             self.assertEquals(invoice.icms_value, 99.45)
 
+            # Cria parcelas
+            invoice.generate_parcel_entry(self.financial_operation,
+                                          self.title_type)
+
             # Valido a fatura
             invoice.action_invoice_open()
 
@@ -241,16 +261,13 @@ class TestAccountInvoice(TestBaseBr):
 
     def test_generate_parcel_entry(self):
 
-        title_type_id = self.env.ref('br_account.account_title_type_2')
-        financial_operation_id = \
-            self.env.ref('br_account.account_financial_operation_6')
-
         for inv in self.invoices:
 
             inv.pre_invoice_date = '2017-07-01'
 
             # Criamos as parcelas
-            inv.generate_parcel_entry(financial_operation_id, title_type_id)
+            inv.generate_parcel_entry(self.financial_operation,
+                                      self.title_type)
 
             self.assertEqual(len(inv.parcel_ids), 1)
 
@@ -259,6 +276,6 @@ class TestAccountInvoice(TestBaseBr):
                 self.assertEqual(parcel.name, '01')
                 self.assertEqual(parcel.parceling_value, inv.amount_total)
                 self.assertEqual(parcel.financial_operation_id.id,
-                                 financial_operation_id.id)
-                self.assertEqual(parcel.title_type_id.id, title_type_id.id)
+                                 self.financial_operation.id)
+                self.assertEqual(parcel.title_type_id.id, self.title_type.id)
                 self.assertEqual(parcel.amount_days, 30)
