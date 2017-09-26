@@ -55,8 +55,7 @@
                                            groups="analytic.group_analytic_accounting"/>
                                     <field name="company_id" groups="base.group_multi_company" readonly="1"/>
                                     <field name="invoice_line_tax_ids" invisible="1"/>
-                                    <field name="tax_simples_id"
-                                           attrs="{'invisible': [('company_fiscal_type', '==', '3')]}"/>
+                                    <field name="tax_simples_id" attrs="{'invisible': [('company_fiscal_type', '==', '3')]}"/>
                                     <field name="calculate_tax" invisible="1"/>
                                 </group>
                             </group>
@@ -212,7 +211,7 @@
                                                 <field name="exporting_code"/>
                                             </group>
                                             <group string="Adições" colspan="4">
-                                                <field name="line_ids" nolabel="1"></field>
+                                                <field name="line_ids" nolabel="1"/>
                                             </group>
                                         </group>
                                     </form>
