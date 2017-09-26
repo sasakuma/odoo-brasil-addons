@@ -735,8 +735,7 @@ class AccountInvoice(models.Model):
                         'date_maturity': no_taxes[0],
                         'financial_operation_id': financial_operation.id,
                         'title_type_id': title_type.id,
-                        'amount_currency': (diff_currency and
-                                            inv.currency_id.id),
+                        'amount_currency': diff_currency and amount_currency,
                         'currency_id': diff_currency and inv.currency_id.id,
                         'invoice_id': inv.id,
                     }
