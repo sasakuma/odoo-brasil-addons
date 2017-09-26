@@ -24,11 +24,16 @@
                 <field name="document_serie_id"/>
             </field>
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
-                <attribute name="editable"></attribute>
+                <attribute name="editable"/>
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='invoice_line_tax_ids']"
                    position="attributes">
                 <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']"
+                   position="replace">
+                <field name="price_subtotal" string="Valor Bruto"/>
+                <field name="price_total" string="Valor Líquido"/>
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
                 <field name="valor_bruto" invisible="1"/>
