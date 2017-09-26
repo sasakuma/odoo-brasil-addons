@@ -6,7 +6,7 @@
 from odoo import api, fields, models
 from odoo.tools.translate import _
 from odoo.addons import decimal_precision as dp
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_compare
 
 
@@ -469,8 +469,8 @@ class AccountInvoice(models.Model):
                                   'parcelas divergem! Por favor, gere as '
                                   'parcelas novamente.'))
         else:
-            # Para fins de compatibilidade, chama o metodo de validar invoice
-            return super(AccountInvoice, self).action_invoice_open()
+            raise ValidationError(
+                "Campo parcela está vazio. Por favor, crie as parcelas")
 
     @api.multi
     def action_number(self):

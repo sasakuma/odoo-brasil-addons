@@ -4,7 +4,7 @@
 
 from odoo.addons.br_account.tests.test_base import TestBaseBr
 
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 
 class TestAccountInvoice(TestBaseBr):
@@ -304,7 +304,9 @@ class TestAccountInvoice(TestBaseBr):
 
             # Verificamos quando nao existe nenhuma parcela
             self.assertFalse(inv.parcel_ids)
-            self.assertTrue(inv.action_invoice_open())
+
+            with self.assertRaises(ValidationError):
+                self.assertTrue(inv.action_invoice_open())
 
             # # Criamos as parcelas
             inv.generate_parcel_entry(self.financial_operation,
