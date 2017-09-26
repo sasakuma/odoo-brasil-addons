@@ -648,12 +648,8 @@ class AccountInvoice(models.Model):
                 aux = inv.with_context(ctx).payment_term_id.with_context(
                     currency_id=company_currency.id).compute(
                     total, inv.pre_invoice_date)
-                aux_taxes = inv.with_context(ctx).payment_term_id.with_context(
-                    currency_id=company_currency.id).compute(
-                    inv.amount_total, inv.pre_invoice_date)
 
                 lines_no_taxes = aux[0]
-                lines_with_taxes = aux_taxes[0]
 
                 res_amount_currency = total_currency
                 ctx['date'] = inv.pre_invoice_date
@@ -661,15 +657,12 @@ class AccountInvoice(models.Model):
                 # Removemos as parcelas adicionadas anteriormente
                 inv.parcel_ids.unlink()
 
-                for i, t in enumerate(zip(lines_no_taxes, lines_with_taxes)):
-
-                    no_taxes = t[0]
-                    with_taxes = t[1]
+                for i, t in enumerate(lines_no_taxes):
 
                     if inv.currency_id != company_currency:
                         amount_currency = \
                             company_currency.with_context(ctx).compute(
-                                no_taxes[1], inv.currency_id)
+                                t[1], inv.currency_id)
                     else:
                         amount_currency = False
 
@@ -681,9 +674,8 @@ class AccountInvoice(models.Model):
 
                     values = {
                         'name': str(i + 1).zfill(2),
-                        'parceling_value': with_taxes[1],
-                        'parceling_value_no_taxes': no_taxes[1],
-                        'date_maturity': no_taxes[0],
+                        'parceling_value': t[1],
+                        'date_maturity': t[0],
                         'financial_operation_id': financial_operation.id,
                         'title_type_id': title_type.id,
                         'amount_currency': diff_currency and amount_currency,

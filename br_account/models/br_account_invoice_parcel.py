@@ -36,13 +36,6 @@ class BrAccountInvoiceParcel(models.Model):
                                       default=0.0,
                                       currency_field='company_currency_id')
 
-    parceling_value_no_taxes = fields.Monetary(string='Valor sem taxas',
-                                               required=True,
-                                               readonly=True,
-                                               store=True,
-                                               default=0.0,
-                                               currency_field='company_currency_id')
-
     amount_currency = fields.Monetary(string='Valor em outra moeda',
                                       help="O valor da parcela expresso "
                                            "em outra moeda opcional se houver"

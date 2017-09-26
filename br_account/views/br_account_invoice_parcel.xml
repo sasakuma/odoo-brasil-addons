@@ -32,7 +32,6 @@
                         <field name="date_maturity"/>
                         <field name="name"/>
                         <field name="parceling_value"/>
-                        <field name="parceling_value_no_taxes"/>
                         <field name="amount_currency" groups="base.group_multi_currency"/>
                         <field name="financial_operation_id"/>
                         <field name="title_type_id"/>
