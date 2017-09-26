@@ -402,33 +402,11 @@ class AccountInvoice(models.Model):
                 inv, total, total_currency)
             return ml_list
 
-        ctx = dict(self._context, lang=inv.partner_id.lang)
-        date_invoice = inv.date_invoice
-        ctx['date'] = date_invoice
-
-        # Criacao de move lines a partir das parcelas
-        # date_invoice = inv.date_invoice
-        company_currency = inv.company_id.currency_id
-        diff_currency = inv.currency_id != company_currency
-
-        res_amount_currency = total_currency
-
         # Sobrescrevemos conteudo da lista porque e mais simples
-        # recriarmos os dicts das movelines a partir das parcelas
+        # recriarmos os dicts das move lines a partir das parcelas
         ml_list = []
 
-        for i, parcel in enumerate(self.parcel_ids):
-
-            if inv.currency_id != company_currency:
-                amount_currency = company_currency.with_context(
-                    ctx).compute(parcel.parceling_value, inv.currency_id)
-            else:
-                amount_currency = False
-
-            # last line: add the diff
-            res_amount_currency -= amount_currency or 0
-            if i + 1 == len(self.parcel_ids):
-                amount_currency += res_amount_currency
+        for parcel in self.parcel_ids:
 
             # Calculamos a nova data de vencimento baseado na data
             # de validação da faturação, caso a parcela nao esteja
@@ -438,11 +416,11 @@ class AccountInvoice(models.Model):
             ml_list.append({
                 'type': 'dest',
                 'name': inv.name or '/',
-                'price': parcel.parceling_value_no_taxes,
+                'price': parcel.parceling_value,
                 'account_id': inv.account_id.id,
                 'date_maturity': parcel.date_maturity,
                 'amount_currency': parcel.amount_currency,
-                'currency_id': parcel.currency_id,
+                'currency_id': parcel.currency_id.id,
                 'invoice_id': inv.id,
                 'financial_operation_id': parcel.financial_operation_id.id,
                 'title_type_id': parcel.title_type_id.id,
@@ -498,7 +476,6 @@ class AccountInvoice(models.Model):
     def action_number(self):
 
         for invoice in self:
-
             if invoice.fiscal_document_id:
 
                 if not invoice.document_serie_id:
@@ -546,35 +523,9 @@ class AccountInvoice(models.Model):
     def invoice_line_move_line_get(self):
         res = super(AccountInvoice, self).invoice_line_move_line_get()
 
-        contador = 0
-
-        for line in self.invoice_line_ids:
-            if line.quantity == 0:
-                continue
-            res[contador]['price'] = line.price_total
-
-            price = line.price_unit * (1 - (
-                line.discount or 0.0) / 100.0)
-
-            ctx = line._prepare_tax_context()
-            tax_ids = line.invoice_line_tax_ids.with_context(**ctx)
-
-            taxes_dict = tax_ids.compute_all(
-                price, self.currency_id, line.quantity,
-                product=line.product_id, partner=self.partner_id)
-
-            for tax in line.invoice_line_tax_ids:
-                tax_dict = next(
-                    x for x in taxes_dict['taxes'] if x['id'] == tax.id)
-                if not tax.price_include and tax.account_id:
-                    res[contador]['price'] += tax_dict['amount']
-
-                if tax.price_include and \
-                        (not tax.account_id or not tax.deduced_account_id):
-                    if tax_dict['amount'] > 0.0:  # Negativo é retido
-                        res[contador]['price'] -= tax_dict['amount']
-
-            contador += 1
+        for index, line in enumerate(self.invoice_line_ids):
+            if line.quantity != 0:
+                res[index]['price'] = line.price_total
 
         return res
 
