@@ -40,9 +40,9 @@
                                     </div>
                                     <field name="uom_id" groups="product.group_uom"/>
                                     <field name="price_unit"/>
-                                    <field name="discount" groups="sale.group_discount_per_so_line"
-                                           string="(-) Desconto (%)"/>
-                                    <field name="price_subtotal" string="(=) Valor Líquido"/>
+                                    <field name="discount" groups="sale.group_discount_per_so_line" string="(-) Desconto (%)"/>
+                                    <field name="price_subtotal" string="(=) Valor Bruto"/>
+                                    <field name="price_total" string="(=) Valor Líquido"/>
                                 </group>
                                 <group>
                                     <field name="cfop_id"
