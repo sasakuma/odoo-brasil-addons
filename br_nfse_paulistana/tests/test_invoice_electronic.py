@@ -186,7 +186,7 @@ class TestNFeBrasil(TransactionCase):
                                           self.title_type)
 
             # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             # Verifica algumas propriedades computadas que dependem do edoc
             self.assertEquals(invoice.total_edocs, 1)
@@ -204,7 +204,7 @@ class TestNFeBrasil(TransactionCase):
                                           self.title_type)
 
             # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             inv_eletr = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
@@ -223,7 +223,7 @@ class TestNFeBrasil(TransactionCase):
                                           self.title_type)
 
             # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             # Lote recebido com sucesso
             xml_recebido = open(os.path.join(
@@ -255,7 +255,7 @@ class TestNFeBrasil(TransactionCase):
                                           self.title_type)
 
             # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             # Lote recebido com sucesso
             xml_recebido = open(os.path.join(
@@ -291,7 +291,7 @@ class TestNFeBrasil(TransactionCase):
                                           self.title_type)
 
             # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             # Lote recebido com sucesso
             xml_recebido = open(os.path.join(
