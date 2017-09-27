@@ -7,6 +7,7 @@ from odoo.exceptions import UserError
 
 
 class TestElectronicInvoice(TransactionCase):
+
     def setUp(self):
         super(TestElectronicInvoice, self).setUp()
         self.main_company = self.env.ref('base.main_company')
@@ -67,6 +68,9 @@ class TestElectronicInvoice(TransactionCase):
         self.fpos = self.env['account.fiscal.position'].create({
             'name': 'Venda'
         })
+
+        payment_term = self.env.ref('account.account_payment_term_net')
+
         invoice_line_incomplete = [
             (0, 0,
              {
@@ -96,8 +100,14 @@ class TestElectronicInvoice(TransactionCase):
             journal_id=self.journalrec.id,
             partner_id=self.partner_fisica.id,
             account_id=self.receivable_account.id,
-            invoice_line_ids=invoice_line_incomplete
+            invoice_line_ids=invoice_line_incomplete,
+            payment_term_id=payment_term.id,
         ))
+
+        # Criamos as parcelas da invoice
+        self.title_type = self.env.ref('br_account.account_title_type_2')
+        self.financial_operation = self.env.ref(
+            'br_account.account_financial_operation_6')
 
     def test_basic_validation_for_electronic_doc(self):
         self.assertEquals(self.inv_incomplete.total_edocs, 0)
@@ -106,6 +116,10 @@ class TestElectronicInvoice(TransactionCase):
         self.assertEquals(values['type'], 'ir.actions.act_window')
         self.assertEquals(values['res_model'], 'invoice.electronic')
         self.assertEquals(values['res_id'], 0)
+
+        # Cria parcelas
+        self.inv_incomplete.generate_parcel_entry(self.financial_operation,
+                                                  self.title_type)
 
         with self.assertRaises(UserError):
             self.inv_incomplete.action_invoice_open()
