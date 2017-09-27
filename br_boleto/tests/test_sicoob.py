@@ -44,7 +44,7 @@ class TestBoletoSicoob(TestBoleto):
     # Não precisa fazer essa validação em outras classes
     def test_basic_validation(self):
         with self.assertRaises(UserError):
-            self.invoices.action_invoice_open()
+            self.invoices.action_br_account_invoice_open()
 
     def _update_main_company(self):
         self.main_company.write({
@@ -98,7 +98,7 @@ class TestBoletoSicoob(TestBoleto):
         self._update_main_company()
         self._update_partner_fisica()
 
-        self.invoices.action_invoice_open()
+        self.invoices.action_br_account_invoice_open()
 
         self.assertEquals(len(self.invoices.receivable_move_line_ids), 1)
 
