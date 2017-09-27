@@ -63,6 +63,10 @@ class TestAccountInvoice(TestBaseBr):
 
         self.invoices = self.env['account.invoice'].create(default_invoice)
 
+        # Cria parcelas
+        self.invoices.generate_parcel_entry(self.financial_operation,
+                                            self.title_type)
+
     def test_compute_total_values(self):
 
         for invoice in self.invoices:
@@ -75,12 +79,8 @@ class TestAccountInvoice(TestBaseBr):
             # Verifico as linhas recebiveis
             self.assertEquals(len(invoice.receivable_move_line_ids), 0)
 
-            # Cria parcelas
-            invoice.generate_parcel_entry(self.financial_operation,
-                                          self.title_type)
-
             # Valido a fatura
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             # Verifico as linhas recebiveis
             self.assertEquals(len(invoice.receivable_move_line_ids), 1)
@@ -129,12 +129,8 @@ class TestAccountInvoice(TestBaseBr):
             self.assertEquals(invoice.pis_value, 32.5)
             self.assertEquals(invoice.cofins_value, 97.5)
 
-            # Cria parcelas
-            invoice.generate_parcel_entry(self.financial_operation,
-                                          self.title_type)
-
             # Valido a fatura
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             # Ainda deve ter os mesmos valores
             self.assertEquals(invoice.pis_base, 650.0)
@@ -169,12 +165,8 @@ class TestAccountInvoice(TestBaseBr):
             self.assertEquals(invoice.ii_value, 90.0)
             self.assertEquals(invoice.issqn_value, 25.0)
 
-            # Cria parcelas
-            invoice.generate_parcel_entry(self.financial_operation,
-                                          self.title_type)
-
             # Valido a fatura
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             # Ainda deve ter os mesmos valores
             self.assertEquals(invoice.issqn_base, 500.0)
@@ -209,12 +201,8 @@ class TestAccountInvoice(TestBaseBr):
             self.assertEquals(invoice.icms_base, 650.0)
             self.assertEquals(invoice.icms_value, 110.5)
 
-            # Cria parcelas
-            invoice.generate_parcel_entry(self.financial_operation,
-                                          self.title_type)
-
             # Valido a fatura
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             # Ainda deve ter os mesmos valores
             self.assertEquals(invoice.icms_base, 650.0)
@@ -251,12 +239,8 @@ class TestAccountInvoice(TestBaseBr):
             self.assertEquals(invoice.icms_base, 585.0)
             self.assertEquals(invoice.icms_value, 99.45)
 
-            # Cria parcelas
-            invoice.generate_parcel_entry(self.financial_operation,
-                                          self.title_type)
-
             # Valido a fatura
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             # Ainda deve ter os mesmos valores
             self.assertEquals(invoice.icms_base, 585.0)
@@ -265,12 +249,6 @@ class TestAccountInvoice(TestBaseBr):
     def test_generate_parcel_entry(self):
 
         for inv in self.invoices:
-
-            # inv.pre_invoice_date = '2017-07-01'
-
-            # Criamos as parcelas
-            inv.generate_parcel_entry(self.financial_operation,
-                                      self.title_type)
 
             self.assertEqual(len(inv.parcel_ids), 1)
 
@@ -287,9 +265,6 @@ class TestAccountInvoice(TestBaseBr):
 
         for inv in self.invoices:
 
-            # Criamos as parcelas
-            inv.generate_parcel_entry(self.financial_operation,
-                                      self.title_type)
             self.assertTrue(inv.compare_total_parcel_value())
 
             # Mudamos o valor da fatura para disparar o erro
@@ -302,13 +277,15 @@ class TestAccountInvoice(TestBaseBr):
 
         for inv in self.invoices:
 
+            inv.parcel_ids.unlink()
+
             # Verificamos quando nao existe nenhuma parcela
             self.assertFalse(inv.parcel_ids)
 
             with self.assertRaises(ValidationError):
                 self.assertTrue(inv.action_br_account_invoice_open())
 
-            # # Criamos as parcelas
+            # Cria parcelas
             inv.generate_parcel_entry(self.financial_operation,
                                       self.title_type)
 
