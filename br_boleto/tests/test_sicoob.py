@@ -8,12 +8,16 @@ from odoo.addons.br_boleto.tests.test_common import TestBoleto
 
 
 class TestBoletoSicoob(TestBoleto):
+
     def _return_payment_mode(self):
         super(TestBoletoSicoob, self)._return_payment_mode()
+
         sequencia = self.env['ir.sequence'].create({
             'name': u"Nosso Número"
         })
+
         sicoob = self.env['res.bank'].search([('bic', '=', '756')])
+
         conta = self.env['res.partner.bank'].create({
             'acc_number': '12345',  # 5 digitos
             'acc_number_dig': '0',  # 1 digito
@@ -22,6 +26,7 @@ class TestBoletoSicoob(TestBoleto):
             'codigo_convenio': '123456-7',  # 7 digitos
             'bank_id': sicoob.id,
         })
+
         mode = self.env['payment.mode'].create({
             'name': 'Sicoob',
             'boleto_type': '9',
@@ -30,6 +35,7 @@ class TestBoletoSicoob(TestBoleto):
             'nosso_numero_sequence': sequencia.id,
             'bank_account_id': conta.id
         })
+
         return mode.id
 
     def setUp(self):
@@ -91,6 +97,7 @@ class TestBoletoSicoob(TestBoleto):
     def test_raise_error_if_not_payment(self):
         self._update_main_company()
         self._update_partner_fisica()
+
         self.invoices.action_invoice_open()
 
         self.assertEquals(len(self.invoices.receivable_move_line_ids), 1)
