@@ -195,7 +195,7 @@ class TestInutilizacao(TransactionCase):
         invoice.generate_parcel_entry(self.financial_operation,
                                       self.title_type)
 
-        invoice.action_invoice_open()
+        invoice.action_br_account_invoice_open()
 
         inv_eletr = self.env['invoice.electronic'].search(
             [('invoice_id', '=', invoice.id)])
@@ -253,7 +253,7 @@ class TestInutilizacao(TransactionCase):
         invoice.generate_parcel_entry(self.financial_operation,
                                       self.title_type)
 
-        invoice.action_invoice_open()
+        invoice.action_br_account_invoice_open()
 
         inv_eletr = self.env['invoice.electronic'].search(
             [('invoice_id', '=', invoice.id)])
@@ -309,7 +309,7 @@ class TestInutilizacao(TransactionCase):
         invoice.generate_parcel_entry(self.financial_operation,
                                       self.title_type)
 
-        invoice.action_invoice_open()
+        invoice.action_br_account_invoice_open()
 
         inv_eletr = self.env['invoice.electronic'].search(
             [('invoice_id', '=', invoice.id)])
@@ -334,7 +334,7 @@ class TestInutilizacao(TransactionCase):
         invoice.generate_parcel_entry(self.financial_operation,
                                       self.title_type)
 
-        invoice.action_invoice_open()
+        invoice.action_br_account_invoice_open()
 
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()
@@ -419,7 +419,7 @@ class TestInutilizacao(TransactionCase):
         invoice.generate_parcel_entry(self.financial_operation,
                                       self.title_type)
 
-        invoice.action_invoice_open()
+        invoice.action_br_account_invoice_open()
 
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()

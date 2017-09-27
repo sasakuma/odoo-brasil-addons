@@ -5,6 +5,13 @@
 import os
 import base64
 from mock import patch
+
+# Usado para evitar warnings da urllib3 durante os testes
+import urllib3
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+urllib3.disable_warnings(category=InsecureRequestWarning)
+
+
 from odoo.tests.common import TransactionCase
 from odoo.exceptions import UserError
 
@@ -282,7 +289,7 @@ class TestNFeBrasil(TransactionCase):
             self.assertEquals(invoice.sending_nfe, False)
 
             # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             # Verifica algumas propriedades computadas que dependem do edoc
             self.assertEquals(invoice.total_edocs, 1)
@@ -309,7 +316,7 @@ class TestNFeBrasil(TransactionCase):
             invoice.fiscal_document_id.code = '55'
 
             # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             danfe = invoice.action_preview_danfe()
             self.assertEquals(
@@ -326,7 +333,7 @@ class TestNFeBrasil(TransactionCase):
         for invoice in self.invoices:
 
             # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             inv_eletr = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
@@ -337,14 +344,14 @@ class TestNFeBrasil(TransactionCase):
 
     def test_nfe_validation(self):
         with self.assertRaises(UserError):
-            self.inv_incomplete.action_invoice_open()
+            self.inv_incomplete.action_br_account_invoice_open()
 
     def test_send_nfe(self):
 
         for invoice in self.invoices:
 
             # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             invoice_electronic = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
@@ -359,7 +366,7 @@ class TestNFeBrasil(TransactionCase):
         for invoice in self.invoices:
 
             # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             # Lote recebido com sucesso
             xml_recebido = open(os.path.join(
@@ -397,7 +404,7 @@ class TestNFeBrasil(TransactionCase):
         for invoice in self.invoices:
 
             # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             # Lote recebido com sucesso
             xml_recebido = open(os.path.join(
@@ -434,7 +441,7 @@ class TestNFeBrasil(TransactionCase):
         for invoice in self.invoices:
 
             # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             # Lote recebido com sucesso
             xml_recebido = open(os.path.join(
@@ -464,7 +471,7 @@ class TestNFeBrasil(TransactionCase):
         for invoice in self.invoices:
 
             # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             invoice_electronic = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
