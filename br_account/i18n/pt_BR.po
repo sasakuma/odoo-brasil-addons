@@ -1050,6 +1050,7 @@ msgstr "CSOSN ICMS"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_cst_cofins
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_cofins_cst
 msgid "CST COFINS"
 msgstr "CST COFINS"
 
@@ -1069,7 +1070,6 @@ msgstr "CST IPI"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_cst_pis
-#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_cofins_cst
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_pis_cst
 msgid "CST PIS"
 msgstr "CST PIS"
@@ -1278,6 +1278,12 @@ msgstr "Dados Fiscais"
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_related_date
 msgid "Data"
 msgstr "Dados"
+
+#. module: account
+#: model:ir.ui.view,arch_db:account.invoice_supplier_form
+#: model:ir.ui.view,arch_db:account.invoice_supplier_tree
+msgid "Bill Date"
+msgstr "Data da Fatura"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_date_release
