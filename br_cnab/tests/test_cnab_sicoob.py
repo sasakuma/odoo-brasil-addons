@@ -143,7 +143,7 @@ class TestCnabSicoob(TestCnab):
     #         return 'SUCESSO'
 
     def test_gen_account_move_line(self):
-        self.invoices.action_invoice_open()
+        self.invoices.action_br_account_invoice_open()
         move = self.invoices.receivable_move_line_ids[0]
         move.action_register_boleto()
 
