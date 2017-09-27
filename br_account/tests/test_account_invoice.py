@@ -298,7 +298,7 @@ class TestAccountInvoice(TestBaseBr):
             self.assertTrue(inv.parcel_ids)
             self.assertFalse(inv.compare_total_parcel_value())
 
-    def test_action_invoice_open(self):
+    def test_action_br_account_invoice_open(self):
 
         for inv in self.invoices:
 
@@ -306,7 +306,7 @@ class TestAccountInvoice(TestBaseBr):
             self.assertFalse(inv.parcel_ids)
 
             with self.assertRaises(ValidationError):
-                self.assertTrue(inv.action_invoice_open())
+                self.assertTrue(inv.action_br_account_invoice_open())
 
             # # Criamos as parcelas
             inv.generate_parcel_entry(self.financial_operation,
@@ -314,10 +314,10 @@ class TestAccountInvoice(TestBaseBr):
 
             # O valor total das parcelas deve ser igual ao valor total
             # da fatura
-            self.assertTrue(inv.action_invoice_open())
+            self.assertTrue(inv.action_br_account_invoice_open())
 
             # Mudamos o valor da fatura para disparar o erro
             inv.amount_total = '1000'
 
             with self.assertRaises(UserError):
-                inv.action_invoice_open()
+                inv.action_br_account_invoice_open()

@@ -460,7 +460,15 @@ class AccountInvoice(models.Model):
         return res
 
     @api.multi
-    def action_invoice_open(self):
+    def action_br_account_invoice_open(self):
+        """Metodo criado para manter a compatibilidade dos testes do core
+        com o sistema de criação de parcelas do br_account. Anteriormente
+        o metodo 'action_invoice_open' era chamado ao clicar no botao 'Validar'
+        da Fatura. Este metodo realiza a verificacao das parcelas ao mesmo
+        tempo que permite compatibilidade com os testes do core
+
+        :return: True se o record foi salvo e False, caso contrário.
+        """
         if self.parcel_ids:
             if self.compare_total_parcel_value():
                 return super(AccountInvoice, self).action_invoice_open()
