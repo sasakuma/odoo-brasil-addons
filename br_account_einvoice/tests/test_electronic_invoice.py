@@ -104,10 +104,13 @@ class TestElectronicInvoice(TransactionCase):
             payment_term_id=payment_term.id,
         ))
 
-        # Criamos as parcelas da invoice
         self.title_type = self.env.ref('br_account.account_title_type_2')
         self.financial_operation = self.env.ref(
             'br_account.account_financial_operation_6')
+
+        # Cria parcelas
+        self.inv_incomplete.generate_parcel_entry(self.financial_operation,
+                                                  self.title_type)
 
     def test_basic_validation_for_electronic_doc(self):
         self.assertEquals(self.inv_incomplete.total_edocs, 0)
@@ -116,10 +119,6 @@ class TestElectronicInvoice(TransactionCase):
         self.assertEquals(values['type'], 'ir.actions.act_window')
         self.assertEquals(values['res_model'], 'invoice.electronic')
         self.assertEquals(values['res_id'], 0)
-
-        # Cria parcelas
-        self.inv_incomplete.generate_parcel_entry(self.financial_operation,
-                                                  self.title_type)
 
         with self.assertRaises(UserError):
             self.inv_incomplete.action_invoice_open()
