@@ -202,7 +202,12 @@ class TestNFeBrasil(TransactionCase):
              ),
         ]
 
+        self.title_type = self.env.ref('br_account.account_title_type_2')
+        self.financial_operation = self.env.ref(
+            'br_account.account_financial_operation_6')
+
         fiscal_document = self.env.ref('br_data_account.fiscal_document_55')
+        payment_term = self.env.ref('account.account_payment_term_net')
 
         serie = self.env['br_account.document.serie'].search(
             [('fiscal_document_id', '=', fiscal_document.id)])
@@ -216,6 +221,7 @@ class TestNFeBrasil(TransactionCase):
             'account_id': self.receivable_account.id,
             'fiscal_position_id': self.fpos.id,
             'invoice_line_ids': invoice_line_data,
+            'payment_term_id': payment_term.id,
         }
 
         self.inv_incomplete = self.env['account.invoice'].create(dict(
@@ -227,7 +233,11 @@ class TestNFeBrasil(TransactionCase):
             partner_id=self.partner_fisica.id,
             account_id=self.receivable_account.id,
             invoice_line_ids=invoice_line_incomplete,
+            payment_term_id=payment_term.id,
         ))
+
+        self.inv_incomplete.generate_parcel_entry(self.financial_operation,
+                                                  self.title_type)
 
         self.invoices = self.env['account.invoice'].create(dict(
             default_invoice.items(),
@@ -259,6 +269,9 @@ class TestNFeBrasil(TransactionCase):
             partner_id=self.partner_exterior.id,
         ))
 
+        self.invoices.generate_parcel_entry(self.financial_operation,
+                                            self.title_type)
+
     def test_computed_fields(self):
 
         for invoice in self.invoices:
@@ -281,6 +294,7 @@ class TestNFeBrasil(TransactionCase):
     def test_print_actions(self):
 
         for invoice in self.invoices:
+
             # Antes de confirmar a fatura
             with self.assertRaises(UserError):
                 invoice.action_preview_danfe()
@@ -288,8 +302,10 @@ class TestNFeBrasil(TransactionCase):
             # Testa a impressão normal quando não é documento eletrônico
             invoice.fiscal_document_id.code = '00'
             vals_print = invoice.invoice_print()
+
             self.assertEquals(
                 vals_print['report_name'], 'account.report_invoice')
+
             invoice.fiscal_document_id.code = '55'
 
             # Confirmando a fatura deve gerar um documento eletrônico
@@ -308,6 +324,7 @@ class TestNFeBrasil(TransactionCase):
     def test_check_invoice_electronic_values(self):
 
         for invoice in self.invoices:
+
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
 
@@ -322,21 +339,25 @@ class TestNFeBrasil(TransactionCase):
         with self.assertRaises(UserError):
             self.inv_incomplete.action_invoice_open()
 
-            def test_send_nfe(self):
-                for invoice in self.invoices:
-                    # Confirmando a fatura deve gerar um documento eletrônico
-                    invoice.action_invoice_open()
+    def test_send_nfe(self):
 
-                    invoice_electronic = self.env['invoice.electronic'].search(
-                        [('invoice_id', '=', invoice.id)])
-                    with self.assertRaises(Exception):
-                        invoice_electronic.action_send_electronic_invoice()
+        for invoice in self.invoices:
+
+            # Confirmando a fatura deve gerar um documento eletrônico
+            invoice.action_invoice_open()
+
+            invoice_electronic = self.env['invoice.electronic'].search(
+                [('invoice_id', '=', invoice.id)])
+
+            with self.assertRaises(Exception):
+                invoice_electronic.action_send_electronic_invoice()
 
     @patch('odoo.addons.br_nfe.models.invoice_electronic.retorno_autorizar_nfe')  # noqa: 501
     @patch('odoo.addons.br_nfe.models.invoice_electronic.autorizar_nfe')
     def test_wrong_xml_schema(self, autorizar, ret_autorizar):
 
         for invoice in self.invoices:
+
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
 
@@ -374,6 +395,7 @@ class TestNFeBrasil(TransactionCase):
     def test_nfe_with_concept_error(self, autorizar, ret_autorizar):
 
         for invoice in self.invoices:
+
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
 
@@ -410,6 +432,7 @@ class TestNFeBrasil(TransactionCase):
     def test_nfe_cancelamento_ok(self, cancelar):
 
         for invoice in self.invoices:
+
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
 
@@ -437,9 +460,12 @@ class TestNFeBrasil(TransactionCase):
                               "Cancelamento homologado fora de prazo")
 
     def test_invoice_electronic_functions(self):
+
         for invoice in self.invoices:
+
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
+
             invoice_electronic = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
 
