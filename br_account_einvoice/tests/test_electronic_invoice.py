@@ -121,7 +121,7 @@ class TestElectronicInvoice(TransactionCase):
         self.assertEquals(values['res_id'], 0)
 
         with self.assertRaises(UserError):
-            self.inv_incomplete.action_invoice_open()
+            self.inv_incomplete.action_br_account_invoice_open()
 
         invoice_electronic = self.env['invoice.electronic'].search(
             [('invoice_id', '=', self.inv_incomplete.id)])
