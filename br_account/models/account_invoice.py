@@ -145,7 +145,6 @@ class AccountInvoice(models.Model):
 
     vendor_serie = fields.Char(string=u'Série NF Entrada',
                                size=12,
-                               readonly=True,
                                help=u"Série do número da Nota Fiscal do "
                                     u"Fornecedor")
 
@@ -365,6 +364,8 @@ class AccountInvoice(models.Model):
                                             store=True,
                                             digits=dp.get_precision('Account'),
                                             compute='_compute_amount')
+
+    chave_de_acesso = fields.Char(string='Chave de Acesso', size=44)
 
     @api.onchange('issuer')
     def _onchange_issuer(self):
