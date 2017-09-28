@@ -17,6 +17,12 @@ msgstr ""
 "Language: pt_BR\n"
 "X-Generator: Poedit 1.8.7.1\n"
 
+#. module: account
+#: code:addons/account/models/account_invoice.py:1266
+#, python-format
+msgid "You must first select a partner!"
+msgstr "Você precisa primeiro selecinar um cliente!"
+
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_icms_aliquota_credito
 msgid "% Crédito de ICMS"
