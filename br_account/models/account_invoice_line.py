@@ -7,11 +7,9 @@ from lxml import etree
 
 from odoo import api, fields, models
 from odoo.addons import decimal_precision as dp
-from odoo.addons.br_account.models.cst import CST_ICMS
-from odoo.addons.br_account.models.cst import CSOSN_SIMPLES
-from odoo.addons.br_account.models.cst import CST_IPI
-from odoo.addons.br_account.models.cst import CST_PIS_COFINS
-from odoo.addons.br_account.models.cst import ORIGEM_PROD
+from odoo.addons.br_account.models.cst import (CSOSN_SIMPLES, CST_ICMS,
+                                               CST_IPI, CST_PIS_COFINS,
+                                               ORIGEM_PROD)
 from odoo.addons.br_account.models.res_company import COMPANY_FISCAL_TYPE
 
 

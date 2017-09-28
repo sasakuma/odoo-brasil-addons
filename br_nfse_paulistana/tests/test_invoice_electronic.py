@@ -21,6 +21,7 @@ class TestNFeBrasil(TransactionCase):
 
     def setUp(self):
         super(TestNFeBrasil, self).setUp()
+
         self.main_company = self.env.ref('base.main_company')
         self.currency_real = self.env.ref('base.BRL')
         self.main_company.write({
@@ -43,6 +44,7 @@ class TestNFeBrasil(TransactionCase):
             'nfe_a1_file': base64.b64encode(
                 open(os.path.join(self.caminho, 'teste.pfx'), 'r').read()),
         })
+
         self.revenue_account = self.env['account.account'].create({
             'code': '3.0.0',
             'name': 'Receita de Vendas',
@@ -50,6 +52,7 @@ class TestNFeBrasil(TransactionCase):
                 'account.data_account_type_revenue').id,
             'company_id': self.main_company.id
         })
+
         self.receivable_account = self.env['account.account'].create({
             'code': '1.0.0',
             'name': 'Conta de Recebiveis',
@@ -58,8 +61,16 @@ class TestNFeBrasil(TransactionCase):
                 'account.data_account_type_receivable').id,
             'company_id': self.main_company.id
         })
+
         self.service_type = self.env.ref('br_data_account.service_type_101')
         self.service_type.codigo_servico_paulistana = '07498'
+
+        self.title_type = self.env.ref('br_account.account_title_type_2')
+        self.financial_operation = self.env.ref(
+            'br_account.account_financial_operation_6')
+
+        payment_term = self.env.ref('account.account_payment_term_net')
+
         self.service = self.env['product.product'].create({
             'name': 'Normal Service',
             'default_code': '25',
@@ -68,6 +79,7 @@ class TestNFeBrasil(TransactionCase):
             # 'service_type_id': self.service_type.id,
             'list_price': 50.0,
         })
+
         default_partner = {
             'name': 'Nome Parceiro',
             'legal_name': u'Razão Social',
@@ -78,6 +90,7 @@ class TestNFeBrasil(TransactionCase):
             'phone': '(48) 9801-6226',
             'property_account_receivable_id': self.receivable_account.id,
         }
+
         self.partner_fisica = self.env['res.partner'].create(dict(
             default_partner.items(),
             cnpj_cpf='545.770.154-98',
@@ -87,6 +100,7 @@ class TestNFeBrasil(TransactionCase):
             state_id=self.env.ref('base.state_br_sc').id,
             city_id=self.env.ref('br_base.city_4205407').id
         ))
+
         self.partner_juridica = self.env['res.partner'].create(dict(
             default_partner.items(),
             cnpj_cpf='05.075.837/0001-13',
@@ -115,6 +129,7 @@ class TestNFeBrasil(TransactionCase):
             'service_type_id': self.service_type.id,
             'position_type': 'service',
         })
+
         invoice_line_data = [
             (0, 0,
              {
@@ -132,6 +147,7 @@ class TestNFeBrasil(TransactionCase):
              }
              )
         ]
+
         default_invoice = {
             'name': u"Teste Validação",
             'reference_type': "none",
@@ -144,6 +160,7 @@ class TestNFeBrasil(TransactionCase):
             'fiscal_position_id': self.fpos.id,
             'invoice_line_ids': invoice_line_data,
             'webservice_nfse': 'nfse_paulistana',
+            'payment_term_id': payment_term.id,
         }
 
         self.invoices = self.env['account.invoice'].create(dict(
@@ -164,8 +181,12 @@ class TestNFeBrasil(TransactionCase):
             self.assertEquals(invoice.nfse_exception, False)
             self.assertEquals(invoice.sending_nfse, False)
 
+            # Cria parcelas
+            invoice.generate_parcel_entry(self.financial_operation,
+                                          self.title_type)
+
             # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             # Verifica algumas propriedades computadas que dependem do edoc
             self.assertEquals(invoice.total_edocs, 1)
@@ -177,8 +198,13 @@ class TestNFeBrasil(TransactionCase):
     def test_check_invoice_electronic_values(self):
 
         for invoice in self.invoices:
+
+            # Cria parcelas
+            invoice.generate_parcel_entry(self.financial_operation,
+                                          self.title_type)
+
             # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             inv_eletr = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
@@ -191,21 +217,30 @@ class TestNFeBrasil(TransactionCase):
     def test_nfse_sucesso_homologacao(self, envio_lote):
 
         for invoice in self.invoices:
+
+            # Cria parcelas
+            invoice.generate_parcel_entry(self.financial_operation,
+                                          self.title_type)
+
             # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             # Lote recebido com sucesso
             xml_recebido = open(os.path.join(
                 self.caminho, 'xml/nfse-sucesso.xml'), 'r').read()
+
             resp = sanitize_response(xml_recebido)
+
             envio_lote.return_value = {
                 'object': resp[1],
                 'sent_xml': '<xml />',
                 'received_xml': xml_recebido
             }
+
             invoice_electronic = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
             invoice_electronic.action_send_electronic_invoice()
+
             self.assertEqual(invoice_electronic.state, 'done')
             self.assertEqual(invoice_electronic.codigo_retorno, '100')
             self.assertEqual(len(invoice_electronic.electronic_event_ids), 1)
@@ -214,13 +249,20 @@ class TestNFeBrasil(TransactionCase):
     def test_nfse_cancel(self, cancelar):
 
         for invoice in self.invoices:
+
+            # Cria parcelas
+            invoice.generate_parcel_entry(self.financial_operation,
+                                          self.title_type)
+
             # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             # Lote recebido com sucesso
             xml_recebido = open(os.path.join(
                 self.caminho, 'xml/cancelamento-sucesso.xml'), 'r').read()
+
             resp = sanitize_response(xml_recebido)
+
             cancelar.return_value = {
                 'object': resp[1],
                 'sent_xml': '<xml />',
@@ -243,13 +285,20 @@ class TestNFeBrasil(TransactionCase):
     def test_nfse_cancelamento_erro(self, cancelar):
 
         for invoice in self.invoices:
+
+            # Cria parcelas
+            invoice.generate_parcel_entry(self.financial_operation,
+                                          self.title_type)
+
             # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
+            invoice.action_br_account_invoice_open()
 
             # Lote recebido com sucesso
             xml_recebido = open(os.path.join(
                 self.caminho, 'xml/cancelamento-erro.xml'), 'r').read()
+
             resp = sanitize_response(xml_recebido)
+
             cancelar.return_value = {
                 'object': resp[1],
                 'sent_xml': '<xml />',

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_br_account"
+              name="Brasil"
+              parent="account.menu_finance_configuration"
+              sequence="0"/>
+
+    <menuitem id="menu_br_account_fiscal_manager"
+              name="Cadastros"
+              parent="menu_br_account"
+              sequence="0"/>
+
+</odoo>

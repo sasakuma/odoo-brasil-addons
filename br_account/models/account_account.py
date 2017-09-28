@@ -5,16 +5,6 @@
 from odoo import api, fields, models
 
 
-class AccountPaymentTerm(models.Model):
-    _inherit = 'account.payment.term'
-
-    indPag = fields.Selection([('0', u'Pagamento à Vista'),
-                               ('1', u'Pagamento à Prazo'),
-                               ('2', 'Outros')],
-                              string='Indicador de Pagamento',
-                              default='1')
-
-
 class AccountAccount(models.Model):
     _inherit = 'account.account'
 

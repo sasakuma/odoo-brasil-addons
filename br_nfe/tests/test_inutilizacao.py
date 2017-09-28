@@ -118,6 +118,7 @@ class TestInutilizacao(TransactionCase):
         ]
 
         fiscal_document = self.env.ref('br_data_account.fiscal_document_55')
+        payment_term = self.env.ref('account.account_payment_term_net')
 
         self.serie = self.env['br_account.document.serie'].search(
             [('fiscal_document_id', '=', fiscal_document.id)])
@@ -130,8 +131,13 @@ class TestInutilizacao(TransactionCase):
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,
             'fiscal_position_id': self.fpos.id,
-            'invoice_line_ids': invoice_line_data
+            'invoice_line_ids': invoice_line_data,
+            'payment_term_id': payment_term.id,
         }
+
+        self.title_type = self.env.ref('br_account.account_title_type_2')
+        self.financial_operation = self.env.ref(
+            'br_account.account_financial_operation_6')
 
     def tearDown(self):
         inutilized = self.env['invoice.electronic.inutilized'].search([])
@@ -142,7 +148,6 @@ class TestInutilizacao(TransactionCase):
 
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_ok(self, inutilizar):
-
         with open(os.path.join(self.caminho,
                                'xml/inutilizacao_sent_xml.xml')) as f:
             sent_xml = f.read()
@@ -186,7 +191,11 @@ class TestInutilizacao(TransactionCase):
             partner_id=self.partner_fisica.id
         ))
 
-        invoice.action_invoice_open()
+        # Cria parcelas
+        invoice.generate_parcel_entry(self.financial_operation,
+                                      self.title_type)
+
+        invoice.action_br_account_invoice_open()
 
         inv_eletr = self.env['invoice.electronic'].search(
             [('invoice_id', '=', invoice.id)])
@@ -195,7 +204,6 @@ class TestInutilizacao(TransactionCase):
 
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_2_sequences(self, inutilizar):
-
         with open(os.path.join(self.caminho,
                                'xml/inutilizacao_sent_xml.xml')) as f:
             sent_xml = f.read()
@@ -241,7 +249,11 @@ class TestInutilizacao(TransactionCase):
             partner_id=self.partner_fisica.id
         ))
 
-        invoice.action_invoice_open()
+        # Cria parcelas
+        invoice.generate_parcel_entry(self.financial_operation,
+                                      self.title_type)
+
+        invoice.action_br_account_invoice_open()
 
         inv_eletr = self.env['invoice.electronic'].search(
             [('invoice_id', '=', invoice.id)])
@@ -250,7 +262,6 @@ class TestInutilizacao(TransactionCase):
 
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_return_ok(self, inutilizar):
-
         with open(os.path.join(self.caminho,
                                'xml/inutilizacao_sent_xml.xml')) as f:
             sent_xml = f.read()
@@ -294,7 +305,11 @@ class TestInutilizacao(TransactionCase):
             partner_id=self.partner_fisica.id
         ))
 
-        invoice.action_invoice_open()
+        # Cria parcelas
+        invoice.generate_parcel_entry(self.financial_operation,
+                                      self.title_type)
+
+        invoice.action_br_account_invoice_open()
 
         inv_eletr = self.env['invoice.electronic'].search(
             [('invoice_id', '=', invoice.id)])
@@ -302,7 +317,6 @@ class TestInutilizacao(TransactionCase):
         self.assertEqual(inv_eletr.numero, 6)
 
     def test_inutilizacao_wrong_sqnc(self):
-
         wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
             numeration_start=10,
             numeration_end=5,
@@ -310,11 +324,18 @@ class TestInutilizacao(TransactionCase):
             modelo='55',
             justificativa='Sed lorem nibh, sodales ut ex a, tristique ullamcor'
         ))
+
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),
             partner_id=self.partner_fisica.id
         ))
-        invoice.action_invoice_open()
+
+        # Cria parcelas
+        invoice.generate_parcel_entry(self.financial_operation,
+                                      self.title_type)
+
+        invoice.action_br_account_invoice_open()
+
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()
 
@@ -326,11 +347,11 @@ class TestInutilizacao(TransactionCase):
             modelo='55',
             justificativa='Sed lorem'
         ))
+
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()
 
     def test_inutilizacao_justificativa_long(self):
-
         wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
             numeration_start=10,
             numeration_end=5,
@@ -350,6 +371,7 @@ class TestInutilizacao(TransactionCase):
             modelo='55',
             justificativa='Sed lorem nibh, sodales ut ex a, tristique ullamcor'
         ))
+
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()
 
@@ -361,11 +383,13 @@ class TestInutilizacao(TransactionCase):
             modelo='55',
             justificativa='Sed lorem nibh, sodales ut ex a, tristique ullamcor'
         ))
+
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()
 
     def test_inutilizacao_no_cnpj(self):
         self.main_company.cnpj_cpf = None
+
         wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
             numeration_start=10,
             numeration_end=100,
@@ -373,6 +397,7 @@ class TestInutilizacao(TransactionCase):
             modelo='55',
             justificativa='Sed lorem nibh, sodales ut ex a, tristique ullamcor'
         ))
+
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()
 
@@ -390,7 +415,11 @@ class TestInutilizacao(TransactionCase):
             partner_id=self.partner_fisica.id
         ))
 
-        invoice.action_invoice_open()
+        # Cria parcelas
+        invoice.generate_parcel_entry(self.financial_operation,
+                                      self.title_type)
+
+        invoice.action_br_account_invoice_open()
 
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()

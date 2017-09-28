@@ -41,12 +41,14 @@ class TestBoleto(TransactionCase):
             'municipal_imposto': 10.0,
             'cest': '123'
         })
+
         self.default_product = self.env['product.product'].create({
             'name': 'Normal Product',
             'default_code': '12',
             'fiscal_classification_id': self.default_ncm.id,
             'list_price': 15.0
         })
+
         self.partner_fisica = self.env['res.partner'].create(dict(
             name='Parceiro',
             company_type='company',
@@ -55,6 +57,7 @@ class TestBoleto(TransactionCase):
             number=45,
             property_account_receivable_id=self.receivable_account.id
         ))
+
         self.journalrec = self.env['account.journal'].create({
             'name': 'Faturas',
             'code': 'NF',
@@ -66,6 +69,13 @@ class TestBoleto(TransactionCase):
         self.fpos = self.env['account.fiscal.position'].create({
             'name': 'Venda'
         })
+
+        payment_term = self.env.ref('account.account_payment_term_net')
+
+        self.title_type = self.env.ref('br_account.account_title_type_2')
+        self.financial_operation = self.env.ref(
+            'br_account.account_financial_operation_6')
+
         invoice_line_data = [
             (0, 0,
              {
@@ -84,6 +94,7 @@ class TestBoleto(TransactionCase):
              }
              ),
         ]
+
         default_invoice = {
             'name': "Teste Validação",
             'reference_type': "none",
@@ -96,8 +107,19 @@ class TestBoleto(TransactionCase):
             'fiscal_position_id': self.fpos.id,
             'invoice_line_ids': invoice_line_data,
             'payment_mode_id': self._return_payment_mode(),
+            'payment_term_id': payment_term.id,
         }
+
         self.invoices = self.env['account.invoice'].create(dict(
             default_invoice.items(),
             partner_id=self.partner_fisica.id
         ))
+
+        # Cria parcelas
+        self.invoices.generate_parcel_entry(self.financial_operation,
+                                            self.title_type)
+
+        self.invoices.generate_parcel_entry(
+            self.env.ref('br_account.account_financial_operation_6'),
+            self.env.ref('br_account.account_title_type_2')
+        )

@@ -3,9 +3,10 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, fields, models, _
-from odoo.exceptions import UserError
+from odoo import api, fields, models
+from odoo.tools.translate import _
 from odoo.addons import decimal_precision as dp
+from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_compare
 
 
@@ -401,34 +402,11 @@ class AccountInvoice(models.Model):
                 inv, total, total_currency)
             return ml_list
 
-        ctx = dict(self._context, lang=inv.partner_id.lang)
-        date_invoice = inv.date_invoice
-        ctx['date'] = date_invoice
-
-        # Criacao de move lines a partir das parcelas
-        # date_invoice = inv.date_invoice
-        company_currency = inv.company_id.currency_id
-        diff_currency = inv.currency_id != company_currency
-
-        res_amount_currency = total_currency
-
         # Sobrescrevemos conteudo da lista porque e mais simples
-        # recriarmos os dicts das movelines a partir das parcelas
+        # recriarmos os dicts das move lines a partir das parcelas
         ml_list = []
 
-        for i, parcel in enumerate(self.parcel_ids):
-
-            if inv.currency_id != company_currency:
-                amount_currency = company_currency.with_context(
-                    ctx).compute(
-                    parcel.parceling_value, inv.currency_id)
-            else:
-                amount_currency = False
-
-            # last line: add the diff
-            res_amount_currency -= amount_currency or 0
-            if i + 1 == len(self.parcel_ids):
-                amount_currency += res_amount_currency
+        for parcel in self.parcel_ids:
 
             # Calculamos a nova data de vencimento baseado na data
             # de validação da faturação, caso a parcela nao esteja
@@ -441,8 +419,8 @@ class AccountInvoice(models.Model):
                 'price': parcel.parceling_value,
                 'account_id': inv.account_id.id,
                 'date_maturity': parcel.date_maturity,
-                'amount_currency': diff_currency and amount_currency,
-                'currency_id': diff_currency and inv.currency_id.id,
+                'amount_currency': parcel.amount_currency,
+                'currency_id': parcel.currency_id.id,
                 'invoice_id': inv.id,
                 'financial_operation_id': parcel.financial_operation_id.id,
                 'title_type_id': parcel.title_type_id.id,
@@ -482,20 +460,30 @@ class AccountInvoice(models.Model):
         return res
 
     @api.multi
-    def action_invoice_open(self):
+    def action_br_account_invoice_open(self):
+        """Metodo criado para manter a compatibilidade dos testes do core
+        com o sistema de criação de parcelas do br_account. Anteriormente
+        o metodo 'action_invoice_open' era chamado ao clicar no botao 'Validar'
+        da Fatura. Este metodo realiza a verificacao das parcelas ao mesmo
+        tempo que permite compatibilidade com os testes do core
 
-        if self.action_compare_total_parcel_value:
-            return super(AccountInvoice, self).action_invoice_open()
+        :return: True se o record foi salvo e False, caso contrário.
+        """
+        if self.parcel_ids:
+            if self.compare_total_parcel_value():
+                return super(AccountInvoice, self).action_invoice_open()
+            else:
+                raise UserError(_('O valor total da fatura e total das '
+                                  'parcelas divergem! Por favor, gere as '
+                                  'parcelas novamente.'))
         else:
-            raise UserError(_('O valor total da fatura e total das '
-                              'parcelas divergem! Por favor, gere as '
-                              'parcelas novamente.'))
+            raise ValidationError(
+                "Campo parcela está vazio. Por favor, crie as parcelas")
 
     @api.multi
     def action_number(self):
 
         for invoice in self:
-
             if invoice.fiscal_document_id:
 
                 if not invoice.document_serie_id:
@@ -513,25 +501,23 @@ class AccountInvoice(models.Model):
         return True
 
     @api.multi
-    def action_compare_total_parcel_value(self):
+    def compare_total_parcel_value(self):
 
-        if self.parcel_ids:
+        # Obtemos o total dos valores da parcela
+        total = sum([p.parceling_value for p in self.parcel_ids])
 
-            # Obtemos o total dos valores da parcela
-            total = sum([p.parceling_value for p in self.parcel_ids])
+        # Obtemos a precisao configurada
+        prec = self.env['decimal.precision'].precision_get('Account')
 
-            # Obtemos a precisao configurada
-            prec = self.env['decimal.precision'].precision_get('Account')
-
-            # Comparamos o valor total da invoice e das parcelas
-            # a fim de verificar se os valores sao os mesmos
-            # float_compare retorna 0, se os valores forem iguais
-            # float_compare retorna -1, se amount_total for menor que total
-            # float_compare retorna 1, se amount_total for maior que total
-            if float_compare(self.amount_total, total, precision_digits=prec):
-                return False
-
-        return True
+        # Comparamos o valor total da invoice e das parcelas
+        # a fim de verificar se os valores sao os mesmos
+        # float_compare retorna 0, se os valores forem iguais
+        # float_compare retorna -1, se amount_total for menor que total
+        # float_compare retorna 1, se amount_total for maior que total
+        if float_compare(self.amount_total, total, precision_digits=prec):
+            return False
+        else:
+            return True
 
     @api.multi
     def action_invoice_cancel_paid(self):
@@ -545,35 +531,9 @@ class AccountInvoice(models.Model):
     def invoice_line_move_line_get(self):
         res = super(AccountInvoice, self).invoice_line_move_line_get()
 
-        contador = 0
-
-        for line in self.invoice_line_ids:
-            if line.quantity == 0:
-                continue
-            res[contador]['price'] = line.price_total
-
-            price = line.price_unit * (1 - (
-                line.discount or 0.0) / 100.0)
-
-            ctx = line._prepare_tax_context()
-            tax_ids = line.invoice_line_tax_ids.with_context(**ctx)
-
-            taxes_dict = tax_ids.compute_all(
-                price, self.currency_id, line.quantity,
-                product=line.product_id, partner=self.partner_id)
-
-            for tax in line.invoice_line_tax_ids:
-                tax_dict = next(
-                    x for x in taxes_dict['taxes'] if x['id'] == tax.id)
-                if not tax.price_include and tax.account_id:
-                    res[contador]['price'] += tax_dict['amount']
-
-                if tax.price_include and \
-                        (not tax.account_id or not tax.deduced_account_id):
-                    if tax_dict['amount'] > 0.0:  # Negativo é retido
-                        res[contador]['price'] -= tax_dict['amount']
-
-            contador += 1
+        for index, line in enumerate(self.invoice_line_ids):
+            if line.quantity != 0:
+                res[index]['price'] = line.price_total
 
         return res
 
@@ -697,7 +657,7 @@ class AccountInvoice(models.Model):
                     currency_id=company_currency.id).compute(
                     total, inv.pre_invoice_date)
 
-                lines = aux[0]
+                lines_no_taxes = aux[0]
 
                 res_amount_currency = total_currency
                 ctx['date'] = inv.pre_invoice_date
@@ -705,7 +665,8 @@ class AccountInvoice(models.Model):
                 # Removemos as parcelas adicionadas anteriormente
                 inv.parcel_ids.unlink()
 
-                for i, t in enumerate(lines):
+                for i, t in enumerate(lines_no_taxes):
+
                     if inv.currency_id != company_currency:
                         amount_currency = \
                             company_currency.with_context(ctx).compute(
@@ -716,7 +677,7 @@ class AccountInvoice(models.Model):
                     # last line: add the diff
                     res_amount_currency -= amount_currency or 0
 
-                    if i + 1 == len(lines):
+                    if i + 1 == len(lines_no_taxes):
                         amount_currency += res_amount_currency
 
                     values = {
@@ -725,8 +686,8 @@ class AccountInvoice(models.Model):
                         'date_maturity': t[0],
                         'financial_operation_id': financial_operation.id,
                         'title_type_id': title_type.id,
-                        'company_currency_id': (diff_currency and
-                                                inv.currency_id.id),
+                        'amount_currency': diff_currency and amount_currency,
+                        'currency_id': diff_currency and inv.currency_id.id,
                         'invoice_id': inv.id,
                     }
 

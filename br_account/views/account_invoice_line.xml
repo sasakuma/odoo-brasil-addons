@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Invoice Line views -->
+    <record model="ir.ui.view" id="br_account_product_invoice_line_tree">
+        <field name="name">br_account_product.invoice.line.tree</field>
+        <field name="model">account.invoice.line</field>
+        <field name="inherit_id" ref="account.view_invoice_line_tree"/>
+        <field name="priority">26</field>
+        <field name="arch" type="xml">
+            <field name="account_id" position="replace">
+                <field name="cfop_id"/>
+            </field>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="view_br_account_invoice_line_form">
+        <field name="name">br_account.invoice.line.form</field>
+        <field name="model">account.invoice.line</field>
+        <field name="inherit_id" ref="account.view_invoice_line_form"/>
+        <field name="priority">36</field>
+        <field name="arch" type="xml">
+            <form position="replace">
+                <form string="Invoice Line">
+                    <notebook>
+                        <page string="Geral">
+                            <group>
+                                <group>
+                                    <field name="invoice_id" invisible="1"/>
+                                    <field name="fiscal_position_id" invisible="1"/>
+                                    <field name="fiscal_position_type" invisible="1"/>
+                                    <field name="product_id" required="1"
+                                           domain="[('fiscal_type', '=', fiscal_position_type)]"/>
+                                    <field name="product_type" invisible="1"/>
+                                    <field name="company_fiscal_type" invisible="1"/>
+                                    <label for="quantity"/>
+                                    <div>
+                                        <field name="quantity" class="oe_inline"/>
+                                    </div>
+                                    <field name="uom_id" groups="product.group_uom"/>
+                                    <field name="price_unit"/>
+                                    <field name="discount" groups="sale.group_discount_per_so_line" string="(-) Desconto (%)"/>
+                                    <field name="price_subtotal" string="(=) Valor Bruto"/>
+                                    <field name="price_total" string="(=) Valor Líquido"/>
+                                </group>
+                                <group>
+                                    <field name="cfop_id"
+                                           attrs="{'invisible': [('fiscal_position_type', '=', 'service')]}"/>
+                                    <field name="fiscal_classification_id"
+                                           attrs="{'invisible': [('fiscal_position_type', '=', 'service')]}"/>
+                                    <field domain="[('user_type_id', '&lt;&gt;', 'view')]" name="account_id"
+                                           groups="account.group_account_user"/>
+                                    <field domain="[('company_id', '=', parent.company_id)]" name="account_analytic_id"
+                                           groups="analytic.group_analytic_accounting"/>
+                                    <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                                    <field name="invoice_line_tax_ids" invisible="1"/>
+                                    <field name="tax_simples_id" attrs="{'invisible': [('company_fiscal_type', '==', '3')]}"/>
+                                    <field name="calculate_tax" invisible="1"/>
+                                </group>
+                            </group>
+                            <label for="name"/>
+                            <field name="name"/>
+                            <label for="informacao_adicional"/>
+                            <field name="informacao_adicional"/>
+                        </page>
+                        <page name="icms" string="ICMS" attrs="{'invisible': [('product_type', '!=', 'product')]}">
+                            <group name="detalhes_icms" string="Detalhes do ICMS">
+                                <group>
+                                    <field name="icms_cst_normal"
+                                           attrs="{'invisible': [('company_fiscal_type', '!=', '3')] }"/>
+                                    <field name="icms_csosn_simples"
+                                           attrs="{'invisible': [('company_fiscal_type', '==', '3')] }"/>
+                                    <field name="icms_origem"/>
+                                    <field name="icms_tipo_base" invisible="1"/>
+                                    <field name="incluir_ipi_base"/>
+                                    <field name="tem_difal"/>
+                                </group>
+                                <group>
+                                    <field name="icms_rule_id"/>
+                                    <field name="icms_base_calculo"/>
+                                    <field name="icms_aliquota_reducao_base"/>
+                                    <field name="tax_icms_id"/>
+                                    <field name="icms_aliquota" invisible="1"/>
+                                    <field name="icms_valor"/>
+                                    <field name="icms_aliquota_credito"
+                                           attrs="{'invisible': [('company_fiscal_type', '==', '3')] }"/>
+                                    <field name="icms_valor_credito"
+                                           attrs="{'invisible': [('company_fiscal_type', '==', '3')] }"/>
+                                </group>
+                            </group>
+                            <group name="substituicao_icms" string="Substituição Tributária ICMS">
+                                <group>
+                                    <field name="icms_st_tipo_base" invisible="1"/>
+                                    <field name="icms_st_aliquota_mva"/>
+                                    <field name="icms_st_base_calculo"/>
+                                    <field name="icms_st_aliquota_reducao_base"/>
+                                    <field name="tax_icms_st_id"/>
+                                    <field name="icms_st_aliquota" invisible="1"/>
+                                    <field name="icms_st_aliquota_deducao"
+                                           attrs="{'invisible': [('company_fiscal_type', '==', '3')] }"/>
+                                    <field name="icms_st_valor"/>
+                                </group>
+                                <group name="icms_interestaual" attrs="{'invisible': [('tem_difal', '==', False)] }">
+                                    <field name="icms_bc_uf_dest"/>
+                                    <field name="tax_icms_inter_id"/>
+                                    <field name="tax_icms_intra_id"/>
+                                    <field name="tax_icms_fcp_id"/>
+                                    <field name="icms_aliquota_inter_part"/>
+                                    <field name="icms_fcp_uf_dest"/>
+                                    <field name="icms_uf_dest"/>
+                                    <field name="icms_uf_remet"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="issqn" string="ISSQN" attrs="{'invisible': [('product_type','!=', 'service')]}">
+                            <group>
+                                <field name="tax_issqn_id"/>
+                                <field name="issqn_tipo"/>
+                                <field name="issqn_base_calculo"/>
+                                <field name="issqn_aliquota" invisible="1"/>
+                                <field name="service_type_id" readonly="1"
+                                       attrs="{'required': [('product_type','=', 'service')]}"
+                                       domain="[('internal_type','=','normal')]"/>
+                                <field name="issqn_valor"/>
+                            </group>
+                        </page>
+                        <page name="ipi" string="IPI" attrs="{'invisible': [('product_type','!=', 'product')]}">
+                            <group string="Detalhes do IPI">
+                                <group>
+                                    <field name="ipi_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
+                                    <field name="ipi_tipo"/>
+                                    <field name="ipi_rule_id"/>
+                                </group>
+                                <group>
+                                    <field name="ipi_base_calculo"/>
+                                    <field name="ipi_reducao_bc"/>
+                                    <field name="tax_ipi_id"/>
+                                    <field name="ipi_aliquota" invisible="1"/>
+                                    <field name="ipi_valor"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="pis" string="PIS">
+                            <group string="Detalhes do PIS">
+                                <group>
+                                    <field name="pis_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
+                                    <field name="pis_tipo"/>
+                                    <field name="pis_rule_id"/>
+                                </group>
+                                <group>
+                                    <field name="pis_base_calculo"/>
+                                    <field name="tax_pis_id"/>
+                                    <field name="pis_aliquota" invisible="1"/>
+                                    <field name="pis_valor"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="cofins" string="COFINS">
+                            <group string="Detalhes do COFINS">
+                                <group>
+                                    <field name="cofins_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
+                                    <field name="cofins_tipo"/>
+                                    <field name="cofins_rule_id"/>
+                                </group>
+                                <group>
+                                    <field name="cofins_base_calculo"/>
+                                    <field name="tax_cofins_id"/>
+                                    <field name="cofins_aliquota" invisible="1"/>
+                                    <field name="cofins_valor"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="ii" string="II" attrs="{'invisible': [('product_type','!=', 'product')]}">
+                            <group string="Detalhes do Imposto de Importação">
+                                <field name="ii_rule_id"/>
+                                <field name="tax_ii_id"/>
+                                <field name="ii_base_calculo"/>
+                                <field name="ii_aliquota" invisible="1"/>
+                                <field name="ii_valor_despesas"/>
+                                <field name="ii_valor_iof"/>
+                                <field name="ii_valor"/>
+                            </group>
+                            <group string="Declaração de Importação">
+                                <field name="import_declaration_ids" colspan="4" nolabel="1">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="date_registration"/>
+                                        <field name="location"/>
+                                        <field name="state_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                                        <field name="date_release"/>
+                                        <field name="type_transportation"/>
+                                    </tree>
+                                    <form string="Declaração de Importação">
+                                        <group>
+                                            <group>
+                                                <field name="name"/>
+                                                <field name="date_registration"/>
+                                                <field name="state_id"
+                                                       options="{'no_create': True, 'no_create_edit': True}"/>
+                                                <field name="location"/>
+                                                <field name="date_release"/>
+                                                <field name="type_transportation"/>
+                                            </group>
+                                            <group>
+                                                <field name="afrmm_value"/>
+                                                <field name="type_import"/>
+                                                <field name="thirdparty_cnpj"/>
+                                                <field name="thirdparty_state_id"
+                                                       options="{'no_create': True, 'no_create_edit': True}"/>
+                                                <field name="exporting_code"/>
+                                            </group>
+                                            <group string="Adições" colspan="4">
+                                                <field name="line_ids" nolabel="1"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Lei da Transparência Fiscal">
+                            <group>
+                                <field name="tributos_estimados_federais"/>
+                                <field name="tributos_estimados_estaduais"/>
+                                <field name="tributos_estimados_municipais"/>
+                                <field name="tributos_estimados"/>
+                            </group>
+                        </page>
+                        <page name="retencoes" string="Retenções"
+                              attrs="{'invisible': [('product_type','!=', 'service')]}">
+                            <group>
+                                <group string="CSLL">
+                                    <field name="csll_rule_id"/>
+                                    <field name="csll_base_calculo"/>
+                                    <field name="tax_csll_id"/>
+                                    <field name="csll_aliquota" invisible="1"/>
+                                    <field name="csll_valor"/>
+                                </group>
+                                <group string="IRRF">
+                                    <field name="irrf_rule_id"/>
+                                    <field name="irrf_base_calculo"/>
+                                    <field name="tax_irrf_id"/>
+                                    <field name="irrf_aliquota" invisible="1"/>
+                                    <field name="irrf_valor"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="INSS">
+                                    <field name="inss_rule_id"/>
+                                    <field name="inss_base_calculo"/>
+                                    <field name="tax_inss_id"/>
+                                    <field name="inss_aliquota" invisible="1"/>
+                                    <field name="inss_valor"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </form>
+            </form>
+        </field>
+    </record>
+
+</odoo>
