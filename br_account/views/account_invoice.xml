@@ -47,17 +47,18 @@
                 <field name="valor_desconto" invisible="1"/>
             </xpath>
             <page name="other_info" position="before">
-                <page name="parcelas" string="Parcelas" attrs="{'invisible': [('payment_term_id', '=', False)]}">
+                <page name="parcelas" string="Parcelas">
                     <separator/>
                     <button name="action_open_periodic_entry_wizard"
                             class="oe_highlight oe_edit_only"
                             type="object"
-                            attrs="{'invisible': ['|',('state', '!=', 'draft'),('payment_term_id', '=', False)]}"
+                            attrs="{'invisible': [('state', '!=', 'draft')]}"
                             string="Gerar Parcelas"/>
                     <separator/>
-                    <field nolabel="1" name="parcel_ids"
-                           attrs="{'invisible': [('payment_term_id', '=', False)]}">
-                        <tree name="parcelas" string="Parcelas" colors="red:date_maturity&lt;current_date"
+                    <field nolabel="1" name="parcel_ids">
+                        <tree name="parcelas"
+                              string="Parcelas"
+                              colors="red:date_maturity&lt;current_date"
                               editable="bottom">
                             <field name="invoice_id" invisible="1"/>
                             <field name="company_currency_id" invisible="1"/>
@@ -216,15 +217,14 @@
                 <field name="valor_desconto" invisible="1"/>
             </xpath>
             <page name="other_info" position="before">
-                <page name="parcelas" string="Parcelas" attrs="{'invisible': [('payment_term_id', '=', False)]}">
+                <page name="parcelas" string="Parcelas">
                     <button name="action_open_periodic_entry_wizard"
                             class="oe_highlight oe_edit_only"
                             type="object"
                             attrs="{'invisible': ['|',('state', '!=', 'draft'),('payment_term_id', '=', False)]}"
                             string="Gerar Parcelas"/>
                     <separator/>
-                    <field nolabel="1" name="parcel_ids"
-                           attrs="{'required': [('payment_term_id', '!=', False)], 'invisible': [('payment_term_id', '=', False)]}">
+                    <field nolabel="1" name="parcel_ids">
                         <tree name="parcelas" string="Parcelas" colors="red:date_maturity&lt;current_date"
                               editable="bottom">
                             <field name="invoice_id" invisible="1"/>
