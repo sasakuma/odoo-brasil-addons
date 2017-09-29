@@ -649,6 +649,19 @@ class AccountInvoice(models.Model):
                 raise UserError(u'Nenhuma data fornecida como base para a '
                                 u'criação das parcelas!')
 
+            if inv.state != 'draft':
+                raise UserError(u'Parcelas podem ser criadas apenas quando a '
+                                u'fatura estiver como "Provisório"')
+
+            if not inv.payment_term_id:
+                raise UserError(
+                    u'Nenhuma condição de pagamento foi fornecida. Por'
+                    u'favor, selecione uma condição de pagamento')
+
+            if not inv.invoice_line_ids:
+                raise UserError(u'Nenhuma linha de fatura foi fornecida. Por '
+                                u'favor insira ao menos um produto/serviço')
+
             company_currency = inv.company_id.currency_id
 
             # create move lines (one per invoice line + eventual taxes and
@@ -661,46 +674,46 @@ class AccountInvoice(models.Model):
             total, total_currency, iml = inv.with_context(
                 ctx).compute_invoice_totals(company_currency, iml)
 
-            if inv.payment_term_id:
-                aux = inv.with_context(ctx).payment_term_id.with_context(
-                    currency_id=company_currency.id).compute(
-                    total, inv.pre_invoice_date)
+            aux = inv.with_context(ctx).payment_term_id.with_context(
+                currency_id=company_currency.id).compute(
+                total, inv.pre_invoice_date)
 
-                lines_no_taxes = aux[0]
+            lines_no_taxes = aux[0]
 
-                res_amount_currency = total_currency
-                ctx['date'] = inv.pre_invoice_date
+            res_amount_currency = total_currency
+            ctx['date'] = inv.pre_invoice_date
 
-                # Removemos as parcelas adicionadas anteriormente
-                inv.parcel_ids.unlink()
+            # Removemos as parcelas adicionadas anteriormente
+            inv.parcel_ids.unlink()
 
-                for i, t in enumerate(lines_no_taxes):
+            for i, t in enumerate(lines_no_taxes):
 
-                    if inv.currency_id != company_currency:
-                        amount_currency = \
-                            company_currency.with_context(ctx).compute(
-                                t[1], inv.currency_id)
-                    else:
-                        amount_currency = False
+                if inv.currency_id != company_currency:
+                    amount_currency = \
+                        company_currency.with_context(ctx).compute(
+                            t[1], inv.currency_id)
+                else:
+                    amount_currency = False
 
-                    # last line: add the diff
-                    res_amount_currency -= amount_currency or 0
+                # last line: add the diff
+                res_amount_currency -= amount_currency or 0
 
-                    if i + 1 == len(lines_no_taxes):
-                        amount_currency += res_amount_currency
+                if i + 1 == len(lines_no_taxes):
+                    amount_currency += res_amount_currency
 
-                    values = {
-                        'name': str(i + 1).zfill(2),
-                        'parceling_value': t[1],
-                        'date_maturity': t[0],
-                        'financial_operation_id': financial_operation.id,
-                        'title_type_id': title_type.id,
-                        'amount_currency': diff_currency and amount_currency,
-                        'currency_id': diff_currency and inv.currency_id.id,
-                        'invoice_id': inv.id,
-                    }
+                values = {
+                    'name': str(i + 1).zfill(2),
+                    'parceling_value': t[1],
+                    'date_maturity': t[0],
+                    'financial_operation_id': financial_operation.id,
+                    'title_type_id': title_type.id,
+                    'amount_currency': diff_currency and amount_currency,
+                    'currency_id': diff_currency and inv.currency_id.id,
+                    'invoice_id': inv.id,
+                }
 
-                    obj = self.env['br_account.invoice.parcel'].create(values)
-                    # Chamamos o onchange para que a quantidade de dias seja
-                    # calculado
-                    obj._onchange_date_maturity()
+                obj = self.env['br_account.invoice.parcel'].create(values)
+
+                # Chamamos o onchange para que a quantidade de dias seja
+                # calculado
+                obj._onchange_date_maturity()

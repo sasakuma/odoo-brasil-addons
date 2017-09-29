@@ -306,6 +306,11 @@ class TestAccountInvoice(TestBaseBr):
                 self.assertEqual(parcel.title_type_id.id, self.title_type.id)
                 self.assertEqual(parcel.amount_days, 30)
 
+        # Verificamos se as faturas incompletas lancam excecao
+        for inv in self.incomplete_inv:
+            with self.assertRaises(UserError):
+                inv.action_open_periodic_entry_wizard()
+
     def test_compare_total_parcel_value(self):
 
         for inv in self.invoices:
