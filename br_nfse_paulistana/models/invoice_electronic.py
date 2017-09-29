@@ -139,8 +139,35 @@ class InvoiceElectronic(models.Model):
                 descricao += item.name + '\n'
                 codigo_servico = item.codigo_servico_paulistana
 
+            # Adicionamos os tributos na descricao da nota
+            if self.invoice_id.invoice_line_ids:
+                line = self.invoice_id.invoice_line_ids[0]
+                service_type = self.fiscal_position_id.service_type_id
+                descricao += ('Valor aproximado dos tributos: '
+                              'Federal {}{}({}%). Municipal {}{}({}%), '
+                              'conforme lei 12.741/2012 Fonte: IBPT.\n')
+
+                descricao = descricao.format(self.currency_id.symbol,
+                                             line.tributos_estimados_federais,
+                                             service_type.federal_nacional,
+                                             self.currency_id.symbol,
+                                             line.tributos_estimados_municipais,
+                                             service_type.municipal_imposto)
+
+            # Adicionamos as parcelas na descricao da nota
+            for parcel in self.invoice_id.parcel_ids:
+                descricao += 'Vencimento(s) / Parcela(s): {} {}{}\n'
+                descricao = descricao.format(parcel.date_maturity,
+                                             self.currency_id.symbol,
+                                             parcel.parceling_value)
+
+            # Adicionamos da fatura na observacao da nota
+            descricao += u'Número do pedido interno: {}\n'
+            descricao = descricao.format(self.invoice_id.number)
+
             if self.informacoes_legais:
                 descricao += self.informacoes_legais + '\n'
+
             if self.informacoes_complementares:
                 descricao += self.informacoes_complementares
 
