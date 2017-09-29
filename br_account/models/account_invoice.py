@@ -439,6 +439,14 @@ class AccountInvoice(models.Model):
             raise UserError(u'Parcelas podem ser criadas apenas quando a '
                             u'fatura estiver como "Provisório"')
 
+        if not self.payment_term_id:
+            raise UserError(u'Nenhuma condição de pagamento foi fornecida. Por'
+                            u'favor, selecione uma condição de pagamento')
+
+        if not self.invoice_line_ids:
+            raise UserError(u'Nenhuma linha de fatura foi fornecida. Por '
+                            u'favor insira ao menos um produto/serviço')
+
         action = {
             'type': 'ir.actions.act_window',
             'res_model': 'br_account.invoice.parcel.wizard',
