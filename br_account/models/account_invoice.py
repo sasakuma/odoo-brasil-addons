@@ -435,6 +435,10 @@ class AccountInvoice(models.Model):
         """Abre wizard para gerar pagamentos periodicos"""
         self.ensure_one()
 
+        if not self.pre_invoice_date:
+            raise UserError(u'Nenhuma data fornecida como base para a '
+                            u'criação das parcelas!')
+
         if self.state != 'draft':
             raise UserError(u'Parcelas podem ser criadas apenas quando a '
                             u'fatura estiver como "Provisório"')
