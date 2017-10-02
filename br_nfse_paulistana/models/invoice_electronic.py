@@ -91,7 +91,8 @@ class InvoiceElectronic(models.Model):
 
     @api.multi
     def _prepare_electronic_invoice_values(self):
-        res = super(InvoiceElectronic, self)._prepare_electronic_invoice_values()  # noqa: 501
+        res = super(InvoiceElectronic,
+                    self)._prepare_electronic_invoice_values()  # noqa: 501
 
         if self.model == '001' and self.webservice_nfse == 'nfse_paulistana':
             tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
@@ -139,20 +140,7 @@ class InvoiceElectronic(models.Model):
                 descricao += item.name + '\n'
                 codigo_servico = item.codigo_servico_paulistana
 
-            # Adicionamos os tributos na descricao da nota
-            if self.invoice_id.invoice_line_ids:
-                line = self.invoice_id.invoice_line_ids[0]
-                service_type = self.fiscal_position_id.service_type_id
-                descricao += ('Valor aproximado dos tributos: '
-                              'Federal {}{}({}%). Municipal {}{}({}%), '
-                              'conforme lei 12.741/2012 Fonte: IBPT.\n')
-
-                descricao = descricao.format(self.currency_id.symbol,
-                                             line.tributos_estimados_federais,
-                                             service_type.federal_nacional,
-                                             self.currency_id.symbol,
-                                             line.tributos_estimados_municipais,
-                                             service_type.municipal_imposto)
+            descricao += self.get_nfse_tribute_description()
 
             # Adicionamos as parcelas na descricao da nota
             for parcel in self.invoice_id.parcel_ids:
@@ -276,7 +264,8 @@ class InvoiceElectronic(models.Model):
 
                 if self.ambiente == 'producao':  # Apenas producao tem essa tag
                     values.update({
-                        'verify_code': retorno.ChaveNFeRPS.ChaveNFe.CodigoVerificacao,  # noqa: 501
+                        'verify_code': retorno.ChaveNFeRPS.ChaveNFe.CodigoVerificacao,
+                    # noqa: 501
                         'numero_nfse': retorno.ChaveNFeRPS.ChaveNFe.NumeroNFe,
                     })
 
@@ -505,3 +494,30 @@ class InvoiceElectronic(models.Model):
             return send_date + 'u' + cnpj_cpf
         else:
             return ''
+
+    def get_nfse_tribute_description(self):
+        """Adicionamos os tributos na descricao da nota"""
+
+        description = ''
+
+        if self.invoice_id.invoice_model == '001' and self.webservice_nfse == 'nfse_paulistana':  # noqa: 501
+
+            lines = self.invoice_id.invoice_line_ids
+
+            total_federal = sum(lines.mapped('tributos_estimados_federais'))
+            total_municipal = sum(lines.mapped('tributos_estimados_municipais'))
+
+            service_type = self.fiscal_position_id.service_type_id
+
+            description += ('Valor aproximado dos tributos: '
+                            'Federal {}{} ({}%). Municipal {}{} ({}%), '
+                            'conforme lei 12.741/2012 Fonte: IBPT.\n')
+
+            description = description.format(self.currency_id.symbol,
+                                             total_federal,
+                                             service_type.federal_nacional,
+                                             self.currency_id.symbol,
+                                             total_municipal,
+                                             service_type.municipal_imposto)
+
+        return description
