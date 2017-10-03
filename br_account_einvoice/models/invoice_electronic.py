@@ -413,7 +413,10 @@ class InvoiceElectronic(models.Model):
 
     @api.multi
     def action_send_electronic_invoice(self):
-        pass
+        for item in self:
+            if item.state == 'done':
+                raise UserError(u'Documento Eletrônico já enviado - '
+                                u'Proibido reenviar')
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
