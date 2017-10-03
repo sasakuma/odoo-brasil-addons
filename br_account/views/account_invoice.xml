@@ -21,6 +21,9 @@
                 <field name="date_invoice" invisible="1"/>
                 <field name="pre_invoice_date" attrs="{'readonly':[('state','!=','draft')]}"/>
             </field>
+            <field name="date_due" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
             <field name="fiscal_position_id" position="replace"/>
             <field name="payment_term_id" position="after">
                 <field name="fiscal_position_id" required="1"/>
