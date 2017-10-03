@@ -46,13 +46,13 @@ class AccountInvoice(models.Model):
     invoice_electronic_state = fields.Selection(
         [('no_inv_doc', u'Sem Doc. Eletrônico'),
          ('draft', u'Provisório'),
-         ('edit', 'Editar'),
-         ('error', 'Erro'),
-         ('done', 'Enviado'),
-         ('cancel', 'Cancelado')],
-        string='Situação da Nota Fiscal',
+         ('edit', u'Editar'),
+         ('error', u'Erro'),
+         ('done', u'Enviado'),
+         ('cancel', u'Cancelado')],
+        string=u'Situação da Nota Fiscal',
         default='no_inv_doc',
-        # store=True,
+        store=True,
         compute='_compute_invoice_electronic_state')
 
     @api.depends('invoice_electronic_ids')
