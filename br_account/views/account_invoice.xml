@@ -14,9 +14,9 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//button[@name='action_invoice_open']" position="before">
-                <button name="action_br_account_invoice_open" type="object" states="draft" string="Validar"
+                <button name="action_br_account_invoice_open" type="object" states="draft" string="Confirmar"
                         class="oe_highlight" groups="account.group_account_invoice"/>
-                <button name="action_br_account_invoice_open" type="object" states="proforma2" string="Validar"
+                <button name="action_br_account_invoice_open" type="object" states="proforma2" string="Confirmar"
                         groups="account.group_account_invoice"/>
             </xpath>
             <field name="date_invoice" position="replace">
