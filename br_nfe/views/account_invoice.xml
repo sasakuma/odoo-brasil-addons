@@ -44,11 +44,6 @@
                     <field name="nfe_status"/>
                 </div>
             </div>
-            <div name="button_box" position="inside">
-                <button name="action_preview_danfe" type="object" class="oe_stat_button" icon="fa-file-pdf-o"
-                        string="Visualizar Danfe" attrs="{'invisible': ['|', ('state', '==', 'draft'), ('invoice_model', '!=', '55')]}">
-                </button>
-            </div>
         </field>
     </record>
 
@@ -85,19 +80,35 @@
                     Ocorreu um erro com a
                     <b>NFe de número<field name="nfe_exception_number" class="oe_inline"/>.
                     </b>
-                    <button name="action_view_edocs" type="object" class="label label-primary"
-                            context="{ 'search_default_invoice_id': id }" string="Visualizar NFe">
+                    <button name="action_view_edocs"
+                            type="object"
+                            class="label label-primary"
+                            context="{'search_default_invoice_id': id }" string="Visualizar NFe">
                     </button>
                     <br/>
                     <field name="nfe_status"/>
                 </div>
             </div>
-            <div name="button_box" position="inside">
-                <button name="action_preview_danfe" type="object" class="oe_stat_button" icon="fa-file-pdf-o"
-                        string="Visualizar Danfe" attrs="{'invisible': ['|', ('state', '==', 'draft'), ('invoice_model', '!=', '55')]}">
-                </button>
-            </div>
         </field>
+    </record>
+
+    <record id="action_print_danfe" model="ir.actions.server">
+        <field name="name">DANFE de Venda</field>
+        <field name="model_id" ref="model_account_invoice"/>
+        <field name="multi">True</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+            action = records.action_print_danfe()
+        </field>
+    </record>
+
+    <record id="ir_value_action_print_danfe" model="ir.values">
+        <field name="name">ir.value.server.print.danfe</field>
+        <field name="model_id" ref="model_account_invoice"/>
+        <field name="model">account.invoice</field>
+        <field name="key2">client_print_multi</field>
+        <field eval="'ir.actions.server,%d'%action_print_danfe" name="value"/>
     </record>
 
 </odoo>
