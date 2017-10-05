@@ -726,5 +726,14 @@ class AccountInvoice(models.Model):
                 obj._onchange_date_maturity()
 
     @api.model
+    def line_get_convert(self, line, part):
+        ret = super(AccountInvoice, self).line_get_convert(line, part)
+
+        ret['title_type_id'] = line.get('title_type_id')
+        ret['financial_operation_id'] = line.get('financial_operation_id')
+
+        return ret
+
+    @api.model
     def _function_br_account(self):
         self.env.ref('account.action_account_payment_from_invoices').unlink()
