@@ -8,6 +8,7 @@ from . import account_financial_operation
 from . import account_fiscal_position
 from . import account_fiscal_position_tax_rule
 from . import account_invoice
+from . import account_invoice_confirm
 from . import account_invoice_line
 from . import account_move
 from . import account_move_line

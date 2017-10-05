@@ -484,6 +484,7 @@ class AccountInvoice(models.Model):
 
         :return: True se o record foi salvo e False, caso contrário.
         """
+
         if self.parcel_ids:
             if self.compare_total_parcel_value():
                 return super(AccountInvoice, self).action_invoice_open()

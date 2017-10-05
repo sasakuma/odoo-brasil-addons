@@ -248,30 +248,33 @@ class TestAccountInvoice(TransactionCase):
 
     def test_action_print_danfe(self):
 
-        for invoice in self.invoices:
+        # Antes de confirmar a fatura
+        with self.assertRaises(UserError):
+            self.invoices.action_print_danfe()
 
-            # Antes de confirmar a fatura
-            with self.assertRaises(UserError):
-                invoice.action_print_danfe()
+        # Confirmando a fatura deve gerar um documento eletrônico
+        self.env['account.invoice.confirm'].with_context(
+            active_ids=self.invoices.ids).invoice_confirm()
 
-            # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_br_account_invoice_open()
+        # # Confirmando a fatura deve gerar um documento eletrônico
+        # self.invoices.action_br_account_invoice_open()
 
-            invoice_electronic = self.env['invoice.electronic'].search(
-                [('invoice_id', '=', invoice.id)])
+        invoice_electronics = self.env['invoice.electronic'].search(
+            [('invoice_id', 'in', self.invoices.ids)])
 
-            # Forçamos o status do doc. eletronico apenas para fins de teste
-            invoice_electronic.state = 'done'
+        # Forçamos o status do doc. eletronico apenas para fins de teste
+        for electronic_invoice in invoice_electronics:
+            electronic_invoice.state = 'done'
 
-            # Tentamos gerar o danfe
-            danfe = invoice.action_print_danfe()
+        # Tentamos gerar o danfe
+        danfe = self.invoices.action_print_danfe()
 
-            # Comparamos os valores
-            self.assertEquals(danfe['report_name'],
-                              'br_nfe.main_template_br_nfe_danfe')
+        # Comparamos os valores
+        self.assertEquals(danfe['report_name'],
+                          'br_nfe.main_template_br_nfe_danfe')
 
-            self.assertEquals(danfe['report_type'], 'qweb-pdf')
-            self.assertEquals(danfe['type'], 'ir.actions.report.xml')
+        self.assertEquals(danfe['report_type'], 'qweb-pdf')
+        self.assertEquals(danfe['type'], 'ir.actions.report.xml')
 
-            self.assertListEqual(danfe['context']['active_ids'],
-                                 invoice_electronic.ids)
+        self.assertListEqual(danfe['context']['active_ids'],
+                             invoice_electronics.ids)
