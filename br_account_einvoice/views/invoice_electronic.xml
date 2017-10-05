@@ -155,12 +155,40 @@
             <field name="arch" type="xml">
                 <form string="Documento Eletrônico">
                     <header>
-                        <button name="action_send_electronic_invoice" states="draft" string="Enviar" type="object" class="oe_highlight"/>
-                        <button name="action_back_to_draft" states="edit,error" string="Rascunho" type="object"/>
-                        <button name="action_edit_edoc" states="draft,error" string="Habilitar Edição" type="object" groups="br_account_einvoice.group_edit_edoc"/>
-                        <button name="action_cancel_document" confirm="Confirma o cancelamento do documento?" class="oe_highlight" states="done" string="Cancelar" type="object"/>
-                        <button name="send_email_nfe" string="Reenviar Email" type="object" attrs="{'invisible': [('state', '!=', 'done')]}"/>
-                        <button name="action_print_invoice_report" type="object" string="Imprimir" class="oe_highlight"/>
+                        <button name="action_send_electronic_invoice"
+                                states="draft"
+                                string="Enviar"
+                                type="object"
+                                class="oe_highlight"/>
+
+                        <button name="action_back_to_draft"
+                                states="edit,error"
+                                string="Rascunho"
+                                type="object"/>
+
+                        <button name="action_edit_edoc"
+                                states="draft,error"
+                                string="Habilitar Edição"
+                                type="object"
+                                groups="br_account_einvoice.group_edit_edoc"/>
+
+                        <button name="action_cancel_document"
+                                confirm="Confirma o cancelamento do documento?"
+                                class="oe_highlight"
+                                states="done"
+                                string="Cancelar"
+                                type="object"/>
+
+                        <button name="send_email_nfe"
+                                string="Reenviar Email"
+                                type="object"
+                                attrs="{'invisible': [('state', '!=', 'done')]}"/>
+
+                        <button name="action_print_einvoice_report"
+                                type="object"
+                                string="Imprimir"
+                                class="oe_highlight"/>
+
                         <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
                     </header>
                     <div name="alertas" class="alert alert-info" role="alert" style="margin-bottom:0px;">
