@@ -91,8 +91,7 @@ class InvoiceElectronic(models.Model):
 
     @api.multi
     def _prepare_electronic_invoice_values(self):
-        res = super(InvoiceElectronic,
-                    self)._prepare_electronic_invoice_values()  # noqa: 501
+        res = super(InvoiceElectronic, self)._prepare_electronic_invoice_values()  # noqa: 501
 
         if self.model == '001' and self.webservice_nfse == 'nfse_paulistana':
             tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
@@ -264,8 +263,7 @@ class InvoiceElectronic(models.Model):
 
                 if self.ambiente == 'producao':  # Apenas producao tem essa tag
                     values.update({
-                        'verify_code': retorno.ChaveNFeRPS.ChaveNFe.CodigoVerificacao,
-                    # noqa: 501
+                        'verify_code': retorno.ChaveNFeRPS.ChaveNFe.CodigoVerificacao,  # noqa: 501
                         'numero_nfse': retorno.ChaveNFeRPS.ChaveNFe.NumeroNFe,
                     })
 
@@ -353,26 +351,6 @@ class InvoiceElectronic(models.Model):
         else:
             return super(InvoiceElectronic, self).action_cancel_document(
                 justificativa=justificativa, context=context)
-
-    @api.multi
-    def action_print_invoice_report(self):
-        action = super(InvoiceElectronic, self).action_print_invoice_report()
-
-        if self.model == '001' and self.webservice_nfse == 'nfse_paulistana':
-
-            if self.invoice_id.company_id.report_nfse_id:
-                report = self.invoice_id.company_id.report_nfse_id.report_name
-
-                action = self.env['report'].get_action(self.ids, report)
-                action['report_type'] = 'qweb-pdf'
-
-            else:
-                raise UserError(
-                    u'Não existe um template de relatorio para NFSe '
-                    u'selecionado para a empresa emissora desta Fatura. '
-                    u'Por favor, selecione um template no cadastro da empresa')
-
-        return action
 
     def get_nfse_observation_text(self):
 

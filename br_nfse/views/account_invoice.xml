@@ -29,7 +29,7 @@
                 </div>
                 <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('invoice_model', '!=', '001'),('nfe_exception', '==', False)]}">
                     Ocorreu um erro com a
-                    <b>NFSe de número <field name="nfse_exception_number" class="oe_inline"/>.
+                    <b>NFSe de número<field name="nfse_exception_number" class="oe_inline"/>.
                     </b>
                     <button name="action_view_edocs"
                             type="object"
@@ -41,12 +41,26 @@
                     <field name="nfse_status"/>
                 </div>
             </div>
-            <div name="button_box" position="inside">
-                <button name="action_preview_danfse" type="object" class="oe_stat_button" icon="fa-file-pdf-o"
-                        string="Visualizar Danfse" attrs="{'invisible': ['|', ('state', '==', 'draft'), '|',('invoice_model', '!=', '001'), ('nfe_exception', '==', True)]}">
-                </button>
-            </div>
         </field>
+    </record>
+
+    <record id="action_print_danfse" model="ir.actions.server">
+        <field name="name">DANFE de Serviço</field>
+        <field name="model_id" ref="model_account_invoice"/>
+        <field name="multi">True</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+            action = records.action_print_danfse()
+        </field>
+    </record>
+
+    <record id="ir_value_action_print_danfse" model="ir.values">
+        <field name="name">ir.value.server.print.danfse</field>
+        <field name="model_id" ref="model_account_invoice"/>
+        <field name="model">account.invoice</field>
+        <field name="key2">client_print_multi</field>
+        <field eval="'ir.actions.server,%d'%action_print_danfse" name="value"/>
     </record>
 
 </odoo>
