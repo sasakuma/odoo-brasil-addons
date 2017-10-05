@@ -95,7 +95,6 @@
     <record id="action_print_danfe" model="ir.actions.server">
         <field name="name">DANFE de Venda</field>
         <field name="model_id" ref="model_account_invoice"/>
-        <field name="multi">True</field>
         <field name="state">code</field>
         <field name="code">
             if records:
