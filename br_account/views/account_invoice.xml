@@ -10,6 +10,9 @@
                 <div class="oe_button_box" name="button_box">
                 </div>
             </xpath>
+            <xpath expr="//button[@name='invoice_print']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
             <xpath expr="//button[@name='action_invoice_open']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
