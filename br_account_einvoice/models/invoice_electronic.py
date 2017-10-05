@@ -395,7 +395,7 @@ class InvoiceElectronic(models.Model):
         self._compute_legal_information()
 
     @api.multi
-    def action_print_invoice_report(self):
+    def action_print_einvoice_report(self):
         action = {
             "type": "ir.actions.act_url",
             "url": '',
