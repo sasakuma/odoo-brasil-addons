@@ -17,11 +17,14 @@ class AccountInvoiceConfirm(models.TransientModel):
         context = dict(self._context or {})
         active_ids = context.get('active_ids', []) or []
 
-        for record in self.env['account.invoice'].browse(active_ids):
-            if record.state not in ('draft', 'proforma', 'proforma2'):
-                raise UserError(_("Selected invoice(s) cannot be confirmed as "
-                                  "they are not in 'Draft' or 'Pro-Forma' "
-                                  "state."))
-            record.action_br_account_invoice_open()
+        invoices = self.env['account.invoice'].browse(active_ids)
+
+        if any(inv.state not in ('draft', 'proforma', 'proforma2') for inv in invoices):  # noqa: E501
+            raise UserError(_("Selected invoice(s) cannot be confirmed as "
+                              "they are not in 'Draft' or 'Pro-Forma' "
+                              "state."))
+        else:
+            for inv in invoices:
+                inv.action_br_account_invoice_open()
 
         return {'type': 'ir.actions.act_window_close'}
