@@ -9,9 +9,9 @@ class AccountInvoiceConfirm(models.TransientModel):
     _inherit = 'account.invoice.confirm'
 
     @api.multi
-    def invoice_confirm(self):
-        """Sobrescrevemos o metodo para que o metodo
-        'action_br_account_invoice_open' possa ser chamado. Assim todo o
+    def br_account_invoice_confirm(self):
+        """Criamos um novo metodo de confirmar fatura em lote para que o metodo
+         'action_br_account_invoice_open' possa ser chamado. Assim todo o
         faturamento passa pelo mesmo caminho
         """
         context = dict(self._context or {})
