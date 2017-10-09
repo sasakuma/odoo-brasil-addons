@@ -1,0 +1,25 @@
+<odoo>
+
+    <record id="br_account_invoice_print_view" model="ir.ui.view">
+        <field name="name">br_account.invoice.print.form</field>
+        <field name="model">br_account.invoice.print</field>
+        <field name="arch" type="xml">
+            <form string="Print Invoices">
+                <p class="oe_grey">
+                    Somente faturas em aberto serão impressas.
+                </p>
+                <field name="account_invoice_ids" invisible="1" widget="many2many_tags"/>
+                <footer>
+                    <button string="Cancelar" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window id="action_account_invoice_print_view"
+                multi="True"
+                key2="client_print_multi" name="Imprimir Faturas"
+                res_model="br_account.invoice.print" src_model="account.invoice"
+                view_mode="form" target="new" view_type="form"/>
+
+</odoo>

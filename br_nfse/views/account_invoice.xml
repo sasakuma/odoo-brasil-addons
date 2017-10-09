@@ -29,7 +29,7 @@
                 </div>
                 <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('invoice_model', '!=', '001'),('nfe_exception', '==', False)]}">
                     Ocorreu um erro com a
-                    <b>NFSe de número <field name="nfse_exception_number" class="oe_inline"/>.
+                    <b>NFSe de número<field name="nfse_exception_number" class="oe_inline"/>.
                     </b>
                     <button name="action_view_edocs"
                             type="object"
@@ -41,11 +41,13 @@
                     <field name="nfse_status"/>
                 </div>
             </div>
-            <div name="button_box" position="inside">
-                <button name="action_preview_danfse" type="object" class="oe_stat_button" icon="fa-file-pdf-o"
-                        string="Visualizar Danfse" attrs="{'invisible': ['|', ('state', '==', 'draft'), '|',('invoice_model', '!=', '001'), ('nfe_exception', '==', True)]}">
-                </button>
-            </div>
+            <xpath expr="//button[@name='invoice_print']" position="after">
+                <button string="Imprimir DANFSE"
+                        name="action_print_danfse"
+                        type="object"
+                        class="btn-primary"
+                        attrs="{'invisible': ['|', ('invoice_model', '!=', '001'),('state', 'not in', ['open'])]}"/>
+            </xpath>
         </field>
     </record>
 

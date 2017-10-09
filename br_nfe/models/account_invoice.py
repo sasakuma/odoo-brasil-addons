@@ -79,28 +79,24 @@ class AccountInvoice(models.Model):
 
         return True
 
-    def action_preview_danfe(self):
-        docs = self.env['invoice.electronic'].search(
-            [('invoice_id', '=', self.id)])
+    @api.multi
+    def action_print_danfe(self):
+
+        # Apenas documentos eletronicos que estao como 'draft' (RPS)
+        # ou ja foram enviados 'done' (são NFSe)
+        docs = self.env['invoice.electronic'].search([
+            ('invoice_id', 'in', self.ids),
+            ('model', '=', '55'),
+            ('state', 'in', ['done']),
+        ])
 
         if not docs:
+            # Se não encontrarmos nenhum documento eletronico enviado
+            # ou provisorio, imprimimos um documento eletronico
+            # que foram cancelados
             raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
 
-        action = self.env['report'].get_action(
-            docs.ids, 'br_nfe.main_template_br_nfe_danfe')
-
-        action['report_type'] = 'qweb-html'
-        return action
-
-    def invoice_print(self):
-        if self.fiscal_document_id.code == '55':
-            docs = self.env['invoice.electronic'].search(
-                [('invoice_id', '=', self.id)])
-
-            return self.env['report'].get_action(
-                docs.ids, 'br_nfe.main_template_br_nfe_danfe')
-        else:
-            return super(AccountInvoice, self).invoice_print()
+        return docs.action_print_einvoice_report()
 
     def _prepare_edoc_vals(self, inv):
         res = super(AccountInvoice, self)._prepare_edoc_vals(inv)

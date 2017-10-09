@@ -139,20 +139,7 @@ class InvoiceElectronic(models.Model):
                 descricao += item.name + '\n'
                 codigo_servico = item.codigo_servico_paulistana
 
-            # Adicionamos os tributos na descricao da nota
-            if self.invoice_id.invoice_line_ids:
-                line = self.invoice_id.invoice_line_ids[0]
-                service_type = self.fiscal_position_id.service_type_id
-                descricao += ('Valor aproximado dos tributos: '
-                              'Federal {}{}({}%). Municipal {}{}({}%), '
-                              'conforme lei 12.741/2012 Fonte: IBPT.\n')
-
-                descricao = descricao.format(self.currency_id.symbol,
-                                             line.tributos_estimados_federais,
-                                             service_type.federal_nacional,
-                                             self.currency_id.symbol,
-                                             line.tributos_estimados_municipais,
-                                             service_type.municipal_imposto)
+            descricao += self.get_nfse_tribute_description()
 
             # Adicionamos as parcelas na descricao da nota
             for parcel in self.invoice_id.parcel_ids:
@@ -365,26 +352,6 @@ class InvoiceElectronic(models.Model):
             return super(InvoiceElectronic, self).action_cancel_document(
                 justificativa=justificativa, context=context)
 
-    @api.multi
-    def action_print_invoice_report(self):
-        action = super(InvoiceElectronic, self).action_print_invoice_report()
-
-        if self.model == '001' and self.webservice_nfse == 'nfse_paulistana':
-
-            if self.invoice_id.company_id.report_nfse_id:
-                report = self.invoice_id.company_id.report_nfse_id.report_name
-
-                action = self.env['report'].get_action(self.ids, report)
-                action['report_type'] = 'qweb-pdf'
-
-            else:
-                raise UserError(
-                    u'Não existe um template de relatorio para NFSe '
-                    u'selecionado para a empresa emissora desta Fatura. '
-                    u'Por favor, selecione um template no cadastro da empresa')
-
-        return action
-
     def get_nfse_observation_text(self):
 
         aux = []
@@ -505,3 +472,30 @@ class InvoiceElectronic(models.Model):
             return send_date + 'u' + cnpj_cpf
         else:
             return ''
+
+    def get_nfse_tribute_description(self):
+        """Adicionamos os tributos na descricao da nota"""
+
+        description = ''
+
+        if self.invoice_id.invoice_model == '001' and self.webservice_nfse == 'nfse_paulistana':  # noqa: 501
+
+            lines = self.invoice_id.invoice_line_ids
+
+            total_federal = sum(lines.mapped('tributos_estimados_federais'))
+            total_municipal = sum(lines.mapped('tributos_estimados_municipais'))
+
+            service_type = self.fiscal_position_id.service_type_id
+
+            description += ('Valor aproximado dos tributos: '
+                            'Federal {}{} ({}%). Municipal {}{} ({}%), '
+                            'conforme lei 12.741/2012 Fonte: IBPT.\n')
+
+            description = description.format(self.currency_id.symbol,
+                                             total_federal,
+                                             service_type.federal_nacional,
+                                             self.currency_id.symbol,
+                                             total_municipal,
+                                             service_type.municipal_imposto)
+
+        return description

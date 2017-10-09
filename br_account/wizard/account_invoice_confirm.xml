@@ -1,0 +1,22 @@
+<odoo>
+
+    <record id="account_invoice_confirm_view" model="ir.ui.view">
+        <field name="name">account.invoice.confirm.form</field>
+        <field name="model">account.invoice.confirm</field>
+        <field name="inherit_id" ref="account.account_invoice_confirm_view"/>
+        <field name="arch" type="xml">
+            <!-- Deixamos o campo invisivel porque nao sabemos se existe alguma outra view que o utiliza -->
+            <xpath expr="//button[@name='invoice_confirm']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='invoice_confirm']" position="before">
+                <button name="br_account_invoice_confirm"
+                        type="object"
+                        string="Confirm Invoices"
+                        default_focus="1"
+                        class="btn-primary"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -998,12 +998,14 @@ class InvoiceElectronic(models.Model):
         self._create_attachment('canc-ret', self, resp['received_xml'])
 
     @api.multi
-    def action_print_invoice_report(self):
-        action = super(InvoiceElectronic, self).action_print_invoice_report()
+    def action_print_einvoice_report(self):
 
-        if self.model == '55':
+        docs = self.search([('model', '=', '55'), ('id', 'in', self.ids)])
+
+        if docs:
             report = self.env.ref('br_nfe.report_br_nfe_danfe').report_name
-            action = self.env['report'].get_action(self.ids, report)
+            action = self.env['report'].get_action(docs.ids, report)
             action['report_type'] = 'qweb-pdf'
-
-        return action
+            return action
+        else:
+            return super(InvoiceElectronic, self).action_print_einvoice_report()

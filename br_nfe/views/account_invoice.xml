@@ -44,11 +44,13 @@
                     <field name="nfe_status"/>
                 </div>
             </div>
-            <div name="button_box" position="inside">
-                <button name="action_preview_danfe" type="object" class="oe_stat_button" icon="fa-file-pdf-o"
-                        string="Visualizar Danfe" attrs="{'invisible': ['|', ('state', '==', 'draft'), ('invoice_model', '!=', '55')]}">
-                </button>
-            </div>
+            <xpath expr="//button[@name='invoice_print']" position="after">
+                <button string="Imprimir DANFE"
+                        name="action_print_danfe"
+                        type="object"
+                        class="btn-primary"
+                        attrs="{'invisible': ['|', ('invoice_model', '!=', '55'), ('state', 'not in', ['open'])]}"/>
+            </xpath>
         </field>
     </record>
 
@@ -85,17 +87,14 @@
                     Ocorreu um erro com a
                     <b>NFe de número<field name="nfe_exception_number" class="oe_inline"/>.
                     </b>
-                    <button name="action_view_edocs" type="object" class="label label-primary"
-                            context="{ 'search_default_invoice_id': id }" string="Visualizar NFe">
+                    <button name="action_view_edocs"
+                            type="object"
+                            class="label label-primary"
+                            context="{'search_default_invoice_id': id }" string="Visualizar NFe">
                     </button>
                     <br/>
                     <field name="nfe_status"/>
                 </div>
-            </div>
-            <div name="button_box" position="inside">
-                <button name="action_preview_danfe" type="object" class="oe_stat_button" icon="fa-file-pdf-o"
-                        string="Visualizar Danfe" attrs="{'invisible': ['|', ('state', '==', 'draft'), ('invoice_model', '!=', '55')]}">
-                </button>
             </div>
         </field>
     </record>

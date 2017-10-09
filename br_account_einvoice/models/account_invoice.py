@@ -43,6 +43,34 @@ class AccountInvoice(models.Model):
         help="""Unique number of the invoice, computed
             automatically when the invoice is created.""")
 
+    invoice_electronic_state = fields.Selection(
+        [('no_inv_doc', u'Sem Doc. Eletrônico'),
+         ('draft', u'Provisório'),
+         ('edit', u'Editar'),
+         ('error', u'Erro'),
+         ('done', u'Enviado'),
+         ('cancel', u'Cancelado')],
+        string=u'Situação da Nota Fiscal',
+        default='no_inv_doc',
+        store=True,
+        compute='_compute_invoice_electronic_state')
+
+    @api.depends('invoice_electronic_ids')
+    def _compute_invoice_electronic_state(self):
+        for inv in self:
+            docs = self.env['invoice.electronic'].search(
+                [('invoice_id', '=', inv.id)])
+
+            # Ordenamos a lista de documentos eletronicos, para garantir que
+            # a mais recente esteja em primeiro, ou seja, a que possui o ID
+            # maior
+            docs = docs.sorted(key=lambda a: a.id, reverse=True)
+
+            if docs:
+                inv.invoice_electronic_state = docs[0].state
+            else:
+                inv.invoice_electronic_state = 'no_inv_doc'
+
     @api.multi
     def action_view_edocs(self):
         if self.total_edocs == 1:
@@ -192,7 +220,7 @@ class AccountInvoice(models.Model):
         electronic_items = []
         for inv_line in invoice.invoice_line_ids:
             electronic_items.append((0, 0,
-                                    self._prepare_edoc_item_vals(inv_line)))
+                                     self._prepare_edoc_item_vals(inv_line)))
 
         vals['electronic_item_ids'] = electronic_items
         return vals

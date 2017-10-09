@@ -19,6 +19,7 @@
     'data': [
         'data/account_financial_operation.xml',
         'data/account_title_type.xml',
+        'data/ir_action.xml',
         'views/account_financial_operation.xml',
         'views/account_title_type.xml',
         'views/account_fiscal_position.xml',
@@ -40,6 +41,8 @@
         'views/res_company.xml',
         'views/account_tax.xml',
         'views/product_fiscal_classification.xml',
+        'wizard/account_invoice_confirm.xml',
+        'wizard/br_account_invoice_print.xml',
         'wizard/br_product_fiscal_classification_wizard.xml',
         'wizard/br_account_invoice_parcel.xml',
         'security/ir.model.access.csv',

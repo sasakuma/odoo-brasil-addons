@@ -8,13 +8,18 @@ from odoo.exceptions import UserError, ValidationError
 
 
 class TestAccountInvoice(TestBaseBr):
-
     def setUp(self):
         super(TestAccountInvoice, self).setUp()
 
-        self.partner = self.env['res.partner'].create({
+        self.partner_fis = self.env['res.partner'].create({
             'name': 'Nome Parceiro',
             'is_company': False,
+            'property_account_receivable_id': self.receivable_account.id,
+        })
+
+        self.partner = self.env['res.partner'].create({
+            'name': 'Nome Empresa',
+            'is_company': True,
             'property_account_receivable_id': self.receivable_account.id,
         })
 
@@ -51,8 +56,8 @@ class TestAccountInvoice(TestBaseBr):
         payment_term = self.env.ref('account.account_payment_term_net')
 
         default_invoice = {
-            'name': 'Teste Fatura',
-            'partner_id': self.partner.id,
+            # 'name': 'Teste Fatura',
+            # 'partner_id': self.partner.id,
             'reference_type': "none",
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,
@@ -61,11 +66,51 @@ class TestAccountInvoice(TestBaseBr):
             'pre_invoice_date': '2017-07-01',
         }
 
-        self.invoices = self.env['account.invoice'].create(default_invoice)
+        incomplete_inv = {
+            'name': 'Teste Fatura Incompleta',
+            'partner_id': self.partner.id,
+            'reference_type': "none",
+            'journal_id': self.journalrec.id,
+            'account_id': self.receivable_account.id,
+            'pre_invoice_date': '2017-07-01',
+        }
+
+        self.invoices = self.env['account.invoice'].create(dict(
+            default_invoice.items(),
+            name='Teste Fatura Pessoa Fisica',
+            partner_id=self.partner_fis.id,
+        ))
+
+        self.invoices |= self.env['account.invoice'].create(dict(
+            default_invoice.items(),
+            name='Teste Fatura Empresa',
+            partner_id=self.partner.id,
+        ))
 
         # Cria parcelas
         self.invoices.generate_parcel_entry(self.financial_operation,
                                             self.title_type)
+
+        # Criamos faturas com dados ausentes para testar as excecoes
+        # payment_term e falso
+        self.incomplete_inv = self.env['account.invoice'].create(dict(
+            incomplete_inv.items(),
+            invoice_line_ids=invoice_line_data,
+        ))
+
+        # Fatura sem linhas
+        self.incomplete_inv |= self.env['account.invoice'].create(dict(
+            incomplete_inv.items(),
+            payment_term_id=payment_term.id,
+        ))
+
+        # Fatura com state diferente de 'draft'
+        self.incomplete_inv |= self.env['account.invoice'].create(dict(
+            incomplete_inv.items(),
+            state='open',
+            invoice_line_ids=invoice_line_data,
+            payment_term_id=payment_term.id,
+        ))
 
     def test_compute_total_values(self):
 
@@ -261,10 +306,14 @@ class TestAccountInvoice(TestBaseBr):
                 self.assertEqual(parcel.title_type_id.id, self.title_type.id)
                 self.assertEqual(parcel.amount_days, 30)
 
+        # Verificamos se as faturas incompletas lancam excecao
+        for inv in self.incomplete_inv:
+            with self.assertRaises(UserError):
+                inv.action_open_periodic_entry_wizard()
+
     def test_compare_total_parcel_value(self):
 
         for inv in self.invoices:
-
             self.assertTrue(inv.compare_total_parcel_value())
 
             # Mudamos o valor da fatura para disparar o erro
@@ -276,7 +325,6 @@ class TestAccountInvoice(TestBaseBr):
     def test_action_br_account_invoice_open(self):
 
         for inv in self.invoices:
-
             inv.parcel_ids.unlink()
 
             # Verificamos quando nao existe nenhuma parcela
@@ -298,3 +346,46 @@ class TestAccountInvoice(TestBaseBr):
 
             with self.assertRaises(UserError):
                 inv.action_br_account_invoice_open()
+
+    def test_action_open_periodic_entry_wizard(self):
+
+        # O metodo deve receber apenas um record, caso contrário o retorno
+        # sera comprometido. Aqui, verificamos se o metodo dispara excecao
+        # quando o mesmo e invocado com mais de um record
+        with self.assertRaises(ValueError):
+            self.invoices.action_open_periodic_entry_wizard()
+
+        for inv in self.invoices:
+            action = inv.action_open_periodic_entry_wizard()
+
+            # Verificamos se as chaves estao no dicionario.
+            # Isso e feita a fim de detectar se alguma chave foi removida
+            self.assertIn('type', action)
+            self.assertIn('res_model', action)
+            self.assertIn('view_type', action)
+            self.assertIn('view_mode', action)
+            self.assertIn('views', action)
+            self.assertIn('target', action)
+            self.assertIn('context', action)
+            self.assertIn('default_payment_term_id', action['context'])
+            self.assertIn('default_pre_invoice_date', action['context'])
+
+            # Verificamos o valor das chaves
+            self.assertEqual(action['type'], 'ir.actions.act_window')
+            self.assertEqual(action['res_model'],
+                             'br_account.invoice.parcel.wizard')
+            self.assertEqual(action['view_type'], 'form')
+            self.assertEqual(action['view_mode'], 'form')
+            self.assertEqual(action['views'], [(False, 'form')])
+            self.assertEqual(action['target'], 'new')
+
+            self.assertEqual(action['context']['default_payment_term_id'],
+                             inv.payment_term_id.id)
+
+            self.assertEqual(action['context']['default_pre_invoice_date'],
+                             inv.pre_invoice_date)
+
+        # Verificamos se as faturas incompletas lancam excecao
+        for inv in self.incomplete_inv:
+            with self.assertRaises(UserError):
+                inv.action_open_periodic_entry_wizard()

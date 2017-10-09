@@ -86,24 +86,25 @@ class AccountInvoice(models.Model):
             res['webservice_nfse'] = self.webservice_nfse
         return res
 
-    def action_preview_danfse(self):
-        docs = self.env['invoice.electronic'].search(
-            [('invoice_id', '=', self.id)])
+    @api.multi
+    def action_print_danfse(self):
+
+        # Apenas documentos eletronicos que estao como 'draft' (RPS)
+        # ou ja foram enviados 'done' (são NFSe)
+        docs = self.env['invoice.electronic'].search([
+            ('invoice_id', 'in', self.ids),
+            ('model', '=', '001'),
+            ('state', 'in', ['done']),
+        ])
+
         if not docs:
-            raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
+            # Se não encontrarmos nenhum documento eletronico enviado
+            # ou provisorio, imprimimos um documento eletronico
+            # que foram cancelados
+            docs = self.env['invoice.electronic'].search([
+                ('invoice_id', 'in', self.ids),
+                ('model', '=', '001'),
+                ('state', 'in', ['cancel']),
+            ])
 
-        # if self.invoice_model == '009':
-        #     if docs[0].state != 'done':
-        #         raise UserError('Nota Fiscal na fila de envio. Aguarde!')
-        #     return {
-        #         "type": "ir.actions.act_url",
-        #         "url": docs[0].url_danfe,
-        #         "target": "_blank",
-        #     }
-
-        action = {
-            "type": "ir.actions.act_url",
-            "url": '',
-            "target": "_blank",
-        }
-        return action
+        return docs.action_print_einvoice_report()

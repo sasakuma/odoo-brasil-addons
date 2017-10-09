@@ -40,6 +40,7 @@
         'wizard/carta_correcao_eletronica.xml',
         'wizard/inutilize_nfe_numeration.xml',
         'wizard/export_nfe.xml',
+        'wizard/br_account_invoice_print.xml',
     ],
     'installable': True,
     'application': True,

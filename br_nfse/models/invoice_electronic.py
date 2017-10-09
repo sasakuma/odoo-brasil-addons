@@ -7,6 +7,7 @@ from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 
 _logger = logging.getLogger(__name__)
@@ -55,3 +56,28 @@ class InvoiceElectronic(models.Model):
         date_mask = "%d/%m/%Y"
         due_date = datetime.strftime(due_date, date_mask)
         return due_date
+
+    @api.multi
+    def action_print_einvoice_report(self):
+
+        docs = self.search([('model', '=', '001'), ('id', 'in', self.ids)])
+
+        if docs:
+
+            if docs[0].invoice_id.company_id.report_nfse_id:
+
+                # Pegamos a primeira porque todas as NFSe sao/devem ser da
+                # mesma prefeitura
+                report = docs[0].invoice_id.company_id.report_nfse_id.report_name
+
+                action = self.env['report'].get_action(docs.ids, report)
+                action['report_type'] = 'qweb-pdf'
+                return action
+            else:
+                raise UserError(
+                    u'Não existe um template de relatorio para NFSe '
+                    u'selecionado para a empresa emissora desta Fatura. '
+                    u'Por favor, selecione um template no cadastro da '
+                    u'empresa')
+        else:
+            return super(InvoiceElectronic, self).action_print_einvoice_report()
