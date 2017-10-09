@@ -6,7 +6,6 @@ from odoo import api, fields, models
 class BrAccountInvoicePrint(models.TransientModel):
     _name = 'br_account.invoice.print'
 
-    @api.depends('account_invoice_ids')
     def compute_invoice_type(self):
         context = dict(self._context or {})
         active_ids = context.get('active_ids', []) or []

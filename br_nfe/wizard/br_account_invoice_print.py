@@ -6,7 +6,7 @@ from odoo import api, fields, models
 class BrAccountInvoicePrint(models.TransientModel):
     _inherit = 'br_account.invoice.print'
 
-    @api.depends('account_invoice_ids', 'has_sale_invoice')
+    @api.depends('account_invoice_ids')
     def compute_invoice_type(self):
         super(BrAccountInvoicePrint, self).compute_invoice_type()
 
