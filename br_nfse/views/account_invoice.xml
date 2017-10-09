@@ -41,25 +41,14 @@
                     <field name="nfse_status"/>
                 </div>
             </div>
+            <xpath expr="//button[@name='invoice_print']" position="after">
+                <button string="Imprimir DANFSE"
+                        name="action_print_danfse"
+                        type="object"
+                        class="btn-primary"
+                        attrs="{'invisible': ['|', ('invoice_model', '!=', '001'),('state', 'not in', ['open'])]}"/>
+            </xpath>
         </field>
-    </record>
-
-    <record id="action_print_danfse" model="ir.actions.server">
-        <field name="name">DANFE de Serviço</field>
-        <field name="model_id" ref="model_account_invoice"/>
-        <field name="state">code</field>
-        <field name="code">
-            if records:
-            action = records.action_print_danfse()
-        </field>
-    </record>
-
-    <record id="ir_value_action_print_danfse" model="ir.values">
-        <field name="name">ir.value.server.print.danfse</field>
-        <field name="model_id" ref="model_account_invoice"/>
-        <field name="model">account.invoice</field>
-        <field name="key2">client_print_multi</field>
-        <field eval="'ir.actions.server,%d'%action_print_danfse" name="value"/>
     </record>
 
 </odoo>

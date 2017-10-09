@@ -32,6 +32,7 @@
         'views/res_company.xml',
         'views/account_fiscal_position.xml',
         'reports/danfse_default.xml',
+        'wizard/br_account_invoice_print.xml',
     ],
     'demo': [
         'demo/product_demo.xml',
