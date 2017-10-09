@@ -1,0 +1,24 @@
+<odoo>
+
+    <record id="br_account_invoice_print_view" model="ir.ui.view">
+        <field name="name">br_nfe.invoice.print.form</field>
+        <field name="model">br_account.invoice.print</field>
+        <field name="inherit_id" ref="br_account.br_account_invoice_print_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='account_invoice_ids']" position="after">
+                <field name="has_sale_invoice" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//footer" position="inside">
+                <button string="Imprimir DANFE"
+                        name="action_print_danfe"
+                        type="object"
+                        class="btn-primary"
+                        attrs="{'invisible': [('has_sale_invoice', '=', False)]}"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
