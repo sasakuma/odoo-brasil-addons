@@ -5,16 +5,19 @@
         <record id="account_title_type_1" model="account.title.type">
             <field name="initials">CH</field>
             <field name="name">Cheque</field>
+            <field name="allow_cnab_sending">False</field>
         </record>
 
         <record id="account_title_type_2" model="account.title.type">
             <field name="initials">BL</field>
             <field name="name">Boleto</field>
+            <field name="allow_cnab_sending">True</field>
         </record>
 
         <record id="account_title_type_3" model="account.title.type">
             <field name="initials">OC</field>
             <field name="name">Ordem de Cobrança</field>
+            <field name="allow_cnab_sending">False</field>
         </record>
 
     </data>
