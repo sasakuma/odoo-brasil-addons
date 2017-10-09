@@ -52,14 +52,12 @@ class AccountInvoice(models.Model):
          ('cancel', u'Cancelado')],
         string=u'Situação da Nota Fiscal',
         default='no_inv_doc',
-        store=True,
         compute='_compute_invoice_electronic_state')
 
-    @api.depends('invoice_electronic_ids')
+    @api.depends('state', 'invoice_electronic_ids')
     def _compute_invoice_electronic_state(self):
         for inv in self:
-            docs = self.env['invoice.electronic'].search(
-                [('invoice_id', '=', inv.id)])
+            docs = inv.invoice_electronic_ids
 
             # Ordenamos a lista de documentos eletronicos, para garantir que
             # a mais recente esteja em primeiro, ou seja, a que possui o ID
