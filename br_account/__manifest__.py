@@ -42,6 +42,7 @@
         'views/account_tax.xml',
         'views/product_fiscal_classification.xml',
         'wizard/account_invoice_confirm.xml',
+        'wizard/br_account_invoice_print.xml',
         'wizard/br_product_fiscal_classification_wizard.xml',
         'wizard/br_account_invoice_parcel.xml',
         'security/ir.model.access.csv',

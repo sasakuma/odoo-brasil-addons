@@ -4,4 +4,5 @@
 
 from . import account_invoice_confirm
 from . import br_account_invoice_parcel
+from . import br_account_invoice_print
 from . import br_product_fiscal_classification_wizard
