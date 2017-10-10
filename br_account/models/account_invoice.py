@@ -169,12 +169,11 @@ class AccountInvoice(models.Model):
                                    readonly=True,
                                    oldname='is_eletronic')
 
-    fiscal_document_related_ids = fields.One2many(
-        'br_account.document.related',  # noqa: 501
-        'invoice_id',
-        string='Documento Fiscal Relacionado',  # noqa: 501
-        readonly=True,
-        states=STATES)
+    fiscal_document_related_ids = fields.One2many('br_account.document.related',  # noqa: 501
+                                                  'invoice_id',
+                                                  string='Documento Fiscal Relacionado',  # noqa: 501
+                                                  readonly=True,
+                                                  states=STATES)
 
     fiscal_observation_ids = fields.Many2many('br_account.fiscal.observation',
                                               string=u'Observações Fiscais',
@@ -351,17 +350,15 @@ class AccountInvoice(models.Model):
                                            digits=dp.get_precision('Account'),
                                            compute='_compute_amount')
 
-    total_tributos_estaduais = fields.Float(
-        string='Total de Tributos Estaduais',  # noqa: 501
-        store=True,
-        digits=dp.get_precision('Account'),
-        compute='_compute_amount')
+    total_tributos_estaduais = fields.Float(string='Total de Tributos Estaduais',  # noqa: 501
+                                            store=True,
+                                            digits=dp.get_precision('Account'),
+                                            compute='_compute_amount')
 
-    total_tributos_municipais = fields.Float(
-        string='Total de Tributos Municipais',  # noqa: 501
-        store=True,
-        digits=dp.get_precision('Account'),  # noqa: 501
-        compute='_compute_amount')
+    total_tributos_municipais = fields.Float(string='Total de Tributos Municipais',  # noqa: 501
+                                             store=True,
+                                             digits=dp.get_precision('Account'),  # noqa: 501
+                                             compute='_compute_amount')
 
     total_tributos_estimados = fields.Float(string='Total de Tributos',
                                             store=True,
@@ -510,8 +507,7 @@ class AccountInvoice(models.Model):
                     raise UserError(
                         u'Configure a sequência para a numeração da nota')
                 else:
-                    seq_number = \
-                        invoice.document_serie_id.internal_sequence_id.next_by_id()  # noqa: 501
+                    seq_number = invoice.document_serie_id.internal_sequence_id.next_by_id()  # noqa: 501
                     self.internal_number = seq_number
 
         return True
