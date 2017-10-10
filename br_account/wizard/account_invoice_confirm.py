@@ -25,6 +25,8 @@ class AccountInvoiceConfirm(models.TransientModel):
                               "state."))
         else:
             for inv in invoices:
-                inv.action_br_account_invoice_open()
+                inv.with_context({
+                    'journal_type': 'sale',
+                }).action_br_account_invoice_open()
 
         return {'type': 'ir.actions.act_window_close'}
