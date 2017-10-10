@@ -24,8 +24,11 @@ class AccountInvoiceConfirm(models.TransientModel):
                               "they are not in 'Draft' or 'Pro-Forma' "
                               "state."))
         else:
+            action = self.env['ir.action.act_window'].for_xml_id(
+                'account', 'action_invoice_tree1')
+
             for inv in invoices:
-                inv.with_context({
+                inv.with_context(action['context'] or {
                     'journal_type': 'sale',
                 }).action_br_account_invoice_open()
 
