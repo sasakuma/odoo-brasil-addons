@@ -266,7 +266,7 @@ class InvoiceElectronic(models.Model):
 
             values = {}
 
-            if retorno and retorno.Cabecalho.Sucesso:
+            if retorno.Cabecalho.Sucesso:
                 values.update({
                     'state': 'done',
                     'codigo_retorno': '100',
