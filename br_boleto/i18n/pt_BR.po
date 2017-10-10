@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-21 20:47+0000\n"
-"PO-Revision-Date: 2017-09-21 17:52-0300\n"
+"POT-Creation-Date: 2017-10-10 14:56+0000\n"
+"PO-Revision-Date: 2017-10-10 12:00-0300\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -37,6 +37,13 @@ msgid "-City\n"
 msgstr "-Cidade\n"
 
 #. module: br_boleto
+#: code:addons/br_boleto/models/res_company.py:24
+#: code:addons/br_boleto/models/res_partner.py:24
+#, python-format
+msgid "-Country\n"
+msgstr "-País\n"
+
+#. module: br_boleto
 #: code:addons/br_boleto/models/res_company.py:18
 #: code:addons/br_boleto/models/res_partner.py:18
 #, python-format
@@ -51,22 +58,22 @@ msgid "-Legal Name\n"
 msgstr "-Razão Social\n"
 
 #. module: br_boleto
-#: code:addons/br_boleto/models/res_company.py:26
-#: code:addons/br_boleto/models/res_partner.py:26
+#: code:addons/br_boleto/models/res_company.py:28
+#: code:addons/br_boleto/models/res_partner.py:28
 #, python-format
 msgid "-Number\n"
 msgstr "-Número\n"
 
 #. module: br_boleto
-#: code:addons/br_boleto/models/res_company.py:28
-#: code:addons/br_boleto/models/res_partner.py:28
+#: code:addons/br_boleto/models/res_company.py:30
+#: code:addons/br_boleto/models/res_partner.py:30
 #, python-format
 msgid "-State\n"
 msgstr "-Estado\n"
 
 #. module: br_boleto
-#: code:addons/br_boleto/models/res_company.py:24
-#: code:addons/br_boleto/models/res_partner.py:24
+#: code:addons/br_boleto/models/res_company.py:26
+#: code:addons/br_boleto/models/res_partner.py:26
 #, python-format
 msgid "-Street\n"
 msgstr "-Rua\n"
@@ -99,7 +106,6 @@ msgstr ""
 " %s"
 
 #. module: br_boleto
-#: model:ir.actions.act_window,name:br_boleto.br_boleto_action
 #: model:ir.ui.view,arch_db:br_boleto.br_boleto_form_view_wizard
 msgid "Alterar / Reimprimir Boleto"
 msgstr "Alterar / Reimprimir Boleto"
@@ -212,7 +218,7 @@ msgid "Chart of Accounts"
 msgstr "Plano de Contas"
 
 #. module: br_boleto
-#: code:addons/br_boleto/models/res_partner.py:30
+#: code:addons/br_boleto/models/res_partner.py:32
 #, python-format
 msgid ""
 "Client: %s\n"
@@ -226,7 +232,7 @@ msgstr ""
 "\n"
 
 #. module: br_boleto
-#: code:addons/br_boleto/tests/test_sicoob.py:73
+#: code:addons/br_boleto/tests/test_sicoob.py:79
 #, python-format
 msgid ""
 "Client: %s\n"
@@ -235,6 +241,7 @@ msgid ""
 "-District\n"
 "-ZIP\n"
 "-City\n"
+"-Country\n"
 "-State\n"
 "\n"
 "\n"
@@ -245,6 +252,7 @@ msgstr ""
 "-Bairro\n"
 "-CEP\n"
 "-Cidade\n"
+"-País\n"
 "-Estado\n"
 "\n"
 "\n"
@@ -255,7 +263,7 @@ msgid "Companies"
 msgstr "Empresas"
 
 #. module: br_boleto
-#: code:addons/br_boleto/models/res_company.py:30
+#: code:addons/br_boleto/models/res_company.py:32
 #, python-format
 msgid ""
 "Company: %s\n"
@@ -269,7 +277,7 @@ msgstr ""
 "\n"
 
 #. module: br_boleto
-#: code:addons/br_boleto/tests/test_sicoob.py:78
+#: code:addons/br_boleto/tests/test_sicoob.py:84
 #, python-format
 msgid ""
 "Company: %s\n"
@@ -576,7 +584,7 @@ msgstr "Parceiro"
 #. module: br_boleto
 #: model:ir.model.fields,field_description:br_boleto.field_payment_order_payment_mode_id
 msgid "Payment Mode"
-msgstr "Modo de Pagamento"
+msgstr "Modo de Recebimento"
 
 #. module: br_boleto
 #: model:ir.model,name:br_boleto.model_payment_mode
