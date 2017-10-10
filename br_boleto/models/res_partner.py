@@ -18,13 +18,15 @@ class ResPartner(models.Model):
             error += _('-District\n')
         if not self.zip:
             error += _('-ZIP\n')
-        if not self.city_id.name:
+        if not self.city_id:
             error += _('-City\n')
+        if not self.country_id:
+            error += _('-Country\n')
         if not self.street:
             error += _('-Street\n')
         if not self.number:
             error += _('-Number\n')
-        if not self.state_id.code:
+        if not self.state_id:
             error += _('-State\n')
 
         message = _('Client: %s\nMissing Fields:\n%s\n\n')
