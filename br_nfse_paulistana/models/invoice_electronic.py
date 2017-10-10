@@ -9,7 +9,6 @@ import logging
 from datetime import datetime
 
 from odoo import api, fields, models
-from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 
 _logger = logging.getLogger(__name__)
@@ -17,6 +16,7 @@ _logger = logging.getLogger(__name__)
 try:
     import pytrustnfe.nfse.paulistana
     import pytrustnfe.certificado
+    import pytrustnfe.utils
 except ImportError:
     _logger.debug('Cannot import pytrustnfe')
 
@@ -120,6 +120,9 @@ class InvoiceElectronic(models.Model):
                     '[^0-9]', '', partner.inscr_mun or ''),
                 'email': self.partner_id.email or partner.email or '',
             }
+
+            # tomador = pytrustnfe.utils.remove_especial_characters(tomador)
+
             city_prestador = self.company_id.partner_id.city_id
             prestador = {
                 'cnpj': re.sub(
@@ -133,6 +136,8 @@ class InvoiceElectronic(models.Model):
                 'email': self.company_id.partner_id.email or '',
             }
 
+            # prestador = pytrustnfe.utils.remove_especial_characters(prestador)
+
             descricao = ''
             codigo_servico = ''
             for item in self.electronic_item_ids:
@@ -143,7 +148,7 @@ class InvoiceElectronic(models.Model):
 
             # Adicionamos as parcelas na descricao da nota
             for parcel in self.invoice_id.parcel_ids:
-                descricao += 'Vencimento(s) / Parcela(s): {} {}{}\n'
+                descricao += u'Vencimento(s) / Parcela(s): {} {}{}\n'
                 descricao = descricao.format(parcel.date_maturity,
                                              self.currency_id.symbol,
                                              parcel.parceling_value)
@@ -183,12 +188,16 @@ class InvoiceElectronic(models.Model):
                 'deducoes': [],
             }
 
+            # rps = pytrustnfe.utils.remove_especial_characters(rps)
+
             valor_servico = self.valor_final
             valor_deducao = 0.0
 
             cnpj_cpf = tomador['cpf_cnpj']
             data_envio = rps['data_emissao']
             inscr = prestador['inscricao_municipal']
+            serie = rps['serie']
+            numero = rps['numero']
             iss_retido = 'N'
             tipo_cpfcnpj = tomador['tipo_cpfcnpj']
             codigo_atividade = rps['codigo_atividade']
@@ -197,8 +206,8 @@ class InvoiceElectronic(models.Model):
 
             assinatura = '%s%s%s%s%sN%s%015d%015d%s%s%s' % (
                 str(inscr).zfill(8),
-                self.serie.code.ljust(5),
-                str(self.numero).zfill(12),
+                str(serie).ljust(5),
+                str(numero).zfill(12),
                 str(data_envio[0:4] + data_envio[5:7] + data_envio[8:10]),
                 str(tipo_recolhimento),
                 str(iss_retido),
@@ -209,6 +218,8 @@ class InvoiceElectronic(models.Model):
                 str(cnpj_cpf).zfill(14)
             )
             rps['assinatura'] = assinatura
+
+            # rps = pytrustnfe.utils.remove_especial_characters(rps)
 
             nfse_vals = {
                 'cidade': prestador['cidade'],
@@ -225,6 +236,8 @@ class InvoiceElectronic(models.Model):
             }
 
             res.update(nfse_vals)
+
+        res = pytrustnfe.utils.remove_especial_characters(res)
         return res
 
     @api.multi
@@ -253,7 +266,7 @@ class InvoiceElectronic(models.Model):
 
             values = {}
 
-            if retorno.Cabecalho.Sucesso:
+            if retorno and retorno.Cabecalho.Sucesso:
                 values.update({
                     'state': 'done',
                     'codigo_retorno': '100',
@@ -487,9 +500,9 @@ class InvoiceElectronic(models.Model):
 
             service_type = self.fiscal_position_id.service_type_id
 
-            description += ('Valor aproximado dos tributos: '
-                            'Federal {}{} ({}%). Municipal {}{} ({}%), '
-                            'conforme lei 12.741/2012 Fonte: IBPT.\n')
+            description += (u'Valor aproximado dos tributos: '
+                            u'Federal {}{} ({}%). Municipal {}{} ({}%), '
+                            u'conforme lei 12.741/2012 Fonte: IBPT.\n')
 
             description = description.format(self.currency_id.symbol,
                                              total_federal,
