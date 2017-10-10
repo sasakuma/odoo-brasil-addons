@@ -48,4 +48,7 @@
         'wizard/br_account_invoice_parcel.xml',
         'security/ir.model.access.csv',
     ],
+    'demo': [
+        'demo/res_partner.xml',
+    ],
 }
