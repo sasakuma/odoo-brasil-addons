@@ -78,8 +78,8 @@ class TestBoletoSicoob(TestBoleto):
 
         self.assertEquals(error_partner, _('Client: %s\nMissing Fields:'
                                            '\n-CNPJ/CPF \n-District\n-ZIP'
-                                           '\n-City\n-State\n\n\n') %
-                          self.partner_fisica.name)
+                                           '\n-City\n-Country\n-State\n\n\n')
+                          % self.partner_fisica.name)
 
         self.assertEquals(error_company, _('Company: %s\n'
                                            'Missing Fields:\n-Legal Name'
