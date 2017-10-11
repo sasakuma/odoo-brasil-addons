@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import ast
+
 from odoo import api, models
 from odoo.tools.translate import _
 from odoo.exceptions import UserError
@@ -27,9 +29,9 @@ class AccountInvoiceConfirm(models.TransientModel):
             action = self.env['ir.actions.act_window'].for_xml_id(
                 'account', 'action_invoice_tree1')
 
+            context = ast.literal_eval(action['context'])
+
             for inv in invoices:
-                inv.with_context(action['context'] or {
-                    'journal_type': 'sale',
-                }).action_br_account_invoice_open()
+                inv.with_context(**context).action_br_account_invoice_open()
 
         return {'type': 'ir.actions.act_window_close'}
