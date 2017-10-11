@@ -24,7 +24,7 @@ class AccountInvoiceConfirm(models.TransientModel):
                               "they are not in 'Draft' or 'Pro-Forma' "
                               "state."))
         else:
-            action = self.env['ir.action.act_window'].for_xml_id(
+            action = self.env['ir.actions.act_window'].for_xml_id(
                 'account', 'action_invoice_tree1')
 
             for inv in invoices:
