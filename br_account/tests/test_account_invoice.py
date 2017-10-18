@@ -56,8 +56,6 @@ class TestAccountInvoice(TestBaseBr):
         payment_term = self.env.ref('account.account_payment_term_net')
 
         default_invoice = {
-            # 'name': 'Teste Fatura',
-            # 'partner_id': self.partner.id,
             'reference_type': "none",
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,
