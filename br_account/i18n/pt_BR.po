@@ -18,6 +18,26 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 
 #. module: account
+#. openerp-web
+#: code:addons/account/static/src/js/account_reconciliation_widgets.js:108
+#: code:addons/account/static/src/js/account_reconciliation_widgets.js:112
+#: model:ir.model.fields,field_description:account.field_account_bank_statement_line_name
+#: model:ir.model.fields,field_description:account.field_account_move_line_name
+#: model:ir.ui.view,arch_db:account.report_journal
+#, python-format
+msgid "Label"
+msgstr "Parcela"
+
+#. module: account
+#: model:ir.actions.act_window,name:account.action_account_aged_balance_view
+#: model:ir.actions.report.xml,name:account.action_report_aged_partner_balance
+#: model:ir.ui.menu,name:account.menu_aged_trial_balance
+#: model:ir.ui.view,arch_db:account.account_aged_balance_view
+#: model:ir.ui.view,arch_db:account.report_agedpartnerbalance
+msgid "Aged Partner Balance"
+msgstr "Aging List"
+
+#. module: account
 #: code:addons/account/models/account_invoice.py:1266
 #, python-format
 msgid "You must first select a partner!"

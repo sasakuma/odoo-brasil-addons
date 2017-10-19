@@ -240,7 +240,8 @@
                 <field name="valor_bruto" invisible="1"/>
                 <field name="valor_desconto" invisible="1"/>
             </xpath>
-            <page name="other_info" position="before">
+
+            <xpath expr="//page[2]" position="before">
                 <page name="parcelas" string="Parcelas">
                     <button name="action_open_periodic_entry_wizard"
                             class="oe_highlight oe_edit_only"
@@ -262,8 +263,9 @@
                         </tree>
                     </field>
                 </page>
-            </page>
-            <xpath expr="//notebook/page[@name='other_info']" position="after">
+            </xpath>
+
+            <xpath expr="//page[2]" position="after">
                 <page name="vencimentos" string="Vencimentos">
                     <field nolabel="1" name="payable_move_line_ids">
                         <tree name="vencimentos" string="Vencimentos"
@@ -278,7 +280,7 @@
                     </field>
                 </page>
             </xpath>
-            <xpath expr="//notebook/page[@name='other_info']/group" position="after">
+            <xpath expr="//page[4]" position="inside">
                 <group string="Observações Fiscais">
                     <field name="fiscal_observation_ids" nolabel="1"/>
                 </group>

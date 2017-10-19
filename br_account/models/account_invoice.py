@@ -393,41 +393,114 @@ class AccountInvoice(models.Model):
         self.fiscal_document_id = self.fiscal_position_id.fiscal_document_id.id
         self.fiscal_comment = self.fiscal_position_id.note
 
-    def move_line_from_payment_term(self, inv, total, total_currency):
+    @api.multi
+    def action_move_create(self):
+        """ Creates invoice related analytics and financial move lines """
 
         # O sistema de parcelas sera obrigatorio, entao sempre teremos pelo
         # menos uma parcela. Esse verificacao foi adicionada para manter
-        # compatibilidade com os testes do core
-        if not self.parcel_ids:
-            ml_list = super(AccountInvoice, self).move_line_from_payment_term(
-                inv, total, total_currency)
-            return ml_list
+        # compatibilidade com os testes do core.
+        # O valor 'user_parcel_system' foi adicionado no metodo
+        # 'action_br_account_invoice_open'
+        if not self.env.context.get('use_parcel_system'):
+            return super(AccountInvoice, self).action_move_create()
 
-        # Sobrescrevemos conteudo da lista porque e mais simples
-        # recriarmos os dicts das move lines a partir das parcelas
-        ml_list = []
+        account_move = self.env['account.move']
 
-        for parcel in self.parcel_ids:
-            # Calculamos a nova data de vencimento baseado na data
-            # de validação da faturação, caso a parcela nao esteja
-            # marcada como 'data fixa'. A data da parcela também é atualizada
-            parcel.update_date_maturity(self.date_invoice)
+        for inv in self:
 
-            ml_list.append({
-                'type': 'dest',
-                'name': inv.name or '/',
-                'price': parcel.parceling_value,
-                'account_id': inv.account_id.id,
-                'date_maturity': parcel.date_maturity,
-                'amount_currency': parcel.amount_currency,
-                'currency_id': parcel.currency_id.id,
-                'invoice_id': inv.id,
-                'financial_operation_id': parcel.financial_operation_id.id,
-                'title_type_id': parcel.title_type_id.id,
-                'company_id': inv.company_id.id,
-            })
+            if not inv.journal_id.sequence_id:
+                raise UserError(_('Please define sequence on the journal '
+                                  'related to this invoice.'))
 
-        return ml_list
+            if not inv.invoice_line_ids:
+                raise UserError(_('Please create some invoice lines.'))
+
+            if inv.move_id:
+                continue
+
+            ctx = dict(self._context, lang=inv.partner_id.lang)
+
+            if not inv.date_invoice:
+                inv.with_context(ctx).write({
+                    'date_invoice': fields.Date.context_today(self),
+                })
+
+            company_currency = inv.company_id.currency_id
+
+            # create move lines (one per invoice line + eventual taxes and
+            #  analytic lines)
+            iml = inv.invoice_line_move_line_get()
+            iml += inv.tax_line_move_line_get()
+
+            # create one move line for the total and possibly adjust the other
+            # lines amount
+            iml = inv.with_context(ctx).compute_invoice_totals(company_currency,
+                                                               iml)[2]
+
+            for parcel in self.parcel_ids:
+                # Calculamos a nova data de vencimento baseado na data
+                # de validação da faturação, caso a parcela nao esteja
+                # marcada como 'data fixa'. A data da parcela também é
+                # atualizada
+                parcel.update_date_maturity(self.date_invoice)
+
+                iml.append({
+                    'type': 'dest',
+                    'name': inv.name or '/',
+                    'price': parcel.parceling_value,
+                    'account_id': inv.account_id.id,
+                    'date_maturity': parcel.date_maturity,
+                    'amount_currency': parcel.amount_currency,
+                    'currency_id': parcel.currency_id.id,
+                    'invoice_id': inv.id,
+                    'financial_operation_id': parcel.financial_operation_id.id,
+                    'title_type_id': parcel.title_type_id.id,
+                    'company_id': inv.company_id.id,
+                })
+
+            part = self.env['res.partner']._find_accounting_partner(
+                inv.partner_id)
+
+            line = [(0, 0, self.line_get_convert(l, part.id)) for l in iml]
+            line = inv.group_lines(iml, line)
+
+            journal = inv.journal_id.with_context(ctx)
+            line = inv.finalize_invoice_move_lines(line)
+
+            date = inv.date or inv.date_invoice
+
+            move_vals = {
+                'ref': inv.reference,
+                'line_ids': line,
+                'journal_id': journal.id,
+                'date': date,
+                'narration': inv.comment,
+            }
+
+            ctx['company_id'] = inv.company_id.id
+            ctx['invoice'] = inv
+
+            ctx_nolang = ctx.copy()
+            ctx_nolang.pop('lang', None)
+
+            move = account_move.with_context(ctx_nolang).create(move_vals)
+
+            # Pass invoice in context in method post: used if you want to get
+            # the same account move reference when creating the same invoice
+            # after a cancelled one:
+            move.post()
+
+            # make the invoice point to that move
+            values = {
+                'move_id': move.id,
+                'date': date,
+                'move_name': move.name,
+            }
+
+            inv.with_context(ctx).write(values)
+
+        return True
 
     @api.multi
     def action_open_periodic_entry_wizard(self):
@@ -484,14 +557,15 @@ class AccountInvoice(models.Model):
 
         if self.parcel_ids:
             if self.compare_total_parcel_value():
-                return super(AccountInvoice, self).action_invoice_open()
+                return super(AccountInvoice, self).with_context(
+                    use_parcel_system=True).action_invoice_open()
             else:
                 raise UserError(_('O valor total da fatura e total das '
                                   'parcelas divergem! Por favor, gere as '
                                   'parcelas novamente.'))
         else:
             raise ValidationError(
-                "Campo parcela está vazio. Por favor, crie as parcelas")
+                'Campo parcela está vazio. Por favor, crie as parcelas')
 
     @api.multi
     def action_number(self):

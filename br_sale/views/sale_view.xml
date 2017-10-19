@@ -74,6 +74,9 @@
                 <field name="total_desconto" widget='monetary' options="{'currency_field': 'currency_id'}" groups="sale.group_discount_per_so_line"/>
                 <field name="total_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
             </field>
+            <field name="team_id" position="attributes">
+                <attribute name="attrs">{'readonly':[('state','!=','draft')]}</attribute>
+            </field>
         </field>
     </record>
 
