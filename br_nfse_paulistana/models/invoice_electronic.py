@@ -6,6 +6,7 @@ import re
 import pytz
 import base64
 import logging
+import locale
 from datetime import datetime
 
 from odoo import api, fields, models
@@ -101,6 +102,7 @@ class InvoiceElectronic(models.Model):
 
             partner = self.commercial_partner_id
             city_tomador = partner.city_id
+
             tomador = {
                 'tipo_cpfcnpj': 2 if partner.is_company else 1,
                 'cpf_cnpj': re.sub('[^0-9]', '',
@@ -121,9 +123,8 @@ class InvoiceElectronic(models.Model):
                 'email': self.partner_id.email or partner.email or '',
             }
 
-            # tomador = pytrustnfe.utils.remove_especial_characters(tomador)
-
             city_prestador = self.company_id.partner_id.city_id
+
             prestador = {
                 'cnpj': re.sub(
                     '[^0-9]', '', self.company_id.partner_id.cnpj_cpf or ''),
@@ -136,29 +137,36 @@ class InvoiceElectronic(models.Model):
                 'email': self.company_id.partner_id.email or '',
             }
 
-            # prestador = pytrustnfe.utils.remove_especial_characters(prestador)
-
             descricao = ''
             codigo_servico = ''
-            for item in self.electronic_item_ids:
-                descricao += item.name + '\n'
-                codigo_servico = item.codigo_servico_paulistana
 
-            descricao += self.get_nfse_tribute_description()
+            for item in self.electronic_item_ids:
+                descricao += item.name + ' | '
+                codigo_servico = item.codigo_servico_paulistana
 
             # Adicionamos as parcelas na descricao da nota
             for parcel in self.invoice_id.parcel_ids:
-                descricao += u'Vencimento(s) / Parcela(s): {} {}{}\n'
-                descricao = descricao.format(parcel.date_maturity,
-                                             self.currency_id.symbol,
-                                             parcel.parceling_value)
+
+                locale.setlocale(locale.LC_TIME, 'pt_BR.utf8')
+
+                dt = datetime.strptime(parcel.date_maturity, '%Y-%m-%d')
+                dt = dt.strftime('%d-%m-%Y')
+
+                locale.setlocale(locale.LC_MONETARY, 'pt_BR.utf8')
+                value = locale.currency(parcel.parceling_value)
+
+                descricao += u'Vencimento(s) / Parcela(s): {} {} | '
+                descricao = descricao.format(dt, value)
+
+            descricao += self.get_nfse_tribute_description().replace(u'\n',
+                                                                     u' | ')
 
             # Adicionamos da fatura na observacao da nota
-            descricao += u'Número do pedido interno: {}\n'
+            descricao += u'Número do pedido interno: {} | '
             descricao = descricao.format(self.invoice_id.number)
 
             if self.informacoes_legais:
-                descricao += self.informacoes_legais + '\n'
+                descricao += self.informacoes_legais + u' | '
 
             if self.informacoes_complementares:
                 descricao += self.informacoes_complementares
@@ -187,8 +195,6 @@ class InvoiceElectronic(models.Model):
                 'descricao': descricao,
                 'deducoes': [],
             }
-
-            # rps = pytrustnfe.utils.remove_especial_characters(rps)
 
             valor_servico = self.valor_final
             valor_deducao = 0.0
@@ -219,8 +225,6 @@ class InvoiceElectronic(models.Model):
             )
             rps['assinatura'] = assinatura
 
-            # rps = pytrustnfe.utils.remove_especial_characters(rps)
-
             nfse_vals = {
                 'cidade': prestador['cidade'],
                 'cpf_cnpj': prestador['cnpj'],
@@ -237,8 +241,7 @@ class InvoiceElectronic(models.Model):
 
             res.update(nfse_vals)
 
-        res = pytrustnfe.utils.remove_especial_characters(res)
-        return res
+        return pytrustnfe.utils.remove_especial_characters(res)
 
     @api.multi
     def action_send_electronic_invoice(self):
@@ -501,14 +504,26 @@ class InvoiceElectronic(models.Model):
             service_type = self.fiscal_position_id.service_type_id
 
             description += (u'Valor aproximado dos tributos: '
-                            u'Federal {}{} ({}%). Municipal {}{} ({}%), '
-                            u'conforme lei 12.741/2012 Fonte: IBPT.\n')
+                            u'Federal {} ({}%). '
+                            u'Municipal {} ({}%), '
+                            u'conforme lei 12.741/2012 Fonte: IBPT. \n')
 
-            description = description.format(self.currency_id.symbol,
-                                             total_federal,
-                                             service_type.federal_nacional,
-                                             self.currency_id.symbol,
-                                             total_municipal,
-                                             service_type.municipal_imposto)
+            # Definimos o locale para trabalhar com valores numericos
+            # de modo a formatar os valores em porcentagem
+            locale.setlocale(locale.LC_NUMERIC, 'pt_BR.utf8')
+
+            federal_nacional = locale.format('%.2f',
+                                             service_type.federal_nacional)
+            municipal_imposto = locale.format('%.2f',
+                                              service_type.municipal_imposto)
+
+            # Definimos o locale como monetary de modo a formatar os valores
+            # monetarios com o simbolo de R$ e virgula como separador decimal
+            locale.setlocale(locale.LC_MONETARY, 'pt_BR.utf8')
+
+            description = description.format(locale.currency(total_federal),
+                                             federal_nacional,
+                                             locale.currency(total_municipal),
+                                             municipal_imposto)
 
         return description
