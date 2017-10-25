@@ -115,7 +115,7 @@ class TestBase(TransactionCase):
             'country_id': self.env.ref('base.br').id,
         })
         self.assertEquals(partner.cnpj_cpf, '22814429000155')
-        partner._onchange_cnpj_cpf()
+        partner.onchange_cnpj_cpf()
         self.assertEquals(partner.cnpj_cpf, '22.814.429/0001-55')
 
     def test_onchange_cpf(self):
@@ -126,7 +126,7 @@ class TestBase(TransactionCase):
             'country_id': self.env.ref('base.br').id,
         })
         self.assertEquals(partner.cnpj_cpf, '71194004016')
-        partner._onchange_cnpj_cpf()
+        partner.onchange_cnpj_cpf()
         self.assertEquals(partner.cnpj_cpf, '711.940.040-16')
 
     def test_onchange_zip(self):
@@ -145,7 +145,7 @@ class TestBase(TransactionCase):
             'city_id': city.id,
         })
         self.assertEquals(partner.city_id, city)
-        partner._onchange_city_id()
+        partner.onchange_city_id()
         self.assertEquals(partner.city, city.name)
 
     def test_display_address(self):
@@ -233,7 +233,7 @@ class TestBase(TransactionCase):
         self.assertEquals(company.partner_id.number, company.number)
         self.assertEquals(company.partner_id.city_id, company.city_id)
 
-    def test_onchanges_company(self):
+    def test_onchange_company(self):
         company = self.env.ref('base.main_company')
         company.cnpj_cpf = '62565938000106'
         company.onchange_mask_cnpj_cpf()

@@ -5,7 +5,7 @@
 
         <record id="fiscal_document_002" model="br_account.fiscal.document">
             <field name="code">002</field>
-            <field name="name">Nota Avulsa de Serviço</field>
+            <field name="name">Nota Fiscal Avulsa de Serviço</field>
             <field name="electronic">False</field>
         </record>
 

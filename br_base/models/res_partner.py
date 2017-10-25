@@ -87,16 +87,17 @@ class ResPartner(models.Model):
 
             return address_format % args
 
-    @api.one
+    @api.multi
     @api.constrains('cnpj_cpf', 'country_id', 'is_company')
     def _check_cnpj_cpf(self):
-        country_code = self.country_id.code or ''
-        if self.cnpj_cpf and country_code.upper() == 'BR':
-            if self.is_company:
-                if not fiscal.validate_cnpj(self.cnpj_cpf):
-                    raise UserError(_(u'CNPJ inválido!'))
-            elif not fiscal.validate_cpf(self.cnpj_cpf):
-                raise UserError(_(u'CPF inválido!'))
+        for partner in self:
+            country_code = partner.country_id.code or ''
+            if partner.cnpj_cpf and country_code.upper() == 'BR':
+                if partner.is_company:
+                    if not fiscal.validate_cnpj(partner.cnpj_cpf):
+                        raise UserError(_(u'CNPJ inválido!'))
+                elif not fiscal.validate_cpf(self.cnpj_cpf):
+                    raise UserError(_(u'CPF inválido!'))
         return True
 
     def _validate_ie_param(self, uf, inscr_est):
@@ -113,68 +114,87 @@ class ResPartner(models.Model):
                 return False
         return True
 
-    @api.one
+    @api.multi
     @api.constrains('inscr_est')
     def _check_ie(self):
         """Checks if company register number in field insc_est is valid,
         this method call others methods because this validation is State wise
 
         :Return: True or False."""
-        if not self.inscr_est or self.inscr_est == 'ISENTO' \
-                or not self.is_company:
-            return True
-        uf = self.state_id and self.state_id.code.lower() or ''
-        res = self._validate_ie_param(uf, self.inscr_est)
-        if not res:
-            raise UserError(_(u'Inscrição Estadual inválida!'))
+        self.ensure_one()
+
+        for partner in self:
+            if not partner.inscr_est or partner.inscr_est == 'ISENTO' \
+                    or not partner.is_company:
+                return True
+            uf = partner.state_id and partner.state_id.code.lower() or ''
+            res = self._validate_ie_param(uf, partner.inscr_est)
+            if not res:
+                raise UserError(_(u'Inscrição Estadual inválida!'))
         return True
 
-    @api.one
+    @api.multi
     @api.constrains('inscr_est')
     def _check_ie_duplicated(self):
         """ Check if the field inscr_est has duplicated value
         """
-        if not self.inscr_est or self.inscr_est == 'ISENTO':
-            return True
-        partner_ids = self.search(
-            ['&', ('inscr_est', '=', self.inscr_est), ('id', '!=', self.id)])
+        self.ensure_one()
 
-        if len(partner_ids) > 0:
-            raise UserError(_(u'Já existe um parceiro cadastrado com'
-                              u'esta Inscrição Estadual/RG!'))
+        for partner in self:
+            if not partner.inscr_est or partner.inscr_est == 'ISENTO':
+                return True
+
+            partner_ids = self.search([('inscr_est', '=', partner.inscr_est),
+                                       ('id', '!=', partner.id)])
+
+            if len(partner_ids) > 0:
+                raise UserError(_(u'Já existe um parceiro cadastrado com'
+                                  u'esta Inscrição Estadual/RG!'))
         return True
 
     @api.onchange('cnpj_cpf')
-    def _onchange_cnpj_cpf(self):
-        country_code = self.country_id.code or ''
-        if self.cnpj_cpf and country_code.upper() == 'BR':
-            val = re.sub('[^0-9]', '', self.cnpj_cpf)
-            if len(val) == 14:
-                self.cnpj_cpf = "%s.%s.%s/%s-%s" % (
-                    val[0:2], val[2:5], val[5:8], val[8:12],
-                    val[12:14])  # noqa 501
-            elif not self.is_company and len(val) == 11:
-                self.cnpj_cpf = "%s.%s.%s-%s" % (
-                    val[0:3], val[3:6], val[6:9], val[9:11])  # noqa 501
-            else:
-                raise UserError(_(u'Verifique o CNPJ/CPF'))
+    def onchange_cnpj_cpf(self):
+
+        for partner in self:
+            country_code = partner.country_id.code or ''
+
+            if partner.cnpj_cpf and country_code.upper() == 'BR':
+                val = re.sub('[^0-9]', '', partner.cnpj_cpf)
+
+                if len(val) == 14:
+                    partner.cnpj_cpf = "%s.%s.%s/%s-%s" % (val[0:2],
+                                                           val[2:5],
+                                                           val[5:8],
+                                                           val[8:12],
+                                                           val[12:14])
+
+                elif not partner.is_company and len(val) == 11:
+                    partner.cnpj_cpf = "%s.%s.%s-%s" % (val[0:3],
+                                                        val[3:6],
+                                                        val[6:9],
+                                                        val[9:11])
+
+                else:
+                    raise UserError(_(u'Verifique o CNPJ/CPF'))
 
     @api.onchange('city_id')
-    def _onchange_city_id(self):
+    def onchange_city_id(self):
         """ Ao alterar o campo city_id copia o nome
         do município para o campo city que é o campo nativo do módulo base
         para manter a compatibilidade entre os demais módulos que usam o
         campo city.
         """
-        if self.city_id:
-            self.city = self.city_id.name
+        for partner in self:
+            if partner.city_id:
+                partner.city = partner.city_id.name
 
     @api.onchange('zip')
     def onchange_mask_zip(self):
-        if self.zip:
-            val = re.sub('[^0-9]', '', self.zip)
-            if len(val) == 8:
-                self.zip = "%s-%s" % (val[0:5], val[5:8])
+        for partner in self:
+            if partner.zip:
+                val = re.sub('[^0-9]', '', partner.zip)
+                if len(val) == 8:
+                    partner.zip = "%s-%s" % (val[0:5], val[5:8])
 
     @api.model
     def _address_fields(self):
@@ -184,67 +204,81 @@ class ResPartner(models.Model):
         address_fields = super(ResPartner, self)._address_fields()
         return list(address_fields + ['city_id', 'number', 'district'])
 
-    @api.one
+    @api.multi
     def action_check_sefaz(self):
-        if self.cnpj_cpf and self.state_id:
-            if self.state_id.code == 'AL':
-                raise UserError(u'Alagoas não possui consulta de cadastro')
-            if self.state_id.code == 'RJ':
-                raise UserError(
-                    u'Rio de Janeiro não possui consulta de cadastro')
-            company = self.env.user.company_id
-            if not company.nfe_a1_file and not company.nfe_a1_password:
-                raise UserError(u'Configurar o certificado e senha na empresa')
-            cert = company.with_context({'bin_size': False}).nfe_a1_file
-            cert_pfx = base64.decodestring(cert)
-            certificado = Certificado(cert_pfx, company.nfe_a1_password)
-            cnpj = re.sub('[^0-9]', '', self.cnpj_cpf)
-            obj = {'cnpj': cnpj, 'estado': self.state_id.code}
-            resposta = consulta_cadastro(certificado, obj=obj, ambiente=1,
-                                         estado=self.state_id.ibge_code)
 
-            obj = resposta['object']
-            if "Body" in dir(obj) and "consultaCadastro2Result" in dir(
-                    obj.Body):  # noqa: 501
-                info = obj.Body.consultaCadastro2Result.retConsCad.infCons
-                if info.cStat == 111 or info.cStat == 112:
-                    if not self.inscr_est:
-                        self.inscr_est = info.infCad.IE
-                    if not self.cnpj_cpf:
-                        self.cnpj_cpf = info.infCad.IE
+        for partner in self:
+            if partner.cnpj_cpf and partner.state_id:
 
-                    def get_value(obj, prop):
-                        if prop not in dir(obj):
-                            return None
-                        return getattr(obj, prop)
+                if partner.state_id.code == 'AL':
+                    raise UserError(u'Alagoas não possui consulta de cadastro')
 
-                    self.legal_name = get_value(info.infCad, 'xNome')
-                    if "ender" not in dir(info.infCad):
-                        return
-                    cep = get_value(info.infCad.ender, 'CEP') or ''
-                    self.zip = str(cep).zfill(8) if cep else ''
-                    self.street = get_value(info.infCad.ender, 'xLgr')
-                    self.number = get_value(info.infCad.ender, 'nro')
-                    self.street2 = get_value(info.infCad.ender, 'xCpl')
-                    self.district = get_value(info.infCad.ender, 'xBairro')
-                    cMun = get_value(info.infCad.ender, 'cMun')
-                    xMun = get_value(info.infCad.ender, 'xMun')
-                    city = None
-                    if cMun:
-                        city = self.env['res.state.city'].search(
-                            [('ibge_code', '=', str(cMun)[2:]),
-                             ('state_id', '=', self.state_id.id)])
-                    if not city and xMun:
-                        city = self.env['res.state.city'].search(
-                            [('name', 'ilike', xMun),
-                             ('state_id', '=', self.state_id.id)])
-                    if city:
-                        self.city_id = city.id
+                if partner.state_id.code == 'RJ':
+                    raise UserError(
+                        u'Rio de Janeiro não possui consulta de cadastro')
+
+                company = self.env.user.company_id
+
+                if not company.nfe_a1_file and not company.nfe_a1_password:
+                    raise UserError(u'Configurar o certificado e senha na '
+                                    u'empresa')
+
+                cert = company.with_context({'bin_size': False}).nfe_a1_file
+                cert_pfx = base64.decodestring(cert)
+                certificado = Certificado(cert_pfx, company.nfe_a1_password)
+                cnpj = re.sub('[^0-9]', '', partner.cnpj_cpf)
+                obj = {'cnpj': cnpj, 'estado': partner.state_id.code}
+                resposta = consulta_cadastro(certificado, obj=obj, ambiente=1,
+                                             estado=partner.state_id.ibge_code)
+
+                obj = resposta['object']
+
+                if "Body" in dir(obj) and "consultaCadastro2Result" in dir(
+                        obj.Body):  # noqa: 501
+                    info = obj.Body.consultaCadastro2Result.retConsCad.infCons
+                    if info.cStat == 111 or info.cStat == 112:
+                        if not partner.inscr_est:
+                            partner.inscr_est = info.infCad.IE
+                        if not partner.cnpj_cpf:
+                            partner.cnpj_cpf = info.infCad.IE
+
+                        def get_value(obj, prop):
+                            if prop not in dir(obj):
+                                return None
+                            return getattr(obj, prop)
+
+                        partner.legal_name = get_value(info.infCad, 'xNome')
+                        if 'ender' not in dir(info.infCad):
+                            return
+
+                        cep = get_value(info.infCad.ender, 'CEP') or ''
+                        partner.zip = str(cep).zfill(8) if cep else ''
+                        partner.street = get_value(info.infCad.ender, 'xLgr')
+                        partner.number = get_value(info.infCad.ender, 'nro')
+                        partner.street2 = get_value(info.infCad.ender, 'xCpl')
+                        partner.district = get_value(info.infCad.ender,
+                                                     'xBairro')
+                        cMun = get_value(info.infCad.ender, 'cMun')
+                        xMun = get_value(info.infCad.ender, 'xMun')
+                        city = None
+
+                        if cMun:
+                            city = self.env['res.state.city'].search(
+                                [('ibge_code', '=', str(cMun)[2:]),
+                                 ('state_id', '=', self.state_id.id)])
+
+                        if not city and xMun:
+                            city = self.env['res.state.city'].search(
+                                [('name', 'ilike', xMun),
+                                 ('state_id', '=', self.state_id.id)])
+
+                        if city:
+                            partner.city_id = city.id
+                    else:
+                        msg = "%s - %s" % (info.cStat, info.xMotivo)
+                        raise UserError(msg)
                 else:
-                    msg = "%s - %s" % (info.cStat, info.xMotivo)
-                    raise UserError(msg)
+                    raise UserError(u"Nenhuma resposta - verificou se seu \
+                                    certificado é válido?")
             else:
-                raise UserError(u"Nenhuma resposta - verificou se seu \
-                                certificado é válido?")
-        else:
-            raise UserError(u'Preencha o estado e o CNPJ para pesquisar')
+                raise UserError(u'Preencha o estado e o CNPJ para pesquisar')

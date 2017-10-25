@@ -24,83 +24,96 @@ except ImportError:
 class ResCompany(models.Model):
     _inherit = 'res.company'
 
-    @api.one
+    @api.multi
     def _get_address_data(self):
-        self.city_id = self.partner_id.city_id
-        self.district = self.partner_id.district
-        self.number = self.partner_id.number
+        for company in self:
+            company.city_id = company.partner_id.city_id
+            company.district = company.partner_id.district
+            company.number = company.partner_id.number
 
-    @api.one
+    @api.multi
     def _get_br_data(self):
         """ Read the l10n_br specific functional fields. """
-        self.legal_name = self.partner_id.legal_name
-        self.cnpj_cpf = self.partner_id.cnpj_cpf
-        self.inscr_est = self.partner_id.inscr_est
-        self.inscr_mun = self.partner_id.inscr_mun
-        self.suframa = self.partner_id.suframa
+        for company in self:
+            company.legal_name = company.partner_id.legal_name
+            company.cnpj_cpf = company.partner_id.cnpj_cpf
+            company.inscr_est = company.partner_id.inscr_est
+            company.inscr_mun = company.partner_id.inscr_mun
+            company.suframa = company.partner_id.suframa
 
-    @api.one
+    @api.multi
     def _set_br_suframa(self):
         """ Write the l10n_br specific functional fields. """
-        self.partner_id.suframa = self.suframa
+        for company in self:
+            company.partner_id.suframa = company.suframa
 
-    @api.one
+    @api.multi
     def _set_br_legal_name(self):
         """ Write the l10n_br specific functional fields. """
-        self.partner_id.legal_name = self.legal_name
+        for company in self:
+            company.partner_id.legal_name = company.legal_name
 
-    @api.one
+    @api.multi
     def _set_br_cnpj_cpf(self):
         """ Write the l10n_br specific functional fields. """
-        self.partner_id.cnpj_cpf = self.cnpj_cpf
+        for company in self:
+            company.partner_id.cnpj_cpf = company.cnpj_cpf
 
-    @api.one
+    @api.multi
     def _set_br_inscr_est(self):
         """ Write the l10n_br specific functional fields. """
-        self.partner_id.inscr_est = self.inscr_est
+        for company in self:
+            company.partner_id.inscr_est = company.inscr_est
 
-    @api.one
+    @api.multi
     def _set_br_inscr_mun(self):
         """ Write the l10n_br specific functional fields. """
-        self.partner_id.inscr_mun = self.inscr_mun
+        for company in self:
+            company.partner_id.inscr_mun = company.inscr_mun
 
-    @api.one
+    @api.multi
     def _set_br_number(self):
         """ Write the l10n_br specific functional fields. """
-        self.partner_id.number = self.number
+        for company in self:
+            company.partner_id.number = company.number
 
-    @api.one
+    @api.multi
     def _set_br_district(self):
         """ Write the l10n_br specific functional fields. """
-        self.partner_id.district = self.district
+        for company in self:
+            company.partner_id.district = company.district
 
-    @api.one
+    @api.multi
     def _set_city_id(self):
         """ Write the l10n_br specific functional fields. """
-        self.partner_id.city_id = self.city_id
+        for company in self:
+            company.partner_id.city_id = company.city_id
 
-    @api.one
+    @api.multi
     def _compute_expiry_date(self):
-        try:
-            pfx = base64.decodestring(
-                self.with_context(bin_size=False).nfe_a1_file)
-            pfx = crypto.load_pkcs12(pfx, self.nfe_a1_password)
-            cert = pfx.get_certificate()
-            end = datetime.strptime(cert.get_notAfter(), '%Y%m%d%H%M%SZ')
-            subj = cert.get_subject()
-            self.cert_expire_date = end
-            if datetime.now() < end:
-                self.cert_state = 'valid'
-            else:
-                self.cert_state = 'expired'
-            self.cert_information = "%s\n%s\n%s\n%s" % (
-                subj.CN, subj.L, subj.O, subj.OU)
-        except crypto.Error:
-            self.cert_state = 'invalid_password'
-        except:
-            self.cert_state = 'unknown'
-            _logger.error(
-                'Erro desconhecido ao consultar certificado', exc_info=True)
+        for company in self:
+
+            try:
+                pfx = base64.decodestring(
+                    self.with_context(bin_size=False).nfe_a1_file)
+                pfx = crypto.load_pkcs12(pfx, company.nfe_a1_password)
+                cert = pfx.get_certificate()
+                end = datetime.strptime(cert.get_notAfter(), '%Y%m%d%H%M%SZ')
+                subj = cert.get_subject()
+                company.cert_expire_date = end
+
+                if datetime.now() < end:
+                    company.cert_state = 'valid'
+                else:
+                    company.cert_state = 'expired'
+                    company.cert_information = "%s\n%s\n%s\n%s" % (subj.CN, subj.L, subj.O, subj.OU)  # noqa
+
+            except crypto.Error:
+                company.cert_state = 'invalid_password'
+            except Exception:
+                company.cert_state = 'unknown'
+                _logger.error('Erro desconhecido ao consultar certificado',
+                              exc_info=True)
 
     cnpj_cpf = fields.Char(compute=_get_br_data,
                            inverse=_set_br_cnpj_cpf,
@@ -154,19 +167,23 @@ class ResCompany(models.Model):
          ('invalid_password', u'Senha Inválida'),
          ('unknown', 'Desconhecido'),
          ('valid', u'Válido')],
-        string=u'Situação Cert.', compute=_compute_expiry_date,
+        string=u'Situação Cert.',
+        compute=_compute_expiry_date,
         default='not_loaded')
-    cert_information = fields.Text(
-        string=u'Informações Cert.', compute=_compute_expiry_date)
-    cert_expire_date = fields.Date(
-        string='Validade Cert.', compute=_compute_expiry_date)
+
+    cert_information = fields.Text(string=u'Informações Cert.',
+                                   compute=_compute_expiry_date)
+
+    cert_expire_date = fields.Date(string='Validade Cert.',
+                                   compute=_compute_expiry_date)
 
     @api.onchange('cnpj_cpf')
     def onchange_mask_cnpj_cpf(self):
-        if self.cnpj_cpf:
-            val = re.sub('[^0-9]', '', self.cnpj_cpf)
-            if len(val) == 14:
-                self.cnpj_cpf = "%s.%s.%s/%s-%s" % (val[0:2], val[2:5], val[5:8], val[8:12], val[12:14])  # noqa: 501
+        for company in self:
+            if company.cnpj_cpf:
+                val = re.sub('[^0-9]', '', company.cnpj_cpf)
+                if len(val) == 14:
+                    company.cnpj_cpf = "%s.%s.%s/%s-%s" % (val[0:2], val[2:5], val[5:8], val[8:12], val[12:14])  # noqa: 501
 
     @api.onchange('city_id')
     def onchange_city_id(self):
@@ -175,13 +192,14 @@ class ResCompany(models.Model):
         para manter a compatibilidade entre os demais módulos que usam o
         campo city.
         """
-        if self.city_id:
-            self.city = self.city_id.name
+        for company in self:
+            if company.city_id:
+                company.city = company.city_id.name
 
     @api.onchange('zip')
     def onchange_mask_zip(self):
-        if self.zip:
-            val = re.sub('[^0-9]', '', self.zip)
-            if len(val) == 8:
-                zip = "%s-%s" % (val[0:5], val[5:8])
-                self.zip = zip
+        for company in self:
+            if company.zip:
+                val = re.sub('[^0-9]', '', company.zip)
+                if len(val) == 8:
+                    company.zip = "%s-%s" % (val[0:5], val[5:8])
