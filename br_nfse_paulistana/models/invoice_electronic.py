@@ -284,12 +284,12 @@ class InvoiceElectronic(models.Model):
                     })
                 else:
                     values.update({
-                        'verify_code': 'X' * 8,
-                        'numero_nfse': '9' * 8,
+                        'verify_code': u'X' * 8,
+                        'numero_nfse': u'9' * 8,
                     })
 
                 self.write(values)
-                self.invoice_id.internal_number = self.numero_nfse
+                self.invoice_id.internal_number = int(self.numero_nfse)
 
             else:
                 values.update({

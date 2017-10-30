@@ -243,6 +243,10 @@ class TestNFeBrasil(TransactionCase):
 
             self.assertEqual(invoice_electronic.state, 'done')
             self.assertEqual(invoice_electronic.codigo_retorno, '100')
+            self.assertEqual(invoice_electronic.numero_nfse, u'99999999')
+            self.assertEqual(invoice_electronic.verify_code, u'XXXXXXXX')
+            self.assertEqual(invoice_electronic.invoice_id.internal_number,
+                             99999999)
             self.assertEqual(len(invoice_electronic.electronic_event_ids), 1)
 
     @mock.patch('pytrustnfe.nfse.paulistana.cancelamento_nfe')
