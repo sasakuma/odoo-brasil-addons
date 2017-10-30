@@ -284,6 +284,7 @@ class InvoiceElectronic(models.Model):
                     })
 
                 self.write(values)
+                self.invoice_id.internal_number = self.numero_nfse
 
             else:
                 values.update({
