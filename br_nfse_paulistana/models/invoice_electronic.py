@@ -282,6 +282,11 @@ class InvoiceElectronic(models.Model):
                         'verify_code': retorno.ChaveNFeRPS.ChaveNFe.CodigoVerificacao,  # noqa: 501
                         'numero_nfse': retorno.ChaveNFeRPS.ChaveNFe.NumeroNFe,
                     })
+                else:
+                    values.update({
+                        'verify_code': 'X' * 8,
+                        'numero_nfse': '9' * 8,
+                    })
 
                 self.write(values)
                 self.invoice_id.internal_number = self.numero_nfse
