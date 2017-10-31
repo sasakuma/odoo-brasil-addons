@@ -289,7 +289,7 @@ class InvoiceElectronic(models.Model):
                     })
 
                 self.write(values)
-                self.invoice_id.internal_number = int(self.numero_nfse)
+                self._on_success()
 
             else:
                 values.update({
@@ -306,6 +306,13 @@ class InvoiceElectronic(models.Model):
             })
             self._create_attachment('nfse-envio', self, resposta['sent_xml'])
             self._create_attachment('nfse-ret', self, resposta['received_xml'])
+
+    @api.multi
+    def _on_success(self):
+        super(InvoiceElectronic, self)._on_success()
+
+        if self.model == '001' and self.state == 'done':
+            self.invoice_id.internal_number = int(self.numero_nfse)
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
