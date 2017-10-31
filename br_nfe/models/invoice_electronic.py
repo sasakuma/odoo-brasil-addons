@@ -862,6 +862,8 @@ class InvoiceElectronic(models.Model):
                     'data_autorizacao': retorno.protNFe.infProt.dhRecbto,
                 })
 
+                self._on_success()
+
             # Duplicidade de NF-e significa que a nota já está emitida
             # TODO Buscar o protocolo de autorização, por hora só finalizar
             elif self.codigo_retorno == '204':
