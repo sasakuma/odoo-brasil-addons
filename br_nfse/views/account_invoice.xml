@@ -48,7 +48,7 @@
                         name="action_print_danfse"
                         type="object"
                         class="btn-primary"
-                        attrs="{'invisible': ['|', ('invoice_model', '!=', '001'),('state', 'not in', ['open'])]}"/>
+                        attrs="{'invisible': ['|', ('invoice_model', '!=', '001'),('invoice_electronic_state', 'not in', ['done'])]}"/>
             </xpath>
         </field>
     </record>
