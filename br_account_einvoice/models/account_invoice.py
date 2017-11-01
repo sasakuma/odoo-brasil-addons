@@ -38,7 +38,7 @@ class AccountInvoice(models.Model):
                                  compute=_compute_total_edocs)
 
     internal_number = fields.Integer(
-        'Invoice Number', readonly=True,
+        'Invoice Number', readonly=True, copy=False,
         states={'draft': [('readonly', False)]},
         help="""Unique number of the invoice, computed
             automatically when the invoice is created.""")
