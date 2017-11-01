@@ -311,7 +311,7 @@ class InvoiceElectronic(models.Model):
     def _on_success(self):
         super(InvoiceElectronic, self)._on_success()
 
-        if self.model == '001' and self.state == 'done':
+        if self.model == '001':
             self.invoice_id.internal_number = int(self.numero_nfse)
 
     @api.multi
