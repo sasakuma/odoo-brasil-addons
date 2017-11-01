@@ -901,6 +901,13 @@ class InvoiceElectronic(models.Model):
             self.nfe_processada_name = "NFe%08d.xml" % self.numero
 
     @api.multi
+    def _on_success(self):
+        super(InvoiceElectronic, self)._on_success()
+
+        if self.model == '55':
+            self.invoice_id.internal_number = int(self.numero)
+
+    @api.multi
     def generate_nfe_proc(self):
         if self.state in ['cancel', 'done', 'denied']:
             recibo = self.env['ir.attachment'].search([
