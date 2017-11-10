@@ -29,6 +29,13 @@ class BrAccountInvoiceParcel(models.Model):
     date_maturity = fields.Date(string='Data de Vencimento',
                                 required=True)
 
+    # Guarda a antiga data de vencimento apos a fatura ser confirmada
+    # isso e feito para que o metodo de calculo de _compute_amount_days
+    # permaneca com o mesmo valor. Isso teve de ser feito devido ao problema
+    # que o Odoo tem com campos readonly sendo alterados dentro de metodos
+    # onchange
+    old_date_maturity = fields.Date(string='Data de Vencimento')
+
     parceling_value = fields.Monetary(string='Valor',
                                       required=True,
                                       readonly=True,

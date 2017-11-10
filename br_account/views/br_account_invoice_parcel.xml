@@ -9,6 +9,7 @@
                 <field name="invoice_id" invisible="1"/>
                 <field name="company_currency_id" invisible="1"/>
                 <field name="date_maturity"/>
+                <field name="old_date_maturity" invisible="1"/>
                 <field name="name"/>
                 <field name="parceling_value" sum="Valor Total"/>
                 <field name="financial_operation_id"/>
@@ -30,6 +31,7 @@
                         <field name="company_currency_id" invisible="1"/>
                         <field name="currency_id" invisible="1"/>
                         <field name="date_maturity"/>
+                        <field name="old_date_maturity" invisible="1"/>
                         <field name="name"/>
                         <field name="parceling_value"/>
                         <field name="amount_currency" groups="base.group_multi_currency"/>
