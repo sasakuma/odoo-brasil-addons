@@ -66,24 +66,39 @@ class TestBrAccountInvoiceParcel(TransactionCase):
         # Criamos a parcela
         self.parcel = self.env['br_account.invoice.parcel'].create(values)
 
-    def test__onchange_date_maturity(self):
+    def test_compute_amount_days(self):
 
         # Verificamos se o metodo calcula a quantidade correta de dias
         self.parcel.amount_days = 0
+        self.parcel.compute_amount_days()
+        self.parcel.old_date_maturity = '2017-07-20'
+
+        # Calculamos a quantidade de dias
+        self.parcel.compute_amount_days()
+
+        # Verificamos a diferenca entre pre_invoice_date e old_date_maturity
+        self.assertEqual(self.parcel.amount_days, 19)
+
+    def test_onchange_date_maturity(self):
+
+        # verificamos a integridade das datas de vencimento
+        self.assertEqual(self.parcel.date_maturity,
+                         self.parcel.old_date_maturity)
+        self.assertEqual(self.parcel.invoice_id.state, 'draft')
+        self.parcel.date_maturity = '2017-07-20'
         self.parcel._onchange_date_maturity()
 
-        # amount_days sera igual a 'date_maturity' - 'pre_invoice_date'
-        self.assertEqual(self.parcel.amount_days, 14)
-        self.assertTrue(self.parcel.date_maturity)
+        # date_maturity sera igual a old_date_maturity
+        self.assertEqual(self.parcel.date_maturity,
+                         self.parcel.old_date_maturity)
 
-        # Quando a fatura nao esta como 'draft', a quantidade de dias nao
-        # se altera
-        self.parcel.amount_days = 5
+        # Quando a fatura nao esta como 'draft', a data old_maturity nao se
+        # altera
         self.parcel.invoice_id.state = 'open'
+        self.parcel.date_maturity = '2017-07-21'
         self.parcel._onchange_date_maturity()
-
-        # _amount_days deve permanecer o mesmo
-        self.assertEqual(self.parcel.amount_days, 5)
+        self.assertNotEqual(self.parcel.date_maturity,
+                            self.parcel.old_date_maturity)
 
     def test_update_date_maturity(self):
 
@@ -100,6 +115,7 @@ class TestBrAccountInvoiceParcel(TransactionCase):
         # fixamos a data de vencimento
         self.assertNotEqual(new_base_date, self.parcel.date_maturity)
         self.assertEqual(self.date_maturity, self.parcel.date_maturity)
+        self.assertEqual(self.date_maturity, self.parcel.old_date_maturity)
 
         # Desafixamos a data de vencimento
         self.parcel.pin_date = False
@@ -110,4 +126,4 @@ class TestBrAccountInvoiceParcel(TransactionCase):
         # A data de vencimento foi alterada para a data 'new_date',
         # uma vez que desafixamos a data de vencimento
         self.assertEqual(new_base_date, self.parcel.date_maturity)
-        self.assertNotEqual(self.date_maturity, self.parcel.date_maturity)
+        self.assertEqual(self.date_maturity, self.parcel.old_date_maturity)
