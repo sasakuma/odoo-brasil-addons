@@ -438,12 +438,12 @@ class AccountInvoice(models.Model):
             iml = inv.with_context(ctx).compute_invoice_totals(company_currency,
                                                                iml)[2]
 
-            for parcel in self.parcel_ids:
+            for parcel in inv.parcel_ids:
                 # Calculamos a nova data de vencimento baseado na data
                 # de validação da faturação, caso a parcela nao esteja
                 # marcada como 'data fixa'. A data da parcela também é
                 # atualizada
-                parcel.update_date_maturity(self.date_invoice)
+                parcel.update_date_maturity(inv.date_invoice)
 
                 iml.append({
                     'type': 'dest',
@@ -782,6 +782,7 @@ class AccountInvoice(models.Model):
                     'name': str(i + 1).zfill(2),
                     'parceling_value': t[1],
                     'date_maturity': t[0],
+                    'old_date_maturity': t[0],
                     'financial_operation_id': financial_operation.id,
                     'title_type_id': title_type.id,
                     'amount_currency': diff_currency and amount_currency,
@@ -789,11 +790,9 @@ class AccountInvoice(models.Model):
                     'invoice_id': inv.id,
                 }
 
-                obj = self.env['br_account.invoice.parcel'].create(values)
+                self.env['br_account.invoice.parcel'].create(values)
 
-                # Chamamos o onchange para que a quantidade de dias seja
-                # calculado
-                obj._onchange_date_maturity()
+        return True
 
     @api.model
     def line_get_convert(self, line, part):

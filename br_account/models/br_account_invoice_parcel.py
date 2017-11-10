@@ -2,7 +2,7 @@
 # © 2017 Michell Stuttgart, MultidadosTI
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 from odoo import api, fields, models
 
@@ -72,25 +72,48 @@ class BrAccountInvoiceParcel(models.Model):
     pin_date = fields.Boolean(string='Data Fixa')
 
     amount_days = fields.Integer(string='Quantidade de Dias',
-                                 store=True,
+                                 compute='compute_amount_days',
                                  readonly=True)
 
+    @api.model
+    def create(self, values):
+        # Add code here
+        parcel = super(BrAccountInvoiceParcel, self).create(values)
+
+        # Chamamos o onchange para que a quantidade de dias seja
+        # calculado
+        values['old_date_maturity'] = values['date_maturity']
+        parcel.compute_amount_days()
+        return parcel
+
+    @api.multi
+    @api.depends('date_maturity', 'invoice_id.pre_invoice_date')
+    def compute_amount_days(self):
+        """ Calcula a quantidade de dias baseado na data de vencimento
+        """
+        for rec in self:
+            d2 = datetime.strptime(rec.invoice_id.pre_invoice_date,
+                                   '%Y-%m-%d')
+            d1 = datetime.strptime(rec.old_date_maturity, '%Y-%m-%d')
+            rec.amount_days = abs((d2 - d1).days)
+
     @api.onchange('date_maturity')
-    def _onchange_date_maturity(self):
-        # Calcula a quantidade de dias baseado na data de vencimento
+    def onchange_date_maturity(self):
+        """Armazena o valor da data de vencimento no campo de backup da data
+        """
         for rec in self:
             if rec.invoice_id.state == 'draft' and rec.date_maturity:
-                d2 = datetime.strptime(rec.invoice_id.pre_invoice_date,
-                                       '%Y-%m-%d')
-                d1 = datetime.strptime(rec.date_maturity, '%Y-%m-%d')
-                rec.amount_days = abs((d2 - d1).days)
+                rec.old_date_maturity = rec.date_maturity
 
     @api.multi
     def update_date_maturity(self, new_date):
+        """ Calculamos a nova data de vencimento baseado na data de validação
+         da faturação, caso a parcela nao esteja marcada como 'data fixa'.
+         A data da parcela também é atualizada.
 
-        # Calculamos a nova data de vencimento baseado na data
-        # de validação da faturação, caso a parcela nao esteja
-        # marcada como 'data fixa'. A data da parcela também é atualizada
+        :param new_date: nova data de vencimento
+        """
         if not self.pin_date:
             d1 = datetime.strptime(new_date, '%Y-%m-%d')
+            self.old_date_maturity = self.date_maturity
             self.date_maturity = d1 + timedelta(days=self.amount_days)
