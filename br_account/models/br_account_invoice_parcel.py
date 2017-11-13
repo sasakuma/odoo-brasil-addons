@@ -77,12 +77,11 @@ class BrAccountInvoiceParcel(models.Model):
 
     @api.model
     def create(self, values):
-        # Add code here
+        # Atualizamos a o valor do backup da data de vencimento
+        values['old_date_maturity'] = values['date_maturity']
         parcel = super(BrAccountInvoiceParcel, self).create(values)
 
-        # Chamamos o onchange para que a quantidade de dias seja
-        # calculado
-        values['old_date_maturity'] = values['date_maturity']
+        # Calculamos a quantidade de dias
         parcel.compute_amount_days()
         return parcel
 
