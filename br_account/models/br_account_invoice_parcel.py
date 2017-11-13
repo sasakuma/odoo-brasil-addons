@@ -105,14 +105,14 @@ class BrAccountInvoiceParcel(models.Model):
                 rec.old_date_maturity = rec.date_maturity
 
     @api.multi
-    def update_date_maturity(self, new_date):
+    def update_date_maturity(self, invoice_date):
         """ Calculamos a nova data de vencimento baseado na data de validação
-         da faturação, caso a parcela nao esteja marcada como 'data fixa'.
-         A data da parcela também é atualizada.
+         da faturação ou da pŕe-fatura, caso a parcela nao esteja marcada
+         como 'data fixa'.
 
-        :param new_date: nova data de vencimento
+        :param invoice_date: data da fatura ou pedido.
         """
         if not self.pin_date:
-            d1 = datetime.strptime(new_date, '%Y-%m-%d')
+            d1 = datetime.strptime(invoice_date, '%Y-%m-%d')
             self.old_date_maturity = self.date_maturity
             self.date_maturity = d1 + timedelta(days=self.amount_days)
