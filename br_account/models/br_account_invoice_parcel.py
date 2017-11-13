@@ -112,6 +112,7 @@ class BrAccountInvoiceParcel(models.Model):
 
         :param invoice_date: data da fatura ou pedido.
         """
+        self.ensure_one()
         if not self.pin_date:
             d1 = datetime.strptime(invoice_date, '%Y-%m-%d')
             self.old_date_maturity = self.date_maturity
