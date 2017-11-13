@@ -66,6 +66,15 @@ class TestBrAccountInvoiceParcel(TransactionCase):
         # Criamos a parcela
         self.parcel = self.env['br_account.invoice.parcel'].create(values)
 
+    def test_check_old_date_maturity(self):
+        # Verificamos se old_date_maturity recebe o valor de 'date_maturity'
+        # quando a parcela e criada.
+        self.assertEqual(self.parcel.date_maturity,
+                         self.parcel.old_date_maturity)
+
+        # Verificamos a diferenca entre pre_invoice_date e old_date_maturity
+        self.assertEqual(self.parcel.amount_days, 14)
+
     def test_compute_amount_days(self):
 
         # Verificamos se o metodo calcula a quantidade correta de dias
@@ -86,7 +95,7 @@ class TestBrAccountInvoiceParcel(TransactionCase):
                          self.parcel.old_date_maturity)
         self.assertEqual(self.parcel.invoice_id.state, 'draft')
         self.parcel.date_maturity = '2017-07-20'
-        self.parcel._onchange_date_maturity()
+        self.parcel.onchange_date_maturity()
 
         # date_maturity sera igual a old_date_maturity
         self.assertEqual(self.parcel.date_maturity,
@@ -96,7 +105,7 @@ class TestBrAccountInvoiceParcel(TransactionCase):
         # altera
         self.parcel.invoice_id.state = 'open'
         self.parcel.date_maturity = '2017-07-21'
-        self.parcel._onchange_date_maturity()
+        self.parcel.onchange_date_maturity()
         self.assertNotEqual(self.parcel.date_maturity,
                             self.parcel.old_date_maturity)
 
@@ -123,7 +132,8 @@ class TestBrAccountInvoiceParcel(TransactionCase):
         # Tentamos realizar a atualização da data de vencimento
         self.parcel.update_date_maturity(new_base_date)
 
-        # A data de vencimento foi alterada para a data 'new_date',
-        # uma vez que desafixamos a data de vencimento
-        self.assertEqual(new_base_date, self.parcel.date_maturity)
+        # A data de vencimento foi alterada com base na nova data fornecida
+        # e no numero de dias
+        self.assertEqual(self.parcel.amount_days, 14)
+        self.assertEqual(self.parcel.date_maturity, '2017-08-03')
         self.assertEqual(self.date_maturity, self.parcel.old_date_maturity)
