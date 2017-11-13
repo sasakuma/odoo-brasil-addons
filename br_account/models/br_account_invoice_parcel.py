@@ -91,10 +91,11 @@ class BrAccountInvoiceParcel(models.Model):
         """ Calcula a quantidade de dias baseado na data de vencimento
         """
         for rec in self:
-            d2 = datetime.strptime(rec.invoice_id.pre_invoice_date,
-                                   '%Y-%m-%d')
-            d1 = datetime.strptime(rec.old_date_maturity, '%Y-%m-%d')
-            rec.amount_days = abs((d2 - d1).days)
+            if rec.old_date_maturity:
+                d2 = datetime.strptime(rec.invoice_id.pre_invoice_date,
+                                       '%Y-%m-%d')
+                d1 = datetime.strptime(rec.old_date_maturity, '%Y-%m-%d')
+                rec.amount_days = abs((d2 - d1).days)
 
     @api.onchange('date_maturity')
     def onchange_date_maturity(self):
