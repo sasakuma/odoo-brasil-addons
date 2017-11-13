@@ -34,7 +34,7 @@
                 </button>
             </div>
             <field name="pre_invoice_date" position="after">
-                <field name="internal_number" readonly="1"/>
+                <field name="internal_number" readonly="1" invisible="[('state', '=', 'draft')]"/>
                 <field name="invoice_electronic_state" invisible="1"/>
             </field>
         </field>
