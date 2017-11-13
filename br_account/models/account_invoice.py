@@ -805,4 +805,5 @@ class AccountInvoice(models.Model):
 
     @api.model
     def _function_br_account(self):
-        self.env.ref('account.action_account_payment_from_invoices').unlink()
+        if self.env.ref('account.action_account_payment_from_invoices'):
+            self.env.ref('account.action_account_payment_from_invoices').unlink()  # noqa
