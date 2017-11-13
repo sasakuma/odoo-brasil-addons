@@ -27,6 +27,7 @@ class TestAccountInvoice(TestBaseBr):
             'name': 'Faturas',
             'code': 'INV',
             'type': 'sale',
+            'update_posted': True,
             'default_debit_account_id': self.revenue_account.id,
             'default_credit_account_id': self.revenue_account.id,
         })
@@ -109,6 +110,19 @@ class TestAccountInvoice(TestBaseBr):
             invoice_line_ids=invoice_line_data,
             payment_term_id=payment_term.id,
         ))
+
+    def test_action_invoice_cancel_paid(self):
+
+        for inv in self.invoices:
+
+            inv.action_br_account_invoice_open()
+            self.assertTrue(inv.date_invoice)
+
+            inv.action_invoice_cancel_paid()
+            self.assertFalse(inv.date_invoice)
+
+            with self.assertRaises(UserError):
+                inv.action_invoice_cancel_paid()
 
     def test_compute_total_values(self):
 
