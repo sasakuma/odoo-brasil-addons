@@ -5,11 +5,16 @@
         <field name="name">br_account.invoice.parcel.tree.view</field>
         <field name="model">br_account.invoice.parcel</field>
         <field name="arch" type="xml">
-            <tree string="Parcelas">
+            <tree name="parcelas"
+                  string="Parcelas"
+                  delete="false"
+                  create="false"
+                  colors="red:date_maturity&lt;current_date"
+                  editable="bottom">
                 <field name="invoice_id" invisible="1"/>
                 <field name="company_currency_id" invisible="1"/>
-                <field name="date_maturity"/>
                 <field name="old_date_maturity" invisible="1"/>
+                <field name="date_maturity"/>
                 <field name="name"/>
                 <field name="parceling_value" sum="Valor Total"/>
                 <field name="financial_operation_id"/>

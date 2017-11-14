@@ -78,23 +78,7 @@
                             attrs="{'invisible': [('state', '!=', 'draft')]}"
                             string="Gerar Parcelas"/>
                     <separator/>
-                    <field nolabel="1" name="parcel_ids">
-                        <tree name="parcelas"
-                              string="Parcelas"
-                              delete="false"
-                              colors="red:date_maturity&lt;current_date"
-                              editable="bottom">
-                            <field name="invoice_id" invisible="1"/>
-                            <field name="company_currency_id" invisible="1"/>
-                            <field name="date_maturity"/>
-                            <field name="name"/>
-                            <field name="parceling_value" sum="Valor Total"/>
-                            <field name="financial_operation_id"/>
-                            <field name="title_type_id"/>
-                            <field name="pin_date"/>
-                            <field name="amount_days"/>
-                        </tree>
-                    </field>
+                    <field nolabel="1" name="parcel_ids"/>
                 </page>
             </page>
             <page name="other_info" position="after">
