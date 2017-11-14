@@ -27,6 +27,7 @@ class TestAccountInvoice(TestBaseBr):
             'name': 'Faturas',
             'code': 'INV',
             'type': 'sale',
+            'update_posted': True,
             'default_debit_account_id': self.revenue_account.id,
             'default_credit_account_id': self.revenue_account.id,
         })
@@ -110,6 +111,19 @@ class TestAccountInvoice(TestBaseBr):
             payment_term_id=payment_term.id,
         ))
 
+    def test_action_invoice_cancel_paid(self):
+
+        for inv in self.invoices:
+
+            inv.action_br_account_invoice_open()
+            self.assertTrue(inv.date_invoice)
+
+            inv.action_invoice_cancel_paid()
+            self.assertFalse(inv.date_invoice)
+
+            with self.assertRaises(UserError):
+                inv.action_invoice_cancel_paid()
+
     def test_compute_total_values(self):
 
         for invoice in self.invoices:
@@ -127,6 +141,8 @@ class TestAccountInvoice(TestBaseBr):
 
             # Verifico as linhas recebiveis
             self.assertEquals(len(invoice.receivable_move_line_ids), 1)
+            self.assertEquals(len(invoice.parcel_ids),
+                              len(invoice.receivable_move_line_ids))
 
     def test_invoice_pis_cofins_taxes(self):
 
@@ -297,6 +313,7 @@ class TestAccountInvoice(TestBaseBr):
 
             for parcel in inv.parcel_ids:
                 self.assertEqual(parcel.date_maturity, '2017-07-31')
+                self.assertEqual(parcel.old_date_maturity, '2017-07-31')
                 self.assertEqual(parcel.name, '01')
                 self.assertEqual(parcel.parceling_value, inv.amount_total)
                 self.assertEqual(parcel.financial_operation_id.id,
@@ -308,6 +325,25 @@ class TestAccountInvoice(TestBaseBr):
         for inv in self.incomplete_inv:
             with self.assertRaises(UserError):
                 inv.action_open_periodic_entry_wizard()
+
+    def test_verify_new_maturity_parcel_date(self):
+
+        for inv in self.invoices:
+
+            for parcel in inv.parcel_ids:
+                inv.pre_invoice_date = '2017-07-1'
+                inv.date_invoice = '2017-07-2'
+                parcel.old_date_maturity = '2017-07-15'
+                parcel.date_maturity = '2017-07-15'
+                parcel.compute_amount_days()
+
+                # Valido a fatura
+                inv.action_br_account_invoice_open()
+
+                # Verificamos se a data de vencimento das parcelas foram
+                # atualizadas quando a fatura e confirmada
+                self.assertEqual(parcel.date_maturity, '2017-07-16')
+                self.assertEqual(parcel.old_date_maturity, '2017-07-15')
 
     def test_compare_total_parcel_value(self):
 

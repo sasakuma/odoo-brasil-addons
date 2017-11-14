@@ -29,6 +29,13 @@ class BrAccountInvoiceParcel(models.Model):
     date_maturity = fields.Date(string='Data de Vencimento',
                                 required=True)
 
+    # Guarda a antiga data de vencimento apos a fatura ser confirmada
+    # isso e feito para que o metodo de calculo de _compute_amount_days
+    # permaneca com o mesmo valor. Isso teve de ser feito devido ao problema
+    # que o Odoo tem com campos readonly sendo alterados dentro de metodos
+    # onchange
+    old_date_maturity = fields.Date(string='Data de Vencimento')
+
     parceling_value = fields.Monetary(string='Valor',
                                       required=True,
                                       readonly=True,
@@ -65,25 +72,49 @@ class BrAccountInvoiceParcel(models.Model):
     pin_date = fields.Boolean(string='Data Fixa')
 
     amount_days = fields.Integer(string='Quantidade de Dias',
-                                 store=True,
+                                 compute='compute_amount_days',
                                  readonly=True)
 
-    @api.onchange('date_maturity')
-    def _onchange_date_maturity(self):
-        # Calcula a quantidade de dias baseado na data de vencimento
-        for rec in self:
-            if rec.invoice_id.state == 'draft' and rec.date_maturity:
-                d2 = datetime.strptime(rec.invoice_id.pre_invoice_date,
-                                       '%Y-%m-%d')
-                d1 = datetime.strptime(rec.date_maturity, '%Y-%m-%d')
-                rec.amount_days = abs((d2 - d1).days)
+    @api.model
+    def create(self, values):
+        # Atualizamos a o valor do backup da data de vencimento
+        values['old_date_maturity'] = values['date_maturity']
+        parcel = super(BrAccountInvoiceParcel, self).create(values)
+
+        # Calculamos a quantidade de dias
+        parcel.compute_amount_days()
+        return parcel
 
     @api.multi
-    def update_date_maturity(self, new_date):
+    @api.depends('date_maturity', 'invoice_id.pre_invoice_date')
+    def compute_amount_days(self):
+        """ Calcula a quantidade de dias baseado na data de vencimento
+        """
+        for rec in self:
+            if rec.old_date_maturity:
+                d2 = datetime.strptime(rec.invoice_id.pre_invoice_date,
+                                       '%Y-%m-%d')
+                d1 = datetime.strptime(rec.old_date_maturity, '%Y-%m-%d')
+                rec.amount_days = abs((d2 - d1).days)
 
-        # Calculamos a nova data de vencimento baseado na data
-        # de validação da faturação, caso a parcela nao esteja
-        # marcada como 'data fixa'. A data da parcela também é atualizada
+    @api.onchange('date_maturity')
+    def onchange_date_maturity(self):
+        """Armazena o valor da data de vencimento no campo de backup da data
+        """
+        for rec in self:
+            if rec.invoice_id.state == 'draft' and rec.date_maturity:
+                rec.old_date_maturity = rec.date_maturity
+
+    @api.multi
+    def update_date_maturity(self, invoice_date):
+        """ Calculamos a nova data de vencimento baseado na data de validação
+         da faturação ou da pŕe-fatura, caso a parcela nao esteja marcada
+         como 'data fixa'.
+
+        :param invoice_date: data da fatura ou pedido.
+        """
+        self.ensure_one()
         if not self.pin_date:
-            d1 = datetime.strptime(new_date, '%Y-%m-%d')
+            d1 = datetime.strptime(invoice_date, '%Y-%m-%d')
+            self.old_date_maturity = self.date_maturity
             self.date_maturity = d1 + timedelta(days=self.amount_days)
