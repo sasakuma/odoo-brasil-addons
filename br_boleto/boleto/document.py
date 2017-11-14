@@ -86,7 +86,7 @@ class Boleto:
         self.boleto.especie = \
             move_line.currency_id and move_line.currency_id.symbol or 'R$'
         self.boleto.quantidade = '1'
-        self.boleto.numero_documento = u"%s%s" % (
+        self.boleto.numero_documento = u"%s/%s" % (
             move_line.invoice_id.internal_number, move_line.name)
 
     def _payment_mode(self, payment_mode_id):
