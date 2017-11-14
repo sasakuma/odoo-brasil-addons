@@ -17,7 +17,7 @@ STATE = {'edit': [('readonly', False)]}
 class InvoiceElectronicItem(models.Model):
     _name = 'invoice.electronic.item'
 
-    name = fields.Char(u'Nome', size=100, readonly=True, states=STATE)
+    name = fields.Text(u'Nome', readonly=True, states=STATE)
     company_id = fields.Many2one(
         'res.company', u'Empresa', index=True, readonly=True, states=STATE)
     invoice_electronic_id = fields.Many2one(
