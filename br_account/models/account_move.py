@@ -22,7 +22,7 @@ class AccountMove(models.Model):
         ('reversal_discount', 'Reversal Discount'),
         ('reversal_interest', 'Reversal Interest'),
         ('company_expense', 'Company Expense'),
-        ('employee_expense', 'Company Expense'),
+        ('employee_expense', 'Employee Expense'),
         ('releases', 'Releases'),
     ]
 
