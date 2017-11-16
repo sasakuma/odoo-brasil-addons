@@ -75,6 +75,16 @@ class TestBrAccountInvoiceParcel(TransactionCase):
         # Verificamos a diferenca entre pre_invoice_date e old_date_maturity
         self.assertEqual(self.parcel.amount_days, 14)
 
+    def test_compute_abs_parceling_value(self):
+        self.parcel.parceling_value = -2
+
+        self.parcel.compute_abs_parceling_value()
+
+        # Verificamos se 'abs_parceling_value' esta com o valor positivo da
+        # parcela
+        self.assertEqual(self.parcel.abs_parceling_value,
+                         abs(self.parcel.parceling_value))
+
     def test_compute_amount_days(self):
 
         # Verificamos se o metodo calcula a quantidade correta de dias

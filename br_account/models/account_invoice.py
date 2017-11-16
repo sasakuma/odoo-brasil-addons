@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # © 2009 Renato Lima - Akretion
 # © 2016 Danimar Ribeiro, Trustcode
+# © 2017 Michell Stuttgart, MultidadosTI
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import api, fields, models
@@ -590,7 +591,7 @@ class AccountInvoice(models.Model):
     def compare_total_parcel_value(self):
 
         # Obtemos o total dos valores da parcela
-        total = sum([p.parceling_value for p in self.parcel_ids])
+        total = sum([abs(p.parceling_value) for p in self.parcel_ids])
 
         # Obtemos a precisao configurada
         prec = self.env['decimal.precision'].precision_get('Account')
