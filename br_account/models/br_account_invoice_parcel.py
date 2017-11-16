@@ -43,6 +43,16 @@ class BrAccountInvoiceParcel(models.Model):
                                       default=0.0,
                                       currency_field='company_currency_id')
 
+    abs_parceling_value = fields.Monetary(string='Valor',
+                                          readonly=True,
+                                          compute='compute_abs_parceling_value',  # noqa
+                                          currency_field='company_currency_id',
+                                          help="Armazena o valor positivo da "
+                                               "parcela (fatura de fornecedor"
+                                               "possui parcelas com valor "
+                                               "negativo). Criado apenas para "
+                                               "fins de visualização.")
+
     amount_currency = fields.Monetary(string='Valor em outra moeda',
                                       help="O valor da parcela expresso "
                                            "em outra moeda opcional se houver"
@@ -84,6 +94,18 @@ class BrAccountInvoiceParcel(models.Model):
         # Calculamos a quantidade de dias
         parcel.compute_amount_days()
         return parcel
+
+    @api.multi
+    @api.depends('parceling_value')
+    def compute_abs_parceling_value(self):
+        """ Retorna o valor absoluto da parcela. Isso e feito porque a fatura
+        de fornecedor exibe parcelas com valores negativos. Nao podemos alterar
+        o sinal da parcela porque isso impactaria diretamente na criacao das
+        move lines, entao adicionamos o campo apenas para exibir o valor
+        positivo da parcela sem alterar o valor original
+        """
+        for rec in self:
+            rec.abs_parceling_value = abs(rec.parceling_value)
 
     @api.multi
     @api.depends('date_maturity', 'invoice_id.pre_invoice_date')

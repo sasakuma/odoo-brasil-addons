@@ -16,7 +16,8 @@
                 <field name="old_date_maturity" invisible="1"/>
                 <field name="date_maturity"/>
                 <field name="name"/>
-                <field name="parceling_value" sum="Valor Total"/>
+                <field name="parceling_value" invisible="1"/>
+                <field name="abs_parceling_value" sum="Valor Total"/>
                 <field name="financial_operation_id"/>
                 <field name="title_type_id"/>
                 <field name="pin_date"/>
@@ -39,6 +40,7 @@
                         <field name="old_date_maturity" invisible="1"/>
                         <field name="name"/>
                         <field name="parceling_value"/>
+                        <field name="abs_parceling_value"/>
                         <field name="amount_currency" groups="base.group_multi_currency"/>
                         <field name="financial_operation_id"/>
                         <field name="title_type_id"/>
