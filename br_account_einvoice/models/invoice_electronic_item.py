@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import api, fields, models, tools
+from odoo import fields, models
 from odoo.addons import decimal_precision as dp
 from odoo.addons.br_account.models.cst import CST_ICMS
 from odoo.addons.br_account.models.cst import CSOSN_SIMPLES
@@ -17,7 +17,7 @@ STATE = {'edit': [('readonly', False)]}
 class InvoiceElectronicItem(models.Model):
     _name = 'invoice.electronic.item'
 
-    name = fields.Char(u'Nome', size=100, readonly=True, states=STATE)
+    name = fields.Text(u'Nome', readonly=True, states=STATE)
     company_id = fields.Many2one(
         'res.company', u'Empresa', index=True, readonly=True, states=STATE)
     invoice_electronic_id = fields.Many2one(
