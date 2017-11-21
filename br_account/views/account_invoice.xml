@@ -21,7 +21,7 @@
         <field name="inherit_id" ref="account.view_account_invoice_filter"/>
         <field name="arch" type="xml">
             <xpath expr="//filter[@name='invoices']" position="after">
-                <filter name='state' string="State NF" domain="[]" context="{'group_by':'state'}"/>
+                <filter name='state' string="Situação" domain="[]" context="{'group_by':'state'}"/>
             </xpath>
         </field>
     </record>

@@ -52,9 +52,10 @@ class AccountInvoice(models.Model):
          ('cancel', u'Cancelado')],
         string=u'Situação da Nota Fiscal',
         default='no_inv_doc',
+        store=True,
         compute='_compute_invoice_electronic_state')
 
-    @api.depends('state', 'invoice_electronic_ids')
+    @api.depends('state', 'invoice_electronic_ids.state')
     def _compute_invoice_electronic_state(self):
         for inv in self:
             docs = inv.invoice_electronic_ids
