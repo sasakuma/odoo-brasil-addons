@@ -425,10 +425,9 @@ class AccountInvoice(models.Model):
 
             ctx = dict(self._context, lang=inv.partner_id.lang)
 
-            if not inv.date_invoice:
-                inv.with_context(ctx).write({
-                    'date_invoice': fields.Date.context_today(self),
-                })
+            inv.with_context(ctx).write({
+                'date_invoice': fields.Date.context_today(self),
+            })
 
             company_currency = inv.company_id.currency_id
 
