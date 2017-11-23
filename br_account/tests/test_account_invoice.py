@@ -2,6 +2,8 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import mock
+
 from odoo.addons.br_account.tests.test_base import TestBaseBr
 
 from odoo.exceptions import UserError, ValidationError
@@ -326,13 +328,15 @@ class TestAccountInvoice(TestBaseBr):
             with self.assertRaises(UserError):
                 inv.action_open_periodic_entry_wizard()
 
-    def test_verify_new_maturity_parcel_date(self):
+    @mock.patch('odoo.fields.Date.context_today')
+    def test_verify_new_maturity_parcel_date(self, mk_dt):
+
+        mk_dt.return_value = '2017-07-02'
 
         for inv in self.invoices:
 
             for parcel in inv.parcel_ids:
-                inv.pre_invoice_date = '2017-07-1'
-                inv.date_invoice = '2017-07-2'
+                inv.pre_invoice_date = '2017-07-01'
                 parcel.old_date_maturity = '2017-07-15'
                 parcel.date_maturity = '2017-07-15'
                 parcel.compute_amount_days()
