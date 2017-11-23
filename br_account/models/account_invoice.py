@@ -161,7 +161,10 @@ class AccountInvoice(models.Model):
 
     pre_invoice_date = fields.Date(string=u'Data da Pré-Fatura',
                                    required=True,
+                                   copy=False,
                                    default=fields.Date.today)
+
+    date_invoice = fields.Date(copy=False)
 
     is_electronic = fields.Boolean(related='fiscal_document_id.electronic',
                                    type='boolean',
