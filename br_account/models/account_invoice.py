@@ -568,7 +568,7 @@ class AccountInvoice(models.Model):
                                   'parcelas novamente.'))
         else:
             raise ValidationError(
-                'Campo parcela está vazio. Por favor, crie as parcelas')
+                u'Campo parcela está vazio. Por favor, crie as parcelas')
 
     @api.multi
     def action_number(self):

@@ -16,11 +16,14 @@ class BrAccountDocumentSerie(models.Model):
     name = fields.Char(u'Descrição', required=True)
     active = fields.Boolean('Ativo')
     fiscal_type = fields.Selection([('service', u'Serviço'),
-                                    ('product', 'Produto')], 'Tipo Fiscal',
+                                    ('product', 'Produto')],
+                                   string='Tipo Fiscal',
                                    default='service')
     fiscal_document_id = fields.Many2one('br_account.fiscal.document',
-                                         'Documento Fiscal', required=True)
-    company_id = fields.Many2one('res.company', 'Empresa',
+                                         string='Documento Fiscal',
+                                         required=True)
+    company_id = fields.Many2one('res.company',
+                                 string='Empresa',
                                  required=True)
     internal_sequence_id = fields.Many2one('ir.sequence',
                                            u'Sequência Interna')

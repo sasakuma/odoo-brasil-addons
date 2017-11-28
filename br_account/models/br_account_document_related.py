@@ -13,27 +13,45 @@ from odoo.exceptions import UserError
 class AccountDocumentRelated(models.Model):
     _name = 'br_account.document.related'
 
-    invoice_id = fields.Many2one('account.invoice', 'Documento Fiscal',
+    invoice_id = fields.Many2one('account.invoice',
+                                 string='Documento Fiscal',
                                  ondelete='cascade')
-    invoice_related_id = fields.Many2one(
-        'account.invoice', 'Documento Fiscal', ondelete='cascade')
-    document_type = fields.Selection(
-        [('nf', 'NF'), ('nfe', 'NF-e'), ('cte', 'CT-e'),
-         ('nfrural', 'NF Produtor'), ('cf', 'Cupom Fiscal')],
-        'Tipo Documento', required=True)
+
+    invoice_related_id = fields.Many2one('account.invoice',
+                                         string='Documento Fiscal',
+                                         ondelete='cascade')
+
+    document_type = fields.Selection([('nf', 'NF'),
+                                      ('nfe', 'NF-e'),
+                                      ('cte', 'CT-e'),
+                                      ('nfrural', 'NF Produtor'),
+                                      ('cf', 'Cupom Fiscal')],
+                                     string='Tipo Documento',
+                                     required=True)
+
     access_key = fields.Char('Chave de Acesso', size=44)
+
     serie = fields.Char(u'Série', size=12)
+
     internal_number = fields.Char(u'Número', size=32)
-    state_id = fields.Many2one('res.country.state', 'Estado',
+
+    state_id = fields.Many2one('res.country.state',
+                               string='Estado',
                                domain="[('country_id.code', '=', 'BR')]")
+
     cnpj_cpf = fields.Char('CNPJ/CPF', size=18)
-    cpfcnpj_type = fields.Selection(
-        [('cpf', 'CPF'), ('cnpj', 'CNPJ')], 'Tipo Doc.',
-        default='cnpj')
+
+    cpfcnpj_type = fields.Selection([('cpf', 'CPF'),
+                                     ('cnpj', 'CNPJ')],
+                                    string='Tipo Doc.',
+                                    default='cnpj')
+
     inscr_est = fields.Char('Inscr. Estadual/RG', size=16)
+
     date = fields.Date('Data')
-    fiscal_document_id = fields.Many2one(
-        'br_account.fiscal.document', 'Documento')
+
+    fiscal_document_id = fields.Many2one('br_account.fiscal.document',
+                                         string='Documento')
 
     @api.one
     @api.constrains('cnpj_cpf')

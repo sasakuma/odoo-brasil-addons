@@ -540,12 +540,9 @@ class AccountInvoiceLine(models.Model):
         ncm = self.product_id.fiscal_classification_id
 
         if self.product_type == 'service':
-            self.tributos_estimados_federais = price * (
-            service.federal_nacional / 100)  # noqa: 501
-            self.tributos_estimados_estaduais = price * (
-            service.estadual_imposto / 100)  # noqa: 501
-            self.tributos_estimados_municipais = price * (
-            service.municipal_imposto / 100)  # noqa: 501
+            self.tributos_estimados_federais = price * (service.federal_nacional / 100)  # noqa: 501
+            self.tributos_estimados_estaduais = price * (service.estadual_imposto / 100)  # noqa: 501
+            self.tributos_estimados_municipais = price * (service.municipal_imposto / 100)  # noqa: 501
         else:
             if self.icms_origem in ('1', '2', '3', '8'):
                 federal = ncm.federal_nacional
@@ -553,10 +550,8 @@ class AccountInvoiceLine(models.Model):
                 federal = ncm.federal_importado
 
             self.tributos_estimados_federais = price * (federal / 100)
-            self.tributos_estimados_estaduais = price * (
-            ncm.estadual_imposto / 100)  # noqa: 501
-            self.tributos_estimados_municipais = price * (
-            ncm.municipal_imposto / 100)  # noqa: 501
+            self.tributos_estimados_estaduais = price * (ncm.estadual_imposto / 100)  # noqa: 501
+            self.tributos_estimados_municipais = price * (ncm.municipal_imposto / 100)  # noqa: 501
 
         self.tributos_estimados = (self.tributos_estimados_federais +
                                    self.tributos_estimados_estaduais +

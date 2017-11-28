@@ -47,11 +47,11 @@ class BrAccountInvoiceParcel(models.Model):
                                           readonly=True,
                                           compute='compute_abs_parceling_value',  # noqa
                                           currency_field='company_currency_id',
-                                          help="Armazena o valor positivo da "
-                                               "parcela (fatura de fornecedor"
-                                               "possui parcelas com valor "
-                                               "negativo). Criado apenas para "
-                                               "fins de visualização.")
+                                          help=u"Armazena o valor positivo da "
+                                               u"parcela (fatura de fornecedor"
+                                               u"possui parcelas com valor "
+                                               u"negativo). Criado apenas para"
+                                               u" fins de visualização.")
 
     amount_currency = fields.Monetary(string='Valor em outra moeda',
                                       help="O valor da parcela expresso "
