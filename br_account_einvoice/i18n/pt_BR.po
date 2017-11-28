@@ -1,0 +1,1497 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* br_account_einvoice
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-11-21 16:56+0000\n"
+"PO-Revision-Date: 2017-11-21 14:57-0200\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: pt_BR\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_icms_aliquota_diferimento
+msgid "% Diferimento"
+msgstr "% Diferimento"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_icms_st_aliquota_mva
+msgid "% MVA"
+msgstr "% MVA"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_icms_aliquota_reducao_base
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_icms_st_aliquota_reducao_base
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_ipi_reducao_bc
+msgid "% Redução Base"
+msgstr "% Redução Base"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_icms_aliquota_credito
+msgid "% de Crédito"
+msgstr "% de Crédito"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_tipo_base:0
+msgid "0 - Margem Valor Agregado (%)"
+msgstr "0 - Margem Valor Agregado (%)"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,origem:0
+msgid "0 - Nacional"
+msgstr "0 - Nacional"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,indicador_total:0
+msgid "0 - Não"
+msgstr "0 - Não"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_st_tipo_base:0
+msgid "0- Preço tabelado ou máximo  sugerido"
+msgstr "0- Preço tabelado ou máximo  sugerido"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,ipi_cst:0
+msgid "00 - Entrada com Recuperação de Crédito"
+msgstr "00 - Entrada com Recuperação de Crédito"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "00 - Tributada Integralmente"
+msgstr "00 - Tributada Integralmente"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,ipi_cst:0
+msgid "01 - Entrada Tributável com Alíquota Zero"
+msgstr "01 - Entrada Tributável com Alíquota Zero"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "01 - Operação Tributável com Alíquota Básica"
+msgstr "01 - Operação Tributável com Alíquota Básica"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,ipi_cst:0
+msgid "02 - Entrada Isenta"
+msgstr "02 - Entrada Isenta"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "02 - Operação Tributável com Alíquota Diferenciada"
+msgstr "02 - Operação Tributável com Alíquota Diferenciada"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,ipi_cst:0
+msgid "03 - Entrada Não-Tributada"
+msgstr "03 - Entrada Não-Tributada"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "03 - Operação Tributável com Alíquota por Unidade de Medida de Produto"
+msgstr "03 - Operação Tributável com Alíquota por Unidade de Medida de Produto"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,ipi_cst:0
+msgid "04 - Entrada Imune"
+msgstr "04 - Entrada Imune"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "04 - Operação Tributável Monofásica - Revenda a Alíquota Zero"
+msgstr "04 - Operação Tributável Monofásica - Revenda a Alíquota Zero"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,ipi_cst:0
+msgid "05 - Entrada com Suspensão"
+msgstr "05 - Entrada com Suspensão"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "05 - Operação Tributável por Substituição Tributária"
+msgstr "05 - Operação Tributável por Substituição Tributária"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "06 - Operação Tributável a Alíquota Zero"
+msgstr "06 - Operação Tributável a Alíquota Zero"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "07 - Operação Isenta da Contribuição"
+msgstr "07 - Operação Isenta da Contribuição"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "08 - Operação sem Incidência da Contribuição"
+msgstr "08 - Operação sem Incidência da Contribuição"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "09 - Operação com Suspensão da Contribuição"
+msgstr "09 - Operação com Suspensão da Contribuição"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,origem:0
+msgid "1 - Estrangeira - Importação direta"
+msgstr "1 - Estrangeira - Importação direta"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_st_tipo_base:0
+msgid "1 - Lista Negativa (valor)"
+msgstr "1 - Lista Negativa (valor)"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic,finalidade_emissao:0
+msgid "1 - Normal"
+msgstr "1 - Normal"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_tipo_base:0
+msgid "1 - Pauta (Valor)"
+msgstr "1 - Pauta (Valor)"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,indicador_total:0
+msgid "1 - Sim"
+msgstr "1 - Sim"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "10 - Tributada e com cobrança do ICMS por substituição tributária"
+msgstr "10 - Tributada e com cobrança do ICMS por substituição tributária"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "101 - Tributada pelo Simples Nacional com permissão de crédito"
+msgstr "101 - Tributada pelo Simples Nacional com permissão de crédito"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "102 - Tributada pelo Simples Nacional sem permissão de crédito"
+msgstr "102 - Tributada pelo Simples Nacional sem permissão de crédito"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "103 -Isenção do ICMS no Simples Nacional para faixa de receita bruta"
+msgstr "103 -Isenção do ICMS no Simples Nacional para faixa de receita bruta"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic,finalidade_emissao:0
+msgid "2 - Complementar"
+msgstr "2 - Complementar"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,origem:0
+msgid "2 - Estrangeira - Adquirida no mercado interno"
+msgstr "2 - Estrangeira - Adquirida no mercado interno"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_st_tipo_base:0
+msgid "2 - Lista Positiva (valor)"
+msgstr "2 - Lista Positiva (valor)"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_tipo_base:0
+msgid "2 - Preço Tabelado Máx. (valor)"
+msgstr "2 - Preço Tabelado Máx. (valor)"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "20 - Com redução de base de cálculo"
+msgstr "20 - Com redução de base de cálculo"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "201 - Tributada pelo Simples Nacional com permissão de crédito e com cobrança do ICMS por substituição tributária"
+msgstr "201 - Tributada pelo Simples Nacional com permissão de crédito e com cobrança do ICMS por substituição tributária"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "202 - Tributada pelo Simples Nacional sem permissão de crédito e com cobrança do ICMS por substituição tributária"
+msgstr "202 - Tributada pelo Simples Nacional sem permissão de crédito e com cobrança do ICMS por substituição tributária"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "203 - Isenção do ICMS no Simples Nacional para faixa de receita bruta e com cobrança do ICMS por substituição tributária"
+msgstr "203 - Isenção do ICMS no Simples Nacional para faixa de receita bruta e com cobrança do ICMS por substituição tributária"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic,finalidade_emissao:0
+msgid "3 - Ajuste"
+msgstr "3 - Ajuste"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_st_tipo_base:0
+msgid "3 - Lista Neutra (valor)"
+msgstr "3 - Lista Neutra (valor)"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,origem:0
+msgid "3 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40% e inferior ou igual a 70%"
+msgstr "3 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40% e inferior ou igual a 70%"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_tipo_base:0
+msgid "3 - Valor da operação"
+msgstr "3 - Valor da operação"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "30 - Isenta ou não tributada e com cobrança do ICMS por substituição tributária"
+msgstr "30 - Isenta ou não tributada e com cobrança do ICMS por substituição tributária"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "300 - Imune"
+msgstr "300 - Imune"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic,finalidade_emissao:0
+msgid "4 - Devolução"
+msgstr "4 - Devolução"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_st_tipo_base:0
+msgid "4 - Margem Valor Agregado (%)"
+msgstr "4 - Margem Valor Agregado (%)"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,origem:0
+msgid "4 - Nacional, cuja produção tenha sido feita em conformidade com os processos produtivos básicos de que tratam as legislações citadas nos Ajustes"
+msgstr "4 - Nacional, cuja produção tenha sido feita em conformidade com os processos produtivos básicos de que tratam as legislações citadas nos Ajustes"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "40 - Isenta"
+msgstr "40 - Isenta"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "400 - Não tributada pelo Simples Nacional"
+msgstr "400 - Não tributada pelo Simples Nacional"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "41 - Não tributada"
+msgstr "41 - Não tributada"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,ipi_cst:0
+msgid "49 - Outras Entradas"
+msgstr "49 - Outras Entradas"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "49 - Outras Operações de Saída"
+msgstr "49 - Outras Operações de Saída"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,origem:0
+msgid "5 - Nacional, mercadoria ou bem com Conteúdo de Importação inferior ou igual a 40%"
+msgstr "5 - Nacional, mercadoria ou bem com Conteúdo de Importação inferior ou igual a 40%"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_st_tipo_base:0
+msgid "5 - Pauta (valor)"
+msgstr "5 - Pauta (valor)"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "50 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Tributada no Mercado Interno"
+msgstr "50 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Tributada no Mercado Interno"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,ipi_cst:0
+msgid "50 - Saída Tributada"
+msgstr "50 - Saída Tributada"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "50 - Suspensão"
+msgstr "50 - Suspensão"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "500 - ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação"
+msgstr "500 - ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "51 - Diferimento"
+msgstr "51 - Diferimento"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "51 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Não-Tributada no Mercado Interno"
+msgstr "51 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Não-Tributada no Mercado Interno"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,ipi_cst:0
+msgid "51 - Saída Tributável com Alíquota Zero"
+msgstr "51 - Saída Tributável com Alíquota Zero"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "52 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita de Exportação"
+msgstr "52 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita de Exportação"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,ipi_cst:0
+msgid "52 - Saída Isenta"
+msgstr "52 - Saída Isenta"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "53 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno"
+msgstr "53 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,ipi_cst:0
+msgid "53 - Saída Não-Tributada"
+msgstr "53 - Saída Não-Tributada"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "54 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas no Mercado Interno e de Exportação"
+msgstr "54 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas no Mercado Interno e de Exportação"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,ipi_cst:0
+msgid "54 - Saída Imune"
+msgstr "54 - Saída Imune"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic,model:0
+msgid "55 - NFe"
+msgstr "55 - NFe"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "55 - Operação com Direito a Crédito - Vinculada a Receitas Não Tributadas no Mercado Interno e de Exportação"
+msgstr "55 - Operação com Direito a Crédito - Vinculada a Receitas Não Tributadas no Mercado Interno e de Exportação"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,ipi_cst:0
+msgid "55 - Saída com Suspensão"
+msgstr "55 - Saída com Suspensão"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "56 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno e de Exportação"
+msgstr "56 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno e de Exportação"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,origem:0
+msgid "6 - Estrangeira - Importação direta, sem similar nacional, constante em lista da CAMEX e gás natural"
+msgstr "6 - Estrangeira - Importação direta, sem similar nacional, constante em lista da CAMEX e gás natural"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "60 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Tributada no Mercado Interno"
+msgstr "60 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Tributada no Mercado Interno"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "60 - ICMS cobrado anteriormente por substituição tributária"
+msgstr "60 - ICMS cobrado anteriormente por substituição tributária"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "61 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Não-Tributada no Mercado Interno"
+msgstr "61 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Não-Tributada no Mercado Interno"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "62 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita de Exportação"
+msgstr "62 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita de Exportação"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "63 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno"
+msgstr "63 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "64 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas no Mercado Interno e de Exportação"
+msgstr "64 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas no Mercado Interno e de Exportação"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "65 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação"
+msgstr "65 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic,model:0
+msgid "65 - NFCe"
+msgstr "65 - NFCe"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "66 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno e de Exportação"
+msgstr "66 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno e de Exportação"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "67 - Crédito Presumido - Outras Operações"
+msgstr "67 - Crédito Presumido - Outras Operações"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,origem:0
+msgid "7 - Estrangeira - Adquirida no mercado interno, sem similar nacional, constante lista CAMEX e gás natural"
+msgstr "7 - Estrangeira - Adquirida no mercado interno, sem similar nacional, constante lista CAMEX e gás natural"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "70 - Com redução de base de cálculo e cobrança do ICMS por substituição tributária"
+msgstr "70 - Com redução de base de cálculo e cobrança do ICMS por substituição tributária"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "70 - Operação de Aquisição sem Direito a Crédito"
+msgstr "70 - Operação de Aquisição sem Direito a Crédito"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "71 - Operação de Aquisição com Isenção"
+msgstr "71 - Operação de Aquisição com Isenção"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "72 - Operação de Aquisição com Suspensão"
+msgstr "72 - Operação de Aquisição com Suspensão"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "73 - Operação de Aquisição a Alíquota Zero"
+msgstr "73 - Operação de Aquisição a Alíquota Zero"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "74 - Operação de Aquisição sem Incidência da Contribuição"
+msgstr "74 - Operação de Aquisição sem Incidência da Contribuição"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "75 - Operação de Aquisição por Substituição Tributária"
+msgstr "75 - Operação de Aquisição por Substituição Tributária"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,origem:0
+msgid "8 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 70%"
+msgstr "8 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 70%"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "90 - Outras"
+msgstr "90 - Outras"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,icms_cst:0
+msgid "900 - Outros"
+msgstr "900 - Outros"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "98 - Outras Operações de Entrada"
+msgstr "98 - Outras Operações de Entrada"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,cofins_cst:0
+#: selection:invoice.electronic.item,pis_cst:0
+msgid "99 - Outras Operações"
+msgstr "99 - Outras Operações"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,ipi_cst:0
+msgid "99 - Outras Saídas"
+msgstr "99 - Outras Saídas"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.br_account_invoice_electronic_form
+msgid "<b>Situação:</b>"
+msgstr "<b>Situação:</b>"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.br_account_invoice_electronic_form
+msgid ""
+"<br/>\n"
+"                                <b>Mensagem:</b>"
+msgstr ""
+"<br/>\n"
+"                                <b>Mensagem:</b>"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.view_br_account_einvoice_invoice_form
+#: model:ir.ui.view,arch_db:br_account_einvoice.view_br_account_einvoice_supllier_invoice_form
+msgid "<span>E-Docs</span>"
+msgstr "<span>E-Docs</span>"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_cofins_aliquota
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_csll_aliquota
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_icms_aliquota
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_icms_st_aliquota
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_inss_aliquota
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_ipi_aliquota
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_irrf_aliquota
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_issqn_aliquota
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_pis_aliquota
+msgid "Alíquota"
+msgstr "Alíquota"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_ii_aliquota
+msgid "Alíquota II"
+msgstr "Alíquota II"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_ambiente
+msgid "Ambiente"
+msgstr "Ambiente"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_bc_issqn
+msgid "Base ISS"
+msgstr "Base ISS"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_cofins_base_calculo
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_csll_base_calculo
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_ii_base_calculo
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_inss_base_calculo
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_irrf_base_calculo
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_issqn_base_calculo
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_pis_base_calculo
+msgid "Base de Cálculo"
+msgstr "Base de Cálculo"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_bc_csll
+msgid "Base de Cálculo CSLL"
+msgstr "Base de Cálculo CSLL"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_bc_icms
+msgid "Base de Cálculo ICMS"
+msgstr "Base de Cálculo ICMS"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_bc_inss
+msgid "Base de Cálculo INSS"
+msgstr "Base de Cálculo INSS"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_bc_irrf
+msgid "Base de Cálculo IRRF"
+msgstr "Base de Cálculo IRRF"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_icms_base_calculo
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_icms_st_base_calculo
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_ipi_base_calculo
+msgid "Base de cálculo"
+msgstr "Base de cálculo"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_cfop
+msgid "CFOP"
+msgstr "CFOP"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.invoice_electronic_item_form
+msgid "COFINS"
+msgstr "COFINS"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.invoice_electronic_item_form
+msgid "CSLL"
+msgstr "CSLL"
+
+#. module: br_account_einvoice
+#: selection:account.invoice,invoice_electronic_state:0
+#: selection:invoice.electronic,state:0
+msgid "Cancelado"
+msgstr "Cancelado"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.br_account_invoice_electronic_form
+msgid "Cancelar"
+msgstr "Cancelar"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_commercial_partner_id
+msgid "Commercial Entity"
+msgstr "Entidade Comercial"
+
+#. module: br_account_einvoice
+#: model:ir.model,name:br_account_einvoice.model_res_company
+msgid "Companies"
+msgstr "Empresas"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_currency_id
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_currency_id
+msgid "Company Currency"
+msgstr "Moeda da Empresa"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_indicador_total
+msgid "Compõe Total da Nota?"
+msgstr "Compõe Total da Nota?"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.br_account_invoice_electronic_form
+msgid "Confirma o cancelamento do documento?"
+msgstr "Confirma o cancelamento do documento?"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_create_uid
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_event_create_uid
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_create_uid
+msgid "Created by"
+msgstr "Criado por"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_create_date
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_event_create_date
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_create_date
+msgid "Created on"
+msgstr "Criado em"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_code
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_event_code
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_issqn_codigo
+msgid "Código"
+msgstr "Código"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_codigo_retorno
+msgid "Código Retorno"
+msgstr "Código Retorno"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.invoice_electronic_item_form
+msgid "Dados do produto"
+msgstr "Dados do produto"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_data_fatura
+msgid "Data Entrada/Saída"
+msgstr "Data Entrada/Saída"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_data_autorizacao
+msgid "Data de autorização"
+msgstr "Data de autorização"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_data_emissao
+msgid "Data emissão"
+msgstr "Data emissão"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic,state:0
+msgid "Denegado"
+msgstr "Denegado"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_desconto
+msgid "Desconto"
+msgstr "Desconto"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_ii_valor_despesas
+msgid "Despesas Aduaneiras"
+msgstr "Despesas Aduaneiras"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.invoice_electronic_item_form
+msgid "Detalhes do COFINS"
+msgstr "Detalhes do COFINS"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.invoice_electronic_item_form
+msgid "Detalhes do ICMS"
+msgstr "Detalhes do ICMS"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.invoice_electronic_item_form
+msgid "Detalhes do IPI"
+msgstr "Detalhes do IPI"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.invoice_electronic_item_form
+msgid "Detalhes do Imposto de Importação"
+msgstr "Detalhes do Imposto de Importação"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.invoice_electronic_item_form
+msgid "Detalhes do PIS"
+msgstr "Detalhes do PIS"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_display_name
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_event_display_name
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_display_name
+msgid "Display Name"
+msgstr "Nome para Exibição"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_invoice_electronic_id
+msgid "Documento"
+msgstr "Documento"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.br_account_invoice_electronic_form
+msgid "Documento Eletronico"
+msgstr "Documento Eletronico"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.br_account_invoice_electronic_form
+msgid "Documento Eletrônico"
+msgstr "Documento Eletrônico"
+
+#. module: br_account_einvoice
+#: model:ir.actions.act_window,name:br_account_einvoice.action_sped_base_electronic_doc
+#: model:ir.model.fields,field_description:br_account_einvoice.field_account_invoice_invoice_electronic_ids
+#: model:ir.ui.menu,name:br_account_einvoice.menu_action_sped_base_electronic_doc
+#: model:ir.ui.view,arch_db:br_account_einvoice.sped_base_electronic_doc_tree
+msgid "Documentos Eletrônicos"
+msgstr "Documentos Eletrônicos"
+
+#. module: br_account_einvoice
+#: selection:account.invoice,invoice_electronic_state:0
+#: selection:invoice.electronic,state:0
+msgid "Editar"
+msgstr "Editar"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.account_config_settings_email
+msgid "Email NFe"
+msgstr "Email NFe"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_email_sent
+msgid "Email enviado"
+msgstr "Email enviado"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_company_id
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_company_id
+msgid "Empresa"
+msgstr "Empresa"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic,tipo_operacao:0
+msgid "Entrada"
+msgstr "Entrada"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_partner_shipping_id
+msgid "Entrega"
+msgstr "Entrega"
+
+#. module: br_account_einvoice
+#: selection:account.invoice,invoice_electronic_state:0
+#: selection:invoice.electronic,state:0
+msgid "Enviado"
+msgstr "Enviado"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.br_account_invoice_electronic_form
+msgid "Enviar"
+msgstr "Enviar"
+
+#. module: br_account_einvoice
+#: selection:account.invoice,invoice_electronic_state:0
+#: selection:invoice.electronic,state:0
+msgid "Erro"
+msgstr "Erro"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_electronic_event_ids
+#: model:ir.ui.view,arch_db:br_account_einvoice.br_account_invoice_electronic_form
+msgid "Eventos"
+msgstr "Eventos"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_invoice_id
+msgid "Fatura"
+msgstr "Fatura"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_event_invoice_electronic_id
+msgid "Fatura Eletrônica"
+msgstr "Fatura Eletrônica"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_finalidade_emissao
+msgid "Finalidade"
+msgstr "Finalidade"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,help:br_account_einvoice.field_invoice_electronic_finalidade_emissao
+msgid "Finalidade da emissão de NFe"
+msgstr "Finalidade da emissão de NFe"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_payment_term_id
+msgid "Forma pagamento"
+msgstr "Forma pagamento"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_frete
+msgid "Frete"
+msgstr "Frete"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.br_account_invoice_electronic_form
+msgid "Habilitar Edição"
+msgstr "Habilitar Edição"
+
+#. module: br_account_einvoice
+#: model:res.groups,name:br_account_einvoice.group_edit_edoc
+msgid "Habilitar edição de Documento Eletrônico"
+msgstr "Habilitar edição de Documento Eletrônico"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic,ambiente:0
+msgid "Homologação"
+msgstr "Homologação"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.invoice_electronic_item_form
+msgid "ICMS"
+msgstr "ICMS"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_icms_deson
+msgid "ICMS Desoneração"
+msgstr "ICMS Desoneração"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_event_id
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_id
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_id
+msgid "ID"
+msgstr "ID"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.invoice_electronic_item_form
+msgid "II"
+msgstr "II"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.invoice_electronic_item_form
+msgid "INSS"
+msgstr "INSS"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_ii_valor_iof
+msgid "IOF"
+msgstr "IOF"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.invoice_electronic_item_form
+msgid "IPI"
+msgstr "IPI"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.invoice_electronic_item_form
+msgid "IRRF"
+msgstr "IRRF"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.invoice_electronic_item_form
+msgid "ISSQN"
+msgstr "ISSQN"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.br_account_invoice_electronic_form
+msgid "Identificação"
+msgstr "Identificação"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_ii_valor
+msgid "Imposto de Importação"
+msgstr "Imposto de Importação"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.br_account_invoice_electronic_form
+msgid "Impostos"
+msgstr "Impostos"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.br_account_invoice_electronic_form
+msgid "Imprimir"
+msgstr "Imprimir"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_informacoes_complementares
+msgid "Informações complementares"
+msgstr "Informações complementares"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_informacoes_legais
+msgid "Informações legais"
+msgstr "Informações legais"
+
+#. module: br_account_einvoice
+#: model:ir.model,name:br_account_einvoice.model_account_invoice
+msgid "Invoice"
+msgstr "Fatura"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_account_invoice_internal_number
+msgid "Invoice Number"
+msgstr "Número da Fatura"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.invoice_electronic_item_form
+msgid "Item Documento"
+msgstr "Item Documento"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.br_account_invoice_electronic_form
+msgid "Itens"
+msgstr "Itens"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic___last_update
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_event___last_update
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item___last_update
+msgid "Last Modified on"
+msgstr "Última Modificação em"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_event_write_uid
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_write_uid
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_write_uid
+msgid "Last Updated by"
+msgstr "Última atualização por"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_event_write_date
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_write_date
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_write_date
+msgid "Last Updated on"
+msgstr "Última atualização em"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_electronic_item_ids
+msgid "Linhas"
+msgstr "Linhas"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_event_name
+msgid "Mensagem"
+msgstr "Mensagem"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_mensagem_retorno
+msgid "Mensagem Retorno"
+msgstr "Mensagem Retorno"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_icms_tipo_base
+msgid "Modalidade BC do ICMS"
+msgstr "Modalidade BC do ICMS"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_model
+msgid "Modelo"
+msgstr "Modelo"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_account_invoice_invoice_model
+msgid "Modelo de Fatura"
+msgstr "Modelo de Fatura"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_icms_motivo_desoneracao
+msgid "Motivo Desoneração"
+msgstr "Motivo Desoneração"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_ncm
+msgid "NCM"
+msgstr "NCM"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic,model:0
+msgid "NFS-e - Nota Fiscal Paulistana"
+msgstr "NFS-e - Nota Fiscal Paulistana"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic,model:0
+msgid "NFS-e - Provedor GINFES"
+msgstr "NFS-e - Provedor GINFES"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic,model:0
+msgid "NFS-e - Provedor SIMPLISS"
+msgstr "NFS-e - Provedor SIMPLISS"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic,model:0
+msgid "NFS-e - Provedor SUSESU"
+msgstr "NFS-e - Provedor SUSESU"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_name
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_name
+msgid "Nome"
+msgstr "Nome"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_xml_to_send_name
+msgid "Nome xml a ser enviado"
+msgstr "Nome xml a ser enviado"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_numero_nfe
+msgid "Numero Formatado NFe"
+msgstr "Numero Formatado NFe"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_numero
+msgid "Número"
+msgstr "Número"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_numero_controle
+msgid "Número de Controle"
+msgstr "Número de Controle"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.br_account_invoice_electronic_form
+msgid "Observações"
+msgstr "Observações"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_origem
+msgid "Origem Mercadoria"
+msgstr "Origem Mercadoria"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_outras_despesas
+msgid "Outras despesas"
+msgstr "Outras despesas"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.invoice_electronic_item_form
+msgid "PIS"
+msgstr "PIS"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_partner_id
+msgid "Parceiro"
+msgstr "Parceiro"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_fiscal_position_id
+msgid "Posição Fiscal"
+msgstr "Posição Fiscal"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_preco_unitario
+msgid "Preço Unitário"
+msgstr "Preço Unitário"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,tipo_produto:0
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_product_id
+msgid "Produto"
+msgstr "Produto"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic,ambiente:0
+msgid "Produção"
+msgstr "Produção"
+
+#. module: br_account_einvoice
+#: selection:account.invoice,invoice_electronic_state:0
+#: selection:invoice.electronic,state:0
+msgid "Provisório"
+msgstr "Provisório"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_quantidade
+msgid "Quantidade"
+msgstr "Quantidade"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.br_account_invoice_electronic_form
+msgid "Rascunho"
+msgstr "Rascunho"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.br_account_invoice_electronic_form
+msgid "Reenviar Email"
+msgstr "Reenviar Email"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_retencao_cofins
+msgid "Retenção COFINS"
+msgstr "Retenção COFINS"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_retencao_csll
+msgid "Retenção CSLL"
+msgstr "Retenção CSLL"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_retencao_inss
+msgid "Retenção INSS"
+msgstr "Retenção INSS"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_retencao_irrf
+msgid "Retenção IRRF"
+msgstr "Retenção IRRF"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_retencao_issqn
+msgid "Retenção ISSQN"
+msgstr "Retenção ISSQN"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_retencao_pis
+msgid "Retenção PIS"
+msgstr "Retenção PIS"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,help:br_account_einvoice.field_invoice_electronic_valor_retencao_inss
+msgid "Retenção Previdência Social"
+msgstr "Retenção Previdência Social"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.br_account_invoice_electronic_form
+#: model:ir.ui.view,arch_db:br_account_einvoice.invoice_electronic_item_form
+msgid "Retenções"
+msgstr "Retenções"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic,tipo_operacao:0
+msgid "Saída"
+msgstr "Saída"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_seguro
+msgid "Seguro"
+msgstr "Seguro"
+
+#. module: br_account_einvoice
+#: selection:account.invoice,invoice_electronic_state:0
+msgid "Sem Doc. Eletrônico"
+msgstr "Sem Doc. Eletrônico"
+
+#. module: br_account_einvoice
+#: selection:invoice.electronic.item,tipo_produto:0
+msgid "Serviço"
+msgstr "Serviço"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_cofins_cst
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_icms_cst
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_pis_cst
+msgid "Situação Tributária"
+msgstr "Situação Tributária"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_account_invoice_invoice_electronic_state
+msgid "Situação da Nota Fiscal"
+msgstr "Situação da Nota Fiscal"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_ipi_cst
+msgid "Situação tributária"
+msgstr "Situação tributária"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_event_state
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_state
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_state
+msgid "State"
+msgstr "Estado"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.view_account_invoice_filter
+msgid "State Doc. Eletronic"
+msgstr "Situação da NF."
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.invoice_electronic_item_form
+msgid "Substituição Tributária ICMS"
+msgstr "Substituição Tributária ICMS"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_serie
+msgid "Série"
+msgstr "Série"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_account_config_settings_nfe_email_template
+#: model:ir.model.fields,field_description:br_account_einvoice.field_res_company_nfe_email_template
+msgid "Template de Email para NFe"
+msgstr "Template de Email para NFe"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_icms_st_tipo_base
+msgid "Tipo Base ICMS ST"
+msgstr "Tipo Base ICMS ST"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_tipo_produto
+msgid "Tipo Produto"
+msgstr "Tipo Produto"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_tipo_operacao
+msgid "Tipo de Operação"
+msgstr "Tipo de Operação"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.br_account_invoice_electronic_form
+msgid "Totais"
+msgstr "Totais"
+
+#. module: br_account_einvoice
+#: model:ir.ui.view,arch_db:br_account_einvoice.br_account_invoice_electronic_form
+msgid "Totais de Serviço"
+msgstr "Totais de Serviço"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_bc_icmsst
+msgid "Total Base ST"
+msgstr "Total Base ST"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_cofins
+msgid "Total COFINS"
+msgstr "Total COFINS"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_cofins_servicos
+msgid "Total Cofins Serviço"
+msgstr "Total Cofins Serviço"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_desconto
+msgid "Total Desconto"
+msgstr "Total Desconto"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_despesas
+msgid "Total Despesas"
+msgstr "Total Despesas"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_frete
+msgid "Total Frete"
+msgstr "Total Frete"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_ii
+msgid "Total II"
+msgstr "Total II"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_ipi
+msgid "Total IPI"
+msgstr "Total IPI"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_issqn
+msgid "Total ISS"
+msgstr "Total ISS"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_account_invoice_total_edocs
+msgid "Total NFe"
+msgstr "Total NFe"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_pis
+msgid "Total PIS"
+msgstr "Total PIS"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_pis_servicos
+msgid "Total PIS Serviços"
+msgstr "Total PIS Serviços"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_bruto
+msgid "Total Produtos"
+msgstr "Total Produtos"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_icmsst
+msgid "Total ST"
+msgstr "Total ST"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_seguro
+msgid "Total Seguro"
+msgstr "Total Seguro"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_servicos
+msgid "Total Serviços"
+msgstr "Total Serviços"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,help:br_account_einvoice.field_invoice_electronic_valor_bc_icmsst
+msgid "Total da base de cálculo do ICMS ST"
+msgstr "Total da base de cálculo do ICMS ST"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_icms
+msgid "Total do ICMS"
+msgstr "Total do ICMS"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_estimado_tributos
+msgid "Tributos Estimados"
+msgstr "Tributos Estimados"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_uom_id
+msgid "Unidade Medida"
+msgstr "Unidade Medida"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,help:br_account_einvoice.field_account_invoice_internal_number
+msgid ""
+"Unique number of the invoice, computed\n"
+"            automatically when the invoice is created."
+msgstr ""
+"Unique number of the invoice, computed\n"
+"            automatically when the invoice is created."
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_valor_bruto
+msgid "Valor Bruto"
+msgstr "Valor Bruto"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_icms_valor_desonerado
+msgid "Valor Desonerado"
+msgstr "Valor Desonerado"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_icms_valor_diferido
+msgid "Valor Diferido"
+msgstr "Valor Diferido"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_tributos_estimados
+msgid "Valor Estimado Tributos"
+msgstr "Valor Estimado Tributos"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_valor_final
+msgid "Valor Final"
+msgstr "Valor Final"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_valor_liquido
+msgid "Valor Líquido"
+msgstr "Valor Líquido"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_csll_valor_retencao
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_inss_valor_retencao
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_irrf_valor_retencao
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_issqn_valor_retencao
+msgid "Valor Retenção"
+msgstr "Valor Retenção"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_cofins_valor_retencao
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_pis_valor_retencao
+msgid "Valor Retido"
+msgstr "Valor Retido"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_cofins_valor
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_icms_st_valor
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_icms_valor
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_ipi_valor
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_issqn_valor
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_pis_valor
+msgid "Valor Total"
+msgstr "Valor Total"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_item_icms_valor_credito
+msgid "Valor de Cŕedito"
+msgstr "Valor de Cŕedito"
+
+#. module: br_account_einvoice
+#: model:ir.model.fields,field_description:br_account_einvoice.field_invoice_electronic_xml_to_send
+msgid "Xml a Enviar"
+msgstr "Xml a Enviar"
+
+#. module: br_account_einvoice
+#: model:ir.model,name:br_account_einvoice.model_account_config_settings
+msgid "account.config.settings"
+msgstr "account.config.settings"
+
+#. module: br_account_einvoice
+#: model:ir.model,name:br_account_einvoice.model_invoice_electronic
+msgid "invoice.electronic"
+msgstr "invoice.electronic"
+
+#. module: br_account_einvoice
+#: model:ir.model,name:br_account_einvoice.model_invoice_electronic_event
+msgid "invoice.electronic.event"
+msgstr "invoice.electronic.event"
+
+#. module: br_account_einvoice
+#: model:ir.model,name:br_account_einvoice.model_invoice_electronic_item
+msgid "invoice.electronic.item"
+msgstr "invoice.electronic.item"
