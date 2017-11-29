@@ -20,7 +20,6 @@
                 <field name="date_maturity"/>
                 <field name="move_id" readonly="1"/>
                 <field name="reconciled" string="Pago"/>
-                <button name="action_register_payment" type="object" string="Register Payment" groups="account.group_account_invoice" attrs="{'invisible': [('reconciled', '!=', False)]}" icon="fa-usd"/>
             </tree>
         </field>
     </record>
@@ -39,7 +38,6 @@
                 <field name="date_maturity"/>
                 <field name="move_id" readonly="1"/>
                 <field name="reconciled" string="Pago"/>
-                <button name="action_register_payment" type="object" string="Register Payment" groups="account.group_account_invoice" attrs="{'invisible': [('reconciled', '!=', False)]}" icon="fa-usd"/>
             </tree>
         </field>
     </record>
