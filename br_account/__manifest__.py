@@ -12,9 +12,12 @@
     'website': 'http://www.trustcode.com.br',
     'contributors': [
         'Danimar Ribeiro <danimaribeiro@gmail.com>'
+        'Michell Stuttgart <michellstut@gmail.com>'
     ],
     'depends': [
-        'account', 'br_base', 'account_cancel'
+        'account',
+        'br_base',
+        'account_cancel'
     ],
     'data': [
         'data/account_financial_operation.xml',
@@ -50,5 +53,6 @@
     ],
     'demo': [
         'demo/res_partner.xml',
+        'demo/product_product.xml',
     ],
 }
