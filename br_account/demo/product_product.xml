@@ -3,7 +3,7 @@
 
     <data noupdate="0">
 
-        <record id="demo_fiscal_classification_mouse" model="account.product.fiscal.classification">
+        <record id="demo_fiscal_classification_mouse" model="product.fiscal.classification">
             <field name="code">8471.60.53</field>
             <field name="name">Indicadores ou apontadores (mouse e track-ball, por exemplo)</field>
         </record>

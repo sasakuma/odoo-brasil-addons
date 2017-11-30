@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <data noupdate="1">
+    <data noupdate="0">
 
         <record id="br_account_res_partner_1" model="res.partner">
-            <field name="name">Natália e Murilo Financeira Ltda</field>
-            <field name="legal_name">Natália e Murilo Financeira Ltda</field>
+            <field name="name">Taverna Do Mestre Restaurante</field>
+            <field name="legal_name">Taverna Do Mestre Restaurante</field>
             <field name="customer">1</field>
             <field name="supplier">0</field>
             <field name="cnpj_cpf">14055948000159</field>
