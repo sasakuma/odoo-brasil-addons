@@ -191,7 +191,7 @@
                     <div class="br col-xs-7 line">
                         <span class="small">Natureza da Operação</span>
                         <br/>
-                        <span t-field="o.fiscal_position_id.name"></span>
+                        <span t-field="o.natureza_operacao"></span>
                     </div>
                     <div class="col-xs-5 line">
                         <span class="small">Protocolo de autorização de uso</span>

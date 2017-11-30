@@ -9,11 +9,12 @@
             <group position="after">
                 <group name="nfe" string="Informações NF-e">
                     <group>
-                        <field name="finalidade_emissao"/>
-                        <field name="ind_final"/>
+                        <field name="finalidade_emissao" attrs="{'required': [('fiscal_document_code', 'in', ('55', '65'))]}"/>
+                        <field name="ind_final" attrs="{'required': [('fiscal_document_code', 'in', ('55', '65'))]}"/>
                     </group>
                     <group>
-                        <field name="ind_pres"/>
+                        <field name="ind_pres" attrs="{'required': [('fiscal_document_code', 'in', ('55', '65'))]}"/>
+                        <field name="natureza_operacao" attrs="{'required': [('fiscal_document_code', 'in', ('55', '65'))]}"/>
                     </group>
                 </group>
             </group>

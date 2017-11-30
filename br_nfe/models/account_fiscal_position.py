@@ -35,3 +35,5 @@ class AccountFiscalPosition(models.Model):
              u'da operação.', default='0')
     # TODO Fazer este campo gerar mensagens dinamicas
     note = fields.Text(u'Observações')
+
+    natureza_operacao = fields.Char(string=u'Natureza da Operação')

@@ -9,7 +9,7 @@
             <field name="customer">1</field>
             <field name="supplier">0</field>
             <field name="cnpj_cpf">14055948000159</field>
-            <field name="indicador_ir_dest">2</field>
+            <field name="indicador_ie_dest">2</field>
             <field name="inscr_mun">475540450284</field>
             <field eval="[(6, 0, [ref('base.res_partner_category_8')])]" name="category_id"/>
             <field name="is_company">1</field>

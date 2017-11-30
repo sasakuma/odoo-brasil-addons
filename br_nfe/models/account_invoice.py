@@ -102,6 +102,7 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self)._prepare_edoc_vals(inv)
 
         res['ind_pres'] = inv.fiscal_position_id.ind_pres
+        res['natureza_operacao'] = inv.fiscal_position_id.natureza_operacao
         res['finalidade_emissao'] = inv.fiscal_position_id.finalidade_emissao
         res['informacoes_legais'] = inv.fiscal_comment
         res['informacoes_complementares'] = inv.comment
