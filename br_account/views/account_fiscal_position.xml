@@ -100,6 +100,7 @@
                 <field name="position_type"/>
                 <field name="fiscal_document_id"/>
                 <field name="document_serie_id" domain="[('fiscal_type', '=', position_type )]"/>
+                <field name="fiscal_document_code" invisible="1"/>
                 <field name="company_fiscal_type" invisible="1"/>
             </field>
             <group position="after">
