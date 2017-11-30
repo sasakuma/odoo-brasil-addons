@@ -9,7 +9,6 @@
             <field name="customer">1</field>
             <field name="supplier">0</field>
             <field name="cnpj_cpf">14055948000159</field>
-            <field name="indicador_ie_dest">2</field>
             <field name="inscr_mun">475540450284</field>
             <field eval="[(6, 0, [ref('base.res_partner_category_8')])]" name="category_id"/>
             <field name="is_company">1</field>
@@ -21,9 +20,9 @@
             <field name="city_id" ref="br_base.city_3550308"/>
             <field model="res.country" name="country_id" search="[('name','=','Brazil')]"/>
             <field name="country_id" ref="base.br"/>
-            <field name="email">tesouraria@nataliaemurilofinanceiraltda.com.br</field>
+            <field name="email">contato@tavernadomestre.com.br</field>
             <field name="phone">11998283787</field>
-            <field name="website">www.nataliaemurilofinanceiraltda.com.br</field>
+            <field name="website">www.tavernadomestre.com.br</field>
             <field name="image" type="base64" file="base/static/img/res_partner_3-image.png"/>
         </record>
 
