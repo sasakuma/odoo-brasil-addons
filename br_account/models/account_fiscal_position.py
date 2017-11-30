@@ -31,6 +31,8 @@ class AccountFiscalPosition(models.Model):
     fiscal_document_id = fields.Many2one('br_account.fiscal.document',
                                          string='Documento')
 
+    fiscal_document_code = fields.Char(related='fiscal_document_id.code')
+
     # TODO Adicionar no domain a empresa (utilizar empresa na posicao fiscal)
     document_serie_id = fields.Many2one('br_account.document.serie',
                                         string=u'Série',

@@ -279,8 +279,10 @@ class InvoiceElectronic(models.Model):
                                           readonly=True,
                                           states=STATE)
 
+    natureza_operacao = fields.Char(string=u'Natureza da Operação')
+
     def barcode_url(self):
-        url = '<img style="width:380px;height:50px;margin:2px 1px;" src="/report/barcode/Code128/' + self.chave_nfe + '" />'  # noqa: 501
+        url = '<img style="width:100%;margin:2px 1px;" src="/report/barcode/Code128/' + self.chave_nfe + '" />'  # noqa: 501
         return url
 
     def can_unlink(self):

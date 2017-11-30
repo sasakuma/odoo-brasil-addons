@@ -165,6 +165,7 @@ class TestAccountInvoice(TransactionCase):
 
         self.fpos = self.env['account.fiscal.position'].create({
             'name': 'Venda',
+            'natureza_operacao': 'Venda',
         })
 
         self.fpos_consumo = self.env['account.fiscal.position'].create({
