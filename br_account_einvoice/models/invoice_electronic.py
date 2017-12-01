@@ -469,24 +469,53 @@ class InvoiceElectronic(models.Model):
     def _find_attachment_ids_email(self):
         return []
 
+    def _get_account_email_template(self):
+        """ Metodo base para retornar o template de email correto de acordo
+        com o tipo da nota fiscal (venda de produto, serviço e etc)
+        de produto
+        :rtype: str
+        :return: ID do template de email da Nota Fiscal Eletronica
+        """
+        return False
+
     @api.multi
     def send_email_nfe(self):
-        mail = self.env.user.company_id.nfe_email_template
-        if not mail:
-            raise UserError('Modelo de email padrão não configurado')
-        atts = self._find_attachment_ids_email()
+        """
+        Realiza o envio de email da invoice
+        """
+        mail = self._get_account_email_template()
 
-        if atts and len(atts):
-            mail.attachment_ids = [(6, 0, atts)]
+        if not mail:
+            raise UserError(u'Modelo de email padrão não configurado!')
+
+        # Adicionamos os anexos ao email
+        attachment_ids = self._find_attachment_ids_email()
+
+        if attachment_ids:
+            mail.attachment_ids = [(6, 0, attachment_ids)]
+
+        # Realizamos o envio do email
         mail.send_mail(self.invoice_id.id)
 
     @api.multi
     def send_email_nfe_queue(self):
+        """Este metodo e chamado pela fila de emails e realiza o envio de email
+        de todos os documentos eletronicos que possuem data de emissao maior ou
+        igual uma dia anterior a data de hoje e que foram emitidas com sucesso.
+        """
+        # Pegamos a data do dia anterior ao dia atual
         after = datetime.now() + timedelta(days=-1)
-        nfe_queue = self.env['invoice.electronic'].search(
-            [('data_emissao', '>=', after.strftime(DATETIME_FORMAT)),
-             ('email_sent', '=', False),
-             ('state', '=', 'done')], limit=5)
+
+        domain = [
+            ('data_emissao', '>=', after.strftime(DATETIME_FORMAT)),
+            ('email_sent', '=', False),
+            ('state', '=', 'done'),
+        ]
+
+        nfe_queue = self.env['invoice.electronic'].search(domain, limit=5)
+
+        # Executamos o metodo de envio de email para cada um dos documentos
+        # eletronicos encontrados
         for nfe in nfe_queue:
             nfe.send_email_nfe()
             nfe.email_sent = True
