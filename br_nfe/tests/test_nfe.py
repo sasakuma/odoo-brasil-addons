@@ -331,6 +331,45 @@ class TestNFeBrasil(TransactionCase):
 
     @patch('odoo.addons.br_nfe.models.invoice_electronic.retorno_autorizar_nfe')  # noqa: 501
     @patch('odoo.addons.br_nfe.models.invoice_electronic.autorizar_nfe')
+    def test_success_xml_schema(self, autorizar, ret_autorizar):
+
+        for invoice in self.invoices:
+            # Confirmando a fatura deve gerar um documento eletrônico
+            invoice.action_br_account_invoice_open()
+
+            # Lote recebido com sucesso
+            xml_recebido = open(os.path.join(
+                self.caminho, 'xml/lote-recebido-sucesso.xml'), 'r').read()
+
+            resp = sanitize_response(xml_recebido)
+
+            autorizar.return_value = {
+                'object': resp[1],
+                'sent_xml': '<xml />',
+                'received_xml': xml_recebido
+            }
+
+            # Consultar recibo com erro 100
+            xml_recebido = open(os.path.join(
+                self.caminho, 'xml/recibo-sucesso-schema-100.xml'), 'r').read()
+            resp_ret = sanitize_response(xml_recebido)
+
+            ret_autorizar.return_value = {
+                'object': resp_ret[1],
+                'sent_xml': '<xml />',
+                'received_xml': xml_recebido
+            }
+
+            invoice_electronic = self.env['invoice.electronic'].search(
+                [('invoice_id', '=', invoice.id)])
+
+            invoice_electronic.action_send_electronic_invoice()
+
+            self.assertEquals(invoice_electronic.state, 'done')
+            self.assertEquals(invoice_electronic.codigo_retorno, '100')
+
+    @patch('odoo.addons.br_nfe.models.invoice_electronic.retorno_autorizar_nfe')  # noqa: 501
+    @patch('odoo.addons.br_nfe.models.invoice_electronic.autorizar_nfe')
     def test_wrong_xml_schema(self, autorizar, ret_autorizar):
 
         for invoice in self.invoices:
@@ -363,7 +402,9 @@ class TestNFeBrasil(TransactionCase):
 
             invoice_electronic = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
+
             invoice_electronic.action_send_electronic_invoice()
+
             self.assertEquals(invoice_electronic.state, 'error')
             self.assertEquals(invoice_electronic.codigo_retorno, '225')
 

@@ -809,9 +809,12 @@ class InvoiceElectronic(models.Model):
 
     @api.multi
     def action_send_electronic_invoice(self):
-        self.state = 'error'
-        self.data_emissao = datetime.now()
         super(InvoiceElectronic, self).action_send_electronic_invoice()
+
+        self.write({
+            'state': 'error',
+            'data_emissao': datetime.now(),
+        })
 
         if self.model not in ('55', '65'):
             return
@@ -847,17 +850,17 @@ class InvoiceElectronic(models.Model):
                     break
 
         if retorno.cStat != 104:
-            self.write({
+            values = {
                 'codigo_retorno': retorno.cStat,
                 'mensagem_retorno': retorno.xMotivo,
-            })
+            }
         else:
             values = {
                 'codigo_retorno': retorno.protNFe.infProt.cStat,
                 'mensagem_retorno': retorno.protNFe.infProt.xMotivo,
             }
 
-            if self.codigo_retorno == '100':
+            if values['codigo_retorno'] == 100:
                 values.update({
                     'state': 'done',
                     'protocolo_nfe': retorno.protNFe.infProt.nProt,
@@ -868,29 +871,34 @@ class InvoiceElectronic(models.Model):
 
             # Duplicidade de NF-e significa que a nota já está emitida
             # TODO Buscar o protocolo de autorização, por hora só finalizar
-            elif self.codigo_retorno == '204':
+            elif values['codigo_retorno'] == 204:
                 values.update({
                     'state': 'done',
                     'codigo_retorno': '100',
                     'mensagem_retorno': 'Autorizado o uso da NF-e',
                 })
 
+                self._on_success()
+
             # Denegada e nota já está denegada
-            elif self.codigo_retorno in ('302', '205'):
+            elif values['codigo_retorno'] in (302, 205):
                 values.update({
                     'state': 'denied',
                 })
 
-            self.write(values)
+        self.write(values)
 
         self.env['invoice.electronic.event'].create({
-            'code': self.codigo_retorno,
-            'name': self.mensagem_retorno,
+            'code': values['codigo_retorno'],
+            'name': values['mensagem_retorno'],
             'invoice_electronic_id': self.id,
         })
+
         self._create_attachment('nfe-envio', self, resposta['sent_xml'])
         self._create_attachment('nfe-ret', self, resposta['received_xml'])
+
         recibo_xml = resposta['received_xml']
+
         if resposta_recibo:
             self._create_attachment('rec', self, resposta_recibo['sent_xml'])
             self._create_attachment('rec-ret', self,
@@ -899,8 +907,10 @@ class InvoiceElectronic(models.Model):
 
         if self.codigo_retorno == '100':
             nfe_proc = gerar_nfeproc(resposta['sent_xml'], recibo_xml)
-            self.nfe_processada = base64.encodestring(nfe_proc)
-            self.nfe_processada_name = "NFe%08d.xml" % self.numero
+            self.write({
+                'nfe_processada': base64.encodestring(nfe_proc),
+                'nfe_processada_name': "NFe%08d.xml" % self.numero,
+            })
 
     @api.multi
     def _on_success(self):
