@@ -3,6 +3,7 @@
 # © 2017 Michell Stuttgart <michellstut@gmail.com>, MultidadosTI
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from . import account_config_settings
 from . import account_fiscal_position
 from . import account_fiscal_position_tax
 from . import account_fiscal_position_template

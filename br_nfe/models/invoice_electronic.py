@@ -787,6 +787,17 @@ class InvoiceElectronic(models.Model):
 
         return atts
 
+    def _get_account_email_template(self):
+        """ Retorna o template de email da Nota Fiscal caso a nota seja de venda
+        de produto
+        :rtype: str
+        :return: ID do template de email da Nota Fiscal Eletronica
+        """
+        if self.model in ('55', '65'):
+            return self.env.user.company_id.nfe_email_template
+        else:
+            return super(InvoiceElectronic, self)._get_account_email_template()
+
     @api.multi
     def action_post_validate(self):
         super(InvoiceElectronic, self).action_post_validate()
