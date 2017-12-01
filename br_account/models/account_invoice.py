@@ -374,18 +374,20 @@ class AccountInvoice(models.Model):
 
     chave_de_acesso = fields.Char(string='Chave de Acesso', size=44)
 
-    @api.onchange('payment_term_id', 'date_invoice')
-    def _onchange_payment_term_date_invoice(self):
-        super(AccountInvoice, self)._onchange_payment_term_date_invoice()
+    @api.onchange('payment_term_id')
+    def _onchange_payment_term_(self):
+        """Lanca uma exceção se a fatura possuir parcelas. Isso é feito de modo
+        a alertar o usuario que após a troca de condição de pagamento, o
+        mesmo deve gerar as parcelas novamente.
+
+        :raise ValidationError se a fatura possuir parcelas
+        """
+        # super(AccountInvoice, self)._onchange_payment_term_date_invoice()
+
         if self.parcel_ids:
-            return {
-                'warning': {
-                    'title': _('Attention'),
-                    'message': _(
-                        "When changing the payment conditions,please "
-                        "re-generate the parcels for recalculation.")
-                }
-            }
+            raise ValidationError(
+                u'Ao alterar as condições de pagamento, favor re-gerar as '
+                u'parcelas para o recálculo.', )
 
     @api.onchange('issuer')
     def _onchange_issuer(self):
