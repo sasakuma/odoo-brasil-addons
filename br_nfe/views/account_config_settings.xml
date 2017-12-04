@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="account.view_account_config_settings"/>
         <field name="arch" type="xml">
             <group name="group_invoice_mail" position="inside">
-                <field name="nfe_email_template"/>
+                <field name="nfe_email_template" domain="[('model', '=', 'account.invoice')]"/>
             </group>
         </field>
     </record>

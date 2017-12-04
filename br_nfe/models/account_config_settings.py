@@ -10,8 +10,7 @@ class AccountConfigSettings(models.TransientModel):
     _inherit = 'account.config.settings'
 
     nfe_email_template = fields.Many2one('mail.template',
-                                         string='Template de Email para NFe',
-                                         domain=[('model_id.model', '=', 'invoice.electronic')])  # noqa
+                                         string='Template de Email para NFe')
 
     def get_default_nfe_email_template(self, fields):
         """ Atribui ao campo 'nfe_email_template' o valor default retornado
