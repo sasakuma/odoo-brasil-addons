@@ -494,8 +494,8 @@ class InvoiceElectronic(models.Model):
         if attachment_ids:
             mail.attachment_ids = [(6, 0, attachment_ids)]
 
-        # Realizamos o envio do email
-        mail.send_mail(self.invoice_id.id)
+        # Realizamos o envio do email para a fila de email
+        mail.send_mail(self.id)
 
     @api.multi
     def send_email_nfe_queue(self):
