@@ -746,7 +746,7 @@ class InvoiceElectronic(models.Model):
 
     def _find_attachment_ids_email(self):
         atts = super(InvoiceElectronic, self)._find_attachment_ids_email()
-        if self.model not in ('55'):
+        if self.model not in ['55']:
             return atts
 
         attachment_obj = self.env['ir.attachment']
@@ -756,23 +756,6 @@ class InvoiceElectronic(models.Model):
         tmp_logo = StringIO()
         tmp_logo.write(logo)
         tmp_logo.seek(0)
-
-        xml_element = etree.fromstring(nfe_xml)
-        obj_danfe = danfe(list_xml=[xml_element], logo=tmp_logo)
-
-        tmp_danfe = StringIO()
-        obj_danfe.writeto_pdf(tmp_danfe)
-
-        if danfe:
-            danfe_id = attachment_obj.create(dict(
-                name="Danfe-%08d.pdf" % self.numero,
-                datas_fname="Danfe-%08d.pdf" % self.numero,
-                datas=base64.b64encode(tmp_danfe.getvalue()),
-                mimetype='application/pdf',
-                res_model='account.invoice',
-                res_id=self.invoice_id.id,
-            ))
-            atts.append(danfe_id.id)
 
         if nfe_xml:
             xml_id = attachment_obj.create(dict(
