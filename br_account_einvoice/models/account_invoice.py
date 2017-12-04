@@ -37,11 +37,13 @@ class AccountInvoice(models.Model):
     total_edocs = fields.Integer(string="Total NFe",
                                  compute=_compute_total_edocs)
 
-    internal_number = fields.Integer(
-        'Invoice Number', readonly=True, copy=False,
-        states={'draft': [('readonly', False)]},
-        help="""Unique number of the invoice, computed
-            automatically when the invoice is created.""")
+    internal_number = fields.Integer(string='Invoice Number',
+                                     readonly=True,
+                                     copy=False,
+                                     states={'draft': [('readonly', False)]},
+                                     help="""Unique number of the invoice, 
+                                     computed automatically when the invoice 
+                                     is created.""")
 
     invoice_electronic_state = fields.Selection(
         [('no_inv_doc', u'Sem Doc. Eletrônico'),
