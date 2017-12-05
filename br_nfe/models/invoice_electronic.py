@@ -6,8 +6,6 @@ import re
 import base64
 import logging
 import time
-from lxml import etree
-from StringIO import StringIO
 from datetime import datetime
 from odoo import api, fields, models
 from odoo.exceptions import UserError
@@ -744,43 +742,6 @@ class InvoiceElectronic(models.Model):
         }
         return values
 
-    def _find_attachment_ids_email(self):
-        atts = super(InvoiceElectronic, self)._find_attachment_ids_email()
-        if self.model not in ['55']:
-            return atts
-
-        attachment_obj = self.env['ir.attachment']
-        nfe_xml = base64.decodestring(self.nfe_processada)
-        logo = base64.decodestring(self.invoice_id.company_id.logo)
-
-        tmp_logo = StringIO()
-        tmp_logo.write(logo)
-        tmp_logo.seek(0)
-
-        if nfe_xml:
-            xml_id = attachment_obj.create(dict(
-                name=self.nfe_processada_name,
-                datas_fname=self.nfe_processada_name,
-                datas=base64.encodestring(nfe_xml),
-                mimetype='application/xml',
-                res_model='account.invoice',
-                res_id=self.invoice_id.id,
-            ))
-            atts.append(xml_id.id)
-
-        return atts
-
-    def _get_account_email_template(self):
-        """ Retorna o template de email da Nota Fiscal caso a nota seja de venda
-        de produto
-        :rtype: str
-        :return: ID do template de email da Nota Fiscal Eletronica
-        """
-        if self.model in ('55', '65'):
-            return self.env.user.company_id.nfe_email_template
-        else:
-            return super(InvoiceElectronic, self)._get_account_email_template()
-
     @api.multi
     def action_post_validate(self):
         super(InvoiceElectronic, self).action_post_validate()
@@ -861,8 +822,6 @@ class InvoiceElectronic(models.Model):
                     'data_autorizacao': retorno.protNFe.infProt.dhRecbto,
                 })
 
-                self._on_success()
-
             # Duplicidade de NF-e significa que a nota já está emitida
             # TODO Buscar o protocolo de autorização, por hora só finalizar
             elif values['codigo_retorno'] == 204:
@@ -871,8 +830,6 @@ class InvoiceElectronic(models.Model):
                     'codigo_retorno': '100',
                     'mensagem_retorno': 'Autorizado o uso da NF-e',
                 })
-
-                self._on_success()
 
             # Denegada e nota já está denegada
             elif values['codigo_retorno'] in (302, 205):
@@ -900,18 +857,12 @@ class InvoiceElectronic(models.Model):
             recibo_xml = resposta_recibo['received_xml']
 
         if self.codigo_retorno == '100':
+            self.invoice_id.internal_number = int(self.numero)
             nfe_proc = gerar_nfeproc(resposta['sent_xml'], recibo_xml)
             self.write({
                 'nfe_processada': base64.encodestring(nfe_proc),
                 'nfe_processada_name': "NFe%08d.xml" % self.numero,
             })
-
-    @api.multi
-    def _on_success(self):
-        super(InvoiceElectronic, self)._on_success()
-
-        if self.model == '55':
-            self.invoice_id.internal_number = int(self.numero)
 
     @api.multi
     def generate_nfe_proc(self):

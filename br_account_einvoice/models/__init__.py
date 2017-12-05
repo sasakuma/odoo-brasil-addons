@@ -6,4 +6,3 @@ from . import account_invoice
 from . import invoice_electronic
 from . import invoice_electronic_event
 from . import invoice_electronic_item
-from . import mail_template

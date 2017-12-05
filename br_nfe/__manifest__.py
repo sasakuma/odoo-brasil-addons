@@ -14,6 +14,7 @@
     'website': 'http://www.trustcode.com.br',
     'contributors': [
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
+        'Michell Stuttgart <michellstut@gmail.com>',
     ],
     'depends': [
         'br_account_einvoice',
@@ -26,7 +27,6 @@
     },
     'data': [
         'security/ir.model.access.csv',
-        'views/account_config_settings.xml',
         'views/account_fiscal_position.xml',
         'views/invoice_electronic.xml',
         'views/account_invoice.xml',
