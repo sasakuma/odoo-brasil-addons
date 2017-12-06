@@ -417,10 +417,6 @@ class InvoiceElectronic(models.Model):
                                 u'Proibido reenviar')
 
     @api.multi
-    def _on_success(self):
-        pass
-
-    @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
         pass
 
