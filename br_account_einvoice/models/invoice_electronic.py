@@ -45,11 +45,7 @@ class InvoiceElectronic(models.Model):
     model = fields.Selection(
         [('55', '55 - NFe'),
          ('65', '65 - NFCe'),
-         ('001', 'NFS-e - Nota Fiscal Paulistana'),
-         ('002', 'NFS-e - Provedor GINFES'),
-         ('008', 'NFS-e - Provedor SIMPLISS'),
-         ('009', 'NFS-e - Provedor SUSESU')],
-        string=u'Modelo', readonly=True, states=STATE)
+         ('001', 'NFS-e')], string=u'Modelo', readonly=True, states=STATE)
     serie = fields.Many2one(
         'br_account.document.serie', string=u'Série',
         readonly=True, states=STATE)
