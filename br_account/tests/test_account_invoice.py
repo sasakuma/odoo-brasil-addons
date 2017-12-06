@@ -4,9 +4,10 @@
 
 import mock
 
-from odoo.addons.br_account.tests.test_base import TestBaseBr
-
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools.translate import _
+
+from odoo.addons.br_account.tests.test_base import TestBaseBr
 
 
 class TestAccountInvoice(TestBaseBr):
@@ -116,7 +117,6 @@ class TestAccountInvoice(TestBaseBr):
     def test_action_invoice_cancel_paid(self):
 
         for inv in self.invoices:
-
             inv.action_br_account_invoice_open()
             self.assertTrue(inv.date_invoice)
 
@@ -427,3 +427,17 @@ class TestAccountInvoice(TestBaseBr):
         for inv in self.incomplete_inv:
             with self.assertRaises(UserError):
                 inv.action_open_periodic_entry_wizard()
+
+    def test_onchange_payment_term(self):
+
+        # Como todas as invoices possuem parcela, a excecao sera disparada
+        for inv in self.invoices:
+
+            with self.assertRaises(ValidationError):
+                self.invoices[0].payment_term_id = 2
+                inv._onchange_payment_term_()
+
+                # Removes as parcelas de uma das invoices e executamos o metodo
+                # novamente, a ValidationError nao sera lancada
+                self.invoices[0].parcel_ids.unlink()
+                self.invoices[0]._onchange_payment_term_()

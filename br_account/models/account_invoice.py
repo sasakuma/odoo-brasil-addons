@@ -173,11 +173,12 @@ class AccountInvoice(models.Model):
                                    readonly=True,
                                    oldname='is_eletronic')
 
-    fiscal_document_related_ids = fields.One2many('br_account.document.related',  # noqa: 501
-                                                  'invoice_id',
-                                                  string='Documento Fiscal Relacionado',  # noqa: 501
-                                                  readonly=True,
-                                                  states=STATES)
+    fiscal_document_related_ids = fields.One2many(
+        'br_account.document.related',
+        'invoice_id',
+        string='Documento Fiscal Relacionado',
+        readonly=True,
+        states=STATES)
 
     fiscal_observation_ids = fields.Many2many('br_account.fiscal.observation',
                                               string=u'Observações Fiscais',
@@ -354,15 +355,17 @@ class AccountInvoice(models.Model):
                                            digits=dp.get_precision('Account'),
                                            compute='_compute_amount')
 
-    total_tributos_estaduais = fields.Float(string='Total de Tributos Estaduais',  # noqa: 501
-                                            store=True,
-                                            digits=dp.get_precision('Account'),
-                                            compute='_compute_amount')
+    total_tributos_estaduais = fields.Float(
+        string='Total de Tributos Estaduais',
+        store=True,
+        digits=dp.get_precision('Account'),
+        compute='_compute_amount')
 
-    total_tributos_municipais = fields.Float(string='Total de Tributos Municipais',  # noqa: 501
-                                             store=True,
-                                             digits=dp.get_precision('Account'),  # noqa: 501
-                                             compute='_compute_amount')
+    total_tributos_municipais = fields.Float(
+        string='Total de Tributos Municipais',
+        store=True,
+        digits=dp.get_precision('Account'),
+        compute='_compute_amount')
 
     total_tributos_estimados = fields.Float(string='Total de Tributos',
                                             store=True,
@@ -370,6 +373,21 @@ class AccountInvoice(models.Model):
                                             compute='_compute_amount')
 
     chave_de_acesso = fields.Char(string='Chave de Acesso', size=44)
+
+    @api.onchange('payment_term_id')
+    def _onchange_payment_term_(self):
+        """Lanca uma exceção se a fatura possuir parcelas. Isso é feito de modo
+        a alertar o usuario que após a troca de condição de pagamento, o
+        mesmo deve gerar as parcelas novamente.
+
+        :raise ValidationError se a fatura possuir parcelas
+        """
+        # super(AccountInvoice, self)._onchange_payment_term_date_invoice()
+
+        if self.parcel_ids:
+            raise ValidationError(
+                u'Ao alterar as condições de pagamento, favor re-gerar as '
+                u'parcelas para o recálculo.', )
 
     @api.onchange('issuer')
     def _onchange_issuer(self):
@@ -438,8 +456,9 @@ class AccountInvoice(models.Model):
 
             # create one move line for the total and possibly adjust the other
             # lines amount
-            iml = inv.with_context(ctx).compute_invoice_totals(company_currency,
-                                                               iml)[2]
+            iml = \
+                inv.with_context(ctx).compute_invoice_totals(company_currency,
+                                                             iml)[2]
 
             for parcel in inv.parcel_ids:
                 # Calculamos a nova data de vencimento baseado na data
@@ -814,4 +833,5 @@ class AccountInvoice(models.Model):
     @api.model
     def _function_br_account(self):
         if self.env.ref('account.action_account_payment_from_invoices'):
-            self.env.ref('account.action_account_payment_from_invoices').unlink()  # noqa
+            self.env.ref(
+                'account.action_account_payment_from_invoices').unlink()
