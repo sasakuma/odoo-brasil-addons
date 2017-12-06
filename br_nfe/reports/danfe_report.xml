@@ -1,12 +1,6 @@
 <?xml version="1.0"?>
 <odoo>
 
-    <template id="danfe_assets_backend" name="Danfe assets" inherit_id="report.assets_common">
-        <xpath expr="." position="inside">
-            <link rel="stylesheet" type="text/css" href="/br_nfe/static/css/danfe.css"/>
-        </xpath>
-    </template>
-
     <record id="paperformat_br_nfe_danfe" model="report.paperformat">
         <field name="name">Formato Danfe</field>
         <field name="default" eval="True"/>
@@ -24,6 +18,8 @@
 
     <template id="template_br_nfe_danfe">
         <div class="page">
+            <link rel="stylesheet" type="text/css" href="/br_nfe/static/css/danfe.css"/>
+
             <t t-if="o.ambiente == 'homologacao'">
                 <div style="width:100%;position:fixed;top:400px;">
                     <div style="width:64%; margin: 0 auto; font-size:60px; color:red; ">Sem Valor Fiscal</div>
