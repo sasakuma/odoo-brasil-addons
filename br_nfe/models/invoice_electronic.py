@@ -3,11 +3,15 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import re
+import os
 import base64
 import logging
 import time
+from werkzeug import exceptions, url_decode
+
 from datetime import datetime
 from odoo import api, fields, models
+from odoo.http import Controller, route, request
 from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
@@ -280,8 +284,26 @@ class InvoiceElectronic(models.Model):
     natureza_operacao = fields.Char(string=u'Natureza da Operação')
 
     def barcode_url(self):
-        url = '<img style="width:100%;margin:2px 1px;" src="/report/barcode/Code128/' + self.chave_nfe + '" />'  # noqa: 501
-        return url
+        """ Gera o codigo de barras a partir da chave da NFe. Utilizamos este
+        metodo ao inves de utilizar request porque precisamos dele para envio
+        do DANFE por email. Quando o DANFe e enviado pela fila de email o mesmo
+        nao consegue chamar o metodo de geracao de codigo de barras do
+        controller. Sendo precisamos gerar o DANFE diretamente.
+
+        :return: Imagem do DANFE em Base64
+        :rtype: str
+        """
+
+        try:
+            barcode = self.env['report'].barcode('Code128',
+                                                 self.chave_nfe,
+                                                 width=600,
+                                                 height=100,
+                                                 humanreadable=0)
+        except ValueError as exc:
+            _logger.info('Cannot convert inn barcode. %s' % exc.message,
+                         exc_info=True)
+        return base64.b64encode(barcode).decode('utf-8')
 
     def can_unlink(self):
         res = super(InvoiceElectronic, self).can_unlink()
