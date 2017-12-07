@@ -11,10 +11,8 @@ import urllib3
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 urllib3.disable_warnings(category=InsecureRequestWarning)
 
-
 from odoo.tests.common import TransactionCase
 from odoo.exceptions import UserError
-
 
 from pytrustnfe.xml import sanitize_response
 
@@ -477,7 +475,7 @@ class TestNFeBrasil(TransactionCase):
             self.assertEquals(invoice_electronic.mensagem_retorno,
                               "Cancelamento homologado fora de prazo")
 
-    def test_invoice_electronic_functions(self):
+    def test_barcode_url(self):
 
         for invoice in self.invoices:
 
@@ -487,5 +485,48 @@ class TestNFeBrasil(TransactionCase):
             invoice_electronic = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
 
-            url = invoice_electronic.barcode_url()
+            # Adicionamos uma chave especifica para o doc. eletronico
+            # Isso facilitara nossa comparacao com base64 do barcode
+            invoice_electronic.chave_nfe = '35171256553878000109550010000150491600857152'  # noqa
+
+            # Geramos o barcode
+            barcode = invoice_electronic.barcode_url()
+
+            self.assertEqual(barcode,
+                             'iVBORw0KGgoAAAANSUhEUgAAAlgAAABkCAIAAADVI9l0AAA'
+                             'ExUlEQVR4nO3VsUtV/xvA8YcvSSAk4VBhJEXSKphBOIiIQ'
+                             '0aFuLQVNIiJaEmEhDa6tDWFQ0SUBDlEY0tQ0NAi2i3hQi'
+                             'VEQRG4FbR8vsPhe7jpP/D78bxe23nO8znHe73wjvJ/pa+vLy'
+                             'IiYmxsrJQyOzsbEevr69Xdp0+fRouDBw/WBycmJiKi2Wy2Pu'
+                             '3KlSsR8enTp9bhpUuXquM9PT2llOXl5Yh4/PhxdXdzczP+9u'
+                             'PHj+rW3bt36+H29vba2lpEXL9+vZRy/vz5an7q1Kn6RaOjo6'
+                             '3PuXXrVn1rz549rbdevnzZ+hcuLi5GxOvXr//8+VPvLC0tlV'
+                             'JOnz7devDOnTullP7+/n379u34Jnt7e6ud8fHxUsr09HRENB'
+                             'qN1p3Jyclqp6ura8fx48ePd3d3l1IePHhQv25ra2v3v6yrq+'
+                             'vEiROllHv37kXEkydPqnmj0agPrq6ullI6Ozury2vXrtXHOz'
+                             'o6quGNGzfqYXt7ezWcn5+vh21tbdVwYWGhlDI8PFxdDg0N1T'
+                             'uDg4PVcGRkpB4ODAzs3bu3vrx582ZEvH37tvVTzM3NtX6x1c'
+                             '9vZmYmIjY2Nlo3p6amqp1Dhw6VUlZWVupTzWbzy5cv9eX9+/'
+                             'erI58/f66HDx8+rIbNZrMerqysVMMPHz5ExNTUVOsbNzY2Im'
+                             'JmZqae7N+/vzo4NzdXSjl37lx12frzO3PmTDUcGBiohyMjI9'
+                             'VwcHCwHg4NDVXD4eHhUsrCwkJ12dbWVu/Mz89Xw/b29vK3ky'
+                             'dPdnR0lFKePXvW+h12dnaWUlZXV+tJo9H4/v17RFy8eLH1CV'
+                             '+/fo2/ffz4cWtrKyIuX75cr3V3d7fuPHr0qJTS1dVVXU5OTt'
+                             'abBw4cqIbT09OllPHx8eqyt7e33rlw4UI17O/vr4dnz56NiF'
+                             '+/flWXS0tLscvi4mK9H//9/G7fvh0Rr169quYvXryo99+8ef'
+                             'P79++IGB0dLbs8f/683lxbW9ve3t7xunfv3rXuX716NSI2Nz'
+                             'e/fftW7ywvL5dSenp6jhw5suP5R48ePXbs2I7h4cOHq4MTEx'
+                             'Ot8/fv3+94+8+fP9fX1yNidna2lDI2NlbN+/r6dn+W/2X/7P'
+                             '5HAkAeQghAakIIQGpCCEBqQghAakIIQGpCCEBqQghAakIIQG'
+                             'pCCEBqQghAakIIQGpCCEBqQghAakIIQGpCCEBqQghAakIIQG'
+                             'pCCEBqQghAakIIQGpCCEBqQghAakIIQGpCCEBqQghAakIIQG'
+                             'pCCEBqQghAakIIQGpCCEBqQghAakIIQGpCCEBqQghAakIIQG'
+                             'pCCEBqQghAakIIQGpCCEBqQghAakIIQGpCCEBqQghAakIIQG'
+                             'pCCEBqQghAakIIQGpCCEBqQghAakIIQGpCCEBqQghAakIIQG'
+                             'pCCEBqQghAakIIQGpCCEBqQghAakIIQGpCCEBqQghAakIIQG'
+                             'pCCEBqQghAakIIQGpCCEBqQghAakIIQGpCCEBqQghAakIIQG'
+                             'pCCEBqQghAakIIQGpCCEBqQghAakIIQGpCCEBqQghAakIIQG'
+                             'pCCEBqQghAakIIQGpCCEBqQghAakIIQGpCCEBqQghAakIIQG'
+                             'pCCEBqQghAakIIQGpCCEBqQghAakIIQGpCCEBqQghAakIIQG'
+                             'r/Ah8pMgpR9XqBAAAAAElFTkSuQmCC')
             self.assertTrue(invoice_electronic.chave_nfe in url)
