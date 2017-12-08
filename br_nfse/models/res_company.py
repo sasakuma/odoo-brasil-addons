@@ -17,7 +17,8 @@ class ResCompany(models.Model):
                                       size=30,
                                       help=u'Senha Nota Fiscal de Serviço')
 
-    webservice_nfse = fields.Selection([],
+    webservice_nfse = fields.Selection(selection=[('nfse_paulistana',
+                                                   'Nota Fiscal Paulistana'),],
                                        string='Webservice NFSe')
 
     report_nfse_id = fields.Many2one(comodel_name='ir.actions.report.xml',
