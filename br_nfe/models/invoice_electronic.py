@@ -283,7 +283,7 @@ class InvoiceElectronic(models.Model):
 
     natureza_operacao = fields.Char(string=u'Natureza da Operação')
 
-    def barcode_url(self):
+    def barcode_from_chave_nfe(self):
         """ Gera o codigo de barras a partir da chave da NFe. Utilizamos este
         metodo ao inves de utilizar request porque precisamos dele para envio
         do DANFE por email. Quando o DANFe e enviado pela fila de email o mesmo

@@ -163,7 +163,7 @@
                     </div>
                     <div class="bl col-xs-5">
                         <div class="row bb">
-                            <img style="width:90%;margin:2px;" t-att-src="'data:image/png;base64,%s' % o.barcode_url()"/>
+                            <img style="width:90%;margin:2px;" t-att-src="'data:image/png;base64,%s' % o.barcode_from_chave_nfe()"/>
                         </div>
                         <div class="row bb flexrow">
                             <div class="col-xs-12">

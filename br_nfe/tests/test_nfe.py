@@ -475,7 +475,7 @@ class TestNFeBrasil(TransactionCase):
             self.assertEquals(invoice_electronic.mensagem_retorno,
                               "Cancelamento homologado fora de prazo")
 
-    def test_barcode_url(self):
+    def test_barcode_from_chave_nfe(self):
 
         for invoice in self.invoices:
 
@@ -490,7 +490,7 @@ class TestNFeBrasil(TransactionCase):
             invoice_electronic.chave_nfe = '35171256553878000109550010000150491600857152'  # noqa
 
             # Geramos o barcode
-            barcode = invoice_electronic.barcode_url()
+            barcode = invoice_electronic.barcode_from_chave_nfe()
 
             self.assertEqual(barcode,
                              'iVBORw0KGgoAAAANSUhEUgAAAlgAAABkCAIAAADVI9l0AAA'
@@ -529,4 +529,3 @@ class TestNFeBrasil(TransactionCase):
                              'pCCEBqQghAakIIQGpCCEBqQghAakIIQGpCCEBqQghAakIIQG'
                              'pCCEBqQghAakIIQGpCCEBqQghAakIIQGpCCEBqQghAakIIQG'
                              'r/Ah8pMgpR9XqBAAAAAElFTkSuQmCC')
-            self.assertTrue(invoice_electronic.chave_nfe in url)
