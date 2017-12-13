@@ -94,7 +94,7 @@ class AccountInvoice(models.Model):
         docs = self.env['invoice.electronic'].search([
             ('invoice_id', 'in', self.ids),
             ('model', '=', '001'),
-            ('state', 'in', ['done']),
+            ('state', 'in', ['done', 'paid']),
         ])
 
         if not docs:
