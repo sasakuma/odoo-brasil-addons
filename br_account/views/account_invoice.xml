@@ -197,6 +197,8 @@
                         type="object"
                         states="draft,proforma2,open,paid"
                         string="Cancelar Fatura"
+                        confirm="Esta ação além de alterar o status da fatura,
+                         também irá deletar os registros de título, Deseja Continuar ?"
                         groups="account.group_account_invoice"/>
             </button>
         </field>
