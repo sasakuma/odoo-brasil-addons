@@ -14,7 +14,7 @@ class BrAccountInvoicePrint(models.TransientModel):
         # a serem impressas
         for rec in self:
             rec.has_service_invoice = any(
-                inv.fiscal_document_id.code in ['001'] and inv.state == 'open'
+                inv.fiscal_document_id.code in ['001'] and inv.state in ['open', 'paid']
                 for inv in self.account_invoice_ids)
 
     has_service_invoice = fields.Boolean(string='Service Invoice',
