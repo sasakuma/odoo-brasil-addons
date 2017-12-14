@@ -179,11 +179,6 @@
                                 string="Cancelar"
                                 type="object"/>
 
-                        <button name="send_email_nfe"
-                                string="Reenviar Email"
-                                type="object"
-                                attrs="{'invisible': [('state', '!=', 'done')]}"/>
-
                         <button name="action_print_einvoice_report"
                                 type="object"
                                 string="Imprimir"

@@ -36,27 +36,7 @@ class InvoiceElectronicItem(models.Model):
 class InvoiceElectronic(models.Model):
     _inherit = 'invoice.electronic'
 
-    webservice_nfse = fields.Selection(selection_add=[
-        ('nfse_paulistana', 'Nota Fiscal Paulistana'),
-    ])
-
     observacao_nfse = fields.Text(string=u'Observação NFSe')
-
-    # operation = fields.Selection(
-    #     [('T', u'Tributado em São Paulo'),
-    #      ('F', u'Tributado Fora de São Paulo'),
-    #      ('A', u'Tributado em São Paulo, porém isento'),
-    #      ('B', u'Tributado Fora de São Paulo, porém isento'),
-    #      ('M', u'Tributado em São Paulo, porém Imune'),
-    #      ('N', u'Tributado Fora de São Paulo, porém Imune'),
-    #      ('X', u'Tributado em São Paulo, porém Exigibilidade Suspensa'),
-    #      ('V', u'Tributado Fora de São Paulo, porém Exigibilidade Suspensa'),
-    #      ('P', u'Exportação de Serviços'),
-    #      ('C', u'Cancelado')],
-    #     string=u'Operação',
-    #     default='T',
-    #     readonly=True,
-    #     states=STATE)
 
     @api.multi
     def _hook_validation(self):
@@ -289,7 +269,7 @@ class InvoiceElectronic(models.Model):
                     })
 
                 self.write(values)
-                self._on_success()
+                self.invoice_id.internal_number = int(values['numero_nfse'])
 
             else:
                 values.update({
@@ -306,13 +286,6 @@ class InvoiceElectronic(models.Model):
             })
             self._create_attachment('nfse-envio', self, resposta['sent_xml'])
             self._create_attachment('nfse-ret', self, resposta['received_xml'])
-
-    @api.multi
-    def _on_success(self):
-        super(InvoiceElectronic, self)._on_success()
-
-        if self.model == '001':
-            self.invoice_id.internal_number = int(self.numero_nfse)
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):

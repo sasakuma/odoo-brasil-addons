@@ -3,13 +3,15 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import re
+import os
 import base64
 import logging
 import time
-from lxml import etree
-from StringIO import StringIO
+from werkzeug import exceptions, url_decode
+
 from datetime import datetime
 from odoo import api, fields, models
+from odoo.http import Controller, route, request
 from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
@@ -281,9 +283,27 @@ class InvoiceElectronic(models.Model):
 
     natureza_operacao = fields.Char(string=u'Natureza da Operação')
 
-    def barcode_url(self):
-        url = '<img style="width:100%;margin:2px 1px;" src="/report/barcode/Code128/' + self.chave_nfe + '" />'  # noqa: 501
-        return url
+    def barcode_from_chave_nfe(self):
+        """ Gera o codigo de barras a partir da chave da NFe. Utilizamos este
+        metodo ao inves de utilizar request porque precisamos dele para envio
+        do DANFE por email. Quando o DANFe e enviado pela fila de email o mesmo
+        nao consegue chamar o metodo de geracao de codigo de barras do
+        controller. Sendo precisamos gerar o DANFE diretamente.
+
+        :return: Imagem do DANFE em Base64
+        :rtype: str
+        """
+
+        try:
+            barcode = self.env['report'].barcode('Code128',
+                                                 self.chave_nfe,
+                                                 width=600,
+                                                 height=100,
+                                                 humanreadable=0)
+        except ValueError as exc:
+            _logger.info('Cannot convert inn barcode. %s' % exc.message,
+                         exc_info=True)
+        return base64.b64encode(barcode).decode('utf-8')
 
     def can_unlink(self):
         res = super(InvoiceElectronic, self).can_unlink()
@@ -744,49 +764,6 @@ class InvoiceElectronic(models.Model):
         }
         return values
 
-    def _find_attachment_ids_email(self):
-        atts = super(InvoiceElectronic, self)._find_attachment_ids_email()
-        if self.model not in ('55'):
-            return atts
-
-        attachment_obj = self.env['ir.attachment']
-        nfe_xml = base64.decodestring(self.nfe_processada)
-        logo = base64.decodestring(self.invoice_id.company_id.logo)
-
-        tmp_logo = StringIO()
-        tmp_logo.write(logo)
-        tmp_logo.seek(0)
-
-        xml_element = etree.fromstring(nfe_xml)
-        obj_danfe = danfe(list_xml=[xml_element], logo=tmp_logo)
-
-        tmp_danfe = StringIO()
-        obj_danfe.writeto_pdf(tmp_danfe)
-
-        if danfe:
-            danfe_id = attachment_obj.create(dict(
-                name="Danfe-%08d.pdf" % self.numero,
-                datas_fname="Danfe-%08d.pdf" % self.numero,
-                datas=base64.b64encode(tmp_danfe.getvalue()),
-                mimetype='application/pdf',
-                res_model='account.invoice',
-                res_id=self.invoice_id.id,
-            ))
-            atts.append(danfe_id.id)
-
-        if nfe_xml:
-            xml_id = attachment_obj.create(dict(
-                name=self.nfe_processada_name,
-                datas_fname=self.nfe_processada_name,
-                datas=base64.encodestring(nfe_xml),
-                mimetype='application/xml',
-                res_model='account.invoice',
-                res_id=self.invoice_id.id,
-            ))
-            atts.append(xml_id.id)
-
-        return atts
-
     @api.multi
     def action_post_validate(self):
         super(InvoiceElectronic, self).action_post_validate()
@@ -809,9 +786,12 @@ class InvoiceElectronic(models.Model):
 
     @api.multi
     def action_send_electronic_invoice(self):
-        self.state = 'error'
-        self.data_emissao = datetime.now()
         super(InvoiceElectronic, self).action_send_electronic_invoice()
+
+        self.write({
+            'state': 'error',
+            'data_emissao': datetime.now(),
+        })
 
         if self.model not in ('55', '65'):
             return
@@ -847,28 +827,26 @@ class InvoiceElectronic(models.Model):
                     break
 
         if retorno.cStat != 104:
-            self.write({
+            values = {
                 'codigo_retorno': retorno.cStat,
                 'mensagem_retorno': retorno.xMotivo,
-            })
+            }
         else:
             values = {
                 'codigo_retorno': retorno.protNFe.infProt.cStat,
                 'mensagem_retorno': retorno.protNFe.infProt.xMotivo,
             }
 
-            if self.codigo_retorno == '100':
+            if values['codigo_retorno'] == 100:
                 values.update({
                     'state': 'done',
                     'protocolo_nfe': retorno.protNFe.infProt.nProt,
                     'data_autorizacao': retorno.protNFe.infProt.dhRecbto,
                 })
 
-                self._on_success()
-
             # Duplicidade de NF-e significa que a nota já está emitida
             # TODO Buscar o protocolo de autorização, por hora só finalizar
-            elif self.codigo_retorno == '204':
+            elif values['codigo_retorno'] == 204:
                 values.update({
                     'state': 'done',
                     'codigo_retorno': '100',
@@ -876,21 +854,24 @@ class InvoiceElectronic(models.Model):
                 })
 
             # Denegada e nota já está denegada
-            elif self.codigo_retorno in ('302', '205'):
+            elif values['codigo_retorno'] in (302, 205):
                 values.update({
                     'state': 'denied',
                 })
 
-            self.write(values)
+        self.write(values)
 
         self.env['invoice.electronic.event'].create({
-            'code': self.codigo_retorno,
-            'name': self.mensagem_retorno,
+            'code': values['codigo_retorno'],
+            'name': values['mensagem_retorno'],
             'invoice_electronic_id': self.id,
         })
+
         self._create_attachment('nfe-envio', self, resposta['sent_xml'])
         self._create_attachment('nfe-ret', self, resposta['received_xml'])
+
         recibo_xml = resposta['received_xml']
+
         if resposta_recibo:
             self._create_attachment('rec', self, resposta_recibo['sent_xml'])
             self._create_attachment('rec-ret', self,
@@ -898,16 +879,12 @@ class InvoiceElectronic(models.Model):
             recibo_xml = resposta_recibo['received_xml']
 
         if self.codigo_retorno == '100':
-            nfe_proc = gerar_nfeproc(resposta['sent_xml'], recibo_xml)
-            self.nfe_processada = base64.encodestring(nfe_proc)
-            self.nfe_processada_name = "NFe%08d.xml" % self.numero
-
-    @api.multi
-    def _on_success(self):
-        super(InvoiceElectronic, self)._on_success()
-
-        if self.model == '55':
             self.invoice_id.internal_number = int(self.numero)
+            nfe_proc = gerar_nfeproc(resposta['sent_xml'], recibo_xml)
+            self.write({
+                'nfe_processada': base64.encodestring(nfe_proc),
+                'nfe_processada_name': "NFe%08d.xml" % self.numero,
+            })
 
     @api.multi
     def generate_nfe_proc(self):

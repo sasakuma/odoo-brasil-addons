@@ -45,11 +45,7 @@ class InvoiceElectronic(models.Model):
     model = fields.Selection(
         [('55', '55 - NFe'),
          ('65', '65 - NFCe'),
-         ('001', 'NFS-e - Nota Fiscal Paulistana'),
-         ('002', 'NFS-e - Provedor GINFES'),
-         ('008', 'NFS-e - Provedor SIMPLISS'),
-         ('009', 'NFS-e - Provedor SUSESU')],
-        string=u'Modelo', readonly=True, states=STATE)
+         ('001', 'NFS-e')], string=u'Modelo', readonly=True, states=STATE)
     serie = fields.Many2one(
         'br_account.document.serie', string=u'Série',
         readonly=True, states=STATE)
@@ -180,8 +176,10 @@ class InvoiceElectronic(models.Model):
     xml_to_send_name = fields.Char(
         string="Nome xml a ser enviado", size=100, readonly=True)
 
-    email_sent = fields.Boolean(string="Email enviado", default=False,
-                                readonly=True, states=STATE)
+    email_sent = fields.Boolean(string="Fatura na fila de emails",
+                                default=False,
+                                readonly=True,
+                                states=STATE)
 
     def _create_attachment(self, prefix, event, data):
         file_name = '%s-%s.xml' % (
@@ -419,10 +417,6 @@ class InvoiceElectronic(models.Model):
                                 u'Proibido reenviar')
 
     @api.multi
-    def _on_success(self):
-        pass
-
-    @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
         pass
 
@@ -465,28 +459,3 @@ class InvoiceElectronic(models.Model):
                 item.action_send_electronic_invoice()
             except Exception as e:
                 item.log_exception(e)
-
-    def _find_attachment_ids_email(self):
-        return []
-
-    @api.multi
-    def send_email_nfe(self):
-        mail = self.env.user.company_id.nfe_email_template
-        if not mail:
-            raise UserError('Modelo de email padrão não configurado')
-        atts = self._find_attachment_ids_email()
-
-        if atts and len(atts):
-            mail.attachment_ids = [(6, 0, atts)]
-        mail.send_mail(self.invoice_id.id)
-
-    @api.multi
-    def send_email_nfe_queue(self):
-        after = datetime.now() + timedelta(days=-1)
-        nfe_queue = self.env['invoice.electronic'].search(
-            [('data_emissao', '>=', after.strftime(DATETIME_FORMAT)),
-             ('email_sent', '=', False),
-             ('state', '=', 'done')], limit=5)
-        for nfe in nfe_queue:
-            nfe.send_email_nfe()
-            nfe.email_sent = True

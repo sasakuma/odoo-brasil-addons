@@ -17,16 +17,11 @@
     </record>
 
     <template id="danfse_report_template_paulistana">
-        <style type="text/css">
-            .col-xs-1, .col-xs-2,
-            .col-xs-3,.col-xs-4,.col-xs-5, .col-xs-6, .col-xs-7,
-            .col-xs-8,
-            .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
-            padding:0px;
-            }
-            td, th { padding: 0 4px; }
-        </style>
+
         <div class="page">
+            <link rel="stylesheet" type="text/css" href="/web/static/lib/bootstrap/css/bootstrap.css"/>
+            <link rel="stylesheet" type="text/css" href="/br_nfse_paulistana/static/css/danfse.css"/>
+
             <div class="row" style="border: 2px solid black; border-bottom: none; padding: 0; ">
                 <div class="col-xs-2">
                     <img src="/br_nfse_paulistana/static/src/img/prefeitura-sp.gif"

@@ -20,18 +20,18 @@ class InvoiceElectronic(models.Model):
 
     @api.model
     def _default_webservice_nfse(self):
-        company = self.env['res.company'].browse(self.env.user.company_id.id)
-        return company.webservice_nfse
+        return self.env.user.company_id.webservice_nfse
 
     ambiente_nfse = fields.Selection(string='Ambiente NFe',
                                      related='company_id.tipo_ambiente_nfse',
                                      readonly=True)
 
-    webservice_nfse = fields.Selection([],
-                                       default=_default_webservice_nfse,
+    webservice_nfse = fields.Selection(selection=[('nfse_paulistana',
+                                                   'Nota Fiscal Paulistana')],
                                        readonly=True,
                                        states=STATE,
-                                       string='Webservice NFSe')
+                                       string='Webservice NFSe',
+                                       default=_default_webservice_nfse)
 
     verify_code = fields.Char(string=u'Código Autorização',
                               size=20,
