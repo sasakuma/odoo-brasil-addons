@@ -37,7 +37,17 @@
                 </page>
             </xpath>
 
+            <xpath expr="//field[@name='analytic_account_id']/ancestor::group[1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
             <field name="account_id" position="attributes">
+                <attribute name="attrs">
+                    {'readonly': [('reconciled','=',True)]}
+                </attribute>
+            </field>
+
+            <field name="company_id" position="attributes">
                 <attribute name="attrs">
                     {'readonly': [('reconciled','=',True)]}
                 </attribute>
