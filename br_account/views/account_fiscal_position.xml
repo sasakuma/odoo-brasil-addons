@@ -104,9 +104,11 @@
                 <field name="company_fiscal_type" invisible="1"/>
             </field>
             <group position="after">
-                <group name="nfse" string="Informações NFS-e" attrs="{'invisible': [('position_type', '=', 'product')]}">
+                <group name="nfse" string="Informações NF de Serviço" attrs="{'invisible': [('position_type', '=', 'product')]}">
                     <group>
-                        <field name="service_type_id" attrs="{'required': [('position_type', '=', 'service')]}"/>
+                        <field name="service_type_id"
+                               domain="[('internal_type','=','normal')]"
+                               attrs="{'required': [('position_type', '=', 'service')]}"/>
                     </group>
                 </group>
             </group>
