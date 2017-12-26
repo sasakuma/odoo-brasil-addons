@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="account.view_account_position_form"/>
         <field name="arch" type="xml">
             <group position="after">
-                <group name="nfe" string="Informações NF-e">
+                <group name="nfe" string="Informações NF-e" attrs="{'invisible': [('position_type', '!=', 'product')]}">
                     <group>
                         <field name="finalidade_emissao" attrs="{'required': [('fiscal_document_code', 'in', ('55', '65'))]}"/>
                         <field name="ind_final" attrs="{'required': [('fiscal_document_code', 'in', ('55', '65'))]}"/>
