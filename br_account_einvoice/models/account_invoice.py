@@ -40,6 +40,7 @@ class AccountInvoice(models.Model):
     internal_number = fields.Integer(string='Invoice Number',
                                      readonly=True,
                                      copy=False,
+                                     group_operator=None,
                                      states={'draft': [('readonly', False)]},
                                      help="""Unique number of the invoice, 
                                      computed automatically when the invoice 
