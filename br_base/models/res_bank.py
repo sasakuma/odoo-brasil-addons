@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-# © 2009 Gabriel C. Stabel
-# © 2009 Renato Lima (Akretion)
-# © 2012 Raphaël Valyi (Akretion)
-# © 2015  Michell Stuttgart (KMEE)
-# © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
+# © 2016  Michell Stuttgart (MultidadosTI)
+# © 2016  Aldo Soares (MultidadosTI)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import models, fields, api
@@ -13,16 +10,16 @@ from odoo.addons.base.res.res_bank import sanitize_account_number
 class ResBank(models.Model):
     _inherit = 'res.bank'
 
-    number = fields.Char(u'Número', size=10)
+    number = fields.Char('Número', size=10)
     street2 = fields.Char('Complemento', size=128)
     district = fields.Char('Bairro', size=32)
     city_id = fields.Many2one(comodel_name='res.state.city',
-                              string=u'Município',
+                              string='Município',
                               domain="[('state_id','=',state_id)]")
 
     country_id = fields.Many2one(comodel_name='res.country',
                                  related='country',
-                                 string=u'País')
+                                 string='País')
     state_id = fields.Many2one(comodel_name='res.country.state',
                                related='state',
                                string='Estado')
@@ -56,17 +53,16 @@ class ResPartnerBank(models.Model):
     _inherit = 'res.partner.bank'
 
     acc_number = fields.Char('Account Number', size=64, required=False)
-    acc_number_dig = fields.Char(u'Digito Conta', size=8)
-    bra_number = fields.Char(u'Agência', size=8)
-    bra_number_dig = fields.Char(u'Dígito Agência', size=8)
+    acc_number_dig = fields.Char('Digito Conta', size=8)
+    bra_number = fields.Char('Agência', size=8)
+    bra_number_dig = fields.Char('Dígito Agência', size=8)
 
-    @api.depends('bank_id', 'acc_number', 'acc_number_dig',
-                 'bra_number', 'bra_number_dig')
+    @api.depends('bank_id', 'acc_number', 'acc_number_dig', 'bra_number', 'bra_number_dig')
     def _compute_sanitized_acc_number(self):
         for bank_account in self:
             if bank_account.bank_id:
-                acc_number_format = \
-                    bank_account.bank_id.acc_number_format or '%(acc_number)s'
+                acc_number_format = bank_account.bank_id.acc_number_format \
+                                    or '%(acc_number)s'
                 args = {
                     'bra_number': bank_account.bra_number or '',
                     'bra_number_dig': bank_account.bra_number_dig or '',

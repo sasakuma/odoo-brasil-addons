@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2009 Gabriel C. Stabel
 # © 2009 Renato Lima (Akretion)
 # © 2012 Raphaël Valyi (Akretion)
@@ -7,11 +6,11 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-import re
 import base64
 import logging
+import re
 
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 from odoo.addons.br_base.tools import fiscal
 from odoo.exceptions import UserError
 
@@ -32,18 +31,18 @@ class ResPartner(models.Model):
     rg_fisica = fields.Char('RG', size=16, copy=False)
     inscr_mun = fields.Char('Inscr. Municipal', size=18)
     suframa = fields.Char('Suframa', size=18)
-    legal_name = fields.Char(string=u'Razão Social',
+    legal_name = fields.Char(string='Razão Social',
                              size=60,
                              help="Nome utilizado em documentos fiscais")
     city_id = fields.Many2one('res.state.city',
-                              u'Município',
+                              'Município',
                               domain="[('state_id','=',state_id)]")
     district = fields.Char('Bairro', size=32)
-    number = fields.Char(u'Número', size=10)
+    number = fields.Char('Número', size=10)
 
     _sql_constraints = [
         ('res_partner_cnpj_cpf_uniq', 'unique (cnpj_cpf)',
-         u'Já existe um parceiro cadastrado com este CPF/CNPJ!')
+         'Já existe um parceiro cadastrado com este CPF/CNPJ!')
     ]
 
     @api.v8
@@ -95,23 +94,9 @@ class ResPartner(models.Model):
             if partner.cnpj_cpf and country_code.upper() == 'BR':
                 if partner.is_company:
                     if not fiscal.validate_cnpj(partner.cnpj_cpf):
-                        raise UserError(_(u'CNPJ inválido!'))
+                        raise UserError(_('CNPJ inválido!'))
                 elif not fiscal.validate_cpf(self.cnpj_cpf):
-                    raise UserError(_(u'CPF inválido!'))
-        return True
-
-    def _validate_ie_param(self, uf, inscr_est):
-        try:
-            mod = __import__(
-                'odoo.addons.br_base.tools.fiscal', globals(),
-                locals(), 'fiscal')
-
-            validate = getattr(mod, 'validate_ie_%s' % uf)
-            if not validate(inscr_est):
-                return False
-        except AttributeError:
-            if not fiscal.validate_ie_param(uf, inscr_est):
-                return False
+                    raise UserError(_('CPF inválido!'))
         return True
 
     @api.multi
@@ -128,9 +113,9 @@ class ResPartner(models.Model):
                     or not partner.is_company:
                 return True
             uf = partner.state_id and partner.state_id.code.lower() or ''
-            res = self._validate_ie_param(uf, partner.inscr_est)
+            res = fiscal.validate_ie(uf, partner.inscr_est)
             if not res:
-                raise UserError(_(u'Inscrição Estadual inválida!'))
+                raise UserError(_('Inscrição Estadual inválida!'))
         return True
 
     @api.multi
@@ -148,8 +133,8 @@ class ResPartner(models.Model):
                                        ('id', '!=', partner.id)])
 
             if len(partner_ids) > 0:
-                raise UserError(_(u'Já existe um parceiro cadastrado com'
-                                  u'esta Inscrição Estadual/RG!'))
+                raise UserError(_('Já existe um parceiro cadastrado com'
+                                  'esta Inscrição Estadual/RG!'))
         return True
 
     @api.onchange('cnpj_cpf')
@@ -175,7 +160,7 @@ class ResPartner(models.Model):
                                                         val[9:11])
 
                 else:
-                    raise UserError(_(u'Verifique o CNPJ/CPF'))
+                    raise UserError(_('Verifique o CNPJ/CPF'))
 
     @api.onchange('city_id')
     def onchange_city_id(self):
@@ -211,30 +196,29 @@ class ResPartner(models.Model):
             if partner.cnpj_cpf and partner.state_id:
 
                 if partner.state_id.code == 'AL':
-                    raise UserError(u'Alagoas não possui consulta de cadastro')
+                    raise UserError('Alagoas não possui consulta de cadastro')
 
                 if partner.state_id.code == 'RJ':
                     raise UserError(
-                        u'Rio de Janeiro não possui consulta de cadastro')
+                        'Rio de Janeiro não possui consulta de cadastro')
 
                 company = self.env.user.company_id
 
                 if not company.nfe_a1_file and not company.nfe_a1_password:
-                    raise UserError(u'Configurar o certificado e senha na '
-                                    u'empresa')
+                    raise UserError('Configurar o certificado e senha na '
+                                    'empresa')
 
                 cert = company.with_context({'bin_size': False}).nfe_a1_file
                 cert_pfx = base64.decodestring(cert)
                 certificado = Certificado(cert_pfx, company.nfe_a1_password)
-                cnpj = re.sub('[^0-9]', '', partner.cnpj_cpf)
+                cnpj = re.sub(r'[^0-9]', '', partner.cnpj_cpf)
                 obj = {'cnpj': cnpj, 'estado': partner.state_id.code}
                 resposta = consulta_cadastro(certificado, obj=obj, ambiente=1,
                                              estado=partner.state_id.ibge_code)
 
                 obj = resposta['object']
 
-                if "Body" in dir(obj) and "consultaCadastro2Result" in dir(
-                        obj.Body):  # noqa: 501
+                if "Body" in dir(obj) and "consultaCadastro2Result" in dir(obj.Body):  # noqa: 501
                     info = obj.Body.consultaCadastro2Result.retConsCad.infCons
                     if info.cStat == 111 or info.cStat == 112:
                         if not partner.inscr_est:
@@ -278,7 +262,7 @@ class ResPartner(models.Model):
                         msg = "%s - %s" % (info.cStat, info.xMotivo)
                         raise UserError(msg)
                 else:
-                    raise UserError(u"Nenhuma resposta - verificou se seu \
+                    raise UserError("Nenhuma resposta - verificou se seu \
                                     certificado é válido?")
             else:
-                raise UserError(u'Preencha o estado e o CNPJ para pesquisar')
+                raise UserError('Preencha o estado e o CNPJ para pesquisar')

@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from . import models
-from odoo.addons import account
 from odoo import api, SUPERUSER_ID
+from odoo.addons import account
+
+from . import models
 
 
 def post_init(cr, registry):

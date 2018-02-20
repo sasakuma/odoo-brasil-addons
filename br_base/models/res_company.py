@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2004-2010 Tiny SPRL (<http://tiny.be>)
 # © Thinkopen Solutions (<http://www.thinkopensolutions.com.br>)
 # © Akretion (<http://www.akretion.com>)
@@ -7,11 +6,12 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-import re
-import logging
 import base64
+import logging
+import re
 from datetime import datetime
-from odoo import models, fields, api
+
+from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -138,7 +138,7 @@ class ResCompany(models.Model):
     legal_name = fields.Char(compute=_get_br_data,
                              inverse=_set_br_legal_name,
                              size=128,
-                             string=u'Razão Social')
+                             string='Razão Social')
 
     city_id = fields.Many2one(compute=_get_address_data,
                               inverse='_set_city_id',
@@ -155,23 +155,22 @@ class ResCompany(models.Model):
     number = fields.Char(compute=_get_address_data,
                          inverse='_set_br_number',
                          size=10,
-                         string=u'Número',
+                         string='Número',
                          multi='address')
 
     nfe_a1_file = fields.Binary('Arquivo NFe A1')
     nfe_a1_password = fields.Char('Senha NFe A1', size=64)
 
-    cert_state = fields.Selection(
-        [('not_loaded', u'Não carregado'),
-         ('expired', 'Expirado'),
-         ('invalid_password', u'Senha Inválida'),
-         ('unknown', 'Desconhecido'),
-         ('valid', u'Válido')],
-        string=u'Situação Cert.',
-        compute=_compute_expiry_date,
-        default='not_loaded')
+    cert_state = fields.Selection([('not_loaded', 'Não carregado'),
+                                   ('expired', 'Expirado'),
+                                   ('invalid_password', 'Senha Inválida'),
+                                   ('unknown', 'Desconhecido'),
+                                   ('valid', 'Válido')],
+                                  string='Situação Cert.',
+                                  compute=_compute_expiry_date,
+                                  default='not_loaded')
 
-    cert_information = fields.Text(string=u'Informações Cert.',
+    cert_information = fields.Text(string='Informações Cert.',
                                    compute=_compute_expiry_date)
 
     cert_expire_date = fields.Date(string='Validade Cert.',

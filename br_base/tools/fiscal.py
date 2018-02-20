@@ -28,12 +28,38 @@ PARAMETERS = {
 }
 
 
+def validate_ie(uf, inscr_est):
+    """Rotina para validacao de Inscrição Estadual.
+
+    Arguments:
+        uf {str} -- Estado cuja Inscrição Estadual pertence.
+        inscr_est {str} -- Numero da Inscrição Estadual.
+
+    Returns:
+        boolean -- True se a Inscrição Estadual é válida, False caso contrário
+    """
+
+    try:
+        mod = __import__(
+            'odoo.addons.br_base.tools.fiscal', globals(),
+            locals(), 'fiscal')
+
+        validate = getattr(mod, 'validate_ie_%s' % uf)
+        if not validate(inscr_est):
+            return False
+    except AttributeError:
+        if not validate_ie_param(uf, inscr_est):
+            return False
+    return True
+
+
 def validate_ie_param(uf, inscr_est):
+
     if uf not in PARAMETERS:
         return True
 
     tam = PARAMETERS[uf].get('tam', 0)
-    inscr_est = unicode(inscr_est).strip().rjust(int(tam), u'0')
+    inscr_est = inscr_est.strip().rjust(int(tam), u'0')
     inscr_est = re.sub('[^0-9]', '', inscr_est)
     val_tam = PARAMETERS[uf].get('val_tam', tam - 1)
 
@@ -100,7 +126,7 @@ def validate_ie_ap(inscr_est):
 
     # Pega apenas os 8 primeiros dígitos da inscrição estadual e
     # gera o dígito verificador
-    inscr_est = map(int, inscr_est)
+    inscr_est = list(map(int, inscr_est))
     nova_ie = inscr_est[:8]
 
     prod = [9, 8, 7, 6, 5, 4, 3, 2]
@@ -118,7 +144,7 @@ def validate_ie_ap(inscr_est):
 
 def validate_ie_ba(inscr_est):
     inscr_est = re.sub('[^0-9]', '', inscr_est)
-    inscr_est = map(int, inscr_est)
+    inscr_est = list(map(int, inscr_est))
 
     # verificando o tamanho da inscrição estadual
     if len(inscr_est) == 8:
@@ -174,14 +200,14 @@ def validate_ie_go(inscr_est):
     # Pega apenas os 8 primeiros dígitos da inscrição estadual e
     # define os valores de 'p' e 'd'
     inscr_est_int = int(inscr_est[:8])
-    if 10103105 <= inscr_est_int <= 10119997:
+    if inscr_est_int >= 10103105 and inscr_est_int <= 10119997:
         inscr_est_d = 1
     else:
         inscr_est_d = 0
 
     # Pega apenas os 8 primeiros dígitos da inscrição estadual e
     # gera o dígito verificador
-    inscr_est = map(int, inscr_est)
+    inscr_est = list(map(int, inscr_est))
     nova_ie = inscr_est[:8]
 
     prod = [9, 8, 7, 6, 5, 4, 3, 2]
@@ -206,7 +232,7 @@ def validate_ie_mg(inscr_est):
 
     # Pega apenas os 11 primeiros dígitos da inscrição estadual e
     # gera os dígitos verificadores
-    inscr_est = map(int, inscr_est)
+    inscr_est = list(map(int, inscr_est))
     nova_ie = inscr_est[:11]
 
     nova_ie_aux = list(nova_ie)
@@ -214,9 +240,9 @@ def validate_ie_mg(inscr_est):
     prod = [1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2]
     r = str([x * y for (x, y) in zip(nova_ie_aux, prod)])
     r = re.sub('[^0-9]', '', r)
-    r = map(int, r)
+    r = list(map(int, r))
     r = sum(r)
-    r2 = (r / 10 + 1) * 10
+    r2 = (r // 10 + 1) * 10
     r = r2 - r
 
     if r >= 10:
@@ -242,14 +268,14 @@ def validate_ie_pe(inscr_est):
     if (len(inscr_est) != 9) and (len(inscr_est) != 14):
         return False
 
-    inscr_est = map(int, inscr_est)
+    inscr_est = list(map(int, inscr_est))
 
     # verificando o tamanho da inscrição estadual
     if len(inscr_est) == 9:
 
         # Pega apenas os 7 primeiros dígitos da inscrição estadual e
         # gera os dígitos verificadores
-        inscr_est = map(int, inscr_est)
+        inscr_est = list(map(int, inscr_est))
         nova_ie = inscr_est[:7]
 
         prod = [8, 7, 6, 5, 4, 3, 2]
@@ -265,7 +291,7 @@ def validate_ie_pe(inscr_est):
 
         # Pega apenas os 13 primeiros dígitos da inscrição estadual e
         # gera o dígito verificador
-        inscr_est = map(int, inscr_est)
+        inscr_est = list(map(int, inscr_est))
         nova_ie = inscr_est[:13]
 
         prod = [5, 4, 3, 2, 1, 9, 8, 7, 6, 5, 4, 3, 2]
@@ -287,7 +313,7 @@ def validate_ie_ro(inscr_est):
         return f
 
     inscr_est = re.sub('[^0-9]', '', inscr_est)
-    inscr_est = map(int, inscr_est)
+    inscr_est = list(map(int, inscr_est))
 
     # verificando o tamanho da inscrição estadual
     if len(inscr_est) == 9:
@@ -335,7 +361,7 @@ def validate_ie_sp(inscr_est):
 
         # Pega apenas os 8 primeiros dígitos da inscrição estadual e
         # gera o primeiro dígito verificador
-        inscr_est = map(int, inscr_est)
+        inscr_est = list(map(int, inscr_est))
         nova_ie = inscr_est[:8]
 
         prod = [1, 3, 4, 5, 6, 7, 8, 10]
@@ -362,7 +388,7 @@ def validate_ie_sp(inscr_est):
 
         # Pega apenas os 8 primeiros dígitos da inscrição estadual e
         # gera o dígito verificador
-        inscr_est = map(int, inscr_est)
+        inscr_est = list(map(int, inscr_est))
         nova_ie = inscr_est[:8]
 
         prod = [1, 3, 4, 5, 6, 7, 8, 10]
@@ -386,7 +412,7 @@ def validate_ie_to(inscr_est):
         return False
 
     # Pega apenas os dígitos que entram no cálculo
-    inscr_est = map(int, inscr_est)
+    inscr_est = list(map(int, inscr_est))
     nova_ie = inscr_est[:2] + inscr_est[4:10]
 
     prod = [9, 8, 7, 6, 5, 4, 3, 2]
@@ -419,7 +445,7 @@ def validate_cnpj(cnpj):
         return False
 
     # Pega apenas os 12 primeiros dígitos do CNPJ e gera os digitos
-    cnpj = map(int, cnpj)
+    cnpj = list(map(int, cnpj))
     novo = cnpj[:12]
 
     prod = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
@@ -455,7 +481,7 @@ def validate_cpf(cpf):
         return False
 
     # Pega apenas os 9 primeiros dígitos do CPF e gera os 2 dígitos
-    cpf = map(int, cpf)
+    cpf = list(map(int, cpf))
     novo = cpf[:9]
 
     while len(novo) < 11:
