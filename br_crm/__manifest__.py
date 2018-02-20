@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2009  Renato Lima - Akretion
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -9,15 +8,20 @@
     'license': 'AGPL-3',
     'author': 'Akretion, OpenERP Brasil',
     'website': 'http://www.trustcode.com.br',
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
+    'contributors': [
+        'Danimar Ribeiro <danimaribeiro@gmail.com>',
+        'Michell Stuttgart <michellstut@gmail.com>',
+    ],
     'depends': [
         'br_base',
         'crm',
     ],
     'data': [
-        'views/crm_lead_view.xml',
-        'views/crm_opportunity_view.xml',
+        'views/crm_lead.xml',
+        'views/crm_opportunity.xml',
     ],
-    'demo': [],
-    'installable': False,
+    'installable': True,
+    'auto_install': False,
+    'application': False,
 }

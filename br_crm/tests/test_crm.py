@@ -1,12 +1,12 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo.tests.common import TransactionCase
 from odoo.exceptions import ValidationError
+from odoo.tests.common import TransactionCase
 
 
 class TestCrm(TransactionCase):
+
     def test_cpf_valido(self):
         lead = self.env['crm.lead'].create({
             'name': 'Lead',
@@ -14,7 +14,7 @@ class TestCrm(TransactionCase):
         })
         self.assertTrue(lead)
         lead.onchange_mask_cpf()
-        self.assertEquals(lead.cpf, '425.904.721-37')
+        self.assertEqual(lead.cpf, '425.904.721-37')
 
     def test_cpf_invalido(self):
         with self.assertRaises(ValidationError):
@@ -30,7 +30,7 @@ class TestCrm(TransactionCase):
         })
         self.assertTrue(lead)
         lead.onchange_mask_cnpj()
-        self.assertEquals(lead.cnpj, '94.175.147/0001-66')
+        self.assertEqual(lead.cnpj, '94.175.147/0001-66')
 
     def test_cnpj_invalido(self):
         with self.assertRaises(ValidationError):
@@ -67,7 +67,7 @@ class TestCrm(TransactionCase):
             'cnpj_cpf': '22814429000155',
             'inscr_est': '112.632.165',
             'is_company': True,
-            'legal_name': u'Razão social',
+            'legal_name': 'Razão social',
             'suframa': '123456',
             'district': 'Centro',
             'city_id': self.env.ref('br_base.city_3205002').id,
@@ -75,13 +75,13 @@ class TestCrm(TransactionCase):
         lead.partner_id = partner.id
         lead._onchange_partner_id()
         lead.onchange_city_id()
-        self.assertEquals(lead.legal_name, partner.legal_name)
-        self.assertEquals(lead.cnpj, partner.cnpj_cpf)
-        self.assertEquals(lead.inscr_est, partner.inscr_est)
-        self.assertEquals(lead.suframa, partner.suframa)
-        self.assertEquals(lead.district, partner.district)
-        self.assertEquals(lead.city_id, partner.city_id)
-        self.assertEquals(lead.city, partner.city_id.name)
+        self.assertEqual(lead.legal_name, partner.legal_name)
+        self.assertEqual(lead.cnpj, partner.cnpj_cpf)
+        self.assertEqual(lead.inscr_est, partner.inscr_est)
+        self.assertEqual(lead.suframa, partner.suframa)
+        self.assertEqual(lead.district, partner.district)
+        self.assertEqual(lead.city_id, partner.city_id)
+        self.assertEqual(lead.city, partner.city_id.name)
 
     def test_convert_lead_company(self):
         wiz = self.env['crm.lead2opportunity.partner'].create({
@@ -93,19 +93,23 @@ class TestCrm(TransactionCase):
             'cnpj': '22814429000155',
             'inscr_est': '112.632.165',
             'inscr_mun': '123456',
-            'legal_name': u'Razão social',
+            'legal_name': 'Razão social',
             'suframa': '123456',
             'district': 'Centro',
             'city_id': self.env.ref('br_base.city_3205002').id,
         })
-        values = {'lead_ids': [lead.id]}
+
+        values = {
+            'lead_ids': [lead.id],
+        }
+
         wiz._convert_opportunity(values)
         self.assertTrue(lead.partner_id)
-        self.assertEquals(lead.partner_id.legal_name, lead.legal_name)
-        self.assertEquals(lead.partner_id.cnpj_cpf, lead.cnpj)
-        self.assertEquals(lead.partner_id.inscr_est, lead.inscr_est)
-        self.assertEquals(lead.partner_id.suframa, lead.suframa)
-        self.assertEquals(lead.partner_id.inscr_mun, lead.inscr_mun)
+        self.assertEqual(lead.partner_id.legal_name, lead.legal_name)
+        self.assertEqual(lead.partner_id.cnpj_cpf, lead.cnpj)
+        self.assertEqual(lead.partner_id.inscr_est, lead.inscr_est)
+        self.assertEqual(lead.partner_id.suframa, lead.suframa)
+        self.assertEqual(lead.partner_id.inscr_mun, lead.inscr_mun)
 
     def test_convert_lead_contact(self):
         wiz = self.env['crm.lead2opportunity.partner'].create({
@@ -119,9 +123,14 @@ class TestCrm(TransactionCase):
             'rg': '987654',
             'city_id': self.env.ref('br_base.city_3205002').id,
         })
-        values = {'lead_ids': [lead.id]}
+
+        values = {
+            'lead_ids': [lead.id],
+        }
+
         wiz._convert_opportunity(values)
+
         self.assertTrue(lead.partner_id)
-        self.assertEquals(lead.partner_id.legal_name, lead.name_surname)
-        self.assertEquals(lead.partner_id.cnpj_cpf, lead.cpf)
-        self.assertEquals(lead.partner_id.inscr_est, lead.rg)
+        self.assertEqual(lead.partner_id.legal_name, lead.name_surname)
+        self.assertEqual(lead.partner_id.cnpj_cpf, lead.cpf)
+        self.assertEqual(lead.partner_id.inscr_est, lead.rg)

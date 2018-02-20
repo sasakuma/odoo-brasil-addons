@@ -1,10 +1,11 @@
-# -*- coding: utf-8 -*-
+
 # © 2012  Renato Lima - Akretion
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import re
-from odoo import models, fields, api, _
+
+from odoo import _, api, fields, models
 from odoo.addons.br_base.tools import fiscal
 from odoo.exceptions import UserError
 
@@ -12,17 +13,18 @@ from odoo.exceptions import UserError
 class CrmLead(models.Model):
     """ CRM Lead Case """
     _inherit = "crm.lead"
-    legal_name = fields.Char(u'Razão Social', size=60,
+
+    legal_name = fields.Char('Razão Social', size=60,
                              help="Nome utilizado em documentos fiscais")
     cnpj = fields.Char('CNPJ', size=18)
-    inscr_est = fields.Char(u'Inscrição Estadual', size=16)
-    inscr_mun = fields.Char(u'Inscrição Municipal', size=18)
+    inscr_est = fields.Char('Inscrição Estadual', size=16)
+    inscr_mun = fields.Char('Inscrição Municipal', size=18)
     suframa = fields.Char('Suframa', size=18)
-    city_id = fields.Many2one('res.state.city', u'Município',
+    city_id = fields.Many2one('res.state.city', 'Município',
                               domain="[('state_id','=',state_id)]")
     district = fields.Char('Bairro', size=32)
-    number = fields.Char(u'Número', size=10)
-    name_surname = fields.Char(u'Nome e Sobrenome', size=128,
+    number = fields.Char('Número', size=10)
+    name_surname = fields.Char('Nome e Sobrenome', size=128,
                                help="Nome utilizado em documentos fiscais")
     cpf = fields.Char('CPF', size=18)
     rg = fields.Char('RG', size=16)
@@ -32,7 +34,7 @@ class CrmLead(models.Model):
     def _check_cnpj(self):
         if self.cnpj:
             if not fiscal.validate_cnpj(self.cnpj):
-                raise UserError(_(u'CNPJ inválido!'))
+                raise UserError(_('CNPJ inválido!'))
         return True
 
     @api.one
@@ -40,7 +42,7 @@ class CrmLead(models.Model):
     def _check_cpf(self):
         if self.cpf:
             if not fiscal.validate_cpf(self.cpf):
-                raise UserError(_(u'CPF inválido!'))
+                raise UserError(_('CPF inválido!'))
         return True
 
     def _validate_ie_param(self, uf, inscr_est):
@@ -62,14 +64,13 @@ class CrmLead(models.Model):
     def _check_ie(self):
         """Checks if company register number in field insc_est is valid,
         this method call others methods because this validation is State wise
-
         :Return: True or False."""
         if not self.inscr_est or self.inscr_est == 'ISENTO':
             return True
         uf = self.state_id and self.state_id.code.lower() or ''
         res = self._validate_ie_param(uf, self.inscr_est)
         if not res:
-            raise Warning(_(u'Inscrição Estadual inválida!'))
+            raise Warning(_('Inscrição Estadual inválida!'))
         return True
 
     @api.onchange('cnpj')
@@ -77,18 +78,22 @@ class CrmLead(models.Model):
         if self.cnpj:
             val = re.sub('[^0-9]', '', self.cnpj)
             if len(val) == 14:
-                self.cnpj = "%s.%s.%s/%s-%s" % (val[0:2], val[2:5], val[5:8], val[8:12], val[12:14])  # noqa: 501
+                cnpj_cpf = "%s.%s.%s/%s-%s"\
+                    % (val[0:2], val[2:5], val[5:8], val[8:12], val[12:14])
+                self.cnpj = cnpj_cpf
             else:
-                raise Warning(_(u'Verifique o CNPJ'))
+                raise Warning(_('Verifique o CNPJ'))
 
     @api.onchange('cpf')
     def onchange_mask_cpf(self):
         if self.cpf:
             val = re.sub('[^0-9]', '', self.cpf)
             if len(val) == 11:
-                self.cpf = "%s.%s.%s-%s" % (val[0:3], val[3:6], val[6:9], val[9:11])  # noqa: 501
+                cnpj_cpf = "%s.%s.%s-%s"\
+                    % (val[0:3], val[3:6], val[6:9], val[9:11])
+                self.cpf = cnpj_cpf
             else:
-                raise Warning(_(u'Verifique o CPF'))
+                raise Warning(_('Verifique o CPF'))
 
     @api.onchange('city_id')
     def onchange_city_id(self):
@@ -97,33 +102,30 @@ class CrmLead(models.Model):
 
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
-
         if self.partner_id:
             val = re.sub('[^0-9]', '', self.partner_id.cnpj_cpf or '')
             self.legal_name = self.partner_id.legal_name
-
             if len(val) == 11:
                 self.cpf = self.partner_id.cnpj_cpf
             else:
                 self.cnpj = self.partner_id.cnpj_cpf
-
             self.inscr_est = self.partner_id.inscr_est
             self.suframa = self.partner_id.suframa
             self.number = self.partner_id.number
             self.district = self.partner_id.district
             self.city_id = self.partner_id.city_id.id
 
-    @api.model
-    def _lead_create_contact(self, name, is_company, parent_id=False):
-        partner = super(CrmLead, self)._lead_create_contact(
+    @api.multi
+    def _create_lead_partner_data(self, name, is_company, parent_id=False):
+        partner = super(CrmLead, self)._create_lead_partner_data(
             name, is_company, parent_id)
-        value = {
+        partner.update({
             'number': self.number,
             'district': self.district,
             'city_id': self.city_id.id
-        }
+        })
         if is_company:
-            value.update({
+            partner.update({
                 'legal_name': self.legal_name,
                 'cnpj_cpf': self.cnpj,
                 'inscr_est': self.inscr_est,
@@ -131,11 +133,9 @@ class CrmLead(models.Model):
                 'suframa': self.suframa,
             })
         else:
-            value.update({
+            partner.update({
                 'legal_name': self.name_surname,
                 'cnpj_cpf': self.cpf,
                 'inscr_est': self.rg,
             })
-        if partner:
-            partner.write(value)
         return partner
