@@ -39,6 +39,6 @@
         'sequence/numero_documento_sequence.xml',
         'wizard/br_boleto_wizard.xml',
     ],
-    'installable': True,
+    'installable': False,
     'application': True,
 }

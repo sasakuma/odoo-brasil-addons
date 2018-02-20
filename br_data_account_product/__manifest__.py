@@ -20,5 +20,5 @@
     'post_init_hook': 'post_init',
     'category': 'Localisation',
     'auto_install': True,
-
+    'installable': False,
 }

@@ -26,7 +26,7 @@
     'data': [
         'views/account_bank_statement_import.xml',
     ],
-    'installable': True,
+    'installable': False,
     'application': True,
     'auto_install': True,
 }

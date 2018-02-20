@@ -17,6 +17,6 @@
         'views/purchase_view.xml',
         'views/account_invoice.xml',
     ],
-    'installable': True,
+    'installable': False,
     'auto_install': True
 }

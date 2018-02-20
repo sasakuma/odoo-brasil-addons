@@ -29,6 +29,6 @@
         'views/br_account_service.xml',
         'views/invoice_electronic.xml',
     ],
-    'installable': True,
+    'installable': False,
     'application': True,
 }

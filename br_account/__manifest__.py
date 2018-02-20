@@ -55,4 +55,5 @@
         'demo/res_partner.xml',
         'demo/product_product.xml',
     ],
+    'installable': False,
 }

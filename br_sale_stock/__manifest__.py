@@ -19,4 +19,5 @@
         'views/sale_stock_view.xml',
     ],
     'auto_install': True,
+    'installable': False,
 }

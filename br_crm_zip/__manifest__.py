@@ -20,6 +20,6 @@
     'test': [
         'test/crm_zip_test.yml'
     ],
-    'installable': True,
+    'installable': False,
     'auto_install': True,
 }

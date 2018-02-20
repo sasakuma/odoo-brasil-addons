@@ -21,4 +21,5 @@
         'views/account_invoice.xml',
     ],
     'auto_install': True,
+    'installable': False,
 }

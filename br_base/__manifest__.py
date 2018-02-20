@@ -37,6 +37,6 @@
         'test/base_inscr_est_invalid.yml',
     ],
     'post_init_hook': 'post_init',
-    'installable': True,
+    'installable': False,
     'auto_install': True,
 }

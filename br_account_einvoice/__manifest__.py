@@ -30,5 +30,5 @@
         'views/invoice_electronic.xml',
         'views/account_invoice.xml',
     ],
-    'installable': True
+    'installable': False
 }

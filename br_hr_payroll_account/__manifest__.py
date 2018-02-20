@@ -14,6 +14,6 @@
         'data/br_hr_payroll_account_data.xml',
     ],
     'post_init_hook': '_set_accounts',
-    'installable': True,
+    'installable': False,
     'application': False,
 }

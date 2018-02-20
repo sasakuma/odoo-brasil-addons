@@ -43,6 +43,6 @@
         'wizard/export_nfe.xml',
         'wizard/br_account_invoice_print.xml',
     ],
-    'installable': True,
+    'installable': False,
     'application': True,
 }

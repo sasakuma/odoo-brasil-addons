@@ -23,6 +23,6 @@
         'security/ir.model.access.csv',
         'security/l10n_br_sale_security.xml',
     ],
-    'installable': True,
+    'installable': False,
     'auto_install': True
 }

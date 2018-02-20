@@ -26,4 +26,5 @@
         # 'data/account_chart_template_data.yml',
     ],
     'active': False,
+    'installable': False,
 }

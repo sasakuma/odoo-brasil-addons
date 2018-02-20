@@ -37,6 +37,6 @@
         'view/hr_contract_view.xml',
         'view/hr_employee.xml'
     ],
-    'installable': True,
+    'installable': False,
     'application': True,
 }

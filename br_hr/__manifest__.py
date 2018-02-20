@@ -22,6 +22,6 @@
         'view/hr_job_view.xml',
     ],
     'post_init_hook': 'post_init',
-    'installable': True,
+    'installable': False,
     'license': 'AGPL-3',
 }
