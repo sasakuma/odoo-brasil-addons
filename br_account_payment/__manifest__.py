@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -19,7 +18,6 @@
     ],
     'depends': [
         'br_account',
-        'account_accountant',
     ],
     'data': [
         'security/ir.model.access.csv',
@@ -30,6 +28,6 @@
         'views/account_journal.xml',
         'views/account_move_line.xml',
     ],
-    'installable': False,
+    'installable': True,
     'application': True,
 }

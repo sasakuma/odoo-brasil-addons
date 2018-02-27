@@ -33,8 +33,6 @@
             <field name="bank_id" position="before">
                 <field name="bank_agency_number"/>
                 <field name="bank_agency_dig"/>
-            </field>
-            <field name="display_on_footer" position="before">
                 <field name="bank_currency_id"/>
             </field>
         </field>

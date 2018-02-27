@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*- © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import api, fields, models
@@ -8,7 +7,7 @@ class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
     payment_mode_id = fields.Many2one(
-        'payment.mode', string=u"Modo de pagamento")
+        'payment.mode', string="Modo de pagamento")
 
     @api.multi
     @api.depends('debit', 'credit', 'user_type_id', 'amount_residual')
