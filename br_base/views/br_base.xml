@@ -14,8 +14,8 @@
         <xpath expr="div[hasclass('o_sub_menu_footer')]" position="inside">
             <div class="oe_footer" style="float:left;width:100%;">
                 Suporte via
-                <a href="http://www.trustcode.com.br" target="_blank">
-                    <span style="color:#5F9EA0">Trustcode</span>
+                <a href="http://www.multidadosti.com.br" target="_blank">
+                    <span style="color:#5F9EA0">MultidadosTI</span>
                 </a>
             </div>
         </xpath>

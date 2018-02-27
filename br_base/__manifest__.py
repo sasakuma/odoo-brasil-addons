@@ -20,8 +20,7 @@
     ],
     'external_dependencies': {
         'python': [
-            'pytrustnfe.nfe', 
-            'pytrustnfe.certificado'
+            'pytrustnfe'
         ],
     },
     'data': [

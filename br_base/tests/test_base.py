@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -114,9 +113,9 @@ class TestBase(TransactionCase):
             'is_company': True,
             'country_id': self.env.ref('base.br').id,
         })
-        self.assertEquals(partner.cnpj_cpf, '22814429000155')
+        self.assertEqual(partner.cnpj_cpf, '22814429000155')
         partner.onchange_cnpj_cpf()
-        self.assertEquals(partner.cnpj_cpf, '22.814.429/0001-55')
+        self.assertEqual(partner.cnpj_cpf, '22.814.429/0001-55')
 
     def test_onchange_cpf(self):
         partner = self.env['res.partner'].create({
@@ -125,18 +124,18 @@ class TestBase(TransactionCase):
             'is_company': False,
             'country_id': self.env.ref('base.br').id,
         })
-        self.assertEquals(partner.cnpj_cpf, '71194004016')
+        self.assertEqual(partner.cnpj_cpf, '71194004016')
         partner.onchange_cnpj_cpf()
-        self.assertEquals(partner.cnpj_cpf, '711.940.040-16')
+        self.assertEqual(partner.cnpj_cpf, '711.940.040-16')
 
     def test_onchange_zip(self):
         partner = self.env['res.partner'].create({
             'name': 'Parceiro',
             'zip': '88032050',
         })
-        self.assertEquals(partner.zip, '88032050')
+        self.assertEqual(partner.zip, '88032050')
         partner.onchange_mask_zip()
-        self.assertEquals(partner.zip, '88032-050')
+        self.assertEqual(partner.zip, '88032-050')
 
     def test_onchange_city(self):
         city = self.env.ref('br_base.city_3205002')
@@ -144,9 +143,9 @@ class TestBase(TransactionCase):
             'name': 'Parceiro',
             'city_id': city.id,
         })
-        self.assertEquals(partner.city_id, city)
+        self.assertEqual(partner.city_id, city)
         partner.onchange_city_id()
-        self.assertEquals(partner.city, city.name)
+        self.assertEqual(partner.city, city.name)
 
     def test_display_address(self):
         partner = self.env['res.partner'].create({
@@ -188,59 +187,59 @@ class TestBase(TransactionCase):
         }
 
         partner.action_check_sefaz()
-        self.assertEquals(partner.cnpj_cpf, '22814429000155')
-        self.assertEquals(partner.inscr_est, '112632165')
-        self.assertEquals(partner.street, 'RUA PADRE JOAO')
-        self.assertEquals(partner.district, 'Centro')
-        self.assertEquals(partner.city_id.id, 3776)
-        self.assertEquals(partner.zip, '88032050')
+        self.assertEqual(partner.cnpj_cpf, '22814429000155')
+        self.assertEqual(partner.inscr_est, '112632165')
+        self.assertEqual(partner.street, 'RUA PADRE JOAO')
+        self.assertEqual(partner.district, 'Centro')
+        self.assertEqual(partner.city_id.id, 3776)
+        self.assertEqual(partner.zip, '88032050')
 
     def test_company_compute_fields(self):
         company = self.env.ref('base.main_company')
 
         company.cnpj_cpf = '62.565.938/0001-06'
         company.suframa = '456'
-        company.legal_name = u'Razão Social'
+        company.legal_name = 'Razão Social'
         company.inscr_est = 'ISENTO'
         company.inscr_mun = '987654'
         company.number = 12
         company.district = 'Centro'
         company.city_id = self.env.ref('br_base.city_3205002').id
-        self.assertEquals(company.partner_id.cnpj_cpf, company.cnpj_cpf)
-        self.assertEquals(company.partner_id.suframa, company.suframa)
-        self.assertEquals(company.partner_id.legal_name, company.legal_name)
-        self.assertEquals(company.partner_id.inscr_est, company.inscr_est)
-        self.assertEquals(company.partner_id.inscr_mun, company.inscr_mun)
-        self.assertEquals(company.partner_id.number, company.number)
-        self.assertEquals(company.partner_id.city_id, company.city_id)
+        self.assertEqual(company.partner_id.cnpj_cpf, company.cnpj_cpf)
+        self.assertEqual(company.partner_id.suframa, company.suframa)
+        self.assertEqual(company.partner_id.legal_name, company.legal_name)
+        self.assertEqual(company.partner_id.inscr_est, company.inscr_est)
+        self.assertEqual(company.partner_id.inscr_mun, company.inscr_mun)
+        self.assertEqual(company.partner_id.number, company.number)
+        self.assertEqual(company.partner_id.city_id, company.city_id)
 
     def test_company_inverse_fields(self):
         company = self.env.ref('base.main_company')
 
         company.partner_id.cnpj_cpf = '62.565.938/0001-06'
         company.partner_id.suframa = '456'
-        company.partner_id.legal_name = u'Razão Social'
+        company.partner_id.legal_name = 'Razão Social'
         company.partner_id.inscr_est = 'ISENTO'
         company.partner_id.inscr_mun = '987654'
         company.partner_id.number = 12
         company.partner_id.district = 'Centro'
         company.partner_id.city_id = self.env.ref('br_base.city_3205002').id
-        self.assertEquals(company.partner_id.cnpj_cpf, company.cnpj_cpf)
-        self.assertEquals(company.partner_id.suframa, company.suframa)
-        self.assertEquals(company.partner_id.legal_name, company.legal_name)
-        self.assertEquals(company.partner_id.inscr_est, company.inscr_est)
-        self.assertEquals(company.partner_id.inscr_mun, company.inscr_mun)
-        self.assertEquals(company.partner_id.number, company.number)
-        self.assertEquals(company.partner_id.city_id, company.city_id)
+        self.assertEqual(company.partner_id.cnpj_cpf, company.cnpj_cpf)
+        self.assertEqual(company.partner_id.suframa, company.suframa)
+        self.assertEqual(company.partner_id.legal_name, company.legal_name)
+        self.assertEqual(company.partner_id.inscr_est, company.inscr_est)
+        self.assertEqual(company.partner_id.inscr_mun, company.inscr_mun)
+        self.assertEqual(company.partner_id.number, company.number)
+        self.assertEqual(company.partner_id.city_id, company.city_id)
 
     def test_onchange_company(self):
         company = self.env.ref('base.main_company')
         company.cnpj_cpf = '62565938000106'
         company.onchange_mask_cnpj_cpf()
-        self.assertEquals(company.cnpj_cpf, '62.565.938/0001-06')
+        self.assertEqual(company.cnpj_cpf, '62.565.938/0001-06')
         company.zip = '88032050'
         company.onchange_mask_zip()
-        self.assertEquals(company.zip, '88032-050')
+        self.assertEqual(company.zip, '88032-050')
 
     def test_company_onchange_city(self):
         company = self.env.ref('base.main_company')
@@ -248,6 +247,6 @@ class TestBase(TransactionCase):
         company.update({
             'city_id': city.id,
         })
-        self.assertEquals(company.city_id, city)
+        self.assertEqual(company.city_id, city)
         company.onchange_city_id()
-        self.assertEquals(company.city, city.name)
+        self.assertEqual(company.city, city.name)

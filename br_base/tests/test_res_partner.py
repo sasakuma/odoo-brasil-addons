@@ -187,12 +187,12 @@ class TestResPartner(TransactionCase):
         }
 
         partner.action_check_sefaz()
-        self.assertEquals(partner.cnpj_cpf, '22814429000155')
-        self.assertEquals(partner.inscr_est, '112632165')
-        self.assertEquals(partner.street, 'RUA PADRE JOAO')
-        self.assertEquals(partner.district, 'Centro')
-        self.assertEquals(partner.city_id.id, 3776)
-        self.assertEquals(partner.zip, '88032050')
+        self.assertEqual(partner.cnpj_cpf, '22814429000155')
+        self.assertEqual(partner.inscr_est, '112632165')
+        self.assertEqual(partner.street, 'RUA PADRE JOAO')
+        self.assertEqual(partner.district, 'Centro')
+        self.assertEqual(partner.city_id.id, 3776)
+        self.assertEqual(partner.zip, '88032050')
 
     def test_company_compute_fields(self):
         company = self.env.ref('base.main_company')

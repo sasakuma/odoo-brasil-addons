@@ -93,27 +93,29 @@ class ResCompany(models.Model):
     def _compute_expiry_date(self):
         for company in self:
 
-            try:
-                pfx = base64.decodestring(
-                    self.with_context(bin_size=False).nfe_a1_file)
-                pfx = crypto.load_pkcs12(pfx, company.nfe_a1_password)
-                cert = pfx.get_certificate()
-                end = datetime.strptime(cert.get_notAfter(), '%Y%m%d%H%M%SZ')
-                subj = cert.get_subject()
-                company.cert_expire_date = end
+            if company.nfe_a1_file:
+                try:
+                    pfx = base64.decodestring(
+                        self.with_context(bin_size=False).nfe_a1_file)
+                    pfx = crypto.load_pkcs12(pfx, company.nfe_a1_password)
+                    cert = pfx.get_certificate()
+                    end = datetime.strptime(
+                        cert.get_notAfter(), '%Y%m%d%H%M%SZ')
+                    subj = cert.get_subject()
+                    company.cert_expire_date = end
 
-                if datetime.now() < end:
-                    company.cert_state = 'valid'
-                else:
-                    company.cert_state = 'expired'
-                    company.cert_information = "%s\n%s\n%s\n%s" % (subj.CN, subj.L, subj.O, subj.OU)  # noqa
+                    if datetime.now() < end:
+                        company.cert_state = 'valid'
+                    else:
+                        company.cert_state = 'expired'
+                        company.cert_information = "%s\n%s\n%s\n%s" % (subj.CN, subj.L, subj.O, subj.OU)  # noqa
 
-            except crypto.Error:
-                company.cert_state = 'invalid_password'
-            except Exception:
-                company.cert_state = 'unknown'
-                _logger.error('Erro desconhecido ao consultar certificado',
-                              exc_info=True)
+                except crypto.Error:
+                    company.cert_state = 'invalid_password'
+                except Exception:
+                    company.cert_state = 'unknown'
+                    _logger.error('Erro desconhecido ao consultar certificado',
+                                  exc_info=True)
 
     cnpj_cpf = fields.Char(compute=_get_br_data,
                            inverse=_set_br_cnpj_cpf,

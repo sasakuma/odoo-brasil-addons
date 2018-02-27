@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2013  Renato Lima - Akretion
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -59,7 +58,7 @@ def validate_ie_param(uf, inscr_est):
         return True
 
     tam = PARAMETERS[uf].get('tam', 0)
-    inscr_est = inscr_est.strip().rjust(int(tam), u'0')
+    inscr_est = inscr_est.strip().rjust(int(tam), '0')
     inscr_est = re.sub('[^0-9]', '', inscr_est)
     val_tam = PARAMETERS[uf].get('val_tam', tam - 1)
 
