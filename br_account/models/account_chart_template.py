@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -18,7 +17,7 @@ class AccountChartTemplate(models.Model):
 
         tax_tmpl_obj = self.env['account.tax.template']
         tax_obj = self.env['account.tax']
-        for key, value in tax_ref.items():
+        for key, value in list(tax_ref.items()):
             tax_tmpl_id = tax_tmpl_obj.browse(key)
             tax_obj.browse(value).write({
                 'deduced_account_id': acc_ref.get(

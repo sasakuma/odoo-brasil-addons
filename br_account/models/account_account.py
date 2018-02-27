@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -9,7 +8,7 @@ class AccountAccount(models.Model):
     _inherit = 'account.account'
 
     code_first_digit = fields.Char(compute='_compute_code_first_digit',
-                                   string=u'Primeiro Dígito',
+                                   string='Primeiro Dígito',
                                    store=True)
 
     @api.multi

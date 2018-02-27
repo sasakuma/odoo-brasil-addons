@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -38,6 +37,6 @@ class TestFiscalPosition(TransactionCase):
         vals = self.fpos.map_tax_extra_values(
             self.main_company, self.product, self.partner)
 
-        self.assertEquals(vals['icms_rule_id'].id, self.rule_icms.id)
-        self.assertEquals(
+        self.assertEqual(vals['icms_rule_id'].id, self.rule_icms.id)
+        self.assertEqual(
             vals['icms_aliquota_reducao_base'], self.rule_icms.reducao_icms)

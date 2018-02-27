@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -10,9 +9,9 @@ class AccountTaxTemplate(models.Model):
     _inherit = 'account.tax.template'
 
     deduced_account_id = fields.Many2one(
-        'account.account.template', string=u"Conta de Dedução da Venda")
+        'account.account.template', string="Conta de Dedução da Venda")
     refund_deduced_account_id = fields.Many2one(
-        'account.account.template', string=u"Conta de Dedução do Reembolso")
+        'account.account.template', string="Conta de Dedução do Reembolso")
     domain = fields.Selection([('icms', 'ICMS'),
                                ('icmsst', 'ICMS ST'),
                                ('simples', 'Simples Nacional'),
@@ -21,8 +20,8 @@ class AccountTaxTemplate(models.Model):
                                ('ipi', 'IPI'),
                                ('issqn', 'ISSQN'),
                                ('ii', 'II'),
-                               ('icms_inter', u'Difal - Alíquota Inter'),
-                               ('icms_intra', u'Difal - Alíquota Intra'),
+                               ('icms_inter', 'Difal - Alíquota Inter'),
+                               ('icms_intra', 'Difal - Alíquota Intra'),
                                ('fcp', 'FCP'),
                                ('csll', 'CSLL'),
                                ('irrf', 'IRRF'),
@@ -30,8 +29,8 @@ class AccountTaxTemplate(models.Model):
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
 
-    def _get_tax_vals(self, company):
-        res = super(AccountTaxTemplate, self)._get_tax_vals(company)
+    def _get_tax_vals(self, company, tax_template_to_tax):
+        res = super(AccountTaxTemplate, self)._get_tax_vals(company, tax_template_to_tax)
         res['domain'] = self.domain
         res['amount_type'] = self.amount_type
         return res

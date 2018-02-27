@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2009 Renato Lima - Akretion
 # © 2014  KMEE - www.kmee.com.br
 # © 2016 Danimar Ribeiro, Trustcode
@@ -10,12 +9,12 @@ from odoo import api, fields, models
 
 class BrAccountDocumentSerie(models.Model):
     _name = 'br_account.document.serie'
-    _description = u'Série de documentos fiscais'
+    _description = 'Série de documentos fiscais'
 
-    code = fields.Char(u'Código', size=3, required=True)
-    name = fields.Char(u'Descrição', required=True)
+    code = fields.Char('Código', size=3, required=True)
+    name = fields.Char('Descrição', required=True)
     active = fields.Boolean('Ativo')
-    fiscal_type = fields.Selection([('service', u'Serviço'),
+    fiscal_type = fields.Selection([('service', 'Serviço'),
                                     ('product', 'Produto')],
                                    string='Tipo Fiscal',
                                    default='service')
@@ -26,7 +25,7 @@ class BrAccountDocumentSerie(models.Model):
                                  string='Empresa',
                                  required=True)
     internal_sequence_id = fields.Many2one('ir.sequence',
-                                           u'Sequência Interna')
+                                           'Sequência Interna')
 
     @api.model
     def _create_sequence(self, vals):

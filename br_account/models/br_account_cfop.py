@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2009 Renato Lima - Akretion
 # © 2014  KMEE - www.kmee.com.br
 # © 2016 Danimar Ribeiro, Trustcode
@@ -14,18 +13,18 @@ class BrAccountCFOP(models.Model):
     _name = 'br_account.cfop'
     _description = 'CFOP'
 
-    code = fields.Char(u'Código', size=4, required=True)
+    code = fields.Char('Código', size=4, required=True)
     name = fields.Char('Nome', size=256, required=True)
     small_name = fields.Char('Nome Reduzido', size=32, required=True)
-    description = fields.Text(u'Descrição')
-    type = fields.Selection([('input', u'Entrada'),
-                             ('output', u'Saída')],
+    description = fields.Text('Descrição')
+    type = fields.Selection([('input', 'Entrada'),
+                             ('output', 'Saída')],
                             string='Tipo',
                             required=True)
     parent_id = fields.Many2one('br_account.cfop', string='CFOP Pai')
     child_ids = fields.One2many('br_account.cfop', 'parent_id',
                                 string='CFOP Filhos')
-    internal_type = fields.Selection([('view', u'Visualização'),
+    internal_type = fields.Selection([('view', 'Visualização'),
                                       ('normal', 'Normal')],
                                      string='Tipo Interno',
                                      required=True,
@@ -33,7 +32,7 @@ class BrAccountCFOP(models.Model):
 
     _sql_constraints = [
         ('br_account_cfop_code_uniq', 'unique (code)',
-         u'Já existe um CFOP com esse código!')
+         'Já existe um CFOP com esse código!')
     ]
 
     @api.model

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2009 Renato Lima - Akretion
 # © 2014  KMEE - www.kmee.com.br
 # © 2016 Danimar Ribeiro, Trustcode
@@ -12,14 +11,14 @@ class BrAccountCNAE(models.Model):
     _name = 'br_account.cnae'
     _description = 'Cadastro de CNAE'
 
-    code = fields.Char(u'Código', size=16, required=True)
-    name = fields.Char(u'Descrição', size=64, required=True)
-    version = fields.Char(u'Versão', size=16, required=True)
+    code = fields.Char('Código', size=16, required=True)
+    name = fields.Char('Descrição', size=64, required=True)
+    version = fields.Char('Versão', size=16, required=True)
     parent_id = fields.Many2one('br_account.cnae', 'CNAE Pai')
     child_ids = fields.One2many(
         'br_account.cnae', 'parent_id', 'CNAEs Filhos')
     internal_type = fields.Selection(
-        [('view', u'Visualização'), ('normal', 'Normal')],
+        [('view', 'Visualização'), ('normal', 'Normal')],
         'Tipo Interno', required=True, default='normal')
 
     @api.model

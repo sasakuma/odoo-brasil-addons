@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -22,7 +21,6 @@
     'data': [
         'data/account_financial_operation.xml',
         'data/account_title_type.xml',
-        'data/ir_action.xml',
         'data/br_nfs.xml',
         'views/account_financial_operation.xml',
         'views/account_title_type.xml',
@@ -53,7 +51,8 @@
     ],
     'demo': [
         'demo/res_partner.xml',
-        'demo/product_product.xml',
+        'demo/product_fiscal_classification.xml',
+        'demo/product_template.xml',
     ],
-    'installable': False,
+    'installable': True,
 }

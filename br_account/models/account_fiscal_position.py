@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -15,10 +14,10 @@ class AccountFiscalPosition(models.Model):
 
     company_id = fields.Many2one('res.company', default=_default_company_id)
 
-    position_type = fields.Selection(string=u'Tipo da Posição',
+    position_type = fields.Selection(string='Tipo da Posição',
                                      selection=[
                                          ('product', 'Produto'),
-                                         ('service', u'Serviço'),
+                                         ('service', 'Serviço'),
                                      ],
                                      default='product',
                                      required=True)
@@ -26,7 +25,7 @@ class AccountFiscalPosition(models.Model):
     company_fiscal_type = fields.Selection(related='company_id.fiscal_type')
 
     service_type_id = fields.Many2one(comodel_name='br_account.service.type',
-                                      string=u'Tipo de Serviço')
+                                      string='Tipo de Serviço')
 
     fiscal_document_id = fields.Many2one('br_account.fiscal.document',
                                          string='Documento')
@@ -35,20 +34,20 @@ class AccountFiscalPosition(models.Model):
 
     # TODO Adicionar no domain a empresa (utilizar empresa na posicao fiscal)
     document_serie_id = fields.Many2one('br_account.document.serie',
-                                        string=u'Série',
+                                        string='Série',
                                         domain="[('fiscal_document_id', '=', fiscal_document_id)]")  # noqa: 501
 
     journal_id = fields.Many2one('account.journal',
-                                 string=u'Diário Contábil',
-                                 help=u'Diário Contábil a ser utilizado na fatura.')  # noqa: 501
+                                 string='Diário Contábil',
+                                 help='Diário Contábil a ser utilizado na fatura.')  # noqa: 501
 
     account_id = fields.Many2one('account.account',
-                                 string=u'Conta Contábil',
-                                 help=u'Conta Contábil a ser utilizada na fatura.')  # noqa: 501
+                                 string='Conta Contábil',
+                                 help='Conta Contábil a ser utilizada na fatura.')  # noqa: 501
 
     fiscal_observation_ids = fields.Many2many('br_account.fiscal.observation',
-                                              string=u'Mensagens Doc. Eletrônico')  # noqa: 501
-    note = fields.Text(u'Observações')
+                                              string='Mensagens Doc. Eletrônico')  # noqa: 501
+    note = fields.Text('Observações')
 
     icms_tax_rule_ids = fields.One2many('account.fiscal.position.tax.rule',
                                         'fiscal_position_id',
@@ -137,7 +136,7 @@ class AccountFiscalPosition(models.Model):
                 if len(rule.state_ids) > 0:
                     rules_points[rule.id] -= 1
 
-            greater_rule = max([(v, k) for k, v in rules_points.items()])
+            greater_rule = max([(v, k) for k, v in list(rules_points.items())])
 
             if greater_rule[0] <= 0:
                 return {}
@@ -188,6 +187,6 @@ class AccountFiscalPosition(models.Model):
         for tax in taxes:
             vals = self._filter_rules(
                 self.id, tax, partner, product, to_state)
-            res.update({k: v for k, v in vals.items() if v})
+            res.update({k: v for k, v in list(vals.items()) if v})
 
         return res

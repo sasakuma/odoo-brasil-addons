@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2017 Michell Stuttgart, MultidadosTI
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -47,11 +46,11 @@ class BrAccountInvoiceParcel(models.Model):
                                           readonly=True,
                                           compute='compute_abs_parceling_value',  # noqa
                                           currency_field='company_currency_id',
-                                          help=u"Armazena o valor positivo da "
-                                               u"parcela (fatura de fornecedor"
-                                               u"possui parcelas com valor "
-                                               u"negativo). Criado apenas para"
-                                               u" fins de visualização.")
+                                          help="Armazena o valor positivo da "
+                                               "parcela (fatura de fornecedor"
+                                               "possui parcelas com valor "
+                                               "negativo). Criado apenas para"
+                                               " fins de visualização.")
 
     amount_currency = fields.Monetary(string='Valor em outra moeda',
                                       help="O valor da parcela expresso "
@@ -74,10 +73,10 @@ class BrAccountInvoiceParcel(models.Model):
                                           store=True)
 
     financial_operation_id = fields.Many2one('account.financial.operation',
-                                             string=u'Operação Financeira')
+                                             string='Operação Financeira')
 
     title_type_id = fields.Many2one('account.title.type',
-                                    string=u'Tipo de Título')
+                                    string='Tipo de Título')
 
     pin_date = fields.Boolean(string='Data Fixa')
 

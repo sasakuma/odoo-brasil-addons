@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2009 Renato Lima - Akretion
 # © 2016 Danimar Ribeiro, Trustcode
 # © 2017 Michell Stuttgart, MultidadosTI
@@ -23,20 +22,20 @@ class ResCompany(models.Model):
                                   required=True,
                                   digits=dp.get_precision('Account'),
                                   default=0.00,
-                                  help=u"Faturamento Bruto dos últimos 12 "
-                                       u"meses")
+                                  help="Faturamento Bruto dos últimos 12 "
+                                       "meses")
 
     fiscal_type = fields.Selection(COMPANY_FISCAL_TYPE,
-                                   string=u'Regime Tributário',
+                                   string='Regime Tributário',
                                    required=True,
                                    default=COMPANY_FISCAL_TYPE_DEFAULT)
 
-    cnae_main_id = fields.Many2one('br_account.cnae', string=u'CNAE Primário')
+    cnae_main_id = fields.Many2one('br_account.cnae', string='CNAE Primário')
 
     cnae_secondary_ids = fields.Many2many('br_account.cnae',
                                           'res_company_br_account_cnae',
                                           'company_id',
                                           'cnae_id',
-                                          string=u'CNAE Secundários')
+                                          string='CNAE Secundários')
 
     accountant_id = fields.Many2one('res.partner', string="Contador")

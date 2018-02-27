@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -10,9 +9,9 @@ class AccountTax(models.Model):
     _inherit = 'account.tax'
 
     deduced_account_id = fields.Many2one(
-        'account.account', string=u"Conta de Dedução da Venda")
+        'account.account', string="Conta de Dedução da Venda")
     refund_deduced_account_id = fields.Many2one(
-        'account.account', string=u"Conta de Dedução do Reembolso")
+        'account.account', string="Conta de Dedução do Reembolso")
     domain = fields.Selection([('icms', 'ICMS'),
                                ('icmsst', 'ICMS ST'),
                                ('simples', 'Simples Nacional'),
@@ -21,8 +20,8 @@ class AccountTax(models.Model):
                                ('ipi', 'IPI'),
                                ('issqn', 'ISSQN'),
                                ('ii', 'II'),
-                               ('icms_inter', u'Difal - Alíquota Inter'),
-                               ('icms_intra', u'Difal - Alíquota Intra'),
+                               ('icms_inter', 'Difal - Alíquota Inter'),
+                               ('icms_intra', 'Difal - Alíquota Intra'),
                                ('fcp', 'FCP'),
                                ('csll', 'CSLL'),
                                ('irrf', 'IRRF'),

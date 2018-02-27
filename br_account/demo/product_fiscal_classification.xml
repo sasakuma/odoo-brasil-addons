@@ -8,12 +8,6 @@
             <field name="name">Indicadores ou apontadores (mouse e track-ball, por exemplo)</field>
         </record>
 
-        <!-- Mouse, Optical -->
-        <record id="product.product_product_10_product_template" model="product.template">
-            <field name="fiscal_type">product</field>
-            <field name="fiscal_classification_id" ref="br_account.demo_fiscal_classification_mouse"/>
-        </record>
-
     </data>
 
 </odoo>

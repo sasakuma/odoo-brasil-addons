@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -22,8 +21,8 @@ class TestImportIBPT(TransactionCase):
         with self.assertRaises(UserError):
             self.wiz.import_ncm()
 
-        self.wiz.product_fiscal_class_csv = base64.b64encode(open(
-            os.path.join(self.caminho, 'csv/tabela-ibpt.csv'), 'r').read())
+        with open(os.path.join(self.caminho, 'csv/tabela-ibpt.csv'), 'rb') as f:
+            self.wiz.product_fiscal_class_csv = base64.b64encode(f.read())
 
         with self.assertRaises(UserError):
             self.wiz.import_ncm()

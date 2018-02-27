@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="0">
+
+        <!-- Mouse, Optical (depende de product_fiscal_classification.xml)-->
+        <record id="product.product_product_10_product_template" model="product.template">
+            <field name="fiscal_type">product</field>
+            <field name="fiscal_classification_id" ref="br_account.demo_fiscal_classification_mouse"/>
+        </record>
+
+    </data>
+
+</odoo>

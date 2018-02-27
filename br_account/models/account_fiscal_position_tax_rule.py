@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -12,8 +11,8 @@ class AccountFiscalPositionTaxRule(models.Model):
     _name = 'account.fiscal.position.tax.rule'
     _order = 'sequence'
 
-    sequence = fields.Integer(string=u'Sequência')
-    name = fields.Char(string=u'Descrição', size=100)
+    sequence = fields.Integer(string='Sequência')
+    name = fields.Char(string='Descrição', size=100)
     domain = fields.Selection([('icms', 'ICMS'),
                                ('simples', 'Simples Nacional'),
                                ('pis', 'PIS'),
@@ -27,7 +26,7 @@ class AccountFiscalPositionTaxRule(models.Model):
                                ('outros', 'Outros')],
                               string="'Tipo")
     fiscal_position_id = fields.Many2one('account.fiscal.position',
-                                         string=u'Posição Fiscal')
+                                         string='Posição Fiscal')
 
     state_ids = fields.Many2many('res.country.state',
                                  string='Estado Destino',
@@ -37,7 +36,7 @@ class AccountFiscalPositionTaxRule(models.Model):
                                             string='Categoria de Produtos')
 
     tipo_produto = fields.Selection([('product', 'Produto'),
-                                     ('service', u'Serviço')],
+                                     ('service', 'Serviço')],
                                     string='Tipo produto',
                                     default='product')
 
@@ -62,27 +61,27 @@ class AccountFiscalPositionTaxRule(models.Model):
                                      string='ICMS ST',
                                      domain=[('domain', '=', 'icmsst')])
 
-    icms_aliquota_credito = fields.Float(string=u'% Crédito de ICMS')
+    icms_aliquota_credito = fields.Float(string='% Crédito de ICMS')
     incluir_ipi_base = fields.Boolean(string='Incl. IPI na base ICMS')
-    reducao_icms = fields.Float(string=u'Redução de base')
-    reducao_icms_st = fields.Float(string=u'Redução de base ST')
-    reducao_ipi = fields.Float(string=u'Redução de base IPI')
-    aliquota_mva = fields.Float(string=u'Alíquota MVA')
+    reducao_icms = fields.Float(string='Redução de base')
+    reducao_icms_st = fields.Float(string='Redução de base ST')
+    reducao_ipi = fields.Float(string='Redução de base IPI')
+    aliquota_mva = fields.Float(string='Alíquota MVA')
 
-    icms_st_aliquota_deducao = fields.Float(string=u'% ICMS Próprio',
-                                            help=u"Alíquota interna ou interestadual aplicada "  # noqa: 501
-                                                 u"sobre o valor da operação para deduzir do "  # noqa: 501
-                                                 u"ICMS ST - Para empresas do Simples Nacional "  # noqa: 501
-                                                 u"ou usado em casos onde existe apenas ST sem ICMS")  # noqa: 501
+    icms_st_aliquota_deducao = fields.Float(string='% ICMS Próprio',
+                                            help="Alíquota interna ou interestadual aplicada "  # noqa: 501
+                                                 "sobre o valor da operação para deduzir do "  # noqa: 501
+                                                 "ICMS ST - Para empresas do Simples Nacional "  # noqa: 501
+                                                 "ou usado em casos onde existe apenas ST sem ICMS")  # noqa: 501
 
-    tem_difal = fields.Boolean(string=u'Aplicar Difal?')
+    tem_difal = fields.Boolean(string='Aplicar Difal?')
 
     tax_icms_inter_id = fields.Many2one('account.tax',
-                                        help=u"Alíquota utilizada na operação Interestadual",  # noqa: 501
+                                        help="Alíquota utilizada na operação Interestadual",  # noqa: 501
                                         string='ICMS Inter',
                                         domain=[('domain', '=', 'icms_inter')])
     tax_icms_intra_id = fields.Many2one('account.tax',
-                                        help=u'Alíquota interna do produto no estado destino',  # noqa: 50
+                                        help='Alíquota interna do produto no estado destino',  # noqa: 50
                                         string='ICMS Intra',
                                         domain=[('domain', '=', 'icms_intra')])
     tax_icms_fcp_id = fields.Many2one('account.tax',

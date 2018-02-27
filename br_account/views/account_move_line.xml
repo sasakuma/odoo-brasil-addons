@@ -8,6 +8,10 @@
         <field eval="2" name="priority"/>
         <field name="arch" type="xml">
 
+            <field name="name" position="after">
+                <field name="reconciled"/>
+            </field>
+
             <xpath expr="//notebook/page[1]" position="attributes">
                 <attribute name="string">Accounting</attribute>
             </xpath>
@@ -89,11 +93,11 @@
                 </attribute>
             </field>
 
-            <field name="ref" position="attributes">
+            <!-- <field name="ref" position="attributes">
                 <attribute name="attrs">
                     {'readonly': [('reconciled','=',True)]}
                 </attribute>
-            </field>
+            </field> -->
 
             <field name="partner_id" position="attributes">
                 <attribute name="attrs">
@@ -101,11 +105,11 @@
                 </attribute>
             </field>
 
-            <field name="journal_id" position="attributes">
+            <!-- <field name="journal_id" position="attributes">
                 <attribute name="attrs">
                     {'readonly': [('reconciled','=',True)]}
                 </attribute>
-            </field>
+            </field> -->
 
             <field name="date" position="attributes">
                 <attribute name="attrs">

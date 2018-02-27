@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2009 Renato Lima - Akretion
 # © 2014  KMEE - www.kmee.com.br
 # © 2016 Danimar Ribeiro, Trustcode
@@ -31,9 +30,9 @@ class AccountDocumentRelated(models.Model):
 
     access_key = fields.Char('Chave de Acesso', size=44)
 
-    serie = fields.Char(u'Série', size=12)
+    serie = fields.Char('Série', size=12)
 
-    internal_number = fields.Char(u'Número', size=32)
+    internal_number = fields.Char('Número', size=32)
 
     state_id = fields.Many2one('res.country.state',
                                string='Estado',
@@ -64,7 +63,7 @@ class AccountDocumentRelated(models.Model):
             elif not fiscal.validate_cpf(self.cnpj_cpf):
                 check_cnpj_cpf = False
         if not check_cnpj_cpf:
-            raise UserError(u'CNPJ/CPF do documento relacionado é invalido!')
+            raise UserError('CNPJ/CPF do documento relacionado é invalido!')
 
     @api.one
     @api.constrains('inscr_est')
@@ -84,7 +83,7 @@ class AccountDocumentRelated(models.Model):
                     check_ie = False
         if not check_ie:
             raise UserError(
-                u'Inscrição Estadual do documento fiscal inválida!')
+                'Inscrição Estadual do documento fiscal inválida!')
 
     @api.onchange('invoice_related_id')
     def onchange_invoice_related_id(self):

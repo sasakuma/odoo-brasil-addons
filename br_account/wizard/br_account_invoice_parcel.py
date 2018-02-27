@@ -11,7 +11,7 @@ class BrAccountInvoiceParcelWizard(models.TransientModel):
     _description = 'Wizard para criar parcelas na fatura'
 
     payment_term_id = fields.Many2one('account.payment.term',
-                                      string=u'Condições de Pagamento',
+                                      string='Condições de Pagamento',
                                       readonly=True)
 
     pre_invoice_date = fields.Date(string='Data da Fatura',
@@ -19,11 +19,11 @@ class BrAccountInvoiceParcelWizard(models.TransientModel):
 
     financial_operation_id = fields.Many2one('account.financial.operation',
                                              required=True,
-                                             string=u'Operação Financeira')
+                                             string='Operação Financeira')
 
     title_type_id = fields.Many2one('account.title.type',
                                     required=True,
-                                    string=u'Tipo de Título')
+                                    string='Tipo de Título')
 
     @api.multi
     def action_generate_parcel_entry(self):

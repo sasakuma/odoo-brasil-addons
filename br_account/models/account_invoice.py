@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2009 Renato Lima - Akretion
 # © 2016 Danimar Ribeiro, Trustcode
 # © 2017 Michell Stuttgart, MultidadosTI
@@ -132,25 +131,25 @@ class AccountInvoice(models.Model):
                                              compute='_compute_payables')
 
     issuer = fields.Selection([('0', 'Terceiros'),
-                               ('1', u'Emissão própria')],
+                               ('1', 'Emissão própria')],
                               string='Emitente',
                               default='0',
                               readonly=True,
                               states=STATES)
 
-    vendor_number = fields.Char(string=u'Número NF Entrada',
+    vendor_number = fields.Char(string='Número NF Entrada',
                                 size=18,
                                 readonly=True,
                                 states=STATES,
-                                help=u'Número da Nota Fiscal do Fornecedor')
+                                help='Número da Nota Fiscal do Fornecedor')
 
-    vendor_serie = fields.Char(string=u'Série NF Entrada',
+    vendor_serie = fields.Char(string='Série NF Entrada',
                                size=12,
-                               help=u"Série do número da Nota Fiscal do "
-                                    u"Fornecedor")
+                               help="Série do número da Nota Fiscal do "
+                                    "Fornecedor")
 
     document_serie_id = fields.Many2one('br_account.document.serie',
-                                        string=u'Série',
+                                        string='Série',
                                         readonly=True,
                                         states=STATES)
 
@@ -159,7 +158,7 @@ class AccountInvoice(models.Model):
                                          readonly=True,
                                          states=STATES)
 
-    pre_invoice_date = fields.Date(string=u'Data da Pré-Fatura',
+    pre_invoice_date = fields.Date(string='Data da Pré-Fatura',
                                    required=True,
                                    copy=False,
                                    default=fields.Date.today)
@@ -169,7 +168,7 @@ class AccountInvoice(models.Model):
     is_electronic = fields.Boolean(related='fiscal_document_id.electronic',
                                    type='boolean',
                                    store=True,
-                                   string=u'Eletrônico',
+                                   string='Eletrônico',
                                    readonly=True,
                                    oldname='is_eletronic')
 
@@ -181,11 +180,11 @@ class AccountInvoice(models.Model):
         states=STATES)
 
     fiscal_observation_ids = fields.Many2many('br_account.fiscal.observation',
-                                              string=u'Observações Fiscais',
+                                              string='Observações Fiscais',
                                               readonly=True,
                                               states=STATES)
 
-    fiscal_comment = fields.Text(u'Observação Fiscal',
+    fiscal_comment = fields.Text('Observação Fiscal',
                                  readonly=True,
                                  states=STATES)
 
@@ -222,9 +221,9 @@ class AccountInvoice(models.Model):
     valor_icms_fcp_uf_dest = fields.Float(string='Total ICMS FCP',
                                           store=True,
                                           compute='_compute_amount',
-                                          help=u'Total total do ICMS relativo'
-                                               u' Fundo de Combate à Pobreza '
-                                               u'(FCP) da UF de destino')
+                                          help='Total total do ICMS relativo'
+                                               ' Fundo de Combate à Pobreza '
+                                               '(FCP) da UF de destino')
 
     valor_icms_uf_dest = fields.Float(string='ICMS Destino',
                                       store=True,
@@ -386,12 +385,12 @@ class AccountInvoice(models.Model):
 
         if self.parcel_ids:
             raise ValidationError(
-                u'Ao alterar as condições de pagamento, favor re-gerar as '
-                u'parcelas para o recálculo.', )
+                'Ao alterar as condições de pagamento, favor re-gerar as '
+                'parcelas para o recálculo.', )
 
     @api.onchange('issuer')
     def _onchange_issuer(self):
-        if self.issuer == '0' and self.type in (u'in_invoice', u'in_refund'):
+        if self.issuer == '0' and self.type in ('in_invoice', 'in_refund'):
             self.fiscal_document_id = None
             self.document_serie_id = None
 
@@ -530,20 +529,20 @@ class AccountInvoice(models.Model):
         self.ensure_one()
 
         if not self.pre_invoice_date:
-            raise UserError(u'Nenhuma data fornecida como base para a '
-                            u'criação das parcelas!')
+            raise UserError('Nenhuma data fornecida como base para a '
+                            'criação das parcelas!')
 
         if self.state != 'draft':
-            raise UserError(u'Parcelas podem ser criadas apenas quando a '
-                            u'fatura estiver como "Provisório"')
+            raise UserError('Parcelas podem ser criadas apenas quando a '
+                            'fatura estiver como "Provisório"')
 
         if not self.payment_term_id:
-            raise UserError(u'Nenhuma condição de pagamento foi fornecida. Por'
-                            u'favor, selecione uma condição de pagamento')
+            raise UserError('Nenhuma condição de pagamento foi fornecida. Por'
+                            'favor, selecione uma condição de pagamento')
 
         if not self.invoice_line_ids:
-            raise UserError(u'Nenhuma linha de fatura foi fornecida. Por '
-                            u'favor insira ao menos um produto/serviço')
+            raise UserError('Nenhuma linha de fatura foi fornecida. Por '
+                            'favor insira ao menos um produto/serviço')
 
         action = {
             'type': 'ir.actions.act_window',
@@ -587,7 +586,7 @@ class AccountInvoice(models.Model):
                                   'parcelas novamente.'))
         else:
             raise ValidationError(
-                u'Campo parcela está vazio. Por favor, crie as parcelas')
+                'Campo parcela está vazio. Por favor, crie as parcelas')
 
     @api.multi
     def action_number(self):
@@ -597,11 +596,11 @@ class AccountInvoice(models.Model):
 
                 if not invoice.document_serie_id:
                     raise UserError(
-                        u'Configure uma série para a fatura')
+                        'Configure uma série para a fatura')
 
                 elif not invoice.document_serie_id.internal_sequence_id:
                     raise UserError(
-                        u'Configure a sequência para a numeração da nota')
+                        'Configure a sequência para a numeração da nota')
                 else:
                     seq_number = invoice.document_serie_id.internal_sequence_id.next_by_id()  # noqa: 501
                     self.internal_number = seq_number
@@ -750,21 +749,21 @@ class AccountInvoice(models.Model):
             ctx = dict(self._context, lang=inv.partner_id.lang)
 
             if not inv.pre_invoice_date:
-                raise UserError(u'Nenhuma data fornecida como base para a '
-                                u'criação das parcelas!')
+                raise UserError('Nenhuma data fornecida como base para a '
+                                'criação das parcelas!')
 
             if inv.state != 'draft':
-                raise UserError(u'Parcelas podem ser criadas apenas quando a '
-                                u'fatura estiver como "Provisório"')
+                raise UserError('Parcelas podem ser criadas apenas quando a '
+                                'fatura estiver como "Provisório"')
 
             if not inv.payment_term_id:
                 raise UserError(
-                    u'Nenhuma condição de pagamento foi fornecida. Por'
-                    u'favor, selecione uma condição de pagamento')
+                    'Nenhuma condição de pagamento foi fornecida. Por'
+                    'favor, selecione uma condição de pagamento')
 
             if not inv.invoice_line_ids:
-                raise UserError(u'Nenhuma linha de fatura foi fornecida. Por '
-                                u'favor insira ao menos um produto/serviço')
+                raise UserError('Nenhuma linha de fatura foi fornecida. Por '
+                                'favor insira ao menos um produto/serviço')
 
             company_currency = inv.company_id.currency_id
 
