@@ -17,7 +17,6 @@
                 <field name="state_id" placeholder="Estado"/>
                 <field name="city_id" placeholder="Cidade"/>
             </div>
-
         </field>
     </record>
 
