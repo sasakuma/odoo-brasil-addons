@@ -99,7 +99,7 @@ class ResPartner(models.Model):
                     raise UserError(_('CPF inválido!'))
         return True
 
-    @api.multi
+    @api.depends('state_id', 'is_company')
     @api.constrains('inscr_est')
     def _check_ie(self):
         """Checks if company register number in field insc_est is valid,
