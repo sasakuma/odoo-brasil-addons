@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -8,7 +7,7 @@
     'description': """
     Base Module for the Brazilian Invoice electronic_doc_id
     """,
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
     'category': 'account',
     'author': 'Trustcode',
     'license': 'AGPL-3',
@@ -24,11 +23,13 @@
         'br_data_account',
     ],
     'data': [
-        'data/nfe_cron.xml',
+        'data/ir_cron.xml',
         'data/br_account_einvoice.xml',
         'security/ir.model.access.csv',
         'views/invoice_electronic.xml',
         'views/account_invoice.xml',
     ],
-    'installable': False
+    'installable': True,
+    'auto_install': False,
+    'application': False,
 }

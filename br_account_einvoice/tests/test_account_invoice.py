@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2017 Michell Stuttgart, MultidadosTI
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -63,13 +62,13 @@ class TestAccountInvoice(TestBaseBr):
         }
 
         self.invoices = self.env['account.invoice'].create(dict(
-            default_invoice.items(),
+            list(default_invoice.items()),
             name='Teste Fatura Pessoa Fisica',
             partner_id=self.partner_fis.id,
         ))
 
         self.invoices |= self.env['account.invoice'].create(dict(
-            default_invoice.items(),
+            list(default_invoice.items()),
             name='Teste Fatura Empresa',
             partner_id=self.partner.id,
         ))

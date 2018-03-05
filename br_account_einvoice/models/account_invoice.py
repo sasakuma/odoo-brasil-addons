@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -27,7 +26,7 @@ class AccountInvoice(models.Model):
 
     invoice_electronic_ids = fields.One2many('invoice.electronic',
                                              'invoice_id',
-                                             string=u'Documentos Eletrônicos',
+                                             string='Documentos Eletrônicos',
                                              readonly=True)
 
     invoice_model = fields.Char(string="Modelo de Fatura",
@@ -42,18 +41,18 @@ class AccountInvoice(models.Model):
                                      copy=False,
                                      group_operator=None,
                                      states={'draft': [('readonly', False)]},
-                                     help="""Unique number of the invoice, 
-                                     computed automatically when the invoice 
+                                     help="""Unique number of the invoice,
+                                     computed automatically when the invoice
                                      is created.""")
 
     invoice_electronic_state = fields.Selection(
-        [('no_inv_doc', u'Sem Doc. Eletrônico'),
-         ('draft', u'Provisório'),
-         ('edit', u'Editar'),
-         ('error', u'Erro'),
-         ('done', u'Enviado'),
-         ('cancel', u'Cancelado')],
-        string=u'Situação da Nota Fiscal',
+        [('no_inv_doc', 'Sem Doc. Eletrônico'),
+         ('draft', 'Provisório'),
+         ('edit', 'Editar'),
+         ('error', 'Erro'),
+         ('done', 'Enviado'),
+         ('cancel', 'Cancelado')],
+        string='Situação da Nota Fiscal',
         default='no_inv_doc',
         store=True,
         compute='_compute_invoice_electronic_state')
@@ -181,7 +180,7 @@ class AccountInvoice(models.Model):
         vals = {
             'invoice_id': invoice.id,
             'code': invoice.number,
-            'name': u'Documento Eletrônico: nº %d' % invoice.internal_number,
+            'name': 'Documento Eletrônico: nº %d' % invoice.internal_number,
             'company_id': invoice.company_id.id,
             'state': 'draft',
             'tipo_operacao': TYPE2EDOC[invoice.type],
@@ -248,7 +247,7 @@ class AccountInvoice(models.Model):
                 [('invoice_id', '=', item.id)])
             for edoc in edocs:
                 if edoc.state == 'done':
-                    raise UserError(u'Documento eletrônico emitido - Cancele o \
+                    raise UserError('Documento eletrônico emitido - Cancele o \
                                     documento para poder cancelar a fatura')
                 if edoc.can_unlink():
                     edoc.unlink()

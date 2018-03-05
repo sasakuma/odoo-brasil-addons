@@ -23,7 +23,7 @@
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="account.view_account_invoice_filter"/>
         <field name="arch" type="xml">
-            <xpath expr="//filter[@name='invoices']" position="after">
+            <xpath expr="//filter[@name='late']" position="after">
                 <filter name='invoice_electronic_state' string="State Doc. Eletronic"
                         domain="[]" context="{'group_by':'invoice_electronic_state'}"/>
             </xpath>
