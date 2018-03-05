@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -34,10 +33,10 @@ class AccountInvoice(models.Model):
     nfe_status = fields.Char(string='Mensagem NFe',
                              compute='_compute_nfe_number')
 
-    nfe_number = fields.Integer(string=u'Número NFe',
+    nfe_number = fields.Integer(string='Número NFe',
                                 compute='_compute_nfe_number')
 
-    nfe_exception_number = fields.Integer(string=u'Número NFe',
+    nfe_exception_number = fields.Integer(string='Número NFe',
                                           compute='_compute_nfe_number')
 
     @api.multi
@@ -48,9 +47,9 @@ class AccountInvoice(models.Model):
 
             for doc in docs:
                 if doc.state in ('done', 'denied', 'cancel'):
-                    raise UserError(u'Nota fiscal já emitida para esta '
-                                    u'fatura - Duplique a fatura para '
-                                    u'continuar')
+                    raise UserError('Nota fiscal já emitida para esta '
+                                    'fatura - Duplique a fatura para '
+                                    'continuar')
 
         return super(AccountInvoice, self).action_invoice_draft()
 
@@ -94,7 +93,7 @@ class AccountInvoice(models.Model):
             # Se não encontrarmos nenhum documento eletronico enviado
             # ou provisorio, imprimimos um documento eletronico
             # que foram cancelados
-            raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
+            raise UserError('Não existe um E-Doc relacionado à esta fatura')
 
         return docs.action_print_einvoice_report()
 

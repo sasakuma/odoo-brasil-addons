@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Alessandro Fernandes Martini <alessandrofmartini@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -20,13 +19,12 @@ class TestCartaCorrecao(TransactionCase):
         self.currency_real = self.env.ref('base.BRL')
         self.main_company.write({
             'name': 'Trustcode',
-            'legal_name': u'Trustcode Tecnologia da Informação',
+            'legal_name': 'Trustcode Tecnologia da Informação',
             'cnpj_cpf': '92.743.275/0001-33',
-            'inscr_est': '219.882.606',
             'zip': '88037-240',
             'street': 'Vinicius de Moraes',
             'number': '42',
-            'district': u'Córrego Grande',
+            'district': 'Córrego Grande',
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sc').id,
             'city_id': self.env.ref('br_base.city_4205407').id,
@@ -34,8 +32,11 @@ class TestCartaCorrecao(TransactionCase):
             'currency_id': self.currency_real.id,
             'nfe_a1_password': '123456',
             'nfe_a1_file': base64.b64encode(
-                open(os.path.join(self.caminho, 'teste.pfx'), 'r').read()),
+                open(os.path.join(self.caminho, 'teste.pfx'), 'rb').read()),
         })
+
+        self.main_company.write({'inscr_est': '219.882.606'})
+
         self.revenue_account = self.env['account.account'].create({
             'code': '3.0.0',
             'name': 'Receita de Vendas',
@@ -43,6 +44,7 @@ class TestCartaCorrecao(TransactionCase):
                 'account.data_account_type_revenue').id,
             'company_id': self.main_company.id
         })
+
         self.receivable_account = self.env['account.account'].create({
             'code': '1.0.0',
             'name': 'Conta de Recebiveis',
@@ -71,8 +73,6 @@ class TestCartaCorrecao(TransactionCase):
             'default_code': '25',
             'type': 'service',
             'fiscal_type': 'service',
-            # 'service_type_id': self.env.ref(
-            #     'br_data_account.service_type_101').id,
             'list_price': 50.0
         })
         self.st_product = self.env['product.product'].create({
@@ -83,16 +83,16 @@ class TestCartaCorrecao(TransactionCase):
         })
         default_partner = {
             'name': 'Nome Parceiro',
-            'legal_name': u'Razão Social',
+            'legal_name': 'Razão Social',
             'zip': '88037-240',
-            'street': u'Endereço Rua',
+            'street': 'Endereço Rua',
             'number': '42',
             'district': 'Centro',
             'phone': '(48) 9801-6226',
             'property_account_receivable_id': self.receivable_account.id,
         }
         self.partner_fisica = self.env['res.partner'].create(dict(
-            default_partner.items(),
+            list(default_partner.items()),
             cnpj_cpf='545.770.154-98',
             company_type='person',
             is_company=False,
@@ -140,7 +140,6 @@ class TestCartaCorrecao(TransactionCase):
                  'name': 'product test 5',
                  'price_unit': 100.00,
                  'product_type': self.service.fiscal_type,
-                 # 'service_type_id': self.service.service_type_id.id,
                  'cfop_id': self.env.ref(
                      'br_data_account_product.cfop_5101').id,
                  'pis_cst': '01',
@@ -149,7 +148,7 @@ class TestCartaCorrecao(TransactionCase):
              )
         ]
         default_invoice = {
-            'name': u"Teste Validação",
+            'name': "Teste Validação",
             'reference_type': "none",
             'fiscal_document_id': self.env.ref(
                 'br_data_account.fiscal_document_55').id,
@@ -168,7 +167,7 @@ class TestCartaCorrecao(TransactionCase):
             'tipo_operacao': 'saida',
             'fiscal_position_id': self.fpos_consumo.id,
             'code': '1',
-            'name': u'Teste Carta Correção',
+            'name': 'Teste Carta Correção',
             'company_id': self.main_company.id,
             'chave_nfe': '35161221332917000163550010000000041158176721',
         }
@@ -216,11 +215,11 @@ class TestCartaCorrecao(TransactionCase):
 
         Id = "ID1101103516122133291700016355001000000004115817672101"
         carta = self.env['carta.correcao.eletronica.evento'].search([])
-        self.assertEquals(len(carta), 1)
-        self.assertEquals(
-            carta.message, u"Evento registrado e vinculado a NF-e")
-        self.assertEquals(carta.protocolo, "135160008802236")
-        self.assertEquals(carta.correcao, 'Teste de Carta de Correcao' * 10)
-        self.assertEquals(carta.sequencial_evento, 1)
-        self.assertEquals(carta.tipo_evento, '110110')
-        self.assertEquals(carta.id_cce, Id)
+        self.assertEqual(len(carta), 1)
+        self.assertEqual(
+            carta.message, "Evento registrado e vinculado a NF-e")
+        self.assertEqual(carta.protocolo, "135160008802236")
+        self.assertEqual(carta.correcao, 'Teste de Carta de Correcao' * 10)
+        self.assertEqual(carta.sequencial_evento, 1)
+        self.assertEqual(carta.tipo_evento, '110110')
+        self.assertEqual(carta.id_cce, Id)

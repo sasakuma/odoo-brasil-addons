@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2017 Michell Stuttgart, MultidadosTI
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -19,13 +18,12 @@ class TestAccountInvoice(TransactionCase):
         self.currency_real = self.env.ref('base.BRL')
         self.main_company.write({
             'name': 'Trustcode',
-            'legal_name': u'Trustcode Tecnologia da Informação',
+            'legal_name': 'Trustcode Tecnologia da Informação',
             'cnpj_cpf': '92.743.275/0001-33',
-            'inscr_est': '219.882.606',
             'zip': '88037-240',
             'street': 'Vinicius de Moraes',
             'number': '42',
-            'district': u'Córrego Grande',
+            'district': 'Córrego Grande',
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sc').id,
             'city_id': self.env.ref('br_base.city_4205407').id,
@@ -34,8 +32,10 @@ class TestAccountInvoice(TransactionCase):
             'tipo_ambiente': '2',
             'nfe_a1_password': '123456',
             'nfe_a1_file': base64.b64encode(
-                open(os.path.join(self.caminho, 'teste.pfx'), 'r').read()),
+                open(os.path.join(self.caminho, 'teste.pfx'), 'rb').read()),
         })
+
+        self.main_company.write({'inscr_est': '219.882.606'})
 
         self.revenue_account = self.env['account.account'].create({
             'code': '3.0.0',
@@ -87,9 +87,9 @@ class TestAccountInvoice(TransactionCase):
 
         default_partner = {
             'name': 'Nome Parceiro',
-            'legal_name': u'Razão Social',
+            'legal_name': 'Razão Social',
             'zip': '88037-240',
-            'street': u'Endereço Rua',
+            'street': 'Endereço Rua',
             'number': '42',
             'district': 'Centro',
             'phone': '(48) 9801-6226',
@@ -97,7 +97,7 @@ class TestAccountInvoice(TransactionCase):
         }
 
         self.partner_fisica = self.env['res.partner'].create(dict(
-            default_partner.items(),
+            list(default_partner.items()),
             cnpj_cpf='545.770.154-98',
             company_type='person',
             is_company=False,
@@ -107,7 +107,7 @@ class TestAccountInvoice(TransactionCase):
         ))
 
         self.partner_juridica = self.env['res.partner'].create(dict(
-            default_partner.items(),
+            list(default_partner.items()),
             cnpj_cpf='05.075.837/0001-13',
             company_type='company',
             is_company=True,
@@ -118,7 +118,7 @@ class TestAccountInvoice(TransactionCase):
         ))
 
         self.partner_fisica_inter = self.env['res.partner'].create(dict(
-            default_partner.items(),
+            list(default_partner.items()),
             cnpj_cpf='793.493.171-92',
             company_type='person',
             is_company=False,
@@ -128,7 +128,7 @@ class TestAccountInvoice(TransactionCase):
         ))
 
         self.partner_juridica_inter = self.env['res.partner'].create(dict(
-            default_partner.items(),
+            list(default_partner.items()),
             cnpj_cpf='08.326.476/0001-29',
             company_type='company',
             is_company=True,
@@ -138,7 +138,7 @@ class TestAccountInvoice(TransactionCase):
         ))
 
         self.partner_juridica_sp = self.env['res.partner'].create(dict(
-            default_partner.items(),
+            list(default_partner.items()),
             cnpj_cpf='37.484.824/0001-94',
             company_type='company',
             is_company=True,
@@ -148,9 +148,9 @@ class TestAccountInvoice(TransactionCase):
         ))
 
         self.partner_exterior = self.env['res.partner'].create(dict(
-            default_partner.items(),
+            list(default_partner.items()),
             cnpj_cpf='12345670',
-            company_type=True,
+            company_type='company',
             is_company=True,
             country_id=self.env.ref('base.us').id,
         ))
@@ -203,7 +203,7 @@ class TestAccountInvoice(TransactionCase):
             [('fiscal_document_id', '=', fiscal_document.id)])
 
         default_invoice = {
-            'name': u"Teste Validação",
+            'name': "Teste Validação",
             'reference_type': "none",
             'fiscal_document_id': fiscal_document.id,
             'document_serie_id': serie.id,
@@ -215,32 +215,32 @@ class TestAccountInvoice(TransactionCase):
         }
 
         self.invoices = self.env['account.invoice'].create(dict(
-            default_invoice.items(),
+            list(default_invoice.items()),
             partner_id=self.partner_fisica.id,
         ))
         self.invoices |= self.env['account.invoice'].create(dict(
-            default_invoice.items(),
+            list(default_invoice.items()),
             partner_id=self.partner_juridica.id,
         ))
         self.invoices |= self.env['account.invoice'].create(dict(
-            default_invoice.items(),
+            list(default_invoice.items()),
             partner_id=self.partner_juridica.id,
             fiscal_position_id=self.fpos_consumo.id,
         ))
         self.invoices |= self.env['account.invoice'].create(dict(
-            default_invoice.items(),
+            list(default_invoice.items()),
             partner_id=self.partner_fisica_inter.id,
         ))
         self.invoices |= self.env['account.invoice'].create(dict(
-            default_invoice.items(),
+            list(default_invoice.items()),
             partner_id=self.partner_juridica_inter.id,
         ))
         self.invoices |= self.env['account.invoice'].create(dict(
-            default_invoice.items(),
+            list(default_invoice.items()),
             partner_id=self.partner_juridica_sp.id,
         ))
         self.invoices |= self.env['account.invoice'].create(dict(
-            default_invoice.items(),
+            list(default_invoice.items()),
             partner_id=self.partner_exterior.id,
         ))
 
@@ -271,11 +271,11 @@ class TestAccountInvoice(TransactionCase):
         danfe = self.invoices.action_print_danfe()
 
         # Comparamos os valores
-        self.assertEquals(danfe['report_name'],
-                          'br_nfe.main_template_br_nfe_danfe')
+        self.assertEqual(danfe['report_name'],
+                         'br_nfe.main_template_br_nfe_danfe')
 
-        self.assertEquals(danfe['report_type'], 'qweb-pdf')
-        self.assertEquals(danfe['type'], 'ir.actions.report.xml')
+        self.assertEqual(danfe['report_type'], 'qweb-pdf')
+        self.assertEqual(danfe['type'], 'ir.actions.report')
 
         self.assertListEqual(danfe['context']['active_ids'],
                              invoice_electronics.ids)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Alessandro Martini, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -20,13 +19,12 @@ class TestInutilizacao(TransactionCase):
         self.currency_real = self.env.ref('base.BRL')
         self.main_company.write({
             'name': 'Trustcode',
-            'legal_name': u'Trustcode Tecnologia da Informação',
+            'legal_name': 'Trustcode Tecnologia da Informação',
             'cnpj_cpf': '92.743.275/0001-33',
-            'inscr_est': '219.882.606',
             'zip': '88037-240',
             'street': 'Vinicius de Moraes',
             'number': '42',
-            'district': u'Córrego Grande',
+            'district': 'Córrego Grande',
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sc').id,
             'city_id': self.env.ref('br_base.city_4205407').id,
@@ -34,8 +32,11 @@ class TestInutilizacao(TransactionCase):
             'currency_id': self.currency_real.id,
             'nfe_a1_password': '123456',
             'nfe_a1_file': base64.b64encode(
-                open(os.path.join(self.caminho, 'teste.pfx'), 'r').read()),
+                open(os.path.join(self.caminho, 'teste.pfx'), 'rb').read()),
         })
+
+        self.main_company.write({'inscr_est': '219.882.606'})
+
         self.revenue_account = self.env['account.account'].create({
             'code': '3.0.0',
             'name': 'Receita de Vendas',
@@ -68,16 +69,16 @@ class TestInutilizacao(TransactionCase):
         })
         default_partner = {
             'name': 'Nome Parceiro',
-            'legal_name': u'Razão Social',
+            'legal_name': 'Razão Social',
             'zip': '88037-240',
-            'street': u'Endereço Rua',
+            'street': 'Endereço Rua',
             'number': '42',
             'district': 'Centro',
             'phone': '(48) 9801-6226',
             'property_account_receivable_id': self.receivable_account.id,
         }
         self.partner_fisica = self.env['res.partner'].create(dict(
-            default_partner.items(),
+            list(default_partner.items()),
             cnpj_cpf='545.770.154-98',
             company_type='person',
             is_company=False,
@@ -124,7 +125,7 @@ class TestInutilizacao(TransactionCase):
             [('fiscal_document_id', '=', fiscal_document.id)])
 
         self.default_invoice = {
-            'name': u"Teste Validação",
+            'name': "Teste Validação",
             'reference_type': "none",
             'fiscal_document_id': fiscal_document.id,
             'document_serie_id': self.serie.id,
@@ -149,11 +150,11 @@ class TestInutilizacao(TransactionCase):
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_ok(self, inutilizar):
         with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_sent_xml.xml')) as f:
+                               'xml/inutilizacao_sent_xml.xml'), 'rb') as f:
             sent_xml = f.read()
 
         with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_received_xml.xml')) as f:
+                               'xml/inutilizacao_received_xml.xml'), 'rb') as f:
             received_xml = f.read()
 
         _, obj = sanitize_response(received_xml)
@@ -182,12 +183,12 @@ class TestInutilizacao(TransactionCase):
         self.assertEqual(inut_inv.numeration_start, 0)
         self.assertEqual(inut_inv.numeration_end, 5)
         self.assertEqual(inut_inv.serie, self.serie)
-        self.assertEqual(inut_inv.name, u'Série Inutilizada 0 - 5')
+        self.assertEqual(inut_inv.name, 'Série Inutilizada 0 - 5')
         self.assertEqual(inut_inv.justificativa, justif)
         self.assertEqual(inut_inv.state, 'error')
 
         invoice = self.env['account.invoice'].create(dict(
-            self.default_invoice.items(),
+            list(self.default_invoice.items()),
             partner_id=self.partner_fisica.id
         ))
 
@@ -205,11 +206,11 @@ class TestInutilizacao(TransactionCase):
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_2_sequences(self, inutilizar):
         with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_sent_xml.xml')) as f:
+                               'xml/inutilizacao_sent_xml.xml'), 'rb') as f:
             sent_xml = f.read()
 
         with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_received_xml.xml')) as f:
+                               'xml/inutilizacao_received_xml.xml'), 'rb') as f:
             received_xml = f.read()
 
         _, obj = sanitize_response(received_xml)
@@ -245,7 +246,7 @@ class TestInutilizacao(TransactionCase):
         wizard2.action_inutilize_nfe()
 
         invoice = self.env['account.invoice'].create(dict(
-            self.default_invoice.items(),
+            list(self.default_invoice.items()),
             partner_id=self.partner_fisica.id
         ))
 
@@ -263,11 +264,11 @@ class TestInutilizacao(TransactionCase):
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_return_ok(self, inutilizar):
         with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_sent_xml.xml')) as f:
+                               'xml/inutilizacao_sent_xml.xml'), 'rb') as f:
             sent_xml = f.read()
 
         with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_received_ok_xml.xml')) as f:
+                               'xml/inutilizacao_received_ok_xml.xml'), 'rb') as f:
             received_xml = f.read()
 
         _, obj = sanitize_response(received_xml)
@@ -296,12 +297,12 @@ class TestInutilizacao(TransactionCase):
         self.assertEqual(inut_inv.numeration_start, 0)
         self.assertEqual(inut_inv.numeration_end, 5)
         self.assertEqual(inut_inv.serie, self.serie)
-        self.assertEqual(inut_inv.name, u'Série Inutilizada 0 - 5')
+        self.assertEqual(inut_inv.name, 'Série Inutilizada 0 - 5')
         self.assertEqual(inut_inv.justificativa, justif)
         self.assertEqual(inut_inv.state, 'done')
 
         invoice = self.env['account.invoice'].create(dict(
-            self.default_invoice.items(),
+            list(self.default_invoice.items()),
             partner_id=self.partner_fisica.id
         ))
 
@@ -326,7 +327,7 @@ class TestInutilizacao(TransactionCase):
         ))
 
         invoice = self.env['account.invoice'].create(dict(
-            self.default_invoice.items(),
+            list(self.default_invoice.items()),
             partner_id=self.partner_fisica.id
         ))
 
@@ -411,7 +412,7 @@ class TestInutilizacao(TransactionCase):
         ))
 
         invoice = self.env['account.invoice'].create(dict(
-            self.default_invoice.items(),
+            list(self.default_invoice.items()),
             partner_id=self.partner_fisica.id
         ))
 
