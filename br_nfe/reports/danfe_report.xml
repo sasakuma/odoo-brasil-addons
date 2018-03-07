@@ -17,7 +17,7 @@
     </record>
 
     <template id="template_br_nfe_danfe">
-        <div class="page">
+        <div class="article">
 
             <link rel="stylesheet" type="text/css" href="/web/static/lib/bootstrap/css/bootstrap.css"/>
             <link rel="stylesheet" type="text/css" href="/br_nfe/static/css/danfe.css"/>
