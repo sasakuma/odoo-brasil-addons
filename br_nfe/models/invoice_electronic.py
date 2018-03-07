@@ -880,9 +880,10 @@ class InvoiceElectronic(models.Model):
 
         if self.codigo_retorno == '100':
             self.invoice_id.internal_number = int(self.numero)
-            nfe_proc = gerar_nfeproc(resposta['sent_xml'], recibo_xml)
+            nfe_proc = gerar_nfeproc(resposta['sent_xml'].encode('utf8'),
+                                     recibo_xml.encode('utf8'))
             self.write({
-                'nfe_processada': base64.encodestring(nfe_proc.encode('utf8')),
+                'nfe_processada': base64.encodestring(nfe_proc),
                 'nfe_processada_name': "NFe%08d.xml" % self.numero,
             })
 
