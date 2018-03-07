@@ -988,15 +988,9 @@ class InvoiceElectronic(models.Model):
 
     @api.multi
     def action_print_einvoice_report(self):
-
         docs = self.search([('model', '=', '55'), ('id', 'in', self.ids)])
 
         if docs:
-            # report = self.env.ref('br_nfe.report_br_nfe_danfe').report_name
-            action = self.env.ref(
-                'br_nfe.report_br_nfe_danfe').report_action(docs)
-            # action = self.env['report'].get_action(docs.ids, report)
-            action['report_type'] = 'qweb-pdf'
-            return action
+            return self.env.ref('br_nfe.report_br_nfe_danfe').report_action(docs)
         else:
             return super(InvoiceElectronic, self).action_print_einvoice_report()
