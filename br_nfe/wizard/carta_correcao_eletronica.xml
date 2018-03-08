@@ -30,12 +30,4 @@
         </field>
     </record>
 
-    <act_window id="carta_correcao_wizard"
-                name="Carta de Correção Eletrônica"
-                src_model="invoice.electronic"
-                res_model="wizard.carta.correcao.eletronica"
-                view_mode="form"
-                target="new"
-                key2="client_action_multi"/>
-
 </odoo>
