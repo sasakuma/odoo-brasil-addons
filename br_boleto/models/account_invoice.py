@@ -29,12 +29,3 @@ class AccountInvoice(models.Model):
                 if len(error) > 0:
                     raise UserError(msg_error % error)
         return res
-
-    @api.multi
-    def action_register_boleto(self):
-        if self.state in ('draft', 'cancel'):
-            raise UserError(
-                'Fatura provisória ou cancelada não permite emitir boleto')
-        self = self.with_context({'origin_model': 'account.invoice'})
-        # return self.env['report'].get_action(self.id, 'br_boleto.report.print')
-        return self.env.ref('br_boleto.report.print').report_action(self)
