@@ -87,6 +87,8 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
             self.electronic_doc_id._create_attachment(
                 'cce_ret', self.electronic_doc_id, resposta['received_xml'])
 
+            return {'type': 'ir.actions.act_window_close'}
+
         else:
             mensagem = "%s - %s" % (retorno.cStat, retorno.xMotivo)
             if retorno.cStat == 128:
