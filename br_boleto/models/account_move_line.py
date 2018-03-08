@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -11,14 +10,14 @@ from ..boleto.document import Boleto
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
-    boleto_emitido = fields.Boolean(string=u"Emitido")
-    nosso_numero = fields.Char(string=u"Nosso Número", size=30)
+    boleto_emitido = fields.Boolean(string="Emitido")
+    nosso_numero = fields.Char(string="Nosso Número", size=30)
 
     @api.multi
     def action_print_boleto(self):
         if self.move_id.state in ('draft', 'cancel'):
             raise UserError(
-                u'Fatura provisória ou cancelada não permite emitir boleto')
+                'Fatura provisória ou cancelada não permite emitir boleto')
         self = self.with_context({'origin_model': 'account.invoice'})
         return self.env['report'].get_action(self.id, 'br_boleto.report.print')
 
@@ -30,7 +29,7 @@ class AccountMoveLine(models.Model):
             ('state', '=', 'draft'),
             ('payment_mode_id', '=', self.payment_mode_id.id)], limit=1)
         order_dict = {
-            'name': u'%s' % order_name,
+            'name': '%s' % order_name,
             'user_id': self.write_uid.id,
             'payment_mode_id': self.payment_mode_id.id,
             'state': 'draft',
@@ -59,13 +58,13 @@ class AccountMoveLine(models.Model):
         for move in self:
             if not move.payment_mode_id:
                 raise UserError(
-                    u'O modo de pagamento configurado não é boleto')
+                    'O modo de pagamento configurado não é boleto')
             if not move.payment_mode_id.nosso_numero_sequence.id:
-                raise UserError(u'Cadastre a sequência do nosso número no modo \
+                raise UserError('Cadastre a sequência do nosso número no modo \
                                 de pagamento')
             vencimento = fields.Date.from_string(move.date_maturity)
             if vencimento < datetime.today().date() and not move.reconciled:
-                raise UserError(u'A data de vencimento deve ser maior que a \
+                raise UserError('A data de vencimento deve ser maior que a \
                                 data atual. Altere a data de vencimento!')
             if not move.boleto_emitido:
                 move.boleto_emitido = True

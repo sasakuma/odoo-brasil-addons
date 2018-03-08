@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -13,7 +12,7 @@ class TestBoletoSicoob(TestBoleto):
         super(TestBoletoSicoob, self)._return_payment_mode()
 
         sequencia = self.env['ir.sequence'].create({
-            'name': u"Nosso Número"
+            'name': "Nosso Número"
         })
 
         sicoob = self.env['res.bank'].search([('bic', '=', '756')])
@@ -49,13 +48,13 @@ class TestBoletoSicoob(TestBoleto):
     def _update_main_company(self):
         self.main_company.write({
             'name': 'Trustcode',
-            'legal_name': u'Trustcode Tecnologia da Informação',
+            'legal_name': 'Trustcode Tecnologia da Informação',
             'cnpj_cpf': '92.743.275/0001-33',
             'inscr_est': '219.882.606',
             'zip': '88037-240',
             'street': 'Vinicius de Moraes',
             'number': '42',
-            'district': u'Córrego Grande',
+            'district': 'Córrego Grande',
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sc').id,
             'city_id': self.env.ref('br_base.city_4205407').id,
@@ -76,12 +75,12 @@ class TestBoletoSicoob(TestBoleto):
         error_partner = self.partner_fisica.validate()
         error_company = self.main_company.validate()
 
-        self.assertEquals(error_partner, _('Client: %s\nMissing Fields:'
+        self.assertEqual(error_partner, _('Client: %s\nMissing Fields:'
                                            '\n-CNPJ/CPF \n-District\n-ZIP'
                                            '\n-City\n-Country\n-State\n\n\n')
                           % self.partner_fisica.name)
 
-        self.assertEquals(error_company, _('Company: %s\n'
+        self.assertEqual(error_company, _('Company: %s\n'
                                            'Missing Fields:\n-Legal Name'
                                            '\n-CNPJ/CPF \n-District\n-ZIP'
                                            '\n-City\n-Street\n-Number'
@@ -91,8 +90,8 @@ class TestBoletoSicoob(TestBoleto):
         self._update_main_company()
         self._update_partner_fisica()
 
-        self.assertEquals(self.partner_fisica.validate(), '')
-        self.assertEquals(self.main_company.validate(), '')
+        self.assertEqual(self.partner_fisica.validate(), '')
+        self.assertEqual(self.main_company.validate(), '')
 
     def test_raise_error_if_not_payment(self):
         self._update_main_company()
@@ -100,17 +99,17 @@ class TestBoletoSicoob(TestBoleto):
 
         self.invoices.action_br_account_invoice_open()
 
-        self.assertEquals(len(self.invoices.receivable_move_line_ids), 1)
+        self.assertEqual(len(self.invoices.receivable_move_line_ids), 1)
 
         move = self.invoices.receivable_move_line_ids[0]
         vals = move.action_print_boleto()
 
-        self.assertEquals(vals['report_name'], 'br_boleto.report.print')
-        self.assertEquals(vals['report_type'], 'pdf')
+        self.assertEqual(vals['report_name'], 'br_boleto.report.print')
+        self.assertEqual(vals['report_type'], 'pdf')
 
         vals = self.invoices.action_register_boleto()
 
-        self.assertEquals(vals['report_name'], 'br_boleto.report.print')
-        self.assertEquals(vals['report_type'], 'pdf')
+        self.assertEqual(vals['report_name'], 'br_boleto.report.print')
+        self.assertEqual(vals['report_type'], 'pdf')
 
         move.action_register_boleto()

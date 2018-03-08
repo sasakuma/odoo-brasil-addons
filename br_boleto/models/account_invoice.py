@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Alessandro Fernandes Martini, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -35,6 +34,7 @@ class AccountInvoice(models.Model):
     def action_register_boleto(self):
         if self.state in ('draft', 'cancel'):
             raise UserError(
-                u'Fatura provisória ou cancelada não permite emitir boleto')
+                'Fatura provisória ou cancelada não permite emitir boleto')
         self = self.with_context({'origin_model': 'account.invoice'})
-        return self.env['report'].get_action(self.id, 'br_boleto.report.print')
+        # return self.env['report'].get_action(self.id, 'br_boleto.report.print')
+        return self.env.ref('br_boleto.report.print').report_action(self)
