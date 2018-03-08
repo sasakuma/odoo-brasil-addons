@@ -97,9 +97,9 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
             self.write({
                 'state': 'error',
                 'message': mensagem,
-                'sent_xml': base64.b64encode(resposta['sent_xml']),
+                'sent_xml': base64.b64encode(resposta['sent_xml'].encode('utf8')),
                 'sent_xml_name': 'cce-envio.xml',
-                'received_xml': base64.b64encode(resposta['received_xml']),
+                'received_xml': base64.b64encode(resposta['received_xml'].encode('utf8')),
                 'received_xml_name': 'cce-retorno.xml',
             })
 
