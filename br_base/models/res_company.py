@@ -100,7 +100,7 @@ class ResCompany(models.Model):
                     pfx = crypto.load_pkcs12(pfx, company.nfe_a1_password)
                     cert = pfx.get_certificate()
                     end = datetime.strptime(
-                        cert.get_notAfter(), '%Y%m%d%H%M%SZ')
+                        cert.get_notAfter().decode('utf8'), '%Y%m%d%H%M%SZ')
                     subj = cert.get_subject()
                     company.cert_expire_date = end
 
