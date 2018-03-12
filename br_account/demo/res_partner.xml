@@ -4,8 +4,8 @@
     <data noupdate="0">
 
         <record id="br_account_res_partner_1" model="res.partner">
-            <field name="name">Taverna Do Mestre Restaurante</field>
-            <field name="legal_name">Taverna Do Mestre Restaurante</field>
+            <field name="name">Cliente Demo</field>
+            <field name="legal_name">Cliente Demo</field>
             <field name="customer">1</field>
             <field name="supplier">0</field>
             <field name="cnpj_cpf">14055948000159</field>
@@ -21,7 +21,7 @@
             <field name="country_id" ref="base.br"/>
             <field name="email">contato@tavernadomestre.com.br</field>
             <field name="phone">11998283787</field>
-            <field name="website">www.tavernadomestre.com.br</field>
+            <field name="website">www.clientedemo.com.br</field>
             <field name="image" type="base64" file="base/static/img/res_partner_3-image.png"/>
         </record>
 
