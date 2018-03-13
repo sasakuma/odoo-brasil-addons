@@ -1,19 +1,19 @@
 # © 2018 Michell Stuttgart, Multidados
-import re
 import logging
-import urllib3
+import re
 
+import urllib3
 from pycep_correios import PRODUCAO, consultar_cep
-from pycep_correios.excecoes import (CEPInvalido,
-                                     ExcecaoPyCEPCorreios,
+from pycep_correios.excecoes import (CEPInvalido, ExcecaoPyCEPCorreios,
                                      FalhaNaConexao)
+# Desabilita warnig da request durante a consulta do cep
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 from odoo import api, models
 from odoo.exceptions import UserError
 from odoo.tools.translate import _
 
-# Desabilita warnig da request durante a consulta do cep
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+urllib3.disable_warnings(category=InsecureRequestWarning)
 
 _logger = logging.getLogger(__name__)
 
