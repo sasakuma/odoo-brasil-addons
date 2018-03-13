@@ -341,7 +341,7 @@ class TestNFeBrasil(TransactionCase):
             xml_recebido = open(os.path.join(
                 self.caminho, 'xml/lote-recebido-sucesso.xml'), 'r').read()
 
-            resp = sanitize_response(xml_recebido)
+            resp = sanitize_response(xml_recebido.encode('utf8'))
 
             autorizar.return_value = {
                 'object': resp[1],
@@ -352,7 +352,7 @@ class TestNFeBrasil(TransactionCase):
             # Consultar recibo com erro 100
             xml_recebido = open(os.path.join(
                 self.caminho, 'xml/recibo-sucesso-schema-100.xml'), 'r').read()
-            resp_ret = sanitize_response(xml_recebido)
+            resp_ret = sanitize_response(xml_recebido.encode('utf8'))
 
             ret_autorizar.return_value = {
                 'object': resp_ret[1],
@@ -368,7 +368,7 @@ class TestNFeBrasil(TransactionCase):
             self.assertEqual(invoice_electronic.state, 'done')
             self.assertEqual(invoice_electronic.codigo_retorno, '100')
 
-    @patch('odoo.addons.br_nfe.models.invoice_electronic.retorno_autorizar_nfe')  # noqa: 501
+    @patch('odoo.addons.br_nfe.models.invoice_electronic.retorno_autorizar_nfe')
     @patch('odoo.addons.br_nfe.models.invoice_electronic.autorizar_nfe')
     def test_wrong_xml_schema(self, autorizar, ret_autorizar):
 
@@ -381,7 +381,7 @@ class TestNFeBrasil(TransactionCase):
             xml_recebido = open(os.path.join(
                 self.caminho, 'xml/lote-recebido-sucesso.xml'), 'r').read()
 
-            resp = sanitize_response(xml_recebido)
+            resp = sanitize_response(xml_recebido.encode('utf-8'))
 
             autorizar.return_value = {
                 'object': resp[1],
@@ -392,7 +392,7 @@ class TestNFeBrasil(TransactionCase):
             # Consultar recibo com erro 225
             xml_recebido = open(os.path.join(
                 self.caminho, 'xml/recibo-erro-schema-225.xml'), 'r').read()
-            resp_ret = sanitize_response(xml_recebido)
+            resp_ret = sanitize_response(xml_recebido.encode('utf-8'))
 
             ret_autorizar.return_value = {
                 'object': resp_ret[1],
@@ -421,7 +421,7 @@ class TestNFeBrasil(TransactionCase):
             xml_recebido = open(os.path.join(
                 self.caminho, 'xml/lote-recebido-sucesso.xml'), 'r').read()
 
-            resp = sanitize_response(xml_recebido)
+            resp = sanitize_response(xml_recebido.encode('utf-8'))
 
             autorizar.return_value = {
                 'object': resp[1],
@@ -432,7 +432,7 @@ class TestNFeBrasil(TransactionCase):
             # Consultar recibo com erro 694 - Nao informado o DIFAL
             xml_recebido = open(os.path.join(
                 self.caminho, 'xml/recibo-erro-694.xml'), 'r').read()
-            resp_ret = sanitize_response(xml_recebido)
+            resp_ret = sanitize_response(xml_recebido.encode('utf-8'))
             ret_autorizar.return_value = {
                 'object': resp_ret[1],
                 'sent_xml': '<xml />',
@@ -458,7 +458,7 @@ class TestNFeBrasil(TransactionCase):
             xml_recebido = open(os.path.join(
                 self.caminho, 'xml/cancelamento-sucesso.xml'), 'r').read()
 
-            resp = sanitize_response(xml_recebido)
+            resp = sanitize_response(xml_recebido.encode('utf-8'))
 
             cancelar.return_value = {
                 'object': resp[1],

@@ -150,14 +150,14 @@ class TestInutilizacao(TransactionCase):
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_ok(self, inutilizar):
         with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_sent_xml.xml'), 'rb') as f:
+                               'xml/inutilizacao_sent_xml.xml'), 'r') as f:
             sent_xml = f.read()
 
         with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_received_xml.xml'), 'rb') as f:
+                               'xml/inutilizacao_received_xml.xml'), 'r') as f:
             received_xml = f.read()
 
-        _, obj = sanitize_response(received_xml)
+        _, obj = sanitize_response(received_xml.encode('utf8'))
 
         inutilizar.return_value = {
             'received_xml': received_xml,
@@ -206,14 +206,14 @@ class TestInutilizacao(TransactionCase):
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_2_sequences(self, inutilizar):
         with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_sent_xml.xml'), 'rb') as f:
+                               'xml/inutilizacao_sent_xml.xml'), 'r') as f:
             sent_xml = f.read()
 
         with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_received_xml.xml'), 'rb') as f:
+                               'xml/inutilizacao_received_xml.xml'), 'r') as f:
             received_xml = f.read()
 
-        _, obj = sanitize_response(received_xml)
+        _, obj = sanitize_response(received_xml.encode('utf-8'))
 
         inutilizar.return_value = {
             'received_xml': received_xml,
@@ -264,14 +264,14 @@ class TestInutilizacao(TransactionCase):
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_return_ok(self, inutilizar):
         with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_sent_xml.xml'), 'rb') as f:
+                               'xml/inutilizacao_sent_xml.xml'), 'r') as f:
             sent_xml = f.read()
 
         with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_received_ok_xml.xml'), 'rb') as f:
+                               'xml/inutilizacao_received_ok_xml.xml'), 'r') as f:
             received_xml = f.read()
 
-        _, obj = sanitize_response(received_xml)
+        _, obj = sanitize_response(received_xml.encode('utf-8'))
 
         inutilizar.return_value = {
             'received_xml': received_xml,
