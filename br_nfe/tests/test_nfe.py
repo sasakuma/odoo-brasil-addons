@@ -1,19 +1,19 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import os
 import base64
-from mock import patch
+import os
 
 # Usado para evitar warnings da urllib3 durante os testes
 import urllib3
+from mock import patch
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
-urllib3.disable_warnings(category=InsecureRequestWarning)
 
-from odoo.tests.common import TransactionCase
 from odoo.exceptions import UserError
-
+from odoo.tests.common import TransactionCase
 from pytrustnfe.xml import sanitize_response
+
+urllib3.disable_warnings(category=InsecureRequestWarning)
 
 
 class TestNFeBrasil(TransactionCase):
@@ -368,7 +368,7 @@ class TestNFeBrasil(TransactionCase):
             self.assertEqual(invoice_electronic.state, 'done')
             self.assertEqual(invoice_electronic.codigo_retorno, '100')
 
-    @patch('odoo.addons.br_nfe.models.invoice_electronic.retorno_autorizar_nfe')
+    @patch('odoo.addons.br_nfe.models.invoice_electronic.retorno_autorizar_nfe')  # noqa
     @patch('odoo.addons.br_nfe.models.invoice_electronic.autorizar_nfe')
     def test_wrong_xml_schema(self, autorizar, ret_autorizar):
 

@@ -4,7 +4,8 @@
 import base64
 import os
 
-from mock import patch
+from unittest import mock
+
 from odoo.exceptions import UserError
 from odoo.tests.common import TransactionCase
 from pytrustnfe.xml import sanitize_response
@@ -200,12 +201,14 @@ class TestCartaCorrecao(TransactionCase):
         with self.assertRaises(UserError):
             self.carta_wizard_long.send_letter()
 
-    @patch('odoo.addons.br_nfe.wizard.carta_correcao_eletronica.recepcao_evento_carta_correcao')  # noqa
+    @mock.patch('odoo.addons.br_nfe.wizard.carta_correcao_eletronica.recepcao_evento_carta_correcao')  # noqa
     def test_carta_correca_eletronica(self, recepcao):
         # Mock o retorno da CCE
         xml_recebido = open(os.path.join(
             self.caminho, 'xml/cce-retorno.xml'), 'r').read()
-        resp = sanitize_response(xml_recebido)
+
+        resp = sanitize_response(xml_recebido.encode('utf8'))
+
         recepcao.return_value = {
             'object': resp[1],
             'sent_xml': '<xml />',

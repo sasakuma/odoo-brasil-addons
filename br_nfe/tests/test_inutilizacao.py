@@ -1,12 +1,13 @@
 # © 2016 Alessandro Martini, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import os
 import base64
-from mock import patch
-from odoo.tests.common import TransactionCase
-from odoo.exceptions import UserError
+import os
 
+from mock import patch
+
+from odoo.exceptions import UserError
+from odoo.tests.common import TransactionCase
 from pytrustnfe.xml import sanitize_response
 
 

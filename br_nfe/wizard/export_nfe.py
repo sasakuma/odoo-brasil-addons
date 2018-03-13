@@ -1,11 +1,12 @@
 # © 2016 Alessandro Martini <alessandrofmartini@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import os
 import base64
+import os
 import os.path
-from zipfile import ZipFile
 from io import StringIO
+from zipfile import ZipFile
+
 from odoo import api, fields, models
 
 

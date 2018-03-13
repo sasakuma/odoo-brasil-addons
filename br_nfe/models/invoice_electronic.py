@@ -1,19 +1,16 @@
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import re
-import os
 import base64
 import logging
+import re
 import time
-from werkzeug import exceptions, url_decode
-
 from datetime import datetime
+
 from odoo import api, fields, models
-from odoo.http import Controller, route, request
 from odoo.exceptions import UserError
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 
 _logger = logging.getLogger(__name__)
 
@@ -23,7 +20,6 @@ try:
     from pytrustnfe.nfe import recepcao_evento_cancelamento
     from pytrustnfe.certificado import Certificado
     from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc
-    from pytrustnfe.nfe.danfe import danfe
 except ImportError:
     _logger.info('Cannot import pytrustnfe', exc_info=True)
 
