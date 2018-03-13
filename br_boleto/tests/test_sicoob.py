@@ -71,10 +71,11 @@ class TestBoletoSicoob(TestBoleto):
             'city_id': self.env.ref('br_base.city_4205407').id,
         })
 
-    def teste_validation_partner_and_company(self):
+    def test_validation_partner_and_company(self):
         error_partner = self.partner_fisica.validate()
         error_company = self.main_company.validate()
-
+        
+        # import ipdb; ipdb.set_trace()
         self.assertEqual(error_partner, _('Client: %s\nMissing Fields:'
                                            '\n-CNPJ/CPF \n-District\n-ZIP'
                                            '\n-City\n-Country\n-State\n\n\n')
@@ -93,23 +94,23 @@ class TestBoletoSicoob(TestBoleto):
         self.assertEqual(self.partner_fisica.validate(), '')
         self.assertEqual(self.main_company.validate(), '')
 
-    def test_raise_error_if_not_payment(self):
-        self._update_main_company()
-        self._update_partner_fisica()
+    # def test_raise_error_if_not_payment(self):
+    #     self._update_main_company()
+    #     self._update_partner_fisica()
 
-        self.invoices.action_br_account_invoice_open()
+    #     self.invoices.action_br_account_invoice_open()
 
-        self.assertEqual(len(self.invoices.receivable_move_line_ids), 1)
+    #     self.assertEqual(len(self.invoices.receivable_move_line_ids), 1)
 
-        move = self.invoices.receivable_move_line_ids[0]
-        vals = move.action_print_boleto()
+    #     move = self.invoices.receivable_move_line_ids[0]
+    #     vals = move.action_print_boleto()
 
-        self.assertEqual(vals['report_name'], 'br_boleto.report.print')
-        self.assertEqual(vals['report_type'], 'pdf')
+    #     self.assertEqual(vals['report_name'], 'br_boleto.report.print')
+    #     self.assertEqual(vals['report_type'], 'pdf')
 
-        vals = self.invoices.action_register_boleto()
+    #     vals = self.invoices.action_register_boleto()
 
-        self.assertEqual(vals['report_name'], 'br_boleto.report.print')
-        self.assertEqual(vals['report_type'], 'pdf')
+    #     self.assertEqual(vals['report_name'], 'br_boleto.report.print')
+    #     self.assertEqual(vals['report_type'], 'pdf')
 
-        move.action_register_boleto()
+    #     move.action_register_boleto()

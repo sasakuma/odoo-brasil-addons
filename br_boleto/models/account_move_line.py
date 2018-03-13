@@ -13,13 +13,13 @@ class AccountMoveLine(models.Model):
     boleto_emitido = fields.Boolean(string="Emitido")
     nosso_numero = fields.Char(string="Nosso Número", size=30)
 
-    @api.multi
-    def action_print_boleto(self):
-        if self.move_id.state in ('draft', 'cancel'):
-            raise UserError(
-                'Fatura provisória ou cancelada não permite emitir boleto')
-        self = self.with_context({'origin_model': 'account.invoice'})
-        return self.env['report'].get_action(self.id, 'br_boleto.report.print')
+    # @api.multi
+    # def action_print_boleto(self):
+    #     if self.move_id.state in ('draft', 'cancel'):
+    #         raise UserError(
+    #             'Fatura provisória ou cancelada não permite emitir boleto')
+    #     self = self.with_context({'origin_model': 'account.invoice'})
+    #     return self.env.ref('br_boleto.report.print').report_action(self)
 
     @api.multi
     def gerar_payment_order(self):
@@ -76,17 +76,17 @@ class AccountMoveLine(models.Model):
             move.gerar_payment_order()
         return boleto_list
 
-    @api.multi
-    def open_wizard_print_boleto(self):
-        return ({
-            'name': 'Alterar / Reimprimir Boleto',
-            'type': 'ir.actions.act_window',
-            'res_model': 'br.boleto.wizard',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'origin_model': 'account.move.line',
-                'default_move_line_id': self.id,
-            }
-        })
+    # @api.multi
+    # def open_wizard_print_boleto(self):
+    #     return ({
+    #         'name': 'Alterar / Reimprimir Boleto',
+    #         'type': 'ir.actions.act_window',
+    #         'res_model': 'br.boleto.wizard',
+    #         'view_type': 'form',
+    #         'view_mode': 'form',
+    #         'target': 'new',
+    #         'context': {
+    #             'origin_model': 'account.move.line',
+    #             'default_move_line_id': self.id,
+    #         }
+    #     })

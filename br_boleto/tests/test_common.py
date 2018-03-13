@@ -50,12 +50,14 @@ class TestBoleto(TransactionCase):
 
         self.partner_fisica = self.env['res.partner'].create(dict(
             name='Parceiro',
-            company_type='company',
+            company_type='person',
             is_company=False,
             street='Donicia',
             number=45,
             property_account_receivable_id=self.receivable_account.id
         ))
+
+        # import ipdb; ipdb.set_trace()
 
         self.journalrec = self.env['account.journal'].create({
             'name': 'Faturas',

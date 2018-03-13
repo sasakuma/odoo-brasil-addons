@@ -35,7 +35,7 @@
         'views/account_journal.xml',
         'sequence/payment_order_sequence.xml',
         'sequence/numero_documento_sequence.xml',
-        'wizard/br_boleto_wizard.xml',
+        # 'wizard/br_boleto_wizard.xml',
     ],
     'installable': True,
     'application': True,
