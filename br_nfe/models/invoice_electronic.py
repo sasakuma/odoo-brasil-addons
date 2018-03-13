@@ -870,18 +870,20 @@ class InvoiceElectronic(models.Model):
         self._create_attachment('nfe-envio', self, resposta['sent_xml'])
         self._create_attachment('nfe-ret', self, resposta['received_xml'])
 
-        recibo_xml = resposta['received_xml']
-
         if resposta_recibo:
             self._create_attachment('rec', self, resposta_recibo['sent_xml'])
             self._create_attachment('rec-ret', self,
                                     resposta_recibo['received_xml'])
-            recibo_xml = resposta_recibo['received_xml']
 
         if self.codigo_retorno == '100':
             self.invoice_id.internal_number = int(self.numero)
-            nfe_proc = gerar_nfeproc(resposta['sent_xml'].encode('utf8'),
-                                     recibo_xml.encode('utf8'))
+
+            sent_xml = resposta['sent_xml'].encode('utf8')
+            received_xml = resposta['received_xml'].encode('utf8')
+
+            nfe_proc = gerar_nfeproc(sent_xml,
+                                     received_xml)
+
             self.write({
                 'nfe_processada': base64.encodestring(nfe_proc),
                 'nfe_processada_name': "NFe%08d.xml" % self.numero,

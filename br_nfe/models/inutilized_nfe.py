@@ -148,7 +148,7 @@ class InutilizedNfe(models.Model):
         self.env['ir.attachment'].create(
             {
                 'name': file_name,
-                'datas': base64.b64encode(data),
+                'datas': base64.b64encode(data.encode('utf8')),
                 'datas_fname': file_name,
                 'description': '',
                 'res_model': 'invoice.electronic.inutilized',
