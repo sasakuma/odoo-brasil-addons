@@ -19,6 +19,7 @@ class TestElectronicInvoice(TransactionCase):
                 'account.data_account_type_revenue').id,
             'company_id': self.main_company.id
         })
+
         self.receivable_account = self.env['account.account'].create({
             'code': '1.0.0',
             'name': 'Conta de Recebiveis',
@@ -36,26 +37,28 @@ class TestElectronicInvoice(TransactionCase):
             'municipal_imposto': 10.0,
             'cest': '123'
         })
+
         self.default_product = self.env['product.product'].create({
             'name': 'Normal Product',
             'default_code': '12',
             'fiscal_classification_id': self.default_ncm.id,
             'list_price': 15.0
         })
+
         self.service = self.env['product.product'].create({
             'name': 'Normal Service',
             'type': 'service',
             'fiscal_type': 'service',
-            # 'service_type_id': self.env.ref(
-            #     'br_data_account.service_type_101').id,
             'list_price': 50.0
         })
-        self.partner_fisica = self.env['res.partner'].create(dict(
-            name='Parceiro',
-            company_type='company',
-            is_company=True,
-            property_account_receivable_id=self.receivable_account.id
-        ))
+
+        self.partner_fisica = self.env['res.partner'].create({
+            'name': 'Parceiro',
+            'company_type': 'company',
+            'is_company': True,
+            'property_account_receivable_id': self.receivable_account.id,
+        })
+
         self.journalrec = self.env['account.journal'].create({
             'name': 'Faturas',
             'code': 'INV',
@@ -91,17 +94,18 @@ class TestElectronicInvoice(TransactionCase):
              }
              )
         ]
-        self.inv_incomplete = self.env['account.invoice'].create(dict(
-            name="Teste Validação",
-            reference_type="none",
-            fiscal_document_id=self.env.ref(
+
+        self.inv_incomplete = self.env['account.invoice'].create({
+            'name': 'Teste Validação',
+            'reference_type': 'none',
+            'fiscal_document_id': self.env.ref(
                 'br_data_account.fiscal_document_55').id,
-            journal_id=self.journalrec.id,
-            partner_id=self.partner_fisica.id,
-            account_id=self.receivable_account.id,
-            invoice_line_ids=invoice_line_incomplete,
-            payment_term_id=payment_term.id,
-        ))
+            'journal_id': self.journalrec.id,
+            'partner_id': self.partner_fisica.id,
+            'account_id': self.receivable_account.id,
+            'invoice_line_ids': invoice_line_incomplete,
+            'payment_term_id': payment_term.id,
+        })
 
         self.title_type = self.env.ref('br_account.account_title_type_2')
         self.financial_operation = self.env.ref(

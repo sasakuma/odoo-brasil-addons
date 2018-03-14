@@ -61,17 +61,17 @@ class TestAccountInvoice(TestBaseBr):
             'pre_invoice_date': '2017-07-01',
         }
 
-        self.invoices = self.env['account.invoice'].create(dict(
-            list(default_invoice.items()),
-            name='Teste Fatura Pessoa Fisica',
-            partner_id=self.partner_fis.id,
-        ))
+        self.invoices = self.env['account.invoice'].create({
+            **default_invoice,
+            'name': 'Teste Fatura Pessoa Fisica',
+            'partner_id': self.partner_fis.id,
+        })
 
-        self.invoices |= self.env['account.invoice'].create(dict(
-            list(default_invoice.items()),
-            name='Teste Fatura Empresa',
-            partner_id=self.partner.id,
-        ))
+        self.invoices |= self.env['account.invoice'].create({
+            **default_invoice,
+            'name': 'Teste Fatura Empresa',
+            'partner_id': self.partner.id,
+        })
 
         # Criamos os itens da parcela da invoice
         self.title_type = self.env.ref('br_account.account_title_type_2')
