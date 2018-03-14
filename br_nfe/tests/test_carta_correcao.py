@@ -63,12 +63,14 @@ class TestCartaCorrecao(TransactionCase):
             'municipal_imposto': 10.0,
             'cest': '123'
         })
+
         self.default_product = self.env['product.product'].create({
             'name': 'Normal Product',
             'default_code': '12',
             'fiscal_classification_id': self.default_ncm.id,
             'list_price': 15.0
         })
+
         self.service = self.env['product.product'].create({
             'name': 'Normal Service',
             'default_code': '25',
@@ -76,12 +78,14 @@ class TestCartaCorrecao(TransactionCase):
             'fiscal_type': 'service',
             'list_price': 50.0
         })
+
         self.st_product = self.env['product.product'].create({
             'name': 'Product for ICMS ST',
             'default_code': '15',
             'fiscal_classification_id': self.default_ncm.id,
             'list_price': 25.0
         })
+
         default_partner = {
             'name': 'Nome Parceiro',
             'legal_name': 'Razão Social',
@@ -92,15 +96,17 @@ class TestCartaCorrecao(TransactionCase):
             'phone': '(48) 9801-6226',
             'property_account_receivable_id': self.receivable_account.id,
         }
-        self.partner_fisica = self.env['res.partner'].create(dict(
-            list(default_partner.items()),
-            cnpj_cpf='545.770.154-98',
-            company_type='person',
-            is_company=False,
-            country_id=self.env.ref('base.br').id,
-            state_id=self.env.ref('base.state_br_sc').id,
-            city_id=self.env.ref('br_base.city_4205407').id
-        ))
+
+        self.partner_fisica = self.env['res.partner'].create({
+            **default_partner,
+            'cnpj_cpf': '545.770.154-98',
+            'company_type': 'person',
+            'is_company': False,
+            'country_id': self.env.ref('base.br').id,
+            'state_id': self.env.ref('base.state_br_sc').id,
+            'city_id': self.env.ref('br_base.city_4205407').id
+        })
+
         self.journalrec = self.env['account.journal'].create({
             'name': 'Faturas',
             'code': 'INV',
@@ -112,10 +118,12 @@ class TestCartaCorrecao(TransactionCase):
         self.fpos = self.env['account.fiscal.position'].create({
             'name': 'Venda'
         })
+
         self.fpos_consumo = self.env['account.fiscal.position'].create({
             'name': 'Venda Consumo',
             'ind_final': '1'
         })
+
         invoice_line_data = [
             (0, 0,
              {
@@ -124,8 +132,7 @@ class TestCartaCorrecao(TransactionCase):
                  'account_id': self.revenue_account.id,
                  'name': 'product test 5',
                  'price_unit': 100.00,
-                 'cfop_id': self.env.ref(
-                     'br_data_account_product.cfop_5101').id,
+                 'cfop_id': self.env.ref('br_data_account_product.cfop_5101').id,
                  'icms_cst_normal': '40',
                  'icms_csosn_simples': '102',
                  'ipi_cst': '50',
@@ -141,26 +148,26 @@ class TestCartaCorrecao(TransactionCase):
                  'name': 'product test 5',
                  'price_unit': 100.00,
                  'product_type': self.service.fiscal_type,
-                 'cfop_id': self.env.ref(
-                     'br_data_account_product.cfop_5101').id,
+                 'cfop_id': self.env.ref('br_data_account_product.cfop_5101').id,
                  'pis_cst': '01',
                  'cofins_cst': '01',
              }
              )
         ]
+
         default_invoice = {
-            'name': "Teste Validação",
-            'reference_type': "none",
-            'fiscal_document_id': self.env.ref(
-                'br_data_account.fiscal_document_55').id,
+            'name': 'Teste Validação',
+            'reference_type': 'none',
+            'fiscal_document_id': self.env.ref('br_data_account.fiscal_document_55').id,
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,
             'fiscal_position_id': self.fpos.id,
             'invoice_line_ids': invoice_line_data,
             'partner_id': self.partner_fisica.id,
         }
-        self.account_invoice = self.env['account.invoice'].create(
-            default_invoice)
+
+        self.account_invoice = self.env['account.invoice'].create(default_invoice)
+
         invoice_electronic = {
             'model': '55',
             'invoice_id': self.account_invoice.id,
@@ -172,8 +179,8 @@ class TestCartaCorrecao(TransactionCase):
             'company_id': self.main_company.id,
             'chave_nfe': '35161221332917000163550010000000041158176721',
         }
-        self.electronic_doc = self.env['invoice.electronic'].create(
-            invoice_electronic)
+        self.electronic_doc = self.env['invoice.electronic'].create(invoice_electronic)
+
         carta_wizard_short = {
             'correcao': 'short',
             'electronic_doc_id': self.electronic_doc.id,
@@ -186,12 +193,12 @@ class TestCartaCorrecao(TransactionCase):
             'correcao': 'Teste de Carta de Correcao' * 10,
             'electronic_doc_id': self.electronic_doc.id,
         }
-        self.carta_wizard_short = self. \
-            env['wizard.carta.correcao.eletronica'].create(carta_wizard_short)
-        self.carta_wizard_long = self. \
-            env['wizard.carta.correcao.eletronica'].create(carta_wizard_long)
-        self.carta_wizard_right = self. \
-            env['wizard.carta.correcao.eletronica'].create(carta_wizard_right)
+
+        env_cce = self.env['wizard.carta.correcao.eletronica']
+
+        self.carta_wizard_short = env_cce.create(carta_wizard_short)
+        self.carta_wizard_long = env_cce.create(carta_wizard_long)
+        self.carta_wizard_right = env_cce.create(carta_wizard_right)
 
     def test_valida_carta_correcao_eletronica(self):
         # Testa validação de carta muito curta (< 15 char)
@@ -219,8 +226,7 @@ class TestCartaCorrecao(TransactionCase):
         Id = "ID1101103516122133291700016355001000000004115817672101"
         carta = self.env['carta.correcao.eletronica.evento'].search([])
         self.assertEqual(len(carta), 1)
-        self.assertEqual(
-            carta.message, "Evento registrado e vinculado a NF-e")
+        self.assertEqual(carta.message, "Evento registrado e vinculado a NF-e")
         self.assertEqual(carta.protocolo, "135160008802236")
         self.assertEqual(carta.correcao, 'Teste de Carta de Correcao' * 10)
         self.assertEqual(carta.sequencial_evento, 1)

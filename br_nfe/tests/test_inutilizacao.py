@@ -36,22 +36,23 @@ class TestInutilizacao(TransactionCase):
                 open(os.path.join(self.caminho, 'teste.pfx'), 'rb').read()),
         })
 
-        self.main_company.write({'inscr_est': '219.882.606'})
+        self.main_company.inscr_est = '219.882.606'
 
         self.revenue_account = self.env['account.account'].create({
             'code': '3.0.0',
             'name': 'Receita de Vendas',
             'user_type_id': self.env.ref(
                 'account.data_account_type_revenue').id,
-            'company_id': self.main_company.id
+            'company_id': self.main_company.id,
         })
+
         self.receivable_account = self.env['account.account'].create({
             'code': '1.0.0',
             'name': 'Conta de Recebiveis',
             'reconcile': True,
             'user_type_id': self.env.ref(
                 'account.data_account_type_receivable').id,
-            'company_id': self.main_company.id
+            'company_id': self.main_company.id,
         })
 
         self.default_ncm = self.env['product.fiscal.classification'].create({
@@ -60,14 +61,16 @@ class TestInutilizacao(TransactionCase):
             'federal_nacional': 10.0,
             'estadual_imposto': 10.0,
             'municipal_imposto': 10.0,
-            'cest': '123'
+            'cest': '123',
         })
+
         self.default_product = self.env['product.product'].create({
             'name': 'Normal Product',
             'default_code': '12',
             'fiscal_classification_id': self.default_ncm.id,
-            'list_price': 15.0
+            'list_price': 15.0,
         })
+
         default_partner = {
             'name': 'Nome Parceiro',
             'legal_name': 'Razão Social',
@@ -78,15 +81,16 @@ class TestInutilizacao(TransactionCase):
             'phone': '(48) 9801-6226',
             'property_account_receivable_id': self.receivable_account.id,
         }
-        self.partner_fisica = self.env['res.partner'].create(dict(
-            list(default_partner.items()),
-            cnpj_cpf='545.770.154-98',
-            company_type='person',
-            is_company=False,
-            country_id=self.env.ref('base.br').id,
-            state_id=self.env.ref('base.state_br_sc').id,
-            city_id=self.env.ref('br_base.city_4205407').id
-        ))
+
+        self.partner_fisica = self.env['res.partner'].create({
+            **default_partner,
+            'cnpj_cpf': '545.770.154-98',
+            'company_type': 'person',
+            'is_company': False,
+            'country_id': self.env.ref('base.br').id,
+            'state_id': self.env.ref('base.state_br_sc').id,
+            'city_id': self.env.ref('br_base.city_4205407').id,
+        })
 
         self.journalrec = self.env['account.journal'].create({
             'name': 'Faturas',
@@ -97,7 +101,7 @@ class TestInutilizacao(TransactionCase):
         })
 
         self.fpos = self.env['account.fiscal.position'].create({
-            'name': 'Venda'
+            'name': 'Venda',
         })
 
         invoice_line_data = [
@@ -144,10 +148,12 @@ class TestInutilizacao(TransactionCase):
     def tearDown(self):
         inutilized = self.env['invoice.electronic.inutilized'].search([])
         for number in inutilized:
-            self.env['invoice.electronic.inutilized'].update([(2, number.id, 0)])
+            self.env['invoice.electronic.inutilized'].update(
+                [(2, number.id, 0)])
 
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_ok(self, inutilizar):
+
         with open(os.path.join(self.caminho, 'xml/inutilizacao_sent_xml.xml')) as xml:
             sent_xml = xml.read()
 
@@ -164,13 +170,13 @@ class TestInutilizacao(TransactionCase):
 
         justif = 'Sed lorem nibh, sodales ut ex a, tristique ullamcor'
 
-        wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
-            numeration_start=0,
-            numeration_end=5,
-            serie=self.serie.id,
-            modelo='55',
-            justificativa=justif
-        ))
+        wizard = self.env['wizard.inutilization.nfe.numeration'].create({
+            'numeration_start': 0,
+            'numeration_end': 5,
+            'serie': self.serie.id,
+            'modelo': '55',
+            'justificativa': justif,
+        })
 
         wizard.action_inutilize_nfe()
 
@@ -184,10 +190,10 @@ class TestInutilizacao(TransactionCase):
         self.assertEqual(inut_inv.justificativa, justif)
         self.assertEqual(inut_inv.state, 'error')
 
-        invoice = self.env['account.invoice'].create(dict(
-            list(self.default_invoice.items()),
-            partner_id=self.partner_fisica.id
-        ))
+        invoice = self.env['account.invoice'].create({
+            **self.default_invoice,
+            'partner_id': self.partner_fisica.id,
+        })
 
         # Cria parcelas
         invoice.generate_parcel_entry(self.financial_operation,
@@ -202,6 +208,7 @@ class TestInutilizacao(TransactionCase):
 
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_2_sequences(self, inutilizar):
+
         with open(os.path.join(self.caminho, 'xml/inutilizacao_sent_xml.xml')) as xml:
             sent_xml = xml.read()
 
@@ -216,34 +223,30 @@ class TestInutilizacao(TransactionCase):
             'object': obj,
         }
 
-        wizard1 = self.env['wizard.inutilization.nfe.numeration'].create(
-            dict(
-                numeration_start=0,
-                numeration_end=5,
-                serie=self.serie.id,
-                modelo='55',
-                justificativa='Sed lorem nibh, sodales ut ex a, '
-                              'tristique ullamcor'
-            ))
+        wizard1 = self.env['wizard.inutilization.nfe.numeration'].create({
+            'numeration_start': 0,
+            'numeration_end': 5,
+            'serie': self.serie.id,
+            'modelo': '55',
+            'justificativa': 'Sed lorem nibh, sodales ut ex a, tristique ullamcor',
+        })
 
         wizard1.action_inutilize_nfe()
 
-        wizard2 = self.env['wizard.inutilization.nfe.numeration'].create(
-            dict(
-                numeration_start=6,
-                numeration_end=9,
-                serie=self.serie.id,
-                modelo='55',
-                justificativa='Sed lorem nibh, sodales ut ex a, '
-                              'tristique ullamcor'
-            ))
+        wizard2 = self.env['wizard.inutilization.nfe.numeration'].create({
+            'numeration_start': 6,
+            'numeration_end': 9,
+            'serie': self.serie.id,
+            'modelo': '55',
+            'justificativa': 'Sed lorem nibh, sodales ut ex a, tristique ullamcor',
+        })
 
         wizard2.action_inutilize_nfe()
 
-        invoice = self.env['account.invoice'].create(dict(
-            list(self.default_invoice.items()),
-            partner_id=self.partner_fisica.id
-        ))
+        invoice = self.env['account.invoice'].create({
+            **self.default_invoice,
+            'partner_id': self.partner_fisica.id,
+        })
 
         # Cria parcelas
         invoice.generate_parcel_entry(self.financial_operation,
@@ -251,12 +254,15 @@ class TestInutilizacao(TransactionCase):
 
         invoice.action_br_account_invoice_open()
 
-        inv_eletr = self.env['invoice.electronic'].search([('invoice_id', '=', invoice.id)])
+        inv_eletr = self.env['invoice.electronic'].search([
+            ('invoice_id', '=', invoice.id)
+        ])
 
         self.assertEqual(inv_eletr.numero, 10)
 
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_return_ok(self, inutilizar):
+
         with open(os.path.join(self.caminho, 'xml/inutilizacao_sent_xml.xml')) as xml:
             sent_xml = xml.read()
 
@@ -273,13 +279,13 @@ class TestInutilizacao(TransactionCase):
 
         justif = 'Sed lorem nibh, sodales ut ex a, tristique ullamcor'
 
-        wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
-            numeration_start=0,
-            numeration_end=5,
-            serie=self.serie.id,
-            modelo='55',
-            justificativa=justif
-        ))
+        wizard = self.env['wizard.inutilization.nfe.numeration'].create({
+            'numeration_start': 0,
+            'numeration_end': 5,
+            'serie': self.serie.id,
+            'modelo': '55',
+            'justificativa': justif,
+        })
 
         wizard.action_inutilize_nfe()
 
@@ -293,10 +299,10 @@ class TestInutilizacao(TransactionCase):
         self.assertEqual(inut_inv.justificativa, justif)
         self.assertEqual(inut_inv.state, 'done')
 
-        invoice = self.env['account.invoice'].create(dict(
-            list(self.default_invoice.items()),
-            partner_id=self.partner_fisica.id
-        ))
+        invoice = self.env['account.invoice'].create({
+            **self.default_invoice,
+            'partner_id': self.partner_fisica.id,
+        })
 
         # Cria parcelas
         invoice.generate_parcel_entry(self.financial_operation,
@@ -310,18 +316,19 @@ class TestInutilizacao(TransactionCase):
         self.assertEqual(inv_eletr.numero, 6)
 
     def test_inutilizacao_wrong_sqnc(self):
-        wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
-            numeration_start=10,
-            numeration_end=5,
-            serie=self.serie.id,
-            modelo='55',
-            justificativa='Sed lorem nibh, sodales ut ex a, tristique ullamcor'
-        ))
 
-        invoice = self.env['account.invoice'].create(dict(
-            list(self.default_invoice.items()),
-            partner_id=self.partner_fisica.id
-        ))
+        wizard = self.env['wizard.inutilization.nfe.numeration'].create({
+            'numeration_start': 10,
+            'numeration_end': 5,
+            'serie': self.serie.id,
+            'modelo': '55',
+            'justificativa': 'Sed lorem nibh, sodales ut ex a, tristique ullamcor',
+        })
+
+        invoice = self.env['account.invoice'].create({
+            **self.default_invoice,
+            'partner_id': self.partner_fisica.id,
+        })
 
         # Cria parcelas
         invoice.generate_parcel_entry(self.financial_operation,
@@ -333,49 +340,51 @@ class TestInutilizacao(TransactionCase):
             wizard.action_inutilize_nfe()
 
     def test_inutilizacao_justificativa_short(self):
-        wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
-            numeration_start=10,
-            numeration_end=5,
-            serie=self.serie.id,
-            modelo='55',
-            justificativa='Sed lorem'
-        ))
+        wizard = self.env['wizard.inutilization.nfe.numeration'].create({
+            'numeration_start': 10,
+            'numeration_end': 5,
+            'serie': self.serie.id,
+            'modelo': '55',
+            'justificativa': 'Sed lorem',
+        })
 
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()
 
     def test_inutilizacao_justificativa_long(self):
-        wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
-            numeration_start=10,
-            numeration_end=5,
-            serie=self.serie.id,
-            modelo='55',
-            justificativa='Sed lorem' * 255,
-        ))
+        wizard = self.env['wizard.inutilization.nfe.numeration'].create({
+            'numeration_start': 10,
+            'numeration_end': 5,
+            'serie': self.serie.id,
+            'modelo': '55',
+            'justificativa': 'Sed lorem' * 255,
+        })
 
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()
 
     def test_inutilizacao_negative(self):
-        wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
-            numeration_start=-10,
-            numeration_end=-1,
-            serie=self.serie.id,
-            modelo='55',
-            justificativa='Sed lorem nibh, sodales ut ex a, tristique ullamcor'
-        ))
+
+        wizard = self.env['wizard.inutilization.nfe.numeration'].create({
+            'numeration_start': -10,
+            'numeration_end': -1,
+            'serie': self.serie.id,
+            'modelo': '55',
+            'justificativa': 'Sed lorem nibh, sodales ut ex a, tristique ullamcor',
+        })
 
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()
 
     def test_inutilizacao_sequence_too_long(self):
-        wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
-            numeration_start=1,
-            numeration_end=10005,
-            serie=self.serie.id,
-            modelo='55',
-            justificativa='Sed lorem nibh, sodales ut ex a, tristique ullamcor'
-        ))
+
+        wizard = self.env['wizard.inutilization.nfe.numeration'].create({
+            'numeration_start': 1,
+            'numeration_end': 10005,
+            'serie': self.serie.id,
+            'modelo': '55',
+            'justificativa': 'Sed lorem nibh, sodales ut ex a, tristique ullamcor',
+        })
 
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()
@@ -383,30 +392,31 @@ class TestInutilizacao(TransactionCase):
     def test_inutilizacao_no_cnpj(self):
         self.main_company.cnpj_cpf = None
 
-        wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
-            numeration_start=10,
-            numeration_end=100,
-            serie=self.serie.id,
-            modelo='55',
-            justificativa='Sed lorem nibh, sodales ut ex a, tristique ullamcor'
-        ))
+        wizard = self.env['wizard.inutilization.nfe.numeration'].create({
+            'numeration_start': 10,
+            'numeration_end': 100,
+            'serie': self.serie.id,
+            'modelo': '55',
+            'justificativa': 'Sed lorem nibh, sodales ut ex a, tristique ullamcor',
+        })
 
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()
 
     def test_inutilizacao_user_error(self):
-        wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
-            numeration_start=0,
-            numeration_end=5,
-            serie=self.serie.id,
-            modelo='55',
-            justificativa='Sed lorem nibh, sodales ut ex a, tristique ullamcor'
-        ))
 
-        invoice = self.env['account.invoice'].create(dict(
-            list(self.default_invoice.items()),
-            partner_id=self.partner_fisica.id
-        ))
+        wizard = self.env['wizard.inutilization.nfe.numeration'].create({
+            'numeration_start': 0,
+            'numeration_end': 5,
+            'serie': self.serie.id,
+            'modelo': '55',
+            'justificativa': 'Sed lorem nibh, sodales ut ex a, tristique ullamcor',
+        })
+
+        invoice = self.env['account.invoice'].create({
+            **self.default_invoice,
+            'partner_id': self.partner_fisica.id,
+        })
 
         # Cria parcelas
         invoice.generate_parcel_entry(self.financial_operation,

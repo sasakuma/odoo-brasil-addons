@@ -35,7 +35,7 @@ class TestAccountInvoice(TransactionCase):
                 open(os.path.join(self.caminho, 'teste.pfx'), 'rb').read()),
         })
 
-        self.main_company.write({'inscr_est': '219.882.606'})
+        self.main_company.inscr_est = '219.882.606'
 
         self.revenue_account = self.env['account.account'].create({
             'code': '3.0.0',
@@ -85,6 +85,8 @@ class TestAccountInvoice(TransactionCase):
             'list_price': 25.0,
         })
 
+        partner_obj = self.env['res.partner']
+
         default_partner = {
             'name': 'Nome Parceiro',
             'legal_name': 'Razão Social',
@@ -96,64 +98,70 @@ class TestAccountInvoice(TransactionCase):
             'property_account_receivable_id': self.receivable_account.id,
         }
 
-        self.partner_fisica = self.env['res.partner'].create(dict(
-            list(default_partner.items()),
-            cnpj_cpf='545.770.154-98',
-            company_type='person',
-            is_company=False,
-            country_id=self.env.ref('base.br').id,
-            state_id=self.env.ref('base.state_br_sc').id,
-            city_id=self.env.ref('br_base.city_4205407').id,
-        ))
+        # Incializa parceiro fisico
+        self.partner_fisica = partner_obj.create({
+            **default_partner,
+            'cnpj_cpf': '545.770.154-98',
+            'company_type': 'person',
+            'is_company': False,
+            'country_id': self.env.ref('base.br').id,
+            'state_id': self.env.ref('base.state_br_sc').id,
+            'city_id': self.env.ref('br_base.city_4205407').id,
+        })
 
-        self.partner_juridica = self.env['res.partner'].create(dict(
-            list(default_partner.items()),
-            cnpj_cpf='05.075.837/0001-13',
-            company_type='company',
-            is_company=True,
-            inscr_est='433.992.727',
-            country_id=self.env.ref('base.br').id,
-            state_id=self.env.ref('base.state_br_sc').id,
-            city_id=self.env.ref('br_base.city_4205407').id,
-        ))
+        # Inicializa parceiro juridico
+        self.partner_juridica = partner_obj.create({
+            **default_partner,
+            'cnpj_cpf': '05.075.837/0001-13',
+            'company_type': 'company',
+            'is_company': True,
+            'inscr_est': '433.992.727',
+            'country_id': self.env.ref('base.br').id,
+            'state_id': self.env.ref('base.state_br_sc').id,
+            'city_id': self.env.ref('br_base.city_4205407').id,
+        })
 
-        self.partner_fisica_inter = self.env['res.partner'].create(dict(
-            list(default_partner.items()),
-            cnpj_cpf='793.493.171-92',
-            company_type='person',
-            is_company=False,
-            country_id=self.env.ref('base.br').id,
-            state_id=self.env.ref('base.state_br_rs').id,
-            city_id=self.env.ref('br_base.city_4304606').id,
-        ))
+        # Inicializa parceiro fisico internacional
+        self.partner_fisica_inter = partner_obj.create({
+            **default_partner,
+            'cnpj_cpf': '793.493.171-92',
+            'company_type': 'person',
+            'is_company': False,
+            'country_id': self.env.ref('base.br').id,
+            'state_id': self.env.ref('base.state_br_rs').id,
+            'city_id': self.env.ref('br_base.city_4304606').id,
+        })
 
-        self.partner_juridica_inter = self.env['res.partner'].create(dict(
-            list(default_partner.items()),
-            cnpj_cpf='08.326.476/0001-29',
-            company_type='company',
-            is_company=True,
-            country_id=self.env.ref('base.br').id,
-            state_id=self.env.ref('base.state_br_rs').id,
-            city_id=self.env.ref('br_base.city_4300406').id,
-        ))
+        # Inicializa parceiro juridico internacional
+        self.partner_juridica_inter = partner_obj.create({
+            **default_partner,
+            'cnpj_cpf': '08.326.476/0001-29',
+            'company_type': 'company',
+            'is_company': True,
+            'country_id': self.env.ref('base.br').id,
+            'state_id': self.env.ref('base.state_br_rs').id,
+            'city_id': self.env.ref('br_base.city_4300406').id,
+        })
 
-        self.partner_juridica_sp = self.env['res.partner'].create(dict(
-            list(default_partner.items()),
-            cnpj_cpf='37.484.824/0001-94',
-            company_type='company',
-            is_company=True,
-            country_id=self.env.ref('base.br').id,
-            state_id=self.env.ref('base.state_br_sp').id,
-            city_id=self.env.ref('br_base.city_3501608').id,
-        ))
+        # Inicializa parceiro juridico de SP
+        self.partner_juridica_sp = partner_obj.create({
+            **default_partner,
+            'cnpj_cpf': '37.484.824/0001-94',
+            'company_type': 'company',
+            'is_company': True,
+            'country_id': self.env.ref('base.br').id,
+            'state_id': self.env.ref('base.state_br_sp').id,
+            'city_id': self.env.ref('br_base.city_3501608').id,
+        })
 
-        self.partner_exterior = self.env['res.partner'].create(dict(
-            list(default_partner.items()),
-            cnpj_cpf='12345670',
-            company_type='company',
-            is_company=True,
-            country_id=self.env.ref('base.us').id,
-        ))
+        # Inicializa parceiro exterior
+        self.partner_exterior = partner_obj.create({
+            **default_partner,
+            'cnpj_cpf': '12345670',
+            'company_type': 'company',
+            'is_company': True,
+            'country_id': self.env.ref('base.us').id,
+        })
 
         self.journalrec = self.env['account.journal'].create({
             'name': 'Faturas',
@@ -214,35 +222,35 @@ class TestAccountInvoice(TransactionCase):
             'payment_term_id': payment_term.id,
         }
 
-        self.invoices = self.env['account.invoice'].create(dict(
-            list(default_invoice.items()),
-            partner_id=self.partner_fisica.id,
-        ))
-        self.invoices |= self.env['account.invoice'].create(dict(
-            list(default_invoice.items()),
-            partner_id=self.partner_juridica.id,
-        ))
-        self.invoices |= self.env['account.invoice'].create(dict(
-            list(default_invoice.items()),
-            partner_id=self.partner_juridica.id,
-            fiscal_position_id=self.fpos_consumo.id,
-        ))
-        self.invoices |= self.env['account.invoice'].create(dict(
-            list(default_invoice.items()),
-            partner_id=self.partner_fisica_inter.id,
-        ))
-        self.invoices |= self.env['account.invoice'].create(dict(
-            list(default_invoice.items()),
-            partner_id=self.partner_juridica_inter.id,
-        ))
-        self.invoices |= self.env['account.invoice'].create(dict(
-            list(default_invoice.items()),
-            partner_id=self.partner_juridica_sp.id,
-        ))
-        self.invoices |= self.env['account.invoice'].create(dict(
-            list(default_invoice.items()),
-            partner_id=self.partner_exterior.id,
-        ))
+        self.invoices = self.env['account.invoice'].create({
+            **default_invoice,
+            'partner_id': self.partner_fisica.id,
+        })
+        self.invoices |= self.env['account.invoice'].create({
+            **default_invoice,
+            'partner_id': self.partner_juridica.id,
+        })
+        self.invoices |= self.env['account.invoice'].create({
+            **default_invoice,
+            'partner_id': self.partner_juridica.id,
+            'fiscal_position_id': self.fpos_consumo.id,
+        })
+        self.invoices |= self.env['account.invoice'].create({
+            **default_invoice,
+            'partner_id': self.partner_fisica_inter.id,
+        })
+        self.invoices |= self.env['account.invoice'].create({
+            **default_invoice,
+            'partner_id': self.partner_juridica_inter.id,
+        })
+        self.invoices |= self.env['account.invoice'].create({
+            **default_invoice,
+            'partner_id': self.partner_juridica_sp.id,
+        })
+        self.invoices |= self.env['account.invoice'].create({
+            **default_invoice,
+            'partner_id': self.partner_exterior.id,
+        })
 
         self.invoices.generate_parcel_entry(self.financial_operation,
                                             self.title_type)
@@ -256,9 +264,6 @@ class TestAccountInvoice(TransactionCase):
         # Confirmando a fatura deve gerar um documento eletrônico
         self.env['account.invoice.confirm'].with_context(
             active_ids=self.invoices.ids).invoice_confirm()
-
-        # # Confirmando a fatura deve gerar um documento eletrônico
-        # self.invoices.action_br_account_invoice_open()
 
         invoice_electronics = self.env['invoice.electronic'].search(
             [('invoice_id', 'in', self.invoices.ids)])

@@ -27,7 +27,6 @@ class TestNFeBrasil(TransactionCase):
             'name': 'Trustcode',
             'legal_name': 'Trustcode Tecnologia da Informação',
             'cnpj_cpf': '92.743.275/0001-33',
-            # 'inscr_est': '219.882.606',
             'zip': '88037-240',
             'street': 'Vinicius de Moraes',
             'number': '42',
@@ -69,27 +68,29 @@ class TestNFeBrasil(TransactionCase):
             'municipal_imposto': 10.0,
             'cest': '123',
         })
+
         self.default_product = self.env['product.product'].create({
             'name': 'Normal Product',
             'default_code': '12',
             'fiscal_classification_id': self.default_ncm.id,
             'list_price': 15.0,
         })
+
         self.service = self.env['product.product'].create({
             'name': 'Normal Service',
             'default_code': '25',
             'type': 'service',
             'fiscal_type': 'service',
-            # 'service_type_id': self.env.ref(
-            #     'br_data_account.service_type_101').id,
             'list_price': 50.0,
         })
+
         self.st_product = self.env['product.product'].create({
             'name': 'Product for ICMS ST',
             'default_code': '15',
             'fiscal_classification_id': self.default_ncm.id,
             'list_price': 25.0,
         })
+
         default_partner = {
             'name': 'Nome Parceiro',
             'legal_name': 'Razão Social',
@@ -100,59 +101,67 @@ class TestNFeBrasil(TransactionCase):
             'phone': '(48) 9801-6226',
             'property_account_receivable_id': self.receivable_account.id,
         }
-        self.partner_fisica = self.env['res.partner'].create(dict(
-            list(default_partner.items()),
-            cnpj_cpf='545.770.154-98',
-            company_type='person',
-            is_company=False,
-            country_id=self.env.ref('base.br').id,
-            state_id=self.env.ref('base.state_br_sc').id,
-            city_id=self.env.ref('br_base.city_4205407').id,
-        ))
-        self.partner_juridica = self.env['res.partner'].create(dict(
-            list(default_partner.items()),
-            cnpj_cpf='05.075.837/0001-13',
-            company_type='company',
-            is_company=True,
-            inscr_est='433.992.727',
-            country_id=self.env.ref('base.br').id,
-            state_id=self.env.ref('base.state_br_sc').id,
-            city_id=self.env.ref('br_base.city_4205407').id,
-        ))
-        self.partner_fisica_inter = self.env['res.partner'].create(dict(
-            list(default_partner.items()),
-            cnpj_cpf='793.493.171-92',
-            company_type='person',
-            is_company=False,
-            country_id=self.env.ref('base.br').id,
-            state_id=self.env.ref('base.state_br_rs').id,
-            city_id=self.env.ref('br_base.city_4304606').id,
-        ))
-        self.partner_juridica_inter = self.env['res.partner'].create(dict(
-            list(default_partner.items()),
-            cnpj_cpf='08.326.476/0001-29',
-            company_type='company',
-            is_company=True,
-            country_id=self.env.ref('base.br').id,
-            state_id=self.env.ref('base.state_br_rs').id,
-            city_id=self.env.ref('br_base.city_4300406').id,
-        ))
-        self.partner_juridica_sp = self.env['res.partner'].create(dict(
-            list(default_partner.items()),
-            cnpj_cpf='37.484.824/0001-94',
-            company_type='company',
-            is_company=True,
-            country_id=self.env.ref('base.br').id,
-            state_id=self.env.ref('base.state_br_sp').id,
-            city_id=self.env.ref('br_base.city_3501608').id,
-        ))
-        self.partner_exterior = self.env['res.partner'].create(dict(
-            list(default_partner.items()),
-            cnpj_cpf='12345670',
-            company_type='company',
-            is_company=True,
-            country_id=self.env.ref('base.us').id,
-        ))
+
+        partner_obj = self.env['res.partner']
+
+        self.partner_fisica = partner_obj.create({
+            **default_partner,
+            'cnpj_cpf': '545.770.154-98',
+            'company_type': 'person',
+            'is_company': False,
+            'country_id': self.env.ref('base.br').id,
+            'state_id': self.env.ref('base.state_br_sc').id,
+            'city_id': self.env.ref('br_base.city_4205407').id,
+        })
+
+        self.partner_juridica = partner_obj.create({
+            **default_partner,
+            'cnpj_cpf': '05.075.837/0001-13',
+            'company_type': 'company',
+            'is_company': True,
+            'inscr_est': '433.992.727',
+            'country_id': self.env.ref('base.br').id,
+            'state_id': self.env.ref('base.state_br_sc').id,
+            'city_id': self.env.ref('br_base.city_4205407').id,
+        })
+
+        self.partner_fisica_inter = partner_obj.create({
+            **default_partner,
+            'cnpj_cpf': '793.493.171-92',
+            'company_type': 'person',
+            'is_company': False,
+            'country_id': self.env.ref('base.br').id,
+            'state_id': self.env.ref('base.state_br_rs').id,
+            'city_id': self.env.ref('br_base.city_4304606').id,
+        })
+
+        self.partner_juridica_inter = partner_obj.create({
+            **default_partner,
+            'cnpj_cpf': '08.326.476/0001-29',
+            'company_type': 'company',
+            'is_company': True,
+            'country_id': self.env.ref('base.br').id,
+            'state_id': self.env.ref('base.state_br_rs').id,
+            'city_id': self.env.ref('br_base.city_4300406').id,
+        })
+
+        self.partner_juridica_sp = partner_obj.create({
+            **default_partner,
+            'cnpj_cpf': '37.484.824/0001-94',
+            'company_type': 'company',
+            'is_company': True,
+            'country_id': self.env.ref('base.br').id,
+            'state_id': self.env.ref('base.state_br_sp').id,
+            'city_id': self.env.ref('br_base.city_3501608').id,
+        })
+
+        self.partner_exterior = partner_obj.create({
+            **default_partner,
+            'cnpj_cpf': '12345670',
+            'company_type': 'company',
+            'is_company': True,
+            'country_id': self.env.ref('base.us').id,
+        })
 
         self.journalrec = self.env['account.journal'].create({
             'name': 'Faturas',
@@ -210,14 +219,14 @@ class TestNFeBrasil(TransactionCase):
         ]
 
         self.title_type = self.env.ref('br_account.account_title_type_2')
-        self.financial_operation = self.env.ref(
-            'br_account.account_financial_operation_6')
+        self.financial_operation = self.env.ref('br_account.account_financial_operation_6')
 
         fiscal_document = self.env.ref('br_data_account.fiscal_document_55')
         payment_term = self.env.ref('account.account_payment_term_net')
 
-        serie = self.env['br_account.document.serie'].search(
-            [('fiscal_document_id', '=', fiscal_document.id)])
+        serie = self.env['br_account.document.serie'].search([
+            ('fiscal_document_id', '=', fiscal_document.id),
+        ])
 
         default_invoice = {
             'name': "Teste Validação",
@@ -231,50 +240,49 @@ class TestNFeBrasil(TransactionCase):
             'payment_term_id': payment_term.id,
         }
 
-        self.inv_incomplete = self.env['account.invoice'].create(dict(
-            name="Teste Validação Incompleta",
-            reference_type="none",
-            fiscal_document_id=self.env.ref(
-                'br_data_account.fiscal_document_55').id,
-            journal_id=self.journalrec.id,
-            partner_id=self.partner_fisica.id,
-            account_id=self.receivable_account.id,
-            invoice_line_ids=invoice_line_incomplete,
-            payment_term_id=payment_term.id,
-        ))
+        self.inv_incomplete = self.env['account.invoice'].create({
+            'name': 'Teste Validação Incompleta',
+            'reference_type': 'none',
+            'fiscal_document_id': self.env.ref('br_data_account.fiscal_document_55').id,
+            'journal_id': self.journalrec.id,
+            'partner_id': self.partner_fisica.id,
+            'account_id': self.receivable_account.id,
+            'invoice_line_ids': invoice_line_incomplete,
+            'payment_term_id': payment_term.id,
+        })
 
         self.inv_incomplete.generate_parcel_entry(self.financial_operation,
                                                   self.title_type)
 
-        self.invoices = self.env['account.invoice'].create(dict(
-            list(default_invoice.items()),
-            partner_id=self.partner_fisica.id,
-        ))
-        self.invoices |= self.env['account.invoice'].create(dict(
-            list(default_invoice.items()),
-            partner_id=self.partner_juridica.id,
-        ))
-        self.invoices |= self.env['account.invoice'].create(dict(
-            list(default_invoice.items()),
-            partner_id=self.partner_juridica.id,
-            fiscal_position_id=self.fpos_consumo.id,
-        ))
-        self.invoices |= self.env['account.invoice'].create(dict(
-            list(default_invoice.items()),
-            partner_id=self.partner_fisica_inter.id,
-        ))
-        self.invoices |= self.env['account.invoice'].create(dict(
-            list(default_invoice.items()),
-            partner_id=self.partner_juridica_inter.id,
-        ))
-        self.invoices |= self.env['account.invoice'].create(dict(
-            list(default_invoice.items()),
-            partner_id=self.partner_juridica_sp.id,
-        ))
-        self.invoices |= self.env['account.invoice'].create(dict(
-            list(default_invoice.items()),
-            partner_id=self.partner_exterior.id,
-        ))
+        self.invoices = self.env['account.invoice'].create({
+            **default_invoice,
+            'partner_id': self.partner_fisica.id,
+        })
+        self.invoices |= self.env['account.invoice'].create({
+            **default_invoice,
+            'partner_id': self.partner_juridica.id,
+        })
+        self.invoices |= self.env['account.invoice'].create({
+            **default_invoice,
+            'partner_id': self.partner_juridica.id,
+            'fiscal_position_id': self.fpos_consumo.id,
+        })
+        self.invoices |= self.env['account.invoice'].create({
+            **default_invoice,
+            'partner_id': self.partner_fisica_inter.id,
+        })
+        self.invoices |= self.env['account.invoice'].create({
+            **default_invoice,
+            'partner_id': self.partner_juridica_inter.id,
+        })
+        self.invoices |= self.env['account.invoice'].create({
+            **default_invoice,
+            'partner_id': self.partner_juridica_sp.id,
+        })
+        self.invoices |= self.env['account.invoice'].create({
+            **default_invoice,
+            'partner_id': self.partner_exterior.id,
+        })
 
         self.invoices.generate_parcel_entry(self.financial_operation,
                                             self.title_type)
@@ -329,7 +337,7 @@ class TestNFeBrasil(TransactionCase):
             with self.assertRaises(Exception):
                 invoice_electronic.action_send_electronic_invoice()
 
-    @patch('odoo.addons.br_nfe.models.invoice_electronic.retorno_autorizar_nfe')  # noqa: 501
+    @patch('odoo.addons.br_nfe.models.invoice_electronic.retorno_autorizar_nfe')
     @patch('odoo.addons.br_nfe.models.invoice_electronic.autorizar_nfe')
     def test_success_xml_schema(self, autorizar, ret_autorizar):
 
@@ -369,7 +377,7 @@ class TestNFeBrasil(TransactionCase):
             self.assertEqual(invoice_electronic.state, 'done')
             self.assertEqual(invoice_electronic.codigo_retorno, '100')
 
-    @patch('odoo.addons.br_nfe.models.invoice_electronic.retorno_autorizar_nfe')  # noqa
+    @patch('odoo.addons.br_nfe.models.invoice_electronic.retorno_autorizar_nfe')
     @patch('odoo.addons.br_nfe.models.invoice_electronic.autorizar_nfe')
     def test_wrong_xml_schema(self, autorizar, ret_autorizar):
 
@@ -410,7 +418,7 @@ class TestNFeBrasil(TransactionCase):
             self.assertEqual(invoice_electronic.state, 'error')
             self.assertEqual(invoice_electronic.codigo_retorno, '225')
 
-    @patch('odoo.addons.br_nfe.models.invoice_electronic.retorno_autorizar_nfe')  # noqa: 501
+    @patch('odoo.addons.br_nfe.models.invoice_electronic.retorno_autorizar_nfe')
     @patch('odoo.addons.br_nfe.models.invoice_electronic.autorizar_nfe')
     def test_nfe_with_concept_error(self, autorizar, ret_autorizar):
 
@@ -450,7 +458,7 @@ class TestNFeBrasil(TransactionCase):
             self.assertEqual(invoice_electronic.state, 'error')
             self.assertEqual(invoice_electronic.codigo_retorno, '694')
 
-    @patch('odoo.addons.br_nfe.models.invoice_electronic.recepcao_evento_cancelamento')  # noqa
+    @patch('odoo.addons.br_nfe.models.invoice_electronic.recepcao_evento_cancelamento')
     def test_nfe_cancelamento_ok(self, cancelar):
 
         for invoice in self.invoices:
@@ -493,7 +501,7 @@ class TestNFeBrasil(TransactionCase):
 
             # Adicionamos uma chave especifica para o doc. eletronico
             # Isso facilitara nossa comparacao com base64 do barcode
-            invoice_electronic.chave_nfe = '35171256553878000109550010000150491600857152'  # noqa
+            invoice_electronic.chave_nfe = '35171256553878000109550010000150491600857152'
 
             # Geramos o barcode
             barcode = invoice_electronic.barcode_from_chave_nfe()
