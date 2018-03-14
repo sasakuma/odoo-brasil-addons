@@ -349,7 +349,7 @@ class TestNFeBrasil(TransactionCase):
             with open(os.path.join(self.caminho, 'xml/lote-recebido-sucesso.xml')) as xml:
                 xml_recebido = xml.read()
 
-            resp = sanitize_response(xml_recebido.encode('utf8'))
+            resp = sanitize_response(xml_recebido.encode('utf-8'))
 
             autorizar.return_value = {
                 'object': resp[1],
@@ -361,7 +361,7 @@ class TestNFeBrasil(TransactionCase):
             with open(os.path.join(self.caminho, 'xml/recibo-sucesso-schema-100.xml')) as xml:
                 xml_recebido = xml.read()
 
-            resp_ret = sanitize_response(xml_recebido.encode('utf8'))
+            resp_ret = sanitize_response(xml_recebido.encode('utf-8'))
 
             ret_autorizar.return_value = {
                 'object': resp_ret[1],
@@ -395,7 +395,7 @@ class TestNFeBrasil(TransactionCase):
             autorizar.return_value = {
                 'object': resp[1],
                 'sent_xml': '<xml />',
-                'received_xml': xml_recebido
+                'received_xml': xml_recebido,
             }
 
             # Consultar recibo com erro 225
