@@ -201,11 +201,11 @@ class TestCartaCorrecao(TransactionCase):
         with self.assertRaises(UserError):
             self.carta_wizard_long.send_letter()
 
-    @mock.patch('odoo.addons.br_nfe.wizard.carta_correcao_eletronica.recepcao_evento_carta_correcao')  # noqa
+    @mock.patch('odoo.addons.br_nfe.wizard.carta_correcao_eletronica.recepcao_evento_carta_correcao')
     def test_carta_correca_eletronica(self, recepcao):
-        # Mock o retorno da CCE
-        xml_recebido = open(os.path.join(
-            self.caminho, 'xml/cce-retorno.xml'), 'r').read()
+
+        with open(os.path.join(self.caminho, 'xml/cce-retorno.xml')) as xml:
+            xml_recebido = xml.read()
 
         resp = sanitize_response(xml_recebido.encode('utf8'))
 

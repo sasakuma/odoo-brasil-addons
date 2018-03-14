@@ -144,19 +144,15 @@ class TestInutilizacao(TransactionCase):
     def tearDown(self):
         inutilized = self.env['invoice.electronic.inutilized'].search([])
         for number in inutilized:
-            self.env['invoice.electronic.inutilized'].update([
-                (2, number.id, 0),
-            ])
+            self.env['invoice.electronic.inutilized'].update([(2, number.id, 0)])
 
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_ok(self, inutilizar):
-        with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_sent_xml.xml'), 'r') as f:
-            sent_xml = f.read()
+        with open(os.path.join(self.caminho, 'xml/inutilizacao_sent_xml.xml')) as xml:
+            sent_xml = xml.read()
 
-        with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_received_xml.xml'), 'r') as f:
-            received_xml = f.read()
+        with open(os.path.join(self.caminho, 'xml/inutilizacao_received_xml.xml')) as xml:
+            received_xml = xml.read()
 
         _, obj = sanitize_response(received_xml.encode('utf8'))
 
@@ -206,13 +202,11 @@ class TestInutilizacao(TransactionCase):
 
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_2_sequences(self, inutilizar):
-        with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_sent_xml.xml'), 'r') as f:
-            sent_xml = f.read()
+        with open(os.path.join(self.caminho, 'xml/inutilizacao_sent_xml.xml')) as xml:
+            sent_xml = xml.read()
 
-        with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_received_xml.xml'), 'r') as f:
-            received_xml = f.read()
+        with open(os.path.join(self.caminho, 'xml/inutilizacao_received_xml.xml')) as xml:
+            received_xml = xml.read()
 
         _, obj = sanitize_response(received_xml.encode('utf-8'))
 
@@ -257,20 +251,17 @@ class TestInutilizacao(TransactionCase):
 
         invoice.action_br_account_invoice_open()
 
-        inv_eletr = self.env['invoice.electronic'].search(
-            [('invoice_id', '=', invoice.id)])
+        inv_eletr = self.env['invoice.electronic'].search([('invoice_id', '=', invoice.id)])
 
         self.assertEqual(inv_eletr.numero, 10)
 
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_return_ok(self, inutilizar):
-        with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_sent_xml.xml'), 'r') as f:
-            sent_xml = f.read()
+        with open(os.path.join(self.caminho, 'xml/inutilizacao_sent_xml.xml')) as xml:
+            sent_xml = xml.read()
 
-        with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_received_ok_xml.xml'), 'r') as f:
-            received_xml = f.read()
+        with open(os.path.join(self.caminho, 'xml/inutilizacao_received_ok_xml.xml')) as xml:
+            received_xml = xml.read()
 
         _, obj = sanitize_response(received_xml.encode('utf-8'))
 

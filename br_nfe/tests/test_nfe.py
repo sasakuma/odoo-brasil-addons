@@ -338,8 +338,8 @@ class TestNFeBrasil(TransactionCase):
             invoice.action_br_account_invoice_open()
 
             # Lote recebido com sucesso
-            xml_recebido = open(os.path.join(
-                self.caminho, 'xml/lote-recebido-sucesso.xml'), 'r').read()
+            with open(os.path.join(self.caminho, 'xml/lote-recebido-sucesso.xml')) as xml:
+                xml_recebido = xml.read()
 
             resp = sanitize_response(xml_recebido.encode('utf8'))
 
@@ -350,8 +350,9 @@ class TestNFeBrasil(TransactionCase):
             }
 
             # Consultar recibo com erro 100
-            xml_recebido = open(os.path.join(
-                self.caminho, 'xml/recibo-sucesso-schema-100.xml'), 'r').read()
+            with open(os.path.join(self.caminho, 'xml/recibo-sucesso-schema-100.xml')) as xml:
+                xml_recebido = xml.read()
+
             resp_ret = sanitize_response(xml_recebido.encode('utf8'))
 
             ret_autorizar.return_value = {
@@ -378,8 +379,8 @@ class TestNFeBrasil(TransactionCase):
             invoice.action_br_account_invoice_open()
 
             # Lote recebido com sucesso
-            xml_recebido = open(os.path.join(
-                self.caminho, 'xml/lote-recebido-sucesso.xml'), 'r').read()
+            with open(os.path.join(self.caminho, 'xml/lote-recebido-sucesso.xml')) as xml:
+                xml_recebido = xml.read()
 
             resp = sanitize_response(xml_recebido.encode('utf-8'))
 
@@ -390,8 +391,9 @@ class TestNFeBrasil(TransactionCase):
             }
 
             # Consultar recibo com erro 225
-            xml_recebido = open(os.path.join(
-                self.caminho, 'xml/recibo-erro-schema-225.xml'), 'r').read()
+            with open(os.path.join(self.caminho, 'xml/recibo-erro-schema-225.xml')) as xml:
+                xml_recebido = xml.read()
+
             resp_ret = sanitize_response(xml_recebido.encode('utf-8'))
 
             ret_autorizar.return_value = {
@@ -418,8 +420,8 @@ class TestNFeBrasil(TransactionCase):
             invoice.action_br_account_invoice_open()
 
             # Lote recebido com sucesso
-            xml_recebido = open(os.path.join(
-                self.caminho, 'xml/lote-recebido-sucesso.xml'), 'r').read()
+            with open(os.path.join(self.caminho, 'xml/lote-recebido-sucesso.xml')) as xml:
+                xml_recebido = xml.read()
 
             resp = sanitize_response(xml_recebido.encode('utf-8'))
 
@@ -430,9 +432,11 @@ class TestNFeBrasil(TransactionCase):
             }
 
             # Consultar recibo com erro 694 - Nao informado o DIFAL
-            xml_recebido = open(os.path.join(
-                self.caminho, 'xml/recibo-erro-694.xml'), 'r').read()
+            with open(os.path.join(self.caminho, 'xml/recibo-erro-694.xml')) as xml:
+                xml_recebido = xml.read()
+
             resp_ret = sanitize_response(xml_recebido.encode('utf-8'))
+
             ret_autorizar.return_value = {
                 'object': resp_ret[1],
                 'sent_xml': '<xml />',
@@ -455,8 +459,8 @@ class TestNFeBrasil(TransactionCase):
             invoice.action_br_account_invoice_open()
 
             # Lote recebido com sucesso
-            xml_recebido = open(os.path.join(
-                self.caminho, 'xml/cancelamento-sucesso.xml'), 'r').read()
+            with open(os.path.join(self.caminho, 'xml/cancelamento-sucesso.xml')) as xml:
+                xml_recebido = xml.read()
 
             resp = sanitize_response(xml_recebido.encode('utf-8'))
 
