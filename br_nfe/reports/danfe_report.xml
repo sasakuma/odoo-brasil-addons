@@ -80,7 +80,7 @@
                         <t t-if="o.company_id.cabecalho_danfe == 'horizontal'">
                             <div class="row" style="padding:0">
                                 <div class="col-xs-4">
-                                    <img t-if="o.company.logo" 
+                                    <img t-if="o.company_id.logo" 
                                         style="max-height:100px;margin-top:20px;margin-left:10px;" 
                                         t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)"/>
                                 </div>
@@ -109,7 +109,7 @@
                         </t>
 
                         <t t-if="o.company_id.cabecalho_danfe == 'vertical'">
-                            <img t-if="o.company.logo"
+                            <img t-if="o.company_id.logo"
                                 style="max-height:100px;" 
                                 t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)"/>
                             <br/>
