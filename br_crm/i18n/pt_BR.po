@@ -1286,7 +1286,7 @@ msgstr "Classificar e analisar as categorias de seus prospectos/oportunidades co
 #: code:addons/crm/static/src/js/tour.js:23
 #, python-format
 msgid "Click here to <b>create your first opportunity</b> and add it to your pipeline."
-msgstr "Click here to <b>create your first opportunity</b> and add it to your pipeline."
+msgstr "Clique aqui para <b> criar sua primeira oportunidade </ b> e adicioná-la ao seu pipeline."
 
 #. module: crm
 #. openerp-web
@@ -2681,7 +2681,7 @@ msgstr "Ganhamos!"
 #. module: crm
 #: model:ir.actions.server,name:crm.action_mark_as_lost
 msgid "Mark as lost"
-msgstr "Mark as lost"
+msgstr "Marque como perdido"
 
 #. module: crm
 #: model:ir.ui.view,arch_db:crm.crm_case_form_view_oppor
@@ -3014,7 +3014,7 @@ msgstr "Normal"
 #. module: crm
 #: model:crm.lost.reason,name:crm.lost_reason_3
 msgid "Not enough stock"
-msgstr "Not enough stock"
+msgstr "Estoque insuficiente"
 
 #. module: crm
 #: model:ir.model.fields,field_description:crm.field_crm_activity_log_note
@@ -4824,3 +4824,104 @@ msgstr "use Odoo API to import through scripts"
 #: model:ir.ui.view,arch_db:crm.crm_planner
 msgid "with your work above"
 msgstr "com o seu trabalho acima"
+
+#. module: crm
+#: model:crm.lost.reason,name:crm.lost_reason_2
+msgid "We don't have people/skills"
+msgstr "Não temos pessoas / habilidades"
+
+#. module: crm
+#: model:ir.actions.server,name:crm.action_mark_activities_done
+msgid "Mark All Activities as Done"
+msgstr "Marcar todas as atividades como feitas"
+
+#. module: crm
+#: model:ir.actions.server,name:crm.action_mark_late_activities_done
+msgid "Mark Late Activities as Done"
+msgstr "Marque as atividades atrasadas como feitas"
+
+#. module: crm
+#: model:ir.ui.view,arch_db:crm.crm_case_form_view_oppor
+msgid "Mark Lost"
+msgstr "Perdemos"
+
+#. module: crm
+#. openerp-web
+#: code:addons/crm/static/src/js/tour.js:40
+#, python-format
+msgid "Schedule an activity by clicking here"
+msgstr "Agende uma atividade clicando aqui"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/xml/systray.xml:58
+#: code:addons/mail/static/src/xml/web_kanban_activity.xml:22
+#, python-format
+msgid "No activities planned."
+msgstr "Nenhuma atividade planejada."
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/xml/web_kanban_activity.xml:56
+#, python-format
+msgid "Schedule an activity"
+msgstr "Programe uma atividade"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/js/activity.js:38
+#, python-format
+msgid "Due in %d days"
+msgstr "%d dia(s) restante(s)"
+
+#. module: mail
+#: model:mail.activity.type,name:mail.mail_activity_data_call
+msgid "Call"
+msgstr "Ligação"
+
+#. module: mail
+#: selection:account.invoice,activity_state:0
+#: selection:crm.lead,activity_state:0 selection:event.track,activity_state:0
+#: selection:hr.applicant,activity_state:0 selection:mail.activity,state:0
+#: selection:mail.activity.mixin,activity_state:0
+#: selection:maintenance.equipment,activity_state:0
+#: selection:maintenance.request,activity_state:0
+#: selection:mrp.production,activity_state:0
+#: selection:mrp.repair,activity_state:0
+#: selection:mrp.unbuild,activity_state:0 selection:note.note,activity_state:0
+#: selection:product.product,activity_state:0
+#: selection:product.template,activity_state:0
+#: selection:project.task,activity_state:0
+#: selection:purchase.order,activity_state:0
+#: selection:res.partner,activity_state:0
+#: selection:sale.order,activity_state:0
+#: selection:stock.picking,activity_state:0
+#: selection:survey.survey,activity_state:0
+msgid "Planned"
+msgstr "Planejado(s)"
+
+#. module: mail
+#: selection:account.invoice,activity_state:0
+#: selection:crm.lead,activity_state:0 selection:event.track,activity_state:0
+#: selection:hr.applicant,activity_state:0 selection:mail.activity,state:0
+#: selection:mail.activity.mixin,activity_state:0
+#: selection:maintenance.equipment,activity_state:0
+#: selection:maintenance.request,activity_state:0
+#: selection:mrp.production,activity_state:0
+#: selection:mrp.repair,activity_state:0
+#: selection:mrp.unbuild,activity_state:0 selection:note.note,activity_state:0
+#: selection:product.product,activity_state:0
+#: selection:product.template,activity_state:0
+#: selection:project.task,activity_state:0
+#: selection:purchase.order,activity_state:0
+#: selection:res.partner,activity_state:0
+#: selection:sale.order,activity_state:0
+#: selection:stock.picking,activity_state:0
+#: selection:survey.survey,activity_state:0
+msgid "Overdue"
+msgstr "Atrasado(s)"
+
+#. module: mail
+#: model:ir.model.fields,field_description:mail.field_mail_activity_date_deadline
+msgid "Due Date"
+msgstr "Agendado para"
