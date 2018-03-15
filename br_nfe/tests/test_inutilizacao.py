@@ -160,7 +160,7 @@ class TestInutilizacao(TransactionCase):
         with open(os.path.join(self.caminho, 'xml/inutilizacao_received_xml.xml')) as xml:
             received_xml = xml.read()
 
-        _, obj = sanitize_response(received_xml.encode('utf8'))
+        _, obj = sanitize_response(received_xml)
 
         inutilizar.return_value = {
             'received_xml': received_xml,
@@ -215,7 +215,7 @@ class TestInutilizacao(TransactionCase):
         with open(os.path.join(self.caminho, 'xml/inutilizacao_received_xml.xml')) as xml:
             received_xml = xml.read()
 
-        _, obj = sanitize_response(received_xml.encode('utf-8'))
+        _, obj = sanitize_response(received_xml)
 
         inutilizar.return_value = {
             'received_xml': received_xml,
@@ -269,7 +269,7 @@ class TestInutilizacao(TransactionCase):
         with open(os.path.join(self.caminho, 'xml/inutilizacao_received_ok_xml.xml')) as xml:
             received_xml = xml.read()
 
-        _, obj = sanitize_response(received_xml.encode('utf-8'))
+        _, obj = sanitize_response(received_xml)
 
         inutilizar.return_value = {
             'received_xml': received_xml,

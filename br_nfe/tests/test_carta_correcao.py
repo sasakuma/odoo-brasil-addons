@@ -214,7 +214,7 @@ class TestCartaCorrecao(TransactionCase):
         with open(os.path.join(self.caminho, 'xml/cce-retorno.xml')) as xml:
             xml_recebido = xml.read()
 
-        resp = sanitize_response(xml_recebido.encode('utf8'))
+        resp = sanitize_response(xml_recebido)
 
         recepcao.return_value = {
             'object': resp[1],

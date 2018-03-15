@@ -349,7 +349,7 @@ class TestNFeBrasil(TransactionCase):
             with open(os.path.join(self.caminho, 'xml/lote-recebido-sucesso.xml')) as xml:
                 xml_recebido = xml.read()
 
-            resp = sanitize_response(xml_recebido.encode('utf-8'))
+            resp = sanitize_response(xml_recebido)
 
             autorizar.return_value = {
                 'object': resp[1],
@@ -361,7 +361,7 @@ class TestNFeBrasil(TransactionCase):
             with open(os.path.join(self.caminho, 'xml/recibo-sucesso-schema-100.xml')) as xml:
                 xml_recebido = xml.read()
 
-            resp_ret = sanitize_response(xml_recebido.encode('utf-8'))
+            resp_ret = sanitize_response(xml_recebido)
 
             ret_autorizar.return_value = {
                 'object': resp_ret[1],
@@ -390,7 +390,7 @@ class TestNFeBrasil(TransactionCase):
             with open(os.path.join(self.caminho, 'xml/lote-recebido-sucesso.xml')) as xml:
                 xml_recebido = xml.read()
 
-            resp = sanitize_response(xml_recebido.encode('utf-8'))
+            resp = sanitize_response(xml_recebido)
 
             autorizar.return_value = {
                 'object': resp[1],
@@ -402,7 +402,7 @@ class TestNFeBrasil(TransactionCase):
             with open(os.path.join(self.caminho, 'xml/recibo-erro-schema-225.xml')) as xml:
                 xml_recebido = xml.read()
 
-            resp_ret = sanitize_response(xml_recebido.encode('utf-8'))
+            resp_ret = sanitize_response(xml_recebido)
 
             ret_autorizar.return_value = {
                 'object': resp_ret[1],
@@ -431,7 +431,7 @@ class TestNFeBrasil(TransactionCase):
             with open(os.path.join(self.caminho, 'xml/lote-recebido-sucesso.xml')) as xml:
                 xml_recebido = xml.read()
 
-            resp = sanitize_response(xml_recebido.encode('utf-8'))
+            resp = sanitize_response(xml_recebido)
 
             autorizar.return_value = {
                 'object': resp[1],
@@ -443,7 +443,7 @@ class TestNFeBrasil(TransactionCase):
             with open(os.path.join(self.caminho, 'xml/recibo-erro-694.xml')) as xml:
                 xml_recebido = xml.read()
 
-            resp_ret = sanitize_response(xml_recebido.encode('utf-8'))
+            resp_ret = sanitize_response(xml_recebido)
 
             ret_autorizar.return_value = {
                 'object': resp_ret[1],
@@ -470,7 +470,7 @@ class TestNFeBrasil(TransactionCase):
             with open(os.path.join(self.caminho, 'xml/cancelamento-sucesso.xml')) as xml:
                 xml_recebido = xml.read()
 
-            resp = sanitize_response(xml_recebido.encode('utf-8'))
+            resp = sanitize_response(xml_recebido)
 
             cancelar.return_value = {
                 'object': resp[1],
