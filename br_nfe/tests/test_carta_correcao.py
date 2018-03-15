@@ -18,6 +18,10 @@ class TestCartaCorrecao(TransactionCase):
         super(TestCartaCorrecao, self).setUp()
         self.main_company = self.env.ref('base.main_company')
         self.currency_real = self.env.ref('base.BRL')
+
+        with open(os.path.join(self.caminho, 'teste.pfx'), 'rb') as f:
+            nfe_a1_file = f.read()
+
         self.main_company.write({
             'name': 'Trustcode',
             'legal_name': 'Trustcode Tecnologia da Informação',
@@ -32,8 +36,7 @@ class TestCartaCorrecao(TransactionCase):
             'phone': '(48) 9801-6226',
             'currency_id': self.currency_real.id,
             'nfe_a1_password': '123456',
-            'nfe_a1_file': base64.b64encode(
-                open(os.path.join(self.caminho, 'teste.pfx'), 'rb').read()),
+            'nfe_a1_file': base64.b64encode(nfe_a1_file),
         })
 
         self.main_company.write({'inscr_est': '219.882.606'})
@@ -166,7 +169,8 @@ class TestCartaCorrecao(TransactionCase):
             'partner_id': self.partner_fisica.id,
         }
 
-        self.account_invoice = self.env['account.invoice'].create(default_invoice)
+        self.account_invoice = self.env['account.invoice'].create(
+            default_invoice)
 
         invoice_electronic = {
             'model': '55',
@@ -179,7 +183,8 @@ class TestCartaCorrecao(TransactionCase):
             'company_id': self.main_company.id,
             'chave_nfe': '35161221332917000163550010000000041158176721',
         }
-        self.electronic_doc = self.env['invoice.electronic'].create(invoice_electronic)
+        self.electronic_doc = self.env['invoice.electronic'].create(
+            invoice_electronic)
 
         carta_wizard_short = {
             'correcao': 'short',

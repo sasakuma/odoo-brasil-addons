@@ -23,6 +23,10 @@ class TestNFeBrasil(TransactionCase):
         super(TestNFeBrasil, self).setUp()
         self.main_company = self.env.ref('base.main_company')
         self.currency_real = self.env.ref('base.BRL')
+
+        with open(os.path.join(self.caminho, 'teste.pfx'), 'rb') as f:
+            nfe_a1_file = f.read()
+
         self.main_company.write({
             'name': 'Trustcode',
             'legal_name': 'Trustcode Tecnologia da Informação',
@@ -38,8 +42,7 @@ class TestNFeBrasil(TransactionCase):
             'currency_id': self.currency_real.id,
             'tipo_ambiente': '2',
             'nfe_a1_password': '123456',
-            'nfe_a1_file': base64.b64encode(
-                open(os.path.join(self.caminho, 'teste.pfx'), 'rb').read()),
+            'nfe_a1_file': base64.b64encode(nfe_a1_file),
         })
 
         self.main_company.write({'inscr_est': '219.882.606'})
@@ -219,7 +222,8 @@ class TestNFeBrasil(TransactionCase):
         ]
 
         self.title_type = self.env.ref('br_account.account_title_type_2')
-        self.financial_operation = self.env.ref('br_account.account_financial_operation_6')
+        self.financial_operation = self.env.ref(
+            'br_account.account_financial_operation_6')
 
         fiscal_document = self.env.ref('br_data_account.fiscal_document_55')
         payment_term = self.env.ref('account.account_payment_term_net')

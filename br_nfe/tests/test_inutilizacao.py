@@ -18,6 +18,10 @@ class TestInutilizacao(TransactionCase):
         super(TestInutilizacao, self).setUp()
         self.main_company = self.env.ref('base.main_company')
         self.currency_real = self.env.ref('base.BRL')
+
+        with open(os.path.join(self.caminho, 'teste.pfx'), 'rb') as f:
+            nfe_a1_file = f.read()
+
         self.main_company.write({
             'name': 'Trustcode',
             'legal_name': 'Trustcode Tecnologia da Informação',
@@ -32,8 +36,7 @@ class TestInutilizacao(TransactionCase):
             'phone': '(48) 9801-6226',
             'currency_id': self.currency_real.id,
             'nfe_a1_password': '123456',
-            'nfe_a1_file': base64.b64encode(
-                open(os.path.join(self.caminho, 'teste.pfx'), 'rb').read()),
+            'nfe_a1_file': base64.b64encode(nfe_a1_file),
         })
 
         self.main_company.inscr_est = '219.882.606'
