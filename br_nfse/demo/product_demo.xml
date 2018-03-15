@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <data noupdate="1">
+    <data noupdate="0">
 
         <record id="product_product_2" model="product.product">
-            <field name="name">Assessoria</field>
+            <field name="name">Servico Demo</field>
             <field name="categ_id" ref="product.product_category_3"/>
-            <field name="standard_price">40.5</field>
-            <field name="list_price">50.75</field>
+            <field name="standard_price">1.00</field>
+            <field name="list_price">2.25</field>
             <field name="type">service</field>
             <field name="fiscal_type">service</field>
+            <field name="default_code">11111</field>
             <field name="uom_id" ref="product.product_uom_hour"/>
             <field name="uom_po_id" ref="product.product_uom_hour"/>
             <field name="description_sale">Exemplo de serviço para faturamento.</field>

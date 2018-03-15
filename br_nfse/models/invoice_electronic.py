@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import logging
 from datetime import date, datetime, timedelta
+
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models
@@ -33,18 +33,15 @@ class InvoiceElectronic(models.Model):
                                        string='Webservice NFSe',
                                        default=_default_webservice_nfse)
 
-    verify_code = fields.Char(string=u'Código Autorização',
+    verify_code = fields.Char(string='Código Autorização',
                               size=20,
                               readonly=True,
                               states=STATE)
 
-    numero_nfse = fields.Char(string=u'Número NFSe',
+    numero_nfse = fields.Char(string='Número NFSe',
                               size=50,
                               readonly=True,
                               states=STATE)
-
-    def _get_source_operation(self):
-        return self.nfse_source_operation
 
     def issqn_due_date(self):
         date_emition = datetime.strptime(self.data_emissao, DTFT)
@@ -68,16 +65,16 @@ class InvoiceElectronic(models.Model):
 
                 # Pegamos a primeira porque todas as NFSe sao/devem ser da
                 # mesma prefeitura
-                report = docs[0].invoice_id.company_id.report_nfse_id.report_name
+                report = docs[0].invoice_id.company_id.report_nfse_id
 
-                action = self.env['report'].get_action(docs.ids, report)
+                action = report.report_action(docs)
                 action['report_type'] = 'qweb-pdf'
                 return action
             else:
                 raise UserError(
-                    u'Não existe um template de relatorio para NFSe '
-                    u'selecionado para a empresa emissora desta Fatura. '
-                    u'Por favor, selecione um template no cadastro da '
-                    u'empresa')
+                    'Não existe um template de relatorio para NFSe '
+                    'selecionado para a empresa emissora desta Fatura. '
+                    'Por favor, selecione um template no cadastro da '
+                    'empresa')
         else:
             return super(InvoiceElectronic, self).action_print_einvoice_report()

@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import api, fields, models
-from odoo.exceptions import UserError
 
 
 class AccountInvoice(models.Model):
@@ -40,10 +38,10 @@ class AccountInvoice(models.Model):
     nfse_status = fields.Char(string='Mensagem NFSe',
                               compute='_compute_nfse_number')
 
-    nfse_number = fields.Integer(string=u'Número NFSe',
+    nfse_number = fields.Integer(string='Número NFSe',
                                  compute='_compute_nfse_number')
 
-    nfse_exception_number = fields.Integer(string=u'Número NFSe',
+    nfse_exception_number = fields.Integer(string='Número NFSe',
                                            compute='_compute_nfse_number')
 
     @api.onchange('fiscal_document_id')
@@ -64,14 +62,6 @@ class AccountInvoice(models.Model):
             self.webservice_nfse = company.webservice_nfse
         else:
             self.webservice_nfse = False
-
-    # def _prepare_edoc_item_vals(self, line):
-    #     res = super(AccountInvoice, self)._prepare_edoc_item_vals(line)
-    #     # res['codigo_servico_paulistana'] = \
-    #     #     line.service_type_id.codigo_servico_paulistana
-    #     res['codigo_servico_paulistana'] = \
-    #         line.fiscal_position_id.service_type_id.codigo_servico_paulistana
-    #     return res
 
     def _prepare_edoc_vals(self, invoice):
         res = super(AccountInvoice, self)._prepare_edoc_vals(invoice)
