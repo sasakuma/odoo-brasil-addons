@@ -450,7 +450,7 @@ class InvoiceElectronic(models.Model):
 
     def log_exception(self, exc):
         self.codigo_retorno = -1
-        self.mensagem_retorno = exc.message
+        self.mensagem_retorno = exc
 
     def _get_state_to_send(self):
         return ('draft',)
