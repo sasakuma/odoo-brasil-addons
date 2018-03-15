@@ -1,12 +1,11 @@
-# -*- coding: utf-8 -*-
 # © 2017 Michell Stuttgart <michellstut@gmail.com>, MultidadosTI
 
 {
     'name': 'Envio de NFS-e Paulistana',
-    'summary': u"""Permite o envio de NFS-e Paulistana através das faturas do
+    'summary': """Permite o envio de NFS-e Paulistana através das faturas do
      Odoo""",
     'description': 'Envio de NFS-e - Nota Fiscal Paulistana',
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
     'category': 'account',
     'author': 'MultidadosTI',
     'license': 'AGPL-3',
@@ -29,6 +28,6 @@
         'views/br_account_service.xml',
         'views/invoice_electronic.xml',
     ],
-    'installable': False,
-    'application': True,
+    'installable': True,
+    'application': False,
 }

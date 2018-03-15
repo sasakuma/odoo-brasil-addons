@@ -48,7 +48,7 @@
             <field name="code">P</field>
         </record>
 
-        <record id="report_br_nfse_danfe_paulistana" model="ir.actions.report.xml">
+        <record id="report_br_nfse_danfe_paulistana" model="ir.actions.report">
             <field name="city_id" ref="br_base.city_3550308"/>
         </record>
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -27,7 +26,7 @@ STATE = {'edit': [('readonly', False)]}
 class InvoiceElectronicItem(models.Model):
     _inherit = 'invoice.electronic.item'
 
-    codigo_servico_paulistana = fields.Char(string=u'Código NFSe Paulistana',
+    codigo_servico_paulistana = fields.Char(string='Código NFSe Paulistana',
                                             size=5,
                                             readonly=True,
                                             states=STATE)
@@ -36,7 +35,7 @@ class InvoiceElectronicItem(models.Model):
 class InvoiceElectronic(models.Model):
     _inherit = 'invoice.electronic'
 
-    observacao_nfse = fields.Text(string=u'Observação NFSe')
+    observacao_nfse = fields.Text(string='Observação NFSe')
 
     @api.multi
     def _hook_validation(self):
@@ -45,34 +44,35 @@ class InvoiceElectronic(models.Model):
         if self.model == '001' and self.webservice_nfse == 'nfse_paulistana':
             issqn_codigo = ''
             if not self.company_id.inscr_mun:
-                errors.append(u'Inscrição municipal obrigatória')
+                errors.append('Inscrição municipal obrigatória')
             for eletr in self.electronic_item_ids:
-                prod = u'Produto: %s - %s' % (eletr.product_id.default_code,
-                                              eletr.product_id.name)
+                prod = 'Produto: %s - %s' % (eletr.product_id.default_code,
+                                             eletr.product_id.name)
                 if eletr.tipo_produto == 'product':
                     errors.append(
-                        u'Esse documento permite apenas serviços - %s' % prod)
+                        'Esse documento permite apenas serviços - %s' % prod)
                 if eletr.tipo_produto == 'service':
                     if not eletr.issqn_codigo:
-                        errors.append(u'%s - Código de Serviço' % prod)
+                        errors.append('%s - Código de Serviço' % prod)
                     if not issqn_codigo:
                         issqn_codigo = eletr.issqn_codigo
                     if issqn_codigo != eletr.issqn_codigo:
-                        errors.append(u'%s - Apenas itens com o mesmo código \
+                        errors.append('%s - Apenas itens com o mesmo código \
                                       de serviço podem ser enviados' % prod)
                     if not eletr.codigo_servico_paulistana:
-                        errors.append(u'%s - Código da NFSe paulistana não \
+                        errors.append('%s - Código da NFSe paulistana não \
                                       configurado' % prod)
                 if not eletr.pis_cst:
-                    errors.append(u'%s - CST do PIS' % prod)
+                    errors.append('%s - CST do PIS' % prod)
                 if not eletr.cofins_cst:
-                    errors.append(u'%s - CST do Cofins' % prod)
+                    errors.append('%s - CST do Cofins' % prod)
 
         return errors
 
     @api.multi
     def _prepare_electronic_invoice_values(self):
-        res = super(InvoiceElectronic, self)._prepare_electronic_invoice_values()  # noqa: 501
+        res = super(InvoiceElectronic,
+                    self)._prepare_electronic_invoice_values()
 
         if self.model == '001' and self.webservice_nfse == 'nfse_paulistana':
             tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
@@ -83,6 +83,12 @@ class InvoiceElectronic(models.Model):
             partner = self.commercial_partner_id
             city_tomador = partner.city_id
 
+            if partner.district:
+                bairro = partner.district[:30] if len(
+                    partner.district) > 30 else partner.district
+            else:
+                bairro = 'Sem Bairro'
+
             tomador = {
                 'tipo_cpfcnpj': 2 if partner.is_company else 1,
                 'cpf_cnpj': re.sub('[^0-9]', '',
@@ -91,7 +97,7 @@ class InvoiceElectronic(models.Model):
                 'logradouro': partner.street or '',
                 'numero': partner.number or '',
                 'complemento': partner.street2 or '',
-                'bairro': partner.district or 'Sem Bairro',
+                'bairro': bairro,
                 'cidade': '%s%s' % (city_tomador.state_id.ibge_code,
                                     city_tomador.ibge_code),
                 'cidade_descricao': city_tomador.name or '',
@@ -106,8 +112,7 @@ class InvoiceElectronic(models.Model):
             city_prestador = self.company_id.partner_id.city_id
 
             prestador = {
-                'cnpj': re.sub(
-                    '[^0-9]', '', self.company_id.partner_id.cnpj_cpf or ''),
+                'cnpj': re.sub('[^0-9]', '', self.company_id.partner_id.cnpj_cpf or ''),
                 'razao_social': self.company_id.partner_id.legal_name or '',
                 'inscricao_municipal': re.sub(
                     '[^0-9]', '', self.company_id.partner_id.inscr_mun or ''),
@@ -135,18 +140,18 @@ class InvoiceElectronic(models.Model):
                 locale.setlocale(locale.LC_MONETARY, 'pt_BR.utf8')
                 value = locale.currency(parcel.parceling_value)
 
-                descricao += u'Vencimento(s) / Parcela(s): {} {} | '
+                descricao += 'Vencimento(s) / Parcela(s): {} {} | '
                 descricao = descricao.format(dt, value)
 
-            descricao += self.get_nfse_tribute_description().replace(u'\n',
-                                                                     u' | ')
+            descricao += self.get_nfse_tribute_description().replace('\n',
+                                                                     ' | ')
 
             # Adicionamos da fatura na observacao da nota
-            descricao += u'Número do pedido interno: {} | '
+            descricao += 'Número do pedido interno: {} | '
             descricao = descricao.format(self.invoice_id.number)
 
             if self.informacoes_legais:
-                descricao += self.informacoes_legais + u' | '
+                descricao += self.informacoes_legais + ' | '
 
             if self.informacoes_complementares:
                 descricao += self.informacoes_complementares
@@ -259,13 +264,13 @@ class InvoiceElectronic(models.Model):
 
                 if self.ambiente == 'producao':  # Apenas producao tem essa tag
                     values.update({
-                        'verify_code': retorno.ChaveNFeRPS.ChaveNFe.CodigoVerificacao,  # noqa: 501
+                        'verify_code': retorno.ChaveNFeRPS.ChaveNFe.CodigoVerificacao,
                         'numero_nfse': retorno.ChaveNFeRPS.ChaveNFe.NumeroNFe,
                     })
                 else:
                     values.update({
-                        'verify_code': u'X' * 8,
-                        'numero_nfse': u'9' * 8,
+                        'verify_code': 'X' * 8,
+                        'numero_nfse': '9' * 8,
                     })
 
                 self.write(values)
@@ -358,10 +363,10 @@ class InvoiceElectronic(models.Model):
 
         aux = []
 
-        if self.invoice_id.invoice_model == '001' and self.webservice_nfse == 'nfse_paulistana':  # noqa: 501
+        if self.invoice_id.invoice_model == '001' and self.webservice_nfse == 'nfse_paulistana':
 
-            observacao_nfse = (u'(#) Esta NFS-e foi emitida com respaldo na '
-                               u'Lei nº 14.097/2005; ')
+            observacao_nfse = ('(#) Esta NFS-e foi emitida com respaldo na '
+                               'Lei nº 14.097/2005; ')
 
             tributacao = self.fiscal_position_id.nfse_source_operation_id.code
 
@@ -371,8 +376,8 @@ class InvoiceElectronic(models.Model):
             if self.state == 'done':
 
                 if self.company_id.fiscal_type == '1':
-                    observacao_nfse = (u'(#) Documento emitido por ME ou EPP '
-                                       u'optante pelo Simples Nacional; ')
+                    observacao_nfse = ('(#) Documento emitido por ME ou EPP '
+                                       'optante pelo Simples Nacional; ')
 
                     aux.append(observacao_nfse)
 
@@ -382,13 +387,13 @@ class InvoiceElectronic(models.Model):
                 ])
 
                 if docs:
-                    observacao_nfse = (u'(#) Esta NFS-e substitui a NFS-e '
-                                       u'N° %s; ' % docs[0].numero_nfse)
+                    observacao_nfse = ('(#) Esta NFS-e substitui a NFS-e '
+                                       'N° %s; ' % docs[0].numero_nfse)
                     aux.append(observacao_nfse)
 
                 if tributacao == 'T':
-                    observacao_nfse = (u'(#) Data de vencimento do ISS desta '
-                                       u'NFS-e: %s; ' % self.issqn_due_date())
+                    observacao_nfse = ('(#) Data de vencimento do ISS desta '
+                                       'NFS-e: %s; ' % self.issqn_due_date())
                     aux.append(observacao_nfse)
 
                     # Partner estabelecido na cidade de SP
@@ -396,58 +401,58 @@ class InvoiceElectronic(models.Model):
 
                     if self.partner_id.city_id.ibge_code == '50308' \
                             and issqn_tipo == 'R':
-                        observacao_nfse = (u'(#) O ISS desta NFS-e será RETIDO'
-                                           u' pelo Tomador de Serviço que '
-                                           u'deverá recolher através da Guia '
-                                           u'da NFS-e; ')
+                        observacao_nfse = ('(#) O ISS desta NFS-e será RETIDO'
+                                           ' pelo Tomador de Serviço que '
+                                           'deverá recolher através da Guia '
+                                           'da NFS-e; ')
                         aux.append(observacao_nfse)
 
                 elif tributacao == 'F':
-                    observacao_nfse = (u'(#) O ISS desta NFS-e é devido FORA '
-                                       u'do Município de São Paulo; ')
+                    observacao_nfse = ('(#) O ISS desta NFS-e é devido FORA '
+                                       'do Município de São Paulo; ')
                     aux.append(observacao_nfse)
 
                     issqn_tipo = self.electronic_item_ids[0].issqn_codigo
 
                     if issqn_tipo == 'R':
-                        observacao_nfse = (u'(#) O ISS desta NFS-e será RETIDO'
-                                           u' pelo Tomador de Serviço; ')
+                        observacao_nfse = ('(#) O ISS desta NFS-e será RETIDO'
+                                           ' pelo Tomador de Serviço; ')
                         aux.append(observacao_nfse)
 
                 elif tributacao in ['A', 'B', 'M', 'N']:
-                    observacao_nfse = (u'(#) Os serviços referentes a esta '
-                                       u'NFS-e são Isentos/Imunes do ISS; ')
+                    observacao_nfse = ('(#) Os serviços referentes a esta '
+                                       'NFS-e são Isentos/Imunes do ISS; ')
                     aux.append(observacao_nfse)
 
                 elif tributacao in ['X', 'V']:
-                    observacao_nfse = (u'(#) ISS suspenso por decisão '
-                                       u'judicial; ')
+                    observacao_nfse = ('(#) ISS suspenso por decisão '
+                                       'judicial; ')
                     aux.append(observacao_nfse)
 
             elif self.state == 'cancel':
                 event = self.electronic_event_ids.search([
                     ('name', '=', 'Nota Fiscal Paulistana Cancelada')])
 
-                observacao_nfse = (u'(#) Esta NFS-e foi CANCELADA em: %s; '
+                observacao_nfse = ('(#) Esta NFS-e foi CANCELADA em: %s; '
                                    % event[0].create_date)
 
                 aux.append(observacao_nfse)
 
             elif self.state == 'draft':
 
-                observacao_nfse = (u'(#) O RPS deverá ser substituído '
-                                   u'por NF-e até o 10º (décimo) dia '
-                                   u'subsequente ao de sua emissão; '
-                                   u'\nA não substituição deste RPS '
-                                   u'pela NF-e, ou a substituição fora '
-                                   u'do prazo, sujeitará o prestador '
-                                   u'de serviços às penalidades previstas '
-                                   u'na legislação em vigor')
+                observacao_nfse = ('(#) O RPS deverá ser substituído '
+                                   'por NF-e até o 10º (décimo) dia '
+                                   'subsequente ao de sua emissão; '
+                                   '\nA não substituição deste RPS '
+                                   'pela NF-e, ou a substituição fora '
+                                   'do prazo, sujeitará o prestador '
+                                   'de serviços às penalidades previstas '
+                                   'na legislação em vigor')
                 aux.append(observacao_nfse)
 
             if self.state in ['done', 'cancel']:
-                observacao_nfse = (u'(#) Esta NFS-e substitui o RPS Nº %d '
-                                   u'Série %s, emitido em %s; ' %
+                observacao_nfse = ('(#) Esta NFS-e substitui o RPS Nº %d '
+                                   'Série %s, emitido em %s; ' %
                                    (self.numero,
                                     self.serie.code,
                                     self.data_emissao[:10]))
@@ -463,7 +468,7 @@ class InvoiceElectronic(models.Model):
     def get_reg_code(self):
         """ Retorna codigo data_emissaoucnpjcpf presente no header do danfse"""
 
-        if self.invoice_id.invoice_model == '001' and self.webservice_nfse == 'nfse_paulistana':  # noqa: 501
+        if self.invoice_id.invoice_model == '001' and self.webservice_nfse == 'nfse_paulistana':
 
             cnpj_cpf = self.company_id.partner_id.cnpj_cpf.replace('.', '')
             cnpj_cpf = cnpj_cpf.replace('-', '')
@@ -480,19 +485,20 @@ class InvoiceElectronic(models.Model):
 
         description = ''
 
-        if self.invoice_id.invoice_model == '001' and self.webservice_nfse == 'nfse_paulistana':  # noqa: 501
+        if self.invoice_id.invoice_model == '001' and self.webservice_nfse == 'nfse_paulistana':
 
             lines = self.invoice_id.invoice_line_ids
 
             total_federal = sum(lines.mapped('tributos_estimados_federais'))
-            total_municipal = sum(lines.mapped('tributos_estimados_municipais'))
+            total_municipal = sum(lines.mapped(
+                'tributos_estimados_municipais'))
 
             service_type = self.fiscal_position_id.service_type_id
 
-            description += (u'Valor aproximado dos tributos: '
-                            u'Federal {} ({}%). '
-                            u'Municipal {} ({}%), '
-                            u'conforme lei 12.741/2012 Fonte: IBPT. \n')
+            description += ('Valor aproximado dos tributos: '
+                            'Federal {} ({}%). '
+                            'Municipal {} ({}%), '
+                            'conforme lei 12.741/2012 Fonte: IBPT. \n')
 
             # Definimos o locale para trabalhar com valores numericos
             # de modo a formatar os valores em porcentagem
