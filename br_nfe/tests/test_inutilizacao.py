@@ -157,10 +157,10 @@ class TestInutilizacao(TransactionCase):
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_ok(self, inutilizar):
 
-        with open(os.path.join(self.caminho, 'xml/inutilizacao_sent_xml.xml')) as xml:
+        with open(os.path.join(self.caminho, 'xml', 'inutilizacao_sent_xml.xml')) as xml:
             sent_xml = xml.read()
 
-        with open(os.path.join(self.caminho, 'xml/inutilizacao_received_xml.xml')) as xml:
+        with open(os.path.join(self.caminho, 'xml', 'inutilizacao_received_xml.xml')) as xml:
             received_xml = xml.read()
 
         _, obj = sanitize_response(received_xml)
@@ -212,10 +212,10 @@ class TestInutilizacao(TransactionCase):
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_2_sequences(self, inutilizar):
 
-        with open(os.path.join(self.caminho, 'xml/inutilizacao_sent_xml.xml')) as xml:
+        with open(os.path.join(self.caminho, 'xml', 'inutilizacao_sent_xml.xml')) as xml:
             sent_xml = xml.read()
 
-        with open(os.path.join(self.caminho, 'xml/inutilizacao_received_xml.xml')) as xml:
+        with open(os.path.join(self.caminho, 'xml', 'inutilizacao_received_xml.xml')) as xml:
             received_xml = xml.read()
 
         _, obj = sanitize_response(received_xml)
@@ -266,10 +266,10 @@ class TestInutilizacao(TransactionCase):
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_return_ok(self, inutilizar):
 
-        with open(os.path.join(self.caminho, 'xml/inutilizacao_sent_xml.xml')) as xml:
+        with open(os.path.join(self.caminho, 'xml', 'inutilizacao_sent_xml.xml')) as xml:
             sent_xml = xml.read()
 
-        with open(os.path.join(self.caminho, 'xml/inutilizacao_received_ok_xml.xml')) as xml:
+        with open(os.path.join(self.caminho, 'xml', 'inutilizacao_received_ok_xml.xml')) as xml:
             received_xml = xml.read()
 
         _, obj = sanitize_response(received_xml)

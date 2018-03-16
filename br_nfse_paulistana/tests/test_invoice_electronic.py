@@ -224,7 +224,7 @@ class TestNFeBrasil(TransactionCase):
             invoice.action_br_account_invoice_open()
 
             # Lote recebido com sucesso
-            with open(os.path.join(self.caminho, 'xml/nfse-sucesso.xml')) as xml:
+            with open(os.path.join(self.caminho, 'xml', 'nfse-sucesso.xml')) as xml:
                 xml_recebido = xml.read()
 
             resp = sanitize_response(xml_recebido)
@@ -260,7 +260,7 @@ class TestNFeBrasil(TransactionCase):
             invoice.action_br_account_invoice_open()
 
             # Lote recebido com sucesso
-            with open(os.path.join(self.caminho, 'xml/cancelamento-sucesso.xml')) as xml:
+            with open(os.path.join(self.caminho, 'xml', 'cancelamento-sucesso.xml')) as xml:
                 xml_recebido = xml.read()
 
             resp = sanitize_response(xml_recebido)
@@ -296,7 +296,7 @@ class TestNFeBrasil(TransactionCase):
             invoice.action_br_account_invoice_open()
 
             # Lote recebido com sucesso
-            with open(os.path.join(self.caminho, 'xml/cancelamento-erro.xml')) as xml:
+            with open(os.path.join(self.caminho, 'xml', 'cancelamento-erro.xml')) as xml:
                 xml_recebido = xml.read()
 
             resp = sanitize_response(xml_recebido)

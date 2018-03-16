@@ -216,7 +216,7 @@ class TestCartaCorrecao(TransactionCase):
     @mock.patch('odoo.addons.br_nfe.wizard.carta_correcao_eletronica.recepcao_evento_carta_correcao')
     def test_carta_correca_eletronica(self, recepcao):
 
-        with open(os.path.join(self.caminho, 'xml/cce-retorno.xml')) as xml:
+        with open(os.path.join(self.caminho, 'xml', 'cce-retorno.xml')) as xml:
             xml_recebido = xml.read()
 
         resp = sanitize_response(xml_recebido)
