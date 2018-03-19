@@ -11,6 +11,41 @@ from odoo.addons import decimal_precision as dp
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
+    @api.multi
+    def _prepare_invoice(self):
+        res = super(SaleOrder, self)._prepare_invoice()
+
+        if self.fiscal_position_id:
+            if self.fiscal_position_id.account_id:
+                res['account_id'] = self.fiscal_position_id.account_id.id
+
+            if self.fiscal_position_id.journal_id:
+                res['journal_id'] = self.fiscal_position_id.journal_id.id
+
+            if self.fiscal_position_id.fiscal_observation_ids:
+                res['fiscal_observation_ids'] = [
+                    (6, None, self.fiscal_position_id.fiscal_observation_ids.ids),
+                ]
+        return res
+
+    total_bruto = fields.Float(string='Total Bruto ( = )',
+                               readonly=True,
+                               compute='_amount_all',
+                               digits=dp.get_precision('Account'), store=True)
+
+    total_tax = fields.Float(string='Impostos ( + )',
+                             readonly=True,
+                             compute='_amount_all',
+                             digits=dp.get_precision('Account'),
+                             store=True)
+
+    total_desconto = fields.Float(string='Desconto Total ( - )',
+                                  readonly=True,
+                                  compute='_amount_all',
+                                  digits=dp.get_precision('Account'),
+                                  store=True,
+                                  help="The discount amount.")
+
     @api.depends('order_line.price_total', 'order_line.valor_desconto')
     def _amount_all(self):
         super(SaleOrder, self)._amount_all()
@@ -19,31 +54,6 @@ class SaleOrder(models.Model):
             price_subtotal = sum(l.price_subtotal for l in order.order_line)
             order.update({
                 'total_tax': price_total - price_subtotal,
-                'total_desconto': sum(l.valor_desconto
-                                      for l in order.order_line),
-                'total_bruto': sum(l.valor_bruto
-                                   for l in order.order_line),
+                'total_desconto': sum(l.valor_desconto for l in order.order_line),
+                'total_bruto': sum(l.valor_bruto for l in order.order_line),
             })
-
-    @api.multi
-    def _prepare_invoice(self):
-        res = super(SaleOrder, self)._prepare_invoice()
-        if self.fiscal_position_id and self.fiscal_position_id.account_id:
-            res['account_id'] = self.fiscal_position_id.account_id.id
-        if self.fiscal_position_id and self.fiscal_position_id.journal_id:
-            res['journal_id'] = self.fiscal_position_id.journal_id.id
-        if self.fiscal_position_id.fiscal_observation_ids:
-            res['fiscal_observation_ids'] = [
-                (6, None, self.fiscal_position_id.fiscal_observation_ids.ids)]
-        return res
-
-    total_bruto = fields.Float(
-        string='Total Bruto ( = )', readonly=True, compute='_amount_all',
-        digits=dp.get_precision('Account'), store=True)
-    total_tax = fields.Float(
-        string='Impostos ( + )', readonly=True, compute='_amount_all',
-        digits=dp.get_precision('Account'), store=True)
-    total_desconto = fields.Float(
-        string='Desconto Total ( - )', readonly=True, compute='_amount_all',
-        digits=dp.get_precision('Account'), store=True,
-        help="The discount amount.")
