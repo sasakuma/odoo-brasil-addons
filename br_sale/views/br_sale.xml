@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-    <menuitem id="menu_action_br_base_city_form" name="Municípios"
-              parent="sales_team.menu_localisation" action="br_base.action_br_base_city_form"/>
-
-    <menuitem name="CEPs" id="menu_action_br_base_zip_form"
-              parent="sales_team.menu_localisation" action="br_zip.action_br_zip"/>
-
+    <menuitem id="menu_action_br_base_city_form" name="Municípios" parent="contacts.menu_localisation" action="br_base.action_br_base_city_form"/>
+    <menuitem name="CEPs" id="menu_action_br_base_zip_form" parent="contacts.menu_localisation" action="br_zip.action_br_zip"/>
 </odoo>

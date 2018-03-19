@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2009  Renato Lima - Akretion
 # © 2012  Raphaël Valyi - Akretion
 # © 2016 Danimar Ribeiro, Trustcode
@@ -97,23 +96,23 @@ class SaleOrderLine(models.Model):
         for line in self:
             msg = []
             if line.cfop_id:
-                msg += [u'CFOP: %s' % line.cfop_id.code]
-            msg += [u'IPI na base ICMS: %s' % (
-                u'Sim' if line.incluir_ipi_base else u'Não')]
+                msg += ['CFOP: %s' % line.cfop_id.code]
+            msg += ['IPI na base ICMS: %s' % (
+                'Sim' if line.incluir_ipi_base else 'Não')]
             if line.icms_st_aliquota_mva:
-                msg += [u'MVA (%%): %.2f' % line.icms_st_aliquota_mva]
+                msg += ['MVA (%%): %.2f' % line.icms_st_aliquota_mva]
             if line.aliquota_icms_proprio:
-                msg += [u'ICMS Intra (%%): %.2f' % line.aliquota_icms_proprio]
+                msg += ['ICMS Intra (%%): %.2f' % line.aliquota_icms_proprio]
             if line.icms_aliquota_reducao_base:
-                msg += [u'Red. Base ICMS (%%): %.2f' %
+                msg += ['Red. Base ICMS (%%): %.2f' %
                         line.icms_aliquota_reducao_base]
             if line.icms_st_aliquota_reducao_base:
-                msg += [u'Red. Base ICMS ST (%%): %.2f' %
+                msg += ['Red. Base ICMS ST (%%): %.2f' %
                         line.icms_st_aliquota_reducao_base]
             if line.ipi_reducao_bc:
-                msg += [u'Red. Base IPI (%%): %.2f' % line.ipi_reducao_bc]
+                msg += ['Red. Base IPI (%%): %.2f' % line.ipi_reducao_bc]
 
-            line.detalhes_calculo = u'\n'.join(msg)
+            line.detalhes_calculo = '\n'.join(msg)
 
     icms_rule_id = fields.Many2one(
         'account.fiscal.position.tax.rule', 'Regra ICMS')
@@ -132,27 +131,27 @@ class SaleOrderLine(models.Model):
 
     icms_cst_normal = fields.Char(string="CST ICMS", size=5)
     icms_csosn_simples = fields.Char(string="CSOSN ICMS", size=5)
-    icms_st_aliquota_mva = fields.Float(string=u'Alíquota MVA (%)',
+    icms_st_aliquota_mva = fields.Float(string='Alíquota MVA (%)',
                                         digits=dp.get_precision('Account'))
     aliquota_icms_proprio = fields.Float(
-        string=u'Alíquota ICMS Próprio (%)',
+        string='Alíquota ICMS Próprio (%)',
         digits=dp.get_precision('Account'))
     incluir_ipi_base = fields.Boolean(string="Incluir IPI na Base ICMS")
     icms_aliquota_reducao_base = fields.Float(
-        string=u'Redução Base ICMS (%)', digits=dp.get_precision('Account'))
+        string='Redução Base ICMS (%)', digits=dp.get_precision('Account'))
     icms_st_aliquota_reducao_base = fields.Float(
-        string=u'Redução Base ICMS ST(%)', digits=dp.get_precision('Account'))
-    icms_st_aliquota_deducao = fields.Float(string=u"% Dedução",
-                                            help=u"Alíquota interna ou interestadual "  # noqa: 501
-                                                 u"aplicada sobre o valor da operação para "  # noqa: 501
-                                                 u"deduzir do ICMS ST - Para empresas do"  # noqa: 501
-                                                 u" Simples Nacional",
+        string='Redução Base ICMS ST(%)', digits=dp.get_precision('Account'))
+    icms_st_aliquota_deducao = fields.Float(string="% Dedução",
+                                            help="Alíquota interna ou interestadual "  # noqa: 501
+                                                 "aplicada sobre o valor da operação para "  # noqa: 501
+                                                 "deduzir do ICMS ST - Para empresas do"  # noqa: 501
+                                                 " Simples Nacional",
                                             digits=dp.get_precision('Account'))
 
     tem_difal = fields.Boolean(string="Possui Difal")
 
     ipi_cst = fields.Char(string='CST IPI', size=5)
-    ipi_reducao_bc = fields.Float(string=u'Redução Base IPI (%)',
+    ipi_reducao_bc = fields.Float(string='Redução Base IPI (%)',
                                   digits=dp.get_precision('Account'))
 
     pis_cst = fields.Char(string='CST PIS', size=5)
@@ -168,17 +167,17 @@ class SaleOrderLine(models.Model):
                                digits=dp.get_precision('Sale Price'))
 
     price_without_tax = fields.Float(compute='_compute_amount',
-                                     string=u'Preço Base',
+                                     string='Preço Base',
                                      store=True,
                                      digits=dp.get_precision('Sale Price'))
 
-    detalhes_calculo = fields.Text(string=u"Detalhes Cálculo",
+    detalhes_calculo = fields.Text(string="Detalhes Cálculo",
                                    compute='_compute_detalhes',
                                    store=True)
 
     fiscal_position_id = fields.Many2one(
         comodel_name='account.fiscal.position',
-        string=u'Posição Fiscal',
+        string='Posição Fiscal',
         related='order_id.fiscal_position_id')
 
     def _update_tax_from_ncm(self):
@@ -205,7 +204,7 @@ class SaleOrderLine(models.Model):
                 vals = fpos.map_tax_extra_values(
                     line.company_id, line.product_id, line.order_id.partner_id)
 
-                for key, value in vals.iteritems():
+                for key, value in list(vals.items()):
                     if value and key in line._fields:
                         line.update({key: value})
 
@@ -269,7 +268,6 @@ class SaleOrderLine(models.Model):
         res['company_fiscal_type'] = self.company_id.fiscal_type
         res['cfop_id'] = self.cfop_id.id
         ncm = self.product_id.fiscal_classification_id
-        # service = self.product_id.service_type_id
         service = self.fiscal_position_id.service_type_id
         res['fiscal_classification_id'] = ncm.id
         res['service_type_id'] = service.id

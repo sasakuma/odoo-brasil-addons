@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -46,8 +45,6 @@ class TestSaleOrder(TransactionCase):
             'default_code': '25',
             'type': 'service',
             'fiscal_type': 'service',
-            # 'service_type_id': self.env.ref(
-            #     'br_data_account.service_type_101').id,
             'list_price': 50.0,
             'property_account_income_id': self.revenue_account.id,
         })
@@ -68,7 +65,7 @@ class TestSaleOrder(TransactionCase):
             'property_account_receivable_id': self.receivable_account.id,
         }
         self.partner_fisica = self.env['res.partner'].create(dict(
-            default_partner.items(),
+            list(default_partner.items()),
             cnpj_cpf='545.770.154-98',
             company_type='person',
             is_company=False,
@@ -77,7 +74,7 @@ class TestSaleOrder(TransactionCase):
             city_id=self.env.ref('br_base.city_4205407').id
         ))
         self.partner_juridica = self.env['res.partner'].create(dict(
-            default_partner.items(),
+            list(default_partner.items()),
             cnpj_cpf='05.075.837/0001-13',
             company_type='company',
             is_company=True,
@@ -208,12 +205,12 @@ class TestSaleOrder(TransactionCase):
         }
 
         self.sales_order = self.env['sale.order'].create(dict(
-            default_saleorder.items(),
+            list(default_saleorder.items()),
             name="SO 001",
             partner_id=self.partner_fisica.id
         ))
         self.sales_order |= self.env['sale.order'].create(dict(
-            default_saleorder.items(),
+            list(default_saleorder.items()),
             name="SO 002",
             partner_id=self.partner_juridica.id
         ))
@@ -237,8 +234,6 @@ class TestSaleOrder(TransactionCase):
                 self.assertEqual(line.cfop_id, inv_line.cfop_id)
                 self.assertEqual(line.product_id.fiscal_classification_id,
                                  inv_line.fiscal_classification_id)
-                # self.assertEqual(line.product_id.service_type_id,
-                #                  inv_line.service_type_id)
                 self.assertEqual(line.fiscal_position_id.service_type_id,
                                  inv_line.service_type_id)
                 self.assertEqual(line.product_id.origin, inv_line.icms_origem)
