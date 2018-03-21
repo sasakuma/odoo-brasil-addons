@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2013  Renato Lima - Akretion
 # © 2013  Raphaël Valyi - Akretion
 # © 2016 Danimar Ribeiro, Trustcode
@@ -11,13 +10,16 @@
     'license': 'AGPL-3',
     'author': 'Akretion, OpenERPBrasil.org',
     'website': 'http://openerpbrasil.org',
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
     'depends': [
-        'sale_stock', 'br_sale', 'br_stock_account'
+        'sale_stock',
+        'br_sale',
+        'br_stock_account',
     ],
     'data': [
-        'views/sale_stock_view.xml',
+        'views/sale_stock.xml',
     ],
-    'auto_install': True,
-    'installable': False,
+    'installable': True,
+    'auto_install': False,
+    'application': False,
 }

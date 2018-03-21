@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -6,6 +5,7 @@ from odoo.addons.sale.tests.test_sale_common import TestSale
 
 
 class TestBrSaleStock(TestSale):
+
     def test_sale_order_ratio_expenses(self):
         """ Test the sale order new fields
             - Invoice repeatedly while varrying delivered quantities and
