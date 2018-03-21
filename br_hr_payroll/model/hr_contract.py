@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 ##############################################################################
 #
 #    Brazillian Human Resources Payroll module for OpenERP
@@ -50,23 +49,23 @@ class HrContract(models.Model):
             else:
                 item.calc_date = False
 
-    value_va = fields.Float(u'Vale Alimentação', help=u'Valor diário')
-    percent_va = fields.Float(u'% Vale Alimentação',
-                              help=u'Percentagem descontada ao final do mês')
-    value_vr = fields.Float(u'Vale Refeição', help=u'Valor diário')
-    percent_vr = fields.Float(u"% Vale Refeição",
-                              help=u'Percentual descontado ao fim do mês')
+    value_va = fields.Float('Vale Alimentação', help='Valor diário')
+    percent_va = fields.Float('% Vale Alimentação',
+                              help='Percentagem descontada ao final do mês')
+    value_vr = fields.Float('Vale Refeição', help='Valor diário')
+    percent_vr = fields.Float("% Vale Refeição",
+                              help='Percentual descontado ao fim do mês')
     workeddays = fields.Float(compute=_get_worked_days,
                               string="Dias trabalhados")
     transportation_voucher = fields.Float(
-        'Vale Transporte', help=u'Valor diário')
+        'Vale Transporte', help='Valor diário')
     percent_transportation = fields.Float(
         '% Vale Transporte',
-        help=u'Percentual descontado ao fim do mês')
+        help='Percentual descontado ao fim do mês')
     health_insurance = fields.Float(
-        u'Plano de saúde', help=u'Valor mensal do plano de saúde')
+        'Plano de saúde', help='Valor mensal do plano de saúde')
     health_insurance_dependent = fields.Float(
-        u'Plano de Saúde de Dependentes',
-        help=u'Plano de Saúde para Cônjugue e Dependentes')
+        'Plano de Saúde de Dependentes',
+        help='Plano de Saúde para Cônjugue e Dependentes')
     calc_date = fields.Boolean(compute=_check_date, string="Calcular data")
     ir_value = fields.Float(string="Valor IR")

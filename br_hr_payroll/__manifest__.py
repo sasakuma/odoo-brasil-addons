@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 ##############################################################################
 #
 #    Brazillian Human Resources Payroll module for OpenERP
@@ -22,7 +21,7 @@
 
 {
     'name': 'Folha de Pagamento Brasil',
-    'summary': u"""Permite gerar o cálculo automático do pagamento a seus
+    'summary': """Permite gerar o cálculo automático do pagamento a seus
         funcionários - Mantido por Trustcode""",
     'description': 'Folha de Pagamento Brasil',
     'category': 'Localization',
@@ -30,13 +29,18 @@
     'license': 'AGPL-3',
     'maintainer': 'Trustcode',
     'website': 'http://www.trustcode.com.br',
-    'version': '10.0.1.0.0',
-    'depends': ['hr_payroll', 'hr_contract', 'br_hr'],
+    'version': '11.0.1.0.0',
+    'depends': [
+        'hr_payroll',
+        'hr_contract',
+        'br_hr',
+    ],
     'data': [
         'data/br_hr_payroll_data.xml',
         'view/hr_contract_view.xml',
         'view/hr_employee.xml'
     ],
-    'installable': False,
-    'application': True,
+    'installable': True,
+    'auto_install': False,
+    'application': False,
 }

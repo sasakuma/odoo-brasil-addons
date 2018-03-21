@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Alessandro Fernandes Martini, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -24,5 +23,5 @@ class HrEmployee(models.Model):
             item.accumulated_fgts = ((fgts_positivo[0] or 0) -
                                      (fgts_negativo[0] or 0))
 
-    accumulated_fgts = fields.Float(u'FGTS Acumulado',
+    accumulated_fgts = fields.Float('FGTS Acumulado',
                                     compute=get_accumulated_fgts)
