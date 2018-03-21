@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -40,13 +39,13 @@ class AccountInvoice(models.Model):
 
     # Transporte
     freight_responsibility = fields.Selection(
-        [('0', u'0 - Emitente'),
-         ('1', u'1 - Destinatário'),
-         ('2', u'2 - Terceiros'),
-         ('9', u'9 - Sem Frete')],
-        u'Modalidade do frete', default="9")
+        [('0', '0 - Emitente'),
+         ('1', '1 - Destinatário'),
+         ('2', '2 - Terceiros'),
+         ('9', '9 - Sem Frete')],
+        'Modalidade do frete', default="9")
     carrier_id = fields.Many2one('res.partner', 'Transportadora')
-    vehicle_plate = fields.Char(u'Placa do Veículo', size=7)
+    vehicle_plate = fields.Char('Placa do Veículo', size=7)
     vehicle_state_id = fields.Many2one('res.country.state', 'UF da Placa')
     vehicle_rntc = fields.Char('RNTC', size=20)
 
@@ -55,16 +54,16 @@ class AccountInvoice(models.Model):
     tow_rntc = fields.Char('RNTC Reboque', size=20)
 
     weight = fields.Float(string='Peso Bruto', help="O peso bruto em Kg.")
-    weight_net = fields.Float(u'Peso Líquido', help=u"O peso líquido em Kg.")
-    number_of_packages = fields.Integer(u'Nº Volumes')
-    kind_of_packages = fields.Char(u'Espécie', size=60)
+    weight_net = fields.Float('Peso Líquido', help="O peso líquido em Kg.")
+    number_of_packages = fields.Integer('Nº Volumes')
+    kind_of_packages = fields.Char('Espécie', size=60)
     brand_of_packages = fields.Char('Marca', size=60)
-    notation_of_packages = fields.Char(u'Numeração', size=60)
+    notation_of_packages = fields.Char('Numeração', size=60)
 
     # Exportação
     uf_saida_pais_id = fields.Many2one(
         'res.country.state', domain=[('country_id.code', '=', 'BR')],
-        string=u"UF Saída do País")
+        string="UF Saída do País")
     local_embarque = fields.Char('Local de Embarque', size=60)
     local_despacho = fields.Char('Local de Despacho', size=60)
 
@@ -108,32 +107,3 @@ class AccountInvoice(models.Model):
         vals['seguro'] = invoice_line.valor_seguro
         vals['outras_despesas'] = invoice_line.outras_despesas
         return vals
-
-
-class AccountInvoiceLine(models.Model):
-    _inherit = 'account.invoice.line'
-
-    def _prepare_tax_context(self):
-        res = super(AccountInvoiceLine, self)._prepare_tax_context()
-        res.update({
-            'valor_frete': self.valor_frete,
-            'valor_seguro': self.valor_seguro,
-            'outras_despesas': self.outras_despesas,
-        })
-        return res
-
-    @api.one
-    @api.depends('valor_frete', 'valor_seguro', 'outras_despesas')
-    def _compute_price(self):
-        super(AccountInvoiceLine, self)._compute_price()
-
-        total = (self.valor_bruto - self.valor_desconto +
-                 self.valor_frete + self.valor_seguro + self.outras_despesas)
-        self.update({'price_total': total})
-
-    valor_frete = fields.Float(
-        '(+) Frete', digits=dp.get_precision('Account'), default=0.00)
-    valor_seguro = fields.Float(
-        '(+) Seguro', digits=dp.get_precision('Account'), default=0.00)
-    outras_despesas = fields.Float(
-        '(+) Despesas', digits=dp.get_precision('Account'), default=0.00)
