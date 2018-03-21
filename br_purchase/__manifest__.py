@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -9,14 +8,16 @@
     'license': 'AGPL-3',
     'author': 'Trustcode',
     'website': 'http://www.trustcode.com.br',
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
     'depends': [
-        'purchase', 'br_account',
+        'purchase',
+        'br_account',
     ],
     'data': [
-        'views/purchase_view.xml',
+        'views/purchase_order.xml',
         'views/account_invoice.xml',
     ],
-    'installable': False,
-    'auto_install': True
+    'installable': True,
+    'auto_install': False,
+    'application': False,
 }

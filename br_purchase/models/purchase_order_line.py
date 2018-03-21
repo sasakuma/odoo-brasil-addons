@@ -1,52 +1,8 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import models, fields, api
 from odoo.addons import decimal_precision as dp
-
-
-class PurchaseOrder(models.Model):
-    _inherit = 'purchase.order'
-
-    @api.depends('order_line.price_total')
-    def _amount_all(self):
-        super(PurchaseOrder, self)._amount_all()
-        for order in self:
-            price_total = sum(l.price_total for l in order.order_line)
-            price_subtotal = sum(l.price_subtotal for l in order.order_line)
-            order.update({
-                'amount_untaxed': price_subtotal,
-                'amount_tax': price_total - price_subtotal,
-                'amount_total': price_total,
-                'total_tax': price_total - price_subtotal,
-                'total_bruto': sum(l.valor_bruto
-                                   for l in order.order_line),
-            })
-
-    @api.multi
-    def _prepare_invoice(self):
-        res = super(PurchaseOrder, self)._prepare_invoice()
-        if self.fiscal_position_id and self.fiscal_position_id.account_id:
-            res['account_id'] = self.fiscal_position_id.account_id.id
-        if self.fiscal_position_id and self.fiscal_position_id.journal_id:
-            res['journal_id'] = self.fiscal_position_id.journal_id.id
-        return res
-
-    total_bruto = fields.Float(
-        string='Total Bruto ( = )', readonly=True, compute='_amount_all',
-        digits=dp.get_precision('Account'), store=True)
-    total_tax = fields.Float(
-        string='Impostos ( + )', readonly=True, compute='_amount_all',
-        digits=dp.get_precision('Account'), store=True)
-
-    @api.onchange('fiscal_position_id')
-    def _compute_tax_id(self):
-        """
-        Trigger the recompute of the taxes if the fiscal position is changed
-        """
-        for order in self:
-            order.order_line._compute_tax_id()
 
 
 class PurchaseOrderLine(models.Model):
@@ -90,27 +46,27 @@ class PurchaseOrderLine(models.Model):
 
     icms_cst_normal = fields.Char(string="CST ICMS", size=5)
     icms_csosn_simples = fields.Char(string="CSOSN ICMS", size=5)
-    icms_st_aliquota_mva = fields.Float(string=u'Alíquota MVA (%)',
+    icms_st_aliquota_mva = fields.Float(string='Alíquota MVA (%)',
                                         digits=dp.get_precision('Account'))
     aliquota_icms_proprio = fields.Float(
-        string=u'Alíquota ICMS Próprio (%)',
+        string='Alíquota ICMS Próprio (%)',
         digits=dp.get_precision('Account'))
     incluir_ipi_base = fields.Boolean(string="Incluir IPI na Base ICMS")
     icms_aliquota_reducao_base = fields.Float(
-        string=u'Redução Base ICMS (%)', digits=dp.get_precision('Account'))
+        string='Redução Base ICMS (%)', digits=dp.get_precision('Account'))
     icms_st_aliquota_reducao_base = fields.Float(
-        string=u'Redução Base ICMS ST(%)', digits=dp.get_precision('Account'))
-    icms_st_aliquota_deducao = fields.Float(string=u"% Dedução",
-                                            help=u"Alíquota interna ou interestadual "  # noqa: 501
-                                                 u"aplicada sobre o valor da operação para "  # noqa: 501
-                                                 u"deduzir do ICMS ST - Para empresas "  # noqa: 501
-                                                 u"do Simples Nacional",
+        string='Redução Base ICMS ST(%)', digits=dp.get_precision('Account'))
+    icms_st_aliquota_deducao = fields.Float(string="% Dedução",
+                                            help="Alíquota interna ou interestadual "  # noqa: 501
+                                                 "aplicada sobre o valor da operação para "  # noqa: 501
+                                                 "deduzir do ICMS ST - Para empresas "  # noqa: 501
+                                                 "do Simples Nacional",
                                             digits=dp.get_precision('Account'))
     tem_difal = fields.Boolean(string="Possui Difal")
 
     ipi_cst = fields.Char(string='CST IPI', size=5)
     ipi_reducao_bc = fields.Float(
-        string=u'Redução Base IPI (%)', digits=dp.get_precision('Account'))
+        string='Redução Base IPI (%)', digits=dp.get_precision('Account'))
 
     pis_cst = fields.Char(string='CST PIS', size=5)
     cofins_cst = fields.Char(string='CST COFINS', size=5)
@@ -147,7 +103,7 @@ class PurchaseOrderLine(models.Model):
                 vals = fpos.map_tax_extra_values(
                     line.company_id, line.product_id, line.order_id.partner_id)
 
-                for key, value in vals.iteritems():
+                for key, value in vals.items():
                     if value and key in line._fields:
                         line.update({key: value})
 
