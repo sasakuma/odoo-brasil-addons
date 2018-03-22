@@ -35,5 +35,5 @@ class AccountMoveLine(models.Model):
             'default_move_line_id': self.id,
         }
         if self.invoice_id:
-            vals['context']['default_invoice_ids'] = [(4, self.invoice_id.id, None)],  # noqa: 501
+            vals['context']['default_invoice_ids'] = [(4, self.invoice_id.id, None)]  # noqa: 501
         return vals
