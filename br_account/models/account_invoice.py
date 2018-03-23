@@ -100,16 +100,6 @@ class AccountInvoice(models.Model):
         self.payable_move_line_ids = self.env['account.move.line'].browse(
             list(set(payable_lines)))
 
-    # @api.model
-    # def _default_fiscal_document(self):
-    #     company = self.env['res.company'].browse(self.env.user.company_id.id)
-    #     return company.fiscal_document_for_product_id
-    #
-    # @api.model
-    # def _default_fiscal_document_serie(self):
-    #     company = self.env['res.company'].browse(self.env.user.company_id.id)
-    #     return company.document_serie_id.id
-
     total_tax = fields.Float(string='Impostos ( + )',
                              readonly=True,
                              compute='_compute_amount',
