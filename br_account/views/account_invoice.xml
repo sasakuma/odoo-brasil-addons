@@ -62,6 +62,7 @@
                 <field name="is_electronic" invisible="1"/>
                 <field name="fiscal_document_id"/>
                 <field name="document_serie_id"/>
+                <field name="invoice_model" invisible="1"/>
             </field>
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
                 <attribute name="editable"/>

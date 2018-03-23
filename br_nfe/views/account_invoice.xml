@@ -8,7 +8,6 @@
         <field name="arch" type="xml">
             <div class="alert alert-info" position="after">
                 <field name="ambiente_nfe" invisible="1"/>
-                <field name="invoice_model" invisible="1"/>
                 <field name="sending_nfe" invisible="1"/>
                 <field name="nfe_exception" invisible="1"/>
                 <div class="alert alert-danger"

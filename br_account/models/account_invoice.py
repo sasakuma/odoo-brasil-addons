@@ -148,6 +148,10 @@ class AccountInvoice(models.Model):
                                          readonly=True,
                                          states=STATES)
 
+    invoice_model = fields.Char(string='Modelo de Fatura',
+                                related='fiscal_document_id.code',
+                                readonly=True)
+
     pre_invoice_date = fields.Date(string='Data da Pré-Fatura',
                                    required=True,
                                    copy=False,
