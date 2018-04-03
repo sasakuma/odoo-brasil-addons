@@ -255,26 +255,52 @@ class InvoiceElectronic(models.Model):
             values = {}
 
             if retorno.Cabecalho.Sucesso:
-                values.update({
-                    'state': 'done',
-                    'codigo_retorno': '100',
-                    'mensagem_retorno': 'Nota Fiscal Paulistana emitida com '
-                                        'sucesso',
-                })
 
-                if self.ambiente == 'producao':  # Apenas producao tem essa tag
+                try:
+
                     values.update({
-                        'verify_code': retorno.ChaveNFeRPS.ChaveNFe.CodigoVerificacao,
-                        'numero_nfse': retorno.ChaveNFeRPS.ChaveNFe.NumeroNFe,
+                        'state': 'done',
+                        'codigo_retorno': '100',
+                        'mensagem_retorno': 'Nota Fiscal Paulistana emitida com sucesso',
                     })
-                else:
-                    values.update({
-                        'verify_code': 'X' * 8,
-                        'numero_nfse': '9' * 8,
-                    })
+
+                    if self.ambiente == 'producao':  # Apenas producao tem essa tag
+                        values.update({
+                            'verify_code': retorno.ChaveNFeRPS.ChaveNFe.CodigoVerificacao,
+                            'numero_nfse': retorno.ChaveNFeRPS.ChaveNFe.NumeroNFe,
+                        })
+                    else:
+                        values.update({
+                            'verify_code': u'X' * 8,
+                            'numero_nfse': u'9' * 8,
+                        })
+
+                    self.invoice_id.internal_number = int(values['numero_nfse'])
+
+                except AttributeError as exc:
+
+                    if str(retorno.Alerta.Codigo) == '224':
+
+                        # Captura o numero da nota a partir da descricao do erro
+                        numero_nfse = re.compile(r'[^0-9]').sub('', str(retorno.Alerta.Descricao))
+
+                        values.update({
+                            'state': 'done',
+                            'codigo_retorno': str(retorno.Alerta.Codigo),
+                            'mensagem_retorno': str(retorno.Alerta.Descricao),
+                            'numero_nfse': numero_nfse,
+                        })
+
+                        self.invoice_id.internal_number = int(values['numero_nfse'])
+                    else:
+                        values.update({
+                            'state': 'error',
+                            'codigo_retorno': '000',
+                            'mensagem_retorno': 'Um erro inesperado ocorreu durante o retorno da NFSe.',
+                        })
+                        _logger.error(exc.message)
 
                 self.write(values)
-                self.invoice_id.internal_number = int(values['numero_nfse'])
 
             else:
                 values.update({
