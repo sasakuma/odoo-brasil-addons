@@ -1,0 +1,27 @@
+<RetornoEnvioLoteRPS xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.prefeitura.sp.gov.br/nfe">
+    <Cabecalho xmlns="" Versao="1">
+        <Sucesso>true</Sucesso>
+        <InformacoesLote>
+            <NumeroLote>393595263</NumeroLote>
+            <InscricaoPrestador>93595000</InscricaoPrestador>
+            <CPFCNPJRemetente>
+                <CNPJ>56553878000109</CNPJ>
+            </CPFCNPJRemetente>
+            <DataEnvioLote>2018-04-03T17:48:14</DataEnvioLote>
+            <QtdNotasProcessadas>1</QtdNotasProcessadas>
+            <TempoProcessamento>0</TempoProcessamento>
+            <ValorTotalServicos>825.17</ValorTotalServicos>
+        </InformacoesLote>
+    </Cabecalho>
+    <Alerta xmlns="">
+        <Codigo>224</Codigo>
+        <Descricao>
+            RPS ja convertido na NFS-e 99999999. RPS nao sera processado.
+        </Descricao>
+        <ChaveRPS>
+            <InscricaoPrestador>93595000</InscricaoPrestador>
+            <SerieRPS>1</SerieRPS>
+            <NumeroRPS>9479</NumeroRPS>
+        </ChaveRPS>
+    </Alerta>
+</RetornoEnvioLoteRPS>

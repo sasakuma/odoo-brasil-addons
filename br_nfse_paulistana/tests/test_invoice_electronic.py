@@ -247,6 +247,47 @@ class TestNFeBrasil(TransactionCase):
                              99999999)
             self.assertEqual(len(invoice_electronic.electronic_event_ids), 1)
 
+    @mock.patch('pytrustnfe.nfse.paulistana.envio_lote_rps')
+    def test_nfse_return_code_224(self, envio_lote):
+
+        # Necessario alterar o ambiente de consulta porque o
+        # erro 224 ocorre apenas em ambiente de producao
+        self.main_company.tipo_ambiente_nfse = '1'
+
+        for invoice in self.invoices:
+
+            # Cria parcelas
+            invoice.generate_parcel_entry(self.financial_operation,
+                                          self.title_type)
+
+            # Confirmando a fatura deve gerar um documento eletrônico
+            invoice.action_br_account_invoice_open()
+
+            # Lote recebido com sucesso
+            with open(os.path.join(self.caminho, 'xml', 'retorno_envio_loterps_nfse_erro_224.xml')) as xml:
+                xml_recebido = xml.read()
+
+            resp = sanitize_response(xml_recebido.replace('\n', ''))
+
+            envio_lote.return_value = {
+                'object': resp[1],
+                'sent_xml': '<xml />',
+                'received_xml': xml_recebido,
+            }
+
+            invoice_electronic = self.env['invoice.electronic'].search(
+                [('invoice_id', '=', invoice.id)])
+            invoice_electronic.action_send_electronic_invoice()
+
+            self.assertEqual(invoice_electronic.state, 'done')
+            self.assertEqual(invoice_electronic.codigo_retorno, '224')
+            self.assertEqual(invoice_electronic.numero_nfse, '99999999')
+            self.assertEqual(invoice_electronic.mensagem_retorno,
+                             '            RPS ja convertido na NFS-e 99999999. RPS nao sera processado.        ')
+            self.assertEqual(invoice_electronic.invoice_id.internal_number,
+                             99999999)
+            self.assertEqual(len(invoice_electronic.electronic_event_ids), 1)
+
     @mock.patch('pytrustnfe.nfse.paulistana.cancelamento_nfe')
     def test_nfse_cancel(self, cancelar):
 
