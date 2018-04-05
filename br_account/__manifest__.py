@@ -42,6 +42,7 @@
         'views/product_template.xml',
         'views/res_company.xml',
         'views/account_tax.xml',
+        'views/res_partner.xml',
         'views/product_fiscal_classification.xml',
         'wizard/account_invoice_confirm.xml',
         'wizard/br_account_invoice_print.xml',
