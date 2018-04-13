@@ -4,6 +4,9 @@
 import base64
 import os
 
+import warnings
+from cryptography.utils import CryptographyDeprecationWarning
+
 # Usado para evitar warnings da urllib3 durante os testes
 import urllib3
 from mock import patch
@@ -330,16 +333,23 @@ class TestNFeBrasil(TransactionCase):
 
     def test_send_nfe(self):
 
-        for invoice in self.invoices:
+        with warnings.catch_warnings():
+            # correcao temporaria para suprimir erro de warning
+            # da lib cryptography causado pelo modulo signxml
+            # E corrigido neste PR: https://github.com/XML-Security/signxml/pull/106
+            # Assim que o modulo for atualizado, deve-se remover este contexto
+            warnings.simplefilter('ignore', CryptographyDeprecationWarning)
 
-            # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_br_account_invoice_open()
+            for invoice in self.invoices:
 
-            invoice_electronic = self.env['invoice.electronic'].search(
-                [('invoice_id', '=', invoice.id)])
+                # Confirmando a fatura deve gerar um documento eletrônico
+                invoice.action_br_account_invoice_open()
 
-            with self.assertRaises(Exception):
-                invoice_electronic.action_send_electronic_invoice()
+                invoice_electronic = self.env['invoice.electronic'].search(
+                    [('invoice_id', '=', invoice.id)])
+
+                with self.assertRaises(Exception):
+                    invoice_electronic.action_send_electronic_invoice()
 
     @patch('odoo.addons.br_nfe.models.invoice_electronic.retorno_autorizar_nfe')
     @patch('odoo.addons.br_nfe.models.invoice_electronic.autorizar_nfe')
