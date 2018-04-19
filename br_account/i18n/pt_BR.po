@@ -3170,3 +3170,11 @@ msgstr "ou"
 #: model:ir.model,name:br_account.model_product_fiscal_classification_wizard
 msgid "product.fiscal.classification.wizard"
 msgstr "product.fiscal.classification.wizard"
+
+#. module: account
+#: model:ir.ui.menu,name:account.menu_finance
+#: model:ir.ui.view,arch_db:account.product_template_form_view
+#: model:ir.ui.view,arch_db:account.res_config_settings_view_form
+#: model:ir.ui.view,arch_db:account.view_partner_property_form
+msgid "Invoicing"
+msgstr "Contabilidade e Finanças"
