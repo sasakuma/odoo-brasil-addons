@@ -875,11 +875,9 @@ class InvoiceElectronic(models.Model):
             self.invoice_id.internal_number = int(self.numero)
 
             sent_xml = resposta['sent_xml'].encode('utf8')
-            received_xml = resposta['received_xml'].encode('utf8')
-
+            received_xml = resposta_recibo['received_xml'].encode('utf8')
             nfe_proc = gerar_nfeproc(sent_xml,
                                      received_xml)
-
             self.write({
                 'nfe_processada': base64.encodestring(nfe_proc),
                 'nfe_processada_name': "NFe%08d.xml" % self.numero,
