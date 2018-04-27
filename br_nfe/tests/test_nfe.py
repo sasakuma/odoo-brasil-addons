@@ -365,9 +365,14 @@ class TestNFeBrasil(TransactionCase):
 
             resp = sanitize_response(xml_recebido)
 
+            # Precisamos atribuir abaixo porque quando a NFe possui codigo de retorno 100
+            # o modulo verifica o conteudo do xml de envio em busca da tag NFe, de modo
+            # a gerar o conteudo do campo 'nfe_processada'
+            sent_xml = '<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="3.10"><NFe></NFe></nfeProc>'
+
             autorizar.return_value = {
                 'object': resp[1],
-                'sent_xml': '<xml />',
+                'sent_xml': sent_xml,
                 'received_xml': xml_recebido,
             }
 
@@ -379,7 +384,7 @@ class TestNFeBrasil(TransactionCase):
 
             ret_autorizar.return_value = {
                 'object': resp_ret[1],
-                'sent_xml': '<xml />',
+                'sent_xml': sent_xml,
                 'received_xml': xml_recebido,
             }
 
@@ -387,9 +392,11 @@ class TestNFeBrasil(TransactionCase):
                 [('invoice_id', '=', invoice.id)])
 
             invoice_electronic.action_send_electronic_invoice()
-
             self.assertEqual(invoice_electronic.state, 'done')
             self.assertEqual(invoice_electronic.codigo_retorno, '100')
+            self.assertTrue(invoice_electronic.nfe_processada)
+            self.assertEqual(
+                invoice_electronic.nfe_processada_name, "NFe%08d.xml" % invoice_electronic.numero)
 
     @patch('odoo.addons.br_nfe.models.invoice_electronic.retorno_autorizar_nfe')
     @patch('odoo.addons.br_nfe.models.invoice_electronic.autorizar_nfe')
