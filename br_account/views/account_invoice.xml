@@ -36,7 +36,8 @@
                         states="draft"
                         string="Confirmar"
                         class="oe_highlight"
-                        groups="account.group_account_invoice"/>
+                        groups="account.group_account_invoice"
+                        confirm="Esta ação irá confirmar a fatura.Deseja continuar?"/>
 
                 <button name="action_br_account_invoice_open"
                         type="object"
