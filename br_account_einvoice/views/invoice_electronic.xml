@@ -159,7 +159,8 @@
                                 states="draft"
                                 string="Enviar"
                                 type="object"
-                                class="oe_highlight"/>
+                                class="oe_highlight"
+                                confirm="Deseja confirmar o envio?"/>
 
                         <button name="action_back_to_draft"
                                 states="edit,error"
