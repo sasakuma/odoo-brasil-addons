@@ -71,22 +71,18 @@ class BrZipAbstract(models.AbstractModel):
             return values
 
         except CEPInvalido as exc:
-            _logger.error(exc, exc_info=True)
             raise UserError(_('CEP inválido'))
 
         except FalhaNaConexao as exc:
-            _logger.error(exc, exc_info=True)
-            raise UserError(('Falha na comunicação com os Correios. \
+            raise UserError(_('Falha na comunicação com os Correios. \
             Tente novamente mais tarde.'))
 
         except ExcecaoPyCEPCorreios as exc:
-            _logger.error(exc, exc_info=True)
             raise UserError(
                 _('Ocorreu um erro desconhecido. \
                 Contate o administrado do sistema'))
 
         except Exception as exc:
-            _logger.error(exc, exc_info=True)
             raise UserError(
                 _('Ocorreu um erro desconhecido. \
                 Contate o administrado do sistema'))
