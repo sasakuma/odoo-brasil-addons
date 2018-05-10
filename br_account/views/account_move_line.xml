@@ -8,9 +8,19 @@
         <field eval="2" name="priority"/>
         <field name="arch" type="xml">
 
-            <field name="name" position="after">
-                <field name="reconciled"/>
-            </field>
+            <xpath expr="//sheet/group" position="replace">
+                <group>                                        
+                    <group>
+                        <field name="name"/>
+                        <field name="reconciled"/>
+                        <field name="partner_id" domain="['|', ('parent_id', '=', False), ('is_company', '=', True)]"/>
+                    </group>
+                    <group>
+                        <field name="journal_id"/>
+                        <field name="date"/>
+                    </group>    
+                </group>
+            </xpath>    
 
             <xpath expr="//notebook/page[1]" position="attributes">
                 <attribute name="string">Accounting</attribute>
