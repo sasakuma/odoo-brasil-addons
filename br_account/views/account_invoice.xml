@@ -43,7 +43,8 @@
                         type="object"
                         states="proforma2"
                         string="Confirmar"
-                        groups="account.group_account_invoice"/>
+                        groups="account.group_account_invoice"
+                        confirm="Esta ação irá confirmar a fatura. Deseja continuar?"/>
             </xpath>
             <field name="date_invoice" position="replace">
                 <field name="date_invoice"
