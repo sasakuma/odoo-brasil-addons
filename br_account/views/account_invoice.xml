@@ -37,7 +37,7 @@
                         string="Confirmar"
                         class="oe_highlight"
                         groups="account.group_account_invoice"
-                        confirm="Esta ação irá confirmar a fatura.Deseja continuar?"/>
+                        confirm="Esta ação irá confirmar a fatura. Deseja continuar?"/>
 
                 <button name="action_br_account_invoice_open"
                         type="object"
@@ -189,7 +189,7 @@
                         states="draft,proforma2,open,paid"
                         string="Cancelar Fatura"
                         confirm="Esta ação além de alterar o status da fatura,
-                         também irá deletar os registros de título, Deseja Continuar ?"
+                         também irá deletar os registros de título. Deseja Continuar?"
                         groups="account.group_account_invoice"/>
             </button>
         </field>
