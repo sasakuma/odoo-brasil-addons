@@ -2,7 +2,7 @@ ofxparse==0.16
 # suds_requests
 unidecode
 faker==0.7.3
-pycep-correios
+pycep-correios==2.3.1
 # -e git+https://github.com/multidadosti-erp/PyTrustNFe.git@develop#egg=pytrustnfe
 # -e git+https://github.com/multidadosti-erp/python-cnab.git@develop#egg=python-cnab
 # -e git+https://github.com/multidadosti-erp/python-boleto.git@develop#egg=python-boleto
