@@ -414,3 +414,8 @@ msgstr ""
 "          %(acc_number_dig): Digito do Número da Conta Bancária\n"
 "\n"
 "    Por exemplo, use '%(acc_number)s' para exibir o campo número da conta bancária' mais '%(acc_number_dig)s' para exibir o campo digito da conta bancária'."
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_company_form
+msgid "e.g. Global Business Solutions"
+msgstr "ex. Soluções de Negócios Globais"
