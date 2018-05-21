@@ -419,3 +419,20 @@ msgstr ""
 #: model:ir.ui.view,arch_db:base.view_company_form
 msgid "e.g. Global Business Solutions"
 msgstr "ex. Soluções de Negócios Globais"
+
+#: code:addons/models.py:975
+#, python-format
+msgid "Error while validating constraint"
+msgstr "Erro de validação:"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_company_form
+#: model:ir.ui.view,arch_db:base.view_partner_address_form
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "e.g. www.odoo.com"
+msgstr "ex. www.multidadosti.com.br"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_company_form
+msgid "e.g. Your Bank Accounts, one per line"
+msgstr "ex. Suas Contas Bancárias, uma por linha"

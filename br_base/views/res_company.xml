@@ -30,7 +30,7 @@
                        options="{'no_create': True, 'no_create_edit': True}"/>
             </field>
             <field name="state_id" position="after">
-                <field name="city_id" placeholder="Cidade" options="{'no_create': True, 'no_create_edit': True}"/>
+                <field name="city_id" placeholder="Cidade" options="{'no_create': True, 'no_create_edit': True}" domain="[('state_id', '=', state_id)]"/>
             </field>
             <field name="city" position="replace">
                 <field name="city" invisible="1"/>
