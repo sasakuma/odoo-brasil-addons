@@ -177,6 +177,8 @@ class ResCompany(models.Model):
 
     cert_expire_date = fields.Date(string='Validade Cert.',
                                    compute=_compute_expiry_date)
+    
+    zip = fields.Char(size=9)
 
     @api.onchange('cnpj_cpf')
     def onchange_mask_cnpj_cpf(self):
