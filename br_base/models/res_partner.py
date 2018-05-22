@@ -39,6 +39,7 @@ class ResPartner(models.Model):
                               domain="[('state_id','=',state_id)]")
     district = fields.Char('Bairro', size=32)
     number = fields.Char('Número', size=10)
+    zip = fields.Char(size=9)
 
     _sql_constraints = [
         ('res_partner_cnpj_cpf_uniq', 'unique (cnpj_cpf)',
