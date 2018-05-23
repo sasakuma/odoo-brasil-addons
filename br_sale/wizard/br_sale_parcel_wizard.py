@@ -23,7 +23,8 @@ class BrSaleParcelWizard(models.TransientModel):
 
     @api.multi
     def action_generate_parcel_entry(self):
-        """Cria as parcelas da cotação."""
+        """Invoca o método de criação de parcelas das cotações
+        """
 
         active_ids = self.env.context.get('active_ids', []) or []
         for inv in self.env['sale.order'].browse(active_ids):

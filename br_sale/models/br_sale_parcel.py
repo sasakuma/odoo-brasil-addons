@@ -6,8 +6,8 @@ from odoo import api, fields, models
 
 
 class BrSaleParcel(models.Model):
-    """Classe utilizada para parcelamento"""
     _name = 'br_sale.parcel'
+    _description = 'Classe utilizada para parcelamento'
 
     @api.model
     def _get_currency(self):
@@ -84,7 +84,15 @@ class BrSaleParcel(models.Model):
 
     @api.model
     def create(self, values):
-        # Atualizamos a o valor do backup da data de vencimento
+        """Cria as linhas das parcelas de cotação.
+
+        Arguments:
+            values {[date]} -- atualiza o backup da data de vencimento
+
+        Returns:
+            [rec] -- retorna records das parcelas
+        """
+        # Atualizamos o valor do backup da data de vencimento
         values['old_date_maturity'] = values['date_maturity']
         parcel = super(BrSaleParcel, self).create(values)
 
@@ -126,8 +134,10 @@ class BrSaleParcel(models.Model):
 
     @api.multi
     def update_date_maturity(self, sale_order_date):
-        """ Calculamos a nova data de vencimento
-        :param sale_order_date: data da cotação ou pedido.
+        """Calculamos a nova data de vencimento.
+
+        Arguments:
+            sale_order_date {[date]} --  data da cotação.
         """
         self.ensure_one()
         if not self.pin_date:

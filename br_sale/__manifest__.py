@@ -18,9 +18,11 @@
     ],
     'data': [
         'views/br_sale.xml',
+        'views/br_sale_parcel.xml',
         'views/sale_view.xml',
         'security/ir.model.access.csv',
         'security/l10n_br_sale_security.xml',
+        'wizard/br_sale_parcel_wizard.xml',
     ],
     'installable': True,
     'auto_install': False,

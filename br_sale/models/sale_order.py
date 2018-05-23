@@ -76,20 +76,35 @@ class SaleOrder(models.Model):
 
     @api.multi
     def action_open_periodic_entry_wizard(self):
-        """Abre wizard para gerar pagamentos periodicos"""
+        """Abre wizard para gerar pagamentos periodicos
+
+        Raises:
+            UserError -- Caso não tenha data de cotação.
+            UserError -- Caso a cotação esteja em um state diferente de 'draft'.
+            UserError -- Caso a cotação não tenha condição de pagamento.
+
+        Returns:
+            wizard: Retorna uma janela para gerar as parcelas da cotação
+        """
+
         self.ensure_one()
 
+        msg = ''
+
         if not self.quotation_date:
-            raise UserError('Nenhuma data fornecida como base para a '
-                            'criação das parcelas!')
+            msg = 'Nenhuma data fornecida como base para a '
+            'criação das parcelas!'
 
         if self.state != 'draft':
-            raise UserError('Parcelas podem ser criadas apenas quando a '
-                            'cotação estiver como "Provisório"')
+            msg = 'Parcelas podem ser criadas apenas quando a '
+            'cotação estiver como "Provisório"'
 
         if not self.payment_term_id:
-            raise UserError('Nenhuma condição de pagamento foi fornecida. Por'
-                            'favor, selecione uma condição de pagamento')
+            msg = 'Nenhuma condição de pagamento foi fornecida. Por'
+            'favor, selecione uma condição de pagamento'
+
+        if msg:
+            raise UserError(msg)
 
         action = {
             'type': 'ir.actions.act_window',
@@ -108,24 +123,37 @@ class SaleOrder(models.Model):
 
     @api.multi
     def generate_parcel_entry(self, financial_operation, title_type):
-        """Cria as parcelas da cotação."""
+        """Cria as parcelas da cotação
+
+        Raises:
+            UserError -- Caso não tenha data de cotação.
+            UserError -- Caso a cotação esteja em um state diferente de 'draft'.
+            UserError -- Caso a cotação não tenha condição de pagamento.
+
+        Returns:
+            [bool] -- True
+        """
 
         for inv in self:
 
             ctx = dict(self._context, lang=inv.partner_id.lang)
 
+            msg = ''
+
             if not inv.quotation_date:
-                raise UserError('Nenhuma data fornecida como base para a '
-                                'criação das parcelas!')
+                msg = 'Nenhuma data fornecida como base para a criação' 
+                'das parcelas!'
 
             if inv.state != 'draft':
-                raise UserError('Parcelas podem ser criadas apenas quando a '
-                                'cotação estiver como "Provisório"')
+                msg = 'Parcelas podem ser criadas apenas quando a'
+                'cotação estiver como "Provisório"'
 
             if not inv.payment_term_id:
-                raise UserError(
-                    'Nenhuma condição de pagamento foi fornecida. Por'
-                    'favor, selecione uma condição de pagamento')
+                msg = 'Nenhuma condição de pagamento foi fornecida. Por'
+                'favor, selecione uma condição de pagamento'
+
+            if msg:
+                raise UserError(msg)
 
             company_currency = inv.company_id.currency_id
 
