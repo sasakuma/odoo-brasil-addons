@@ -27,11 +27,3 @@ class ProductTemplate(models.Model):
                        help="Código Especificador da Substituição Tributária")
     fiscal_observation_ids = fields.Many2many(
         'br_account.fiscal.observation', string="Mensagens Doc. Eletrônico")
-
-    @api.onchange('type')
-    def onchange_product_type(self):
-        self.fiscal_type = 'service' if self.type == 'service' else 'product'
-
-    @api.onchange('fiscal_type')
-    def onchange_product_fiscal_type(self):
-        self.type = 'service' if self.fiscal_type == 'service' else 'consu'
