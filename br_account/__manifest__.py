@@ -25,6 +25,7 @@
         'views/account_financial_operation.xml',
         'views/account_title_type.xml',
         'views/account_fiscal_position.xml',
+        'views/account_move.xml',
         'views/account_move_line.xml',
         'views/account_invoice.xml',
         'views/account_invoice_line.xml',

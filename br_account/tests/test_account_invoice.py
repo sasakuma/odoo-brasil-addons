@@ -135,15 +135,14 @@ class TestAccountInvoice(TestBaseBr):
             self.assertEqual(invoice.total_tax, 0.0)
 
             # Verifico as linhas recebiveis
-            self.assertEqual(len(invoice.receivable_move_line_ids), 0)
+            self.assertEqual(len(invoice.move_ids), 0)
 
             # Valido a fatura
             invoice.action_br_account_invoice_open()
 
             # Verifico as linhas recebiveis
-            self.assertEqual(len(invoice.receivable_move_line_ids), 1)
-            self.assertEqual(len(invoice.parcel_ids),
-                              len(invoice.receivable_move_line_ids))
+            self.assertEqual(len(invoice.move_ids), 1)
+            self.assertEqual(len(invoice.parcel_ids), len(invoice.move_ids))
 
     def test_invoice_pis_cofins_taxes(self):
 
@@ -359,9 +358,11 @@ class TestAccountInvoice(TestBaseBr):
             self.assertTrue(inv.parcel_ids)
             self.assertFalse(inv.compare_total_parcel_value())
 
-    def test_action_br_account_invoice_open(self):
+    def test_action_br_account_invoice_open_no_parcel(self):
 
         for inv in self.invoices:
+
+            # Removemos a parcela de cada fatura
             inv.parcel_ids.unlink()
 
             # Verificamos quando nao existe nenhuma parcela
@@ -370,19 +371,101 @@ class TestAccountInvoice(TestBaseBr):
             with self.assertRaises(ValidationError):
                 self.assertTrue(inv.action_br_account_invoice_open())
 
-            # Cria parcelas
-            inv.generate_parcel_entry(self.financial_operation,
-                                      self.title_type)
+    def test_action_br_account_invoice_open_total_wrong(self):
+
+        for inv in self.invoices:
+
+            # Mudamos o valor da fatura para divergir do total
+            # das parcelas
+            inv.amount_total = '1000'
+
+            with self.assertRaises(UserError):
+                inv.action_br_account_invoice_open()
+
+    def test_action_br_account_invoice_open(self):
+
+        for inv in self.invoices:
 
             # O valor total das parcelas deve ser igual ao valor total
             # da fatura
             self.assertTrue(inv.action_br_account_invoice_open())
 
-            # Mudamos o valor da fatura para disparar o erro
-            inv.amount_total = '1000'
+            self.assertTrue(inv.move_ids)
 
-            with self.assertRaises(UserError):
-                inv.action_br_account_invoice_open()
+            # Cada parcela deve criar uma account.move para a fatura
+            self.assertEqual(len(inv.parcel_ids), len(inv.move_ids))
+
+            # Verificamos se os campos da account.move foram 
+            # preenchidos corretamente
+            for parcel, move in zip(inv.parcel_ids, inv.move_ids):
+                self.assertEqual(move.date_maturity_current,
+                                 parcel.date_maturity)
+                self.assertEqual(move.date_maturity_origin,
+                                 parcel.date_maturity)
+                self.assertEqual(move.financial_operation_id,
+                                 parcel.financial_operation_id)
+                self.assertEqual(move.title_type_id, parcel.title_type_id)
+                self.assertEqual(move.parcel_id, parcel)
+
+                self.assertEqual(move.company_id, inv.company_id)
+                self.assertEqual(move.ref, inv.reference)
+                self.assertEqual(move.journal_id, inv.journal_id)
+                self.assertEqual(move.date, inv.date or inv.date_invoice)
+                self.assertEqual(move.narration, inv.comment)
+                self.assertEqual(move.invoice_id, inv)
+
+                self.assertEqual(len(move.line_ids), 3)
+
+                self.assertEqual(parcel.abs_parceling_value, move.amount)
+                self.assertEqual(parcel.abs_parceling_value,
+                                 move.amount_origin)
+
+                # Verificamos se os campos da account.move.line
+                # foram preenchidos corretamente.
+                for line in move.line_ids:
+                    self.assertEqual(line.date_maturity, parcel.date_maturity)
+                    self.assertEqual(line.amount_currency,
+                                     parcel.amount_currency)
+                    self.assertEqual(line.currency_id, parcel.currency_id)
+                    self.assertEqual(line.invoice_id, inv)
+                    self.assertEqual(line.partner_id, inv.partner_id)
+                    self.assertEqual(line.company_id, inv.company_id)
+
+                # Move Lines de credito
+                debit_lines = move.line_ids.filtered(
+                    lambda x: x.account_id.code_first_digit == '1')
+
+                self.assertEqual(len(debit_lines), 1)
+                self.assertEqual(debit_lines[0].name, parcel.name)
+                self.assertEqual(debit_lines[0].debit,
+                                 parcel.abs_parceling_value)
+                self.assertFalse(debit_lines[0].credit)
+
+                # Remove as linhas que possuem 'debit' diferente de zero
+                # Assim sobram as linhas com 'credit' diferente de zero
+                credit_lines = move.line_ids - debit_lines
+
+                # Cada account.move.line possui uma invoice.line como 
+                # geradora e uma invoice.line  pode gerar varias
+                # account.move.line
+                self.assertEqual(len(credit_lines), len(inv.invoice_line_ids))
+
+                self.assertEqual(sum([line.credit for line in credit_lines]),
+                                 parcel.abs_parceling_value)
+
+                # Ordenamos os records para garantir que as comparacoes
+                # estao na ordem correta. 
+                credit_lines = credit_lines.sorted(lambda r: r.id)
+                invoice_lines = inv.invoice_line_ids.sorted(lambda r: r.id)
+
+                for credit_lines, inv_line in zip(credit_lines, invoice_lines):
+                    self.assertEqual(credit_lines.name, inv_line.name)
+                    self.assertFalse(credit_lines.debit)
+                    self.assertEqual(credit_lines.credit,
+                                     round(parcel.parceling_value * inv_line.percent_subtotal, 2))
+
+            self.assertTrue(inv.move_id)
+            self.assertTrue(inv.move_name)
 
     def test_action_open_periodic_entry_wizard(self):
 
@@ -426,17 +509,3 @@ class TestAccountInvoice(TestBaseBr):
         for inv in self.incomplete_inv:
             with self.assertRaises(UserError):
                 inv.action_open_periodic_entry_wizard()
-
-    def test_onchange_payment_term(self):
-
-        # Como todas as invoices possuem parcela, a excecao sera disparada
-        for inv in self.invoices:
-
-            with self.assertRaises(ValidationError):
-                self.invoices[0].payment_term_id = 2
-                inv._onchange_payment_term_()
-
-                # Removes as parcelas de uma das invoices e executamos o metodo
-                # novamente, a ValidationError nao sera lancada
-                self.invoices[0].parcel_ids.unlink()
-                self.invoices[0]._onchange_payment_term_()

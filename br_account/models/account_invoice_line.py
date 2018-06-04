@@ -468,6 +468,15 @@ class AccountInvoiceLine(models.Model):
 
     informacao_adicional = fields.Text(string="Informações Adicionais")
 
+    percent_subtotal = fields.Float(string='Percent Total', compute='_compute_percent_subtotal')
+
+    @api.depends('price_subtotal', 'invoice_id.total_bruto')
+    def _compute_percent_subtotal(self):
+
+        for line in self:
+            if line.invoice_id.total_bruto:
+                line.percent_subtotal = round(line.price_subtotal / line.invoice_id.total_bruto, 6)
+
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False,
                         submenu=False):
@@ -534,7 +543,6 @@ class AccountInvoiceLine(models.Model):
                                      self.tax_inss_id)
 
     def _set_extimated_taxes(self, price):
-        # service = self.product_id.service_type_id
         service = self.fiscal_position_id.service_type_id
         ncm = self.product_id.fiscal_classification_id
 
@@ -565,7 +573,6 @@ class AccountInvoiceLine(models.Model):
         self.product_type = self.product_id.fiscal_type
         self.icms_origem = self.product_id.origin
         ncm = self.product_id.fiscal_classification_id
-        # service = self.product_id.service_type_id
         service = self.fiscal_position_id.service_type_id
         self.fiscal_classification_id = ncm.id
         self.service_type_id = service.id

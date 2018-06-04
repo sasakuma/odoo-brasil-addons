@@ -30,6 +30,7 @@
                                     <field name="invoice_id" invisible="1"/>
                                     <field name="fiscal_position_id" invisible="1"/>
                                     <field name="fiscal_position_type" invisible="1"/>
+                                    <field name="percent_subtotal" invisible="0"/>
                                     <field name="product_id" required="1"
                                            domain="[('fiscal_type', '=', fiscal_position_type)]"/>
                                     <field name="product_type" invisible="1"/>

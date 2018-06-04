@@ -3,11 +3,13 @@
 # © 2017 Michell Stuttgart, MultidadosTI
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import copy
+
 from odoo import api, fields, models
-from odoo.tools.translate import _
 from odoo.addons import decimal_precision as dp
-from odoo.exceptions import UserError, ValidationError
-from odoo.tools import float_compare
+from odoo.exceptions import UserError, ValidationError, Warning
+from odoo.tools import float_is_zero, float_compare
+from odoo.tools.translate import _
 
 
 class AccountInvoice(models.Model):
@@ -80,26 +82,6 @@ class AccountInvoice(models.Model):
         self.amount_total_company_signed = self.amount_total * sign
         self.amount_total_signed = self.amount_total * sign
 
-    @api.one
-    @api.depends('move_id.line_ids')
-    def _compute_receivables(self):
-        receivable_lines = []
-        for line in self.move_id.line_ids:
-            if line.account_id.user_type_id.type == "receivable":
-                receivable_lines.append(line.id)
-        self.receivable_move_line_ids = self.env['account.move.line'].browse(
-            list(set(receivable_lines)))
-
-    @api.one
-    @api.depends('move_id.line_ids')
-    def _compute_payables(self):
-        payable_lines = []
-        for line in self.move_id.line_ids:
-            if line.account_id.user_type_id.type == "payable":
-                payable_lines.append(line.id)
-        self.payable_move_line_ids = self.env['account.move.line'].browse(
-            list(set(payable_lines)))
-
     total_tax = fields.Float(string='Impostos ( + )',
                              readonly=True,
                              compute='_compute_amount',
@@ -112,13 +94,10 @@ class AccountInvoice(models.Model):
                                  states=STATES,
                                  string='Parcelas')
 
-    receivable_move_line_ids = fields.Many2many('account.move.line',
-                                                string='Receivable Move Lines',
-                                                compute='_compute_receivables')
-
-    payable_move_line_ids = fields.Many2many('account.move.line',
-                                             string='Payable Move Lines',
-                                             compute='_compute_payables')
+    move_ids = fields.One2many('account.move',
+                               inverse_name='invoice_id',
+                               readonly=True,
+                               string='Account Move')
 
     issuer = fields.Selection([('0', 'Terceiros'),
                                ('1', 'Emissão própria')],
@@ -376,21 +355,6 @@ class AccountInvoice(models.Model):
 
     chave_de_acesso = fields.Char(string='Chave de Acesso', size=44)
 
-    @api.onchange('payment_term_id')
-    def _onchange_payment_term_(self):
-        """Lanca uma exceção se a fatura possuir parcelas. Isso é feito de modo
-        a alertar o usuario que após a troca de condição de pagamento, o
-        mesmo deve gerar as parcelas novamente.
-
-        :raise ValidationError se a fatura possuir parcelas
-        """
-        # super(AccountInvoice, self)._onchange_payment_term_date_invoice()
-
-        if self.parcel_ids:
-            raise ValidationError(
-                'Ao alterar as condições de pagamento, favor re-gerar as '
-                'parcelas para o recálculo.', )
-
     @api.onchange('issuer')
     def _onchange_issuer(self):
         if self.issuer == '0' and self.type in ('in_invoice', 'in_refund'):
@@ -418,8 +382,22 @@ class AccountInvoice(models.Model):
         self.fiscal_comment = self.fiscal_position_id.note
 
     @api.multi
+    def percent_from_total_bruto(self):
+        """Calcula a razão entre o preço bruto de cada linha da 
+        fatura em relação ao total bruto da fatura.
+        """
+        for inv in self:
+            for line in inv.invoice_line_ids:
+                line.percent_subtotal = line.price_subtotal / inv.total_bruto
+
+    @api.multi
     def action_move_create(self):
-        """ Creates invoice related analytics and financial move lines """
+        """Cria lançamento de diario a partir da confirmação da fatura.
+        Diferente do mesmo metodo presente no core, este metodo altera
+        o comportamento original criando uma account.move para cada
+        parcela do sistema e separando assim as account.move.line
+        e lançamentos diferentes.
+        """
 
         # O sistema de parcelas sera obrigatorio, entao sempre teremos pelo
         # menos uma parcela. Esse verificacao foi adicionada para manter
@@ -469,7 +447,17 @@ class AccountInvoice(models.Model):
                 # atualizada
                 parcel.update_date_maturity(inv.date_invoice)
 
-                iml.append({
+                new_iml = copy.deepcopy(iml)
+
+                for ml in new_iml:
+                    invl_obj = self.env['account.invoice.line'].browse(
+                        ml['invl_id'])
+                    signal = -1 if ml['price'] < 0 else 1
+                    ml['price'] = round(
+                        signal * parcel.parceling_value * invl_obj.percent_subtotal, 2)
+                    ml['date_maturity'] = parcel.date_maturity
+
+                new_iml.append({
                     'type': 'dest',
                     'name': inv.name or '/',
                     'price': parcel.parceling_value,
@@ -478,53 +466,100 @@ class AccountInvoice(models.Model):
                     'amount_currency': parcel.amount_currency,
                     'currency_id': parcel.currency_id.id,
                     'invoice_id': inv.id,
-                    'financial_operation_id': parcel.financial_operation_id.id,
-                    'title_type_id': parcel.title_type_id.id,
                     'company_id': inv.company_id.id,
                 })
 
-            part = self.env['res.partner']._find_accounting_partner(
-                inv.partner_id)
+                part = self.env['res.partner']._find_accounting_partner(
+                    inv.partner_id)
 
-            line = [(0, 0, self.line_get_convert(l, part.id)) for l in iml]
-            line = inv.group_lines(iml, line)
+                line = [(0, 0, self.line_get_convert(l, part.id))
+                        for l in new_iml]
+                line = inv.group_lines(new_iml, line)
 
-            journal = inv.journal_id.with_context(ctx)
-            line = inv.finalize_invoice_move_lines(line)
+                journal = inv.journal_id.with_context(ctx)
+                line = inv.finalize_invoice_move_lines(line)
 
-            date = inv.date or inv.date_invoice
+                date = inv.date or inv.date_invoice
 
-            move_vals = {
-                'ref': inv.reference,
-                'line_ids': line,
-                'journal_id': journal.id,
-                'date': date,
-                'narration': inv.comment,
-            }
+                move_vals = {
+                    'date_maturity_current': parcel.date_maturity,
+                    'date_maturity_origin': parcel.date_maturity,
+                    'financial_operation_id': parcel.financial_operation_id.id,
+                    'title_type_id': parcel.title_type_id.id,
+                    'ref': inv.reference,
+                    'line_ids': line,
+                    'journal_id': journal.id,
+                    'date': date,
+                    'narration': inv.comment,
+                    'parcel_id': parcel.id,
+                    'company_id': inv.company_id.id,
+                    'invoice_id': inv.id,
+                }
 
-            ctx['company_id'] = inv.company_id.id
-            ctx['invoice'] = inv
+                ctx['company_id'] = inv.company_id.id
+                ctx['invoice'] = inv
 
-            ctx_nolang = ctx.copy()
-            ctx_nolang.pop('lang', None)
+                ctx_nolang = ctx.copy()
+                ctx_nolang.pop('lang', None)
 
-            move = account_move.with_context(ctx_nolang).create(move_vals)
+                move = account_move.with_context(ctx_nolang).create(move_vals)
 
-            # Pass invoice in context in method post: used if you want to get
-            # the same account move reference when creating the same invoice
-            # after a cancelled one:
-            move.post()
+                # Como o campo 'amout' e computavel, precisamos
+                # copia-lo apos o camando create
+                move.amount_origin = move.amount
 
-            # make the invoice point to that move
-            values = {
-                'move_id': move.id,
-                'date': date,
-                'move_name': move.name,
-            }
+                # Pass invoice in context in method post: used if you want to get
+                # the same account move reference when creating the same invoice
+                # after a cancelled one:
+                move.post()
 
-            inv.with_context(ctx).write(values)
+                # make the invoice point to that move
+                # Mantido por questao de compatibilidade
+                values = {
+                    'move_id': move.id,
+                    'date': date,
+                    'move_name': move.name,
+                }
+
+                inv.with_context(ctx).write(values)
 
         return True
+
+    def _compute_residual(self):
+
+        for inv in self:
+
+            # Quando a fatura nao possui parcela, ela utiliza
+            # o financeiro do core (antigo)
+            if not inv.parcel_ids:
+                super(AccountInvoice, self)._compute_residual()
+            else:
+                residual = 0.0
+                residual_company_signed = 0.0
+                sign = inv.type in ['in_refund', 'out_refund'] and -1 or 1
+
+                for move in inv.sudo().move_ids:
+                    for line in move.line_ids:
+                        if line.account_id == inv.account_id:
+                            residual_company_signed += line.amount_residual
+                            if line.currency_id == inv.currency_id:
+                                residual += line.amount_residual_currency if line.currency_id else line.amount_residual
+                            else:
+                                from_currency = (line.currency_id and line.currency_id.with_context(
+                                    date=line.date)) or line.company_id.currency_id.with_context(date=line.date)
+                                residual += from_currency.compute(
+                                    line.amount_residual, inv.currency_id)
+
+                inv.residual_company_signed = abs(
+                    residual_company_signed) * sign
+                inv.residual_signed = abs(residual) * sign
+                inv.residual = abs(residual)
+                digits_rounding_precision = inv.currency_id.rounding
+
+                if float_is_zero(inv.residual, precision_rounding=digits_rounding_precision):
+                    inv.reconciled = True
+                else:
+                    inv.reconciled = False
 
     @api.multi
     def action_open_periodic_entry_wizard(self):
@@ -641,6 +676,58 @@ class AccountInvoice(models.Model):
         for rec in self:
             rec.date_invoice = ''
         return self.action_cancel()
+
+    @api.multi
+    def action_cancel(self):
+        """Sobrescrita do metodo de cancelamento da Fatura. 
+        Remove as account.move acopladas a fatura quando a mesma
+        e confirmada. Foi necessario sobrescrever o metodo do 
+        core porque a fatura agora gera uma account.move por
+        parcela (após correções no financeiro).
+
+        Raises:
+            UserError -- Quando a fatura esta parcialmente paga.
+
+        Returns:
+            bool -- True quando o metodo foi executado sem erro.
+        """
+        moves = self.env['account.move']
+
+        for inv in self:
+
+            # Quando a fatura nao possui parcela, ela utiliza
+            # o financeiro do core (antigo)
+            if not inv.parcel_ids:
+                return super(AccountInvoice, self).account_cancel()
+            else:
+                if inv.move_ids:
+                    moves += inv.move_ids
+
+                if any(move for move in inv.move_ids if move.paid_status == 'partial'):
+                    raise UserError(
+                        _('You cannot cancel an invoice which is partially paid.' /
+                          'You need to unreconcile related payment entries first.'))
+
+        # Inicialmente, alteramos o status da fatura para 'cancel' e 
+        # desacoplamos as move_ids.
+        # Apagamos o valor da data de confirmacao para que a geracao da
+        # parcela continue consistente
+        self.write({
+            'state': 'cancel',
+            'move_ids': False,
+            'move_id': False,
+            'date_invoice': '',
+        })
+
+        if moves:
+            # segundo, invalidamos as move(s)
+            moves.button_cancel()
+            # 
+            # Excluimos as moves desta invoice estava apontando.
+            # As move.lines e move.reconciles correspondentes serao automaticamente
+            # excluidas tambem.
+            moves.unlink()
+        return True
 
     @api.model
     def invoice_line_move_line_get(self):
