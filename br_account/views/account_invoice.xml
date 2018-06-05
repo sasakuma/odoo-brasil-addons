@@ -205,7 +205,12 @@
             </xpath>
             <xpath expr="//page[2]" position="before">
                 <page name="parcelas" string="Parcelas">
-                    <button name="action_open_periodic_entry_wizard" class="oe_highlight oe_edit_only" type="object" attrs="{'invisible': ['|',('state', '!=', 'draft'),('payment_term_id', '=', False)]}" string="Gerar Parcelas"/>
+                    <separator/>
+                    <button name="action_open_periodic_entry_wizard"
+                            class="oe_highlight oe_edit_only"
+                            type="object"
+                            attrs="{'invisible': ['|',('state', '!=', 'draft'),('payment_term_id', '=', False)]}"
+                            string="Gerar Parcelas"/>
                     <separator/>
                     <field nolabel="1" name="parcel_ids"/>
                 </page>
