@@ -698,7 +698,7 @@ class AccountInvoice(models.Model):
             # Quando a fatura nao possui parcela, ela utiliza
             # o financeiro do core (antigo)
             if not inv.parcel_ids:
-                return super(AccountInvoice, self).account_cancel()
+                return super(AccountInvoice, self).action_cancel()
             else:
                 if inv.move_ids:
                     moves += inv.move_ids
