@@ -454,7 +454,7 @@ class AccountInvoice(models.Model):
                         ml['invl_id'])
                     signal = -1 if ml['price'] < 0 else 1
                     ml['price'] = round(
-                        signal * parcel.parceling_value * invl_obj.percent_subtotal, 2)
+                        signal * parcel.abs_parceling_value * invl_obj.percent_subtotal, 2)
                     ml['date_maturity'] = parcel.date_maturity
 
                 new_iml.append({
