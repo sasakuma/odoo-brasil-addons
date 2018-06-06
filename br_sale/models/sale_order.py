@@ -29,15 +29,39 @@ class SaleOrder(models.Model):
 
             if self.fiscal_position_id.fiscal_document_id:
                 res['fiscal_document_id'] = self.fiscal_position_id.fiscal_document_id.id
-                
+
             if self.fiscal_position_id.document_serie_id:
                 res['document_serie_id'] = self.fiscal_position_id.document_serie_id.id
+
+            if self.parcel_ids:
+                parcel_values = [(0, 0, self._get_parcel_to_invoice(rec))
+                                 for rec in self.parcel_ids]
+
+                res['parcel_ids'] = parcel_values
 
             if self.fiscal_position_id.fiscal_observation_ids:
                 res['fiscal_observation_ids'] = [
                     (6, None, self.fiscal_position_id.fiscal_observation_ids.ids),
                 ]
         return res
+
+    def _get_parcel_to_invoice(self, parcel):
+        """ Metodo para gerar dicionario das parcelas.
+        Arguments:
+            parcel {[object]} -- campo relacional das parcelas
+
+        Returns:
+            [dict] -- contendo valores para gerar parcelas da 'br_sale.parcel' na 'br_account.invoice.parcel'
+        """
+        return {
+            'date_maturity': parcel.date_maturity,
+            'name': parcel.name,
+            'parceling_value': parcel.parceling_value,
+            'financial_operation_id': parcel.financial_operation_id.id,
+            'title_type_id': parcel.title_type_id.id,
+            'pin_date': parcel.pin_date,
+            'amount_days': parcel.amount_days,
+        }
 
     total_bruto = fields.Float(string='Total Bruto ( = )',
                                readonly=True,

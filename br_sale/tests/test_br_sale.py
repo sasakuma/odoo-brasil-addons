@@ -329,3 +329,19 @@ class TestBrSaleOrder(TransactionCase):
 
             self.assertEqual(action['context']['default_payment_term_id'],
                              inv.payment_term_id.id)
+
+    def test__get_parcel_to_invoice(self):
+        for inv in self.sales_order:
+            for parcel in inv.parcel_ids:
+                parcel_dict = self.sales_order._get_parcel_to_invoice(parcel)
+                self.assertEqual(parcel_dict['pin_date'], parcel.pin_date)
+                self.assertEqual(parcel_dict['name'], parcel.name)
+                self.assertEqual(parcel_dict['date_maturity'], parcel.date_maturity)
+                self.assertEqual(
+                    parcel_dict['title_type_id'], parcel.title_type_id.id)
+                self.assertEqual(
+                    parcel_dict['financial_operation_id'], parcel.financial_operation_id.id)
+                self.assertEqual(
+                    parcel_dict['parceling_value'], parcel.parceling_value)
+                self.assertEqual(
+                    parcel_dict['amount_days'], parcel.amount_days)
