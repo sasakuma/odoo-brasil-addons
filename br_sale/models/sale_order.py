@@ -27,6 +27,12 @@ class SaleOrder(models.Model):
             if self.fiscal_position_id.journal_id:
                 res['journal_id'] = self.fiscal_position_id.journal_id.id
 
+            if self.fiscal_position_id.fiscal_document_id:
+                res['fiscal_document_id'] = self.fiscal_position_id.fiscal_document_id.id
+                
+            if self.fiscal_position_id.document_serie_id:
+                res['document_serie_id'] = self.fiscal_position_id.document_serie_id.id
+
             if self.fiscal_position_id.fiscal_observation_ids:
                 res['fiscal_observation_ids'] = [
                     (6, None, self.fiscal_position_id.fiscal_observation_ids.ids),
