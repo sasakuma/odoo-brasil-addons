@@ -25,7 +25,10 @@
             <xpath expr="//button[@name='invoice_print']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//button[@type='action']" position="attributes">
+            <xpath expr="//button[@name='%(account.action_account_invoice_payment)d']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='%(account.action_account_invoice_refund)d']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//button[@name='action_invoice_open']" position="attributes">
@@ -162,12 +165,12 @@
             <xpath expr="//sheet/div" position="before">
                 <div class="oe_button_box" name="button_box"></div>
             </xpath>
-            <!-- <xpath expr="//button[@id='account_invoice_payment_btn']" position="attributes">
+            <xpath expr="//button[@name='%(account.action_account_invoice_payment)d']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//button[@name='193']" position="attributes">
+            <xpath expr="//button[@name='%(account.action_account_invoice_refund)d']" position="attributes">
                 <attribute name="invisible">1</attribute>
-            </xpath> -->
+            </xpath>
             <xpath expr="//button[@name='action_invoice_open']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
