@@ -87,10 +87,10 @@ class BrSaleParcel(models.Model):
         """Cria as linhas das parcelas de cotação.
 
         Arguments:
-            values {[date]} -- atualiza o backup da data de vencimento
+            values {date} -- atualiza o backup da data de vencimento.
 
         Returns:
-            [rec] -- retorna records das parcelas
+            parcel {BrSaleParcel} -- record contendo objeto BrSaleParcel criado.
         """
         # Atualizamos o valor do backup da data de vencimento
         values['old_date_maturity'] = values['date_maturity']
@@ -103,11 +103,11 @@ class BrSaleParcel(models.Model):
     @api.multi
     @api.depends('parceling_value')
     def compute_abs_parceling_value(self):
-        """ Retorna o valor absoluto da parcela. Isso e feito porque a fatura
+        """ Calcula o valor absoluto da parcela. Isso e feito porque a fatura
         de fornecedor exibe parcelas com valores negativos. Nao podemos alterar
         o sinal da parcela porque isso impactaria diretamente na criacao das
         move lines, entao adicionamos o campo apenas para exibir o valor
-        positivo da parcela sem alterar o valor original
+        positivo da parcela sem alterar o valor original.
         """
         for rec in self:
             rec.abs_parceling_value = abs(rec.parceling_value)
@@ -137,7 +137,7 @@ class BrSaleParcel(models.Model):
         """Calculamos a nova data de vencimento.
 
         Arguments:
-            sale_order_date {[date]} --  data da cotação.
+            sale_order_date {Date} -- data da cotação.
         """
         self.ensure_one()
         if not self.pin_date:

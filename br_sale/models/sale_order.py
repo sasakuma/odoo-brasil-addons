@@ -48,10 +48,10 @@ class SaleOrder(models.Model):
     def _get_parcel_to_invoice(self, parcel):
         """ Metodo para gerar dicionario das parcelas.
         Arguments:
-            parcel {[object]} -- campo relacional das parcelas
+            parcel {BrSaleParcel} -- record com objeto BrSaleParcel.
 
         Returns:
-            [dict] -- contendo valores para gerar parcelas da 'br_sale.parcel' na 'br_account.invoice.parcel'
+            dict -- valores para gerar parcelas da 'br_sale.parcel' na 'br_account.invoice.parcel'
         """
         return {
             'date_maturity': parcel.date_maturity,
@@ -114,7 +114,7 @@ class SaleOrder(models.Model):
             UserError -- Caso a cotação não tenha condição de pagamento.
 
         Returns:
-            wizard: Retorna uma janela para gerar as parcelas da cotação
+            wizard: instancia de 'br_sale.parcel.wizard' gerar as parcelas da cotação.
         """
 
         self.ensure_one()
@@ -161,7 +161,7 @@ class SaleOrder(models.Model):
             UserError -- Caso a cotação não tenha condição de pagamento.
 
         Returns:
-            [bool] -- True
+            bool -- True
         """
 
         for inv in self:
