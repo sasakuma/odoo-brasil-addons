@@ -164,51 +164,51 @@ class SaleOrder(models.Model):
             bool -- True
         """
 
-        for inv in self:
+        for sale in self:
 
-            ctx = dict(self._context, lang=inv.partner_id.lang)
+            ctx = dict(self._context, lang=sale.partner_id.lang)
 
             msg = ''
 
-            if not inv.quotation_date:
-                msg = 'Nenhuma data fornecida como base para a criação' 
+            if not sale.quotation_date:
+                msg += '- Nenhuma data fornecida como base para a criação' 
                 'das parcelas!'
 
-            if inv.state != 'draft':
-                msg = 'Parcelas podem ser criadas apenas quando a'
+            if sale.state != 'draft':
+                msg += '\n- Parcelas podem ser criadas apenas quando a'
                 'cotação estiver como "Provisório"'
 
-            if not inv.payment_term_id:
-                msg = 'Nenhuma condição de pagamento foi fornecida. Por'
+            if not sale.payment_term_id:
+                msg += '\n- Nenhuma condição de pagamento foi fornecida. Por'
                 'favor, selecione uma condição de pagamento'
 
             if msg:
                 raise UserError(msg)
 
-            company_currency = inv.company_id.currency_id
+            company_currency = sale.company_id.currency_id
 
-            diff_currency = inv.currency_id != company_currency
+            diff_currency = sale.currency_id != company_currency
 
-            total = self.amount_total
+            total = sale.amount_total
 
-            aux = inv.with_context(ctx).payment_term_id.with_context(
+            aux = sale.with_context(ctx).payment_term_id.with_context(
                 currency_id=company_currency.id).compute(
-                total, inv.quotation_date)
+                total, sale.quotation_date)
 
             lines_no_taxes = aux[0]
 
             res_amount_currency = total
-            ctx['date'] = inv.quotation_date
+            ctx['date'] = sale.quotation_date
 
             # Removemos as parcelas adicionadas anteriormente
-            inv.parcel_ids.unlink()
+            sale.parcel_ids.unlink()
 
             for i, t in enumerate(lines_no_taxes):
 
-                if inv.currency_id != company_currency:
+                if sale.currency_id != company_currency:
                     amount_currency = \
                         company_currency.with_context(ctx).compute(
-                            t[1], inv.currency_id)
+                            t[1], sale.currency_id)
                 else:
                     amount_currency = False
 
@@ -226,8 +226,8 @@ class SaleOrder(models.Model):
                     'financial_operation_id': financial_operation.id,
                     'title_type_id': title_type.id,
                     'amount_currency': diff_currency and amount_currency,
-                    'currency_id': diff_currency and inv.currency_id.id,
-                    'sale_order_id': inv.id,
+                    'currency_id': diff_currency and sale.currency_id.id,
+                    'sale_order_id': sale.id,
                 }
 
                 self.env['br_sale.parcel'].create(values)

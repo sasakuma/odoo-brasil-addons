@@ -245,8 +245,8 @@ class TestBrSaleOrder(TransactionCase):
         self.financial_operation = self.env.ref(
             'br_account.account_financial_operation_6')
 
-        self.sales_order[0].generate_parcel_entry(self.financial_operation,
-                                                  self.title_type)
+        self.sales_order.generate_parcel_entry(self.financial_operation,
+                                               self.title_type)
 
     def test_sale_order_to_invoice(self):
         for item in self.sales_order:
@@ -287,26 +287,26 @@ class TestBrSaleOrder(TransactionCase):
 
     def test_generate_parcel_entry(self):
 
-        for inv in self.sales_order:
-            for parcel in inv.parcel_ids:
+        for sale in self.sales_order:
+            for parcel in sale.parcel_ids:
                 self.assertEqual(parcel.date_maturity, '2017-08-31')
                 self.assertEqual(parcel.old_date_maturity, '2017-08-31')
                 self.assertEqual(parcel.name, '01')
-                self.assertEqual(parcel.parceling_value, inv.amount_total)
+                self.assertEqual(parcel.parceling_value, sale.amount_total)
                 self.assertEqual(parcel.financial_operation_id.id,
                                  self.financial_operation.id)
                 self.assertEqual(parcel.title_type_id.id, self.title_type.id)
 
     def test_action_open_periodic_entry_wizard(self):
 
-            # O metodo deve receber apenas um record, caso contrário o retorno
-            # sera comprometido. Aqui, verificamos se o metodo dispara excecao
-            # quando o mesmo e invocado com mais de um record
+        # O metodo deve receber apenas um record, caso contrário o retorno
+        # sera comprometido. Aqui, verificamos se o metodo dispara excecao
+        # quando o mesmo e invocado com mais de um record
         with self.assertRaises(ValueError):
             self.sales_order.action_open_periodic_entry_wizard()
 
-        for inv in self.sales_order:
-            action = inv.action_open_periodic_entry_wizard()
+        for sale in self.sales_order:
+            action = sale.action_open_periodic_entry_wizard()
 
             # Verificamos se as chaves estao no dicionario.
             # Isso e feita a fim de detectar se alguma chave foi removida
@@ -328,20 +328,24 @@ class TestBrSaleOrder(TransactionCase):
             self.assertEqual(action['target'], 'new')
 
             self.assertEqual(action['context']['default_payment_term_id'],
-                             inv.payment_term_id.id)
+                             sale.payment_term_id.id)
 
     def test__get_parcel_to_invoice(self):
-        for inv in self.sales_order:
-            for parcel in inv.parcel_ids:
+
+        for sale in self.sales_order:
+
+            for parcel in sale.parcel_ids:
                 parcel_dict = self.sales_order._get_parcel_to_invoice(parcel)
+
                 self.assertEqual(parcel_dict['pin_date'], parcel.pin_date)
                 self.assertEqual(parcel_dict['name'], parcel.name)
-                self.assertEqual(parcel_dict['date_maturity'], parcel.date_maturity)
-                self.assertEqual(
-                    parcel_dict['title_type_id'], parcel.title_type_id.id)
-                self.assertEqual(
-                    parcel_dict['financial_operation_id'], parcel.financial_operation_id.id)
-                self.assertEqual(
-                    parcel_dict['parceling_value'], parcel.parceling_value)
-                self.assertEqual(
-                    parcel_dict['amount_days'], parcel.amount_days)
+                self.assertEqual(parcel_dict['date_maturity'],
+                                 parcel.date_maturity)
+                self.assertEqual(parcel_dict['title_type_id'],
+                                 parcel.title_type_id.id)
+                self.assertEqual(parcel_dict['financial_operation_id'],
+                                 parcel.financial_operation_id.id)
+                self.assertEqual(parcel_dict['parceling_value'],
+                                 parcel.parceling_value)
+                self.assertEqual(parcel_dict['amount_days'],
+                                 parcel.amount_days)
