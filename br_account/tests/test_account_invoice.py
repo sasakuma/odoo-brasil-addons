@@ -305,6 +305,22 @@ class TestAccountInvoice(TestBaseBr):
             self.assertEqual(invoice.icms_base, 585.0)
             self.assertEqual(invoice.icms_value, 99.45)
 
+    def test__compute_residual(self):
+
+        for inv in self.invoices:
+
+            # Valido a fatura
+            inv.action_br_account_invoice_open()
+
+            inv._compute_residual()
+
+            # Como a fatura nao e de nenhum dos tipos a seguir
+            # os valores abaixo serao positivos
+            self.assertNotIn(inv.type, ['in_refund', 'out_refund'])
+            self.assertEqual(inv.residual, inv.amount_total)
+            self.assertEqual(inv.residual_company_signed, inv.amount_total)
+            self.assertFalse(inv.reconciled)
+
     def test_generate_parcel_entry(self):
 
         for inv in self.invoices:
