@@ -719,7 +719,7 @@ class AccountInvoice(models.Model):
 
                 if any(move for move in inv.move_ids if move.paid_status == 'partial'):
                     raise UserError(
-                        _('You cannot cancel an invoice which is partially paid.' /
+                        _('You cannot cancel an invoice which is partially paid.' \
                           'You need to unreconcile related payment entries first.'))
 
         # Inicialmente, alteramos o status da fatura para 'cancel' e 
