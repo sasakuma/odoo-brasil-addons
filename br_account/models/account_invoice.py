@@ -689,10 +689,6 @@ class AccountInvoice(models.Model):
             raise UserError(_("Invoice must be in draft, Pro-forma or open \
                               state in order to be cancelled."))
 
-        # Apagamos o valor da data de confirmacao para que a geracao da
-        # parcela continue consistente
-        for rec in self:
-            rec.date_invoice = ''
         return self.action_cancel()
 
     @api.multi
