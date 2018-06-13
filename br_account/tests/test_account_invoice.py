@@ -113,17 +113,72 @@ class TestAccountInvoice(TestBaseBr):
             payment_term_id=payment_term.id,
         ))
 
-    def test_action_invoice_cancel_paid(self):
+    def test_action_invoice_cancel_paid_exception(self):
 
         for inv in self.invoices:
-            inv.action_br_account_invoice_open()
-            self.assertTrue(inv.date_invoice)
 
-            inv.action_invoice_cancel_paid()
-            self.assertFalse(inv.date_invoice)
+            # Forçamos o status da fatura apenas para fins de teste
+            inv.state = 'cancel'
 
             with self.assertRaises(UserError):
                 inv.action_invoice_cancel_paid()
+
+    @mock.patch('odoo.addons.br_account.models.account_invoice.AccountInvoice.action_cancel')
+    def test_action_invoice_cancel_paid_success(self, mk_action_cancel):
+
+        for inv in self.invoices:
+            inv.action_br_account_invoice_open()
+            inv.action_invoice_cancel_paid()
+
+        # Verificamos quantas vezes o metodo 'action_cancel' foi chamado.
+        # Este metodo e responsavel por todo o processo de cancelamento
+        # da fatura
+        self.assertEqual(len(mk_action_cancel.mock_calls), len(self.invoices))
+
+    def test_action_cancel_exception(self):
+
+        for inv in self.invoices:
+
+            # Confirmamos a fatura normalmente
+            inv.action_br_account_invoice_open()
+
+            # Forçamos o status de parcialmente pago
+            # de modo a verificar se e possivel cancelar
+            # account.move que nao foram pagas totalmente.
+            for move in inv.move_ids:
+                move.paid_status = 'partial'
+
+            with self.assertRaises(UserError):
+                inv.action_cancel()
+
+    def test_action_cancel_success(self):
+
+        for inv in self.invoices:
+
+            # Confirmamos a fatura e verificamos se os 
+            # respectivos campos foram populados
+            inv.action_br_account_invoice_open()
+
+            self.assertNotEqual(inv.state, 'cancel')
+            self.assertTrue(inv.date_invoice)
+            self.assertTrue(inv.move_id)
+            self.assertTrue(inv.move_ids)
+
+            # Salvamos os ids de cada
+            moves = inv.move_ids
+
+            # Cancelamos a fatura e verificamos se os campos
+            # foram resetados
+            self.assertTrue(inv.action_cancel())
+
+            self.assertEqual(inv.state, 'cancel')
+            self.assertFalse(inv.date_invoice)
+            self.assertFalse(inv.move_id)
+            self.assertFalse(inv.move_ids)
+
+            # Verificamos se as account.move da fatura foram
+            # realmente excluidas do banco
+            self.assertFalse(moves.exists())
 
     def test_compute_total_values(self):
 
