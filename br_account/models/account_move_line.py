@@ -60,16 +60,3 @@ class AccountMoveLine(models.Model):
                     not credit:
                 credit = aml
         return debit, credit
-
-    @api.depends('debit', 'credit', 'amount_currency', 'currency_id', 'matched_debit_ids', 'matched_credit_ids', 'matched_debit_ids.amount', 'matched_credit_ids.amount', 'move_id.state')
-    def _amount_residual(self):
-        """ Computes the residual amount of a move line from a reconciliable account in the company currency and the line's currency.
-            This amount will be 0 for fully reconciled lines or lines from a non-reconciliable account, the original line amount
-            for unreconciled lines, and something in-between for partially reconciled lines.
-        """
-        super(AccountMoveLine, self)._amount_residual()
-
-        for line in self:
-            if line.user_type_id.type in ['receivable', 'payable']:
-                line.move_id.amount_residual = line.amount_residual
-                line.move_id.amount_residual_currency = line.amount_residual_currency

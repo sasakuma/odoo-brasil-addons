@@ -197,6 +197,10 @@ class TestAccountInvoice(TestBaseBr):
 
             # Verifico as linhas recebiveis
             self.assertEqual(len(invoice.move_ids), 1)
+            self.assertEqual(all(move.account_type == 'receivable'
+                for move in invoice.move_ids), True)
+            self.assertEqual(all(move.amount == move.amount_residual
+                for move in invoice.move_ids), True)
             self.assertEqual(len(invoice.parcel_ids), len(invoice.move_ids))
 
     def test_invoice_pis_cofins_taxes(self):

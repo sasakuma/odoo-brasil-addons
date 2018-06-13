@@ -3178,3 +3178,19 @@ msgstr "product.fiscal.classification.wizard"
 #: model:ir.ui.view,arch_db:account.view_partner_property_form
 msgid "Invoicing"
 msgstr "Contabilidade e Finanças"
+
+#. module: account
+#: selection:account.abstract.payment,payment_type:0
+#: selection:account.payment,payment_type:0
+#: selection:account.register.payments,payment_type:0
+#: model:ir.ui.view,arch_db:account.account_journal_dashboard_kanban_view
+msgid "Receive Money"
+msgstr "Recebimento"
+
+#. module: account
+#: selection:account.abstract.payment,payment_type:0
+#: selection:account.payment,payment_type:0
+#: selection:account.register.payments,payment_type:0
+#: model:ir.ui.view,arch_db:account.account_journal_dashboard_kanban_view
+msgid "Send Money"
+msgstr "Pagamento"
