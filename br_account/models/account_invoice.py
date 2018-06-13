@@ -526,6 +526,8 @@ class AccountInvoice(models.Model):
         return True
 
     def _compute_residual(self):
+        """Realiza calculo do valore residual a ser pago da fatura.
+        """
 
         for inv in self:
 
@@ -534,28 +536,44 @@ class AccountInvoice(models.Model):
             if not inv.parcel_ids:
                 super(AccountInvoice, self)._compute_residual()
             else:
+                # Se entrar aqui utilizamos o novo financeiro
+                # o calculo do residual é realizado sobre as account.move
+                # geradas pela parcela
                 residual = 0.0
                 residual_company_signed = 0.0
+
+                # Obtemos o sinal do residual, dependendo do tipo da fatura
                 sign = inv.type in ['in_refund', 'out_refund'] and -1 or 1
 
+                # A diferenca do metodo original, e que aqui iremos percorrer
+                # mais de uma account.move, uma vez que no novo financeiro
+                # cada parcela gera uma account.move
                 for move in inv.sudo().move_ids:
+
                     for line in move.line_ids:
+
                         if line.account_id == inv.account_id:
                             residual_company_signed += line.amount_residual
+
+                            # Caso o linha da account.move ser da mesma moeda que a fatura
                             if line.currency_id == inv.currency_id:
                                 residual += line.amount_residual_currency if line.currency_id else line.amount_residual
                             else:
+                                # Caso contrario, realizamos a conversao de moeda
                                 from_currency = (line.currency_id and line.currency_id.with_context(
                                     date=line.date)) or line.company_id.currency_id.with_context(date=line.date)
+
                                 residual += from_currency.compute(
                                     line.amount_residual, inv.currency_id)
 
-                inv.residual_company_signed = abs(
-                    residual_company_signed) * sign
+                inv.residual_company_signed = abs(residual_company_signed) * sign
                 inv.residual_signed = abs(residual) * sign
                 inv.residual = abs(residual)
+
                 digits_rounding_precision = inv.currency_id.rounding
 
+                # Verificamos se a fatura foi reconciliada quando o valor
+                # residual e zero
                 if float_is_zero(inv.residual, precision_rounding=digits_rounding_precision):
                     inv.reconciled = True
                 else:
