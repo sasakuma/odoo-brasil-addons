@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="account_move_alter_operation_form">
+        <field name="name">account.move.alter.operation</field>
+        <field name="model">account.move.alter.operation</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Alter Operation(s)">
+                <style>
+                    @media screen and (min-width: 900px) {
+                        .modal-lg{
+                            max-width: 400px !important;
+                            max-height: 600px !important;
+                        }
+                        .modal-lg .modal-footer button{
+                            width: calc(50% - 2.5px) !important;
+                        }
+                        .modal-lg p{
+                            text-align: center;
+                        }
+                    }
+                </style>
+                <group>
+                    <field name="old_title_type"/>
+                </group>
+                <group>
+                    <field name="new_title_type"/>
+                </group>
+                <group>
+                    <field name="old_financial_operation"/>
+                </group>
+                <group>
+                    <field name="new_financial_operation"/>
+                </group>
+                <group>
+                    <field name="old_payment_mode"/>
+                </group>
+                <group>
+                    <field name="new_payment_mode"/>
+                </group>
+                <footer>
+                    <button name="cancel" string="Cancel"
+                        class="oe_highlight"
+                        type="object"/>
+                    <button name="alter_operations" string="Alter"
+                        class="oe_highlight"
+                        type="object"
+                        confirm="this action will alter operation(s) in this title, you wish to proceed ?"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

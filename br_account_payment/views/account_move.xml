@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <menuitem sequence="3"
+              id="menu_br_payments"
+              name="Receber e Pagar"
+              parent="account.menu_finance"/>
+
+    <record id="view_move_form" model="ir.ui.view">
+        <field name="name">account.move.view.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="br_account.view_move_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//sheet" position="before">
+                <header name="payment_button_bar"
+                    attrs="{'invisible': ['|',
+                    ('paid_status', '=', 'paid'),
+                    ('account_type', '=', False)]}">
+
+                    <field name="paid_status" invisible="1"/>
+
+                    <button name="action_register_payment" string="Pagar"                        
+                        attrs="{'invisible': [('account_type', '=', 'receivable')]}"
+                        type="object"
+                        class="btn btn-primary btn-sm"
+                        groups="account.group_account_invoice"/>
+
+                    <button name="action_register_payment" string="Receber"
+                        domain="{'invisible': [('account_type', '=', 'payable')]}"
+                        type="object"
+                        class="btn btn-primary btn-sm"
+                        groups="account.group_account_invoice"/>
+                </header>
+            </xpath>
+
+            <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                <button name="action_alter_date_maturity" string="Alter Date Maturity"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-calendar"
+                    attrs="{'invisible': ['|',
+                        ('account_type', '=', False),
+                        ('paid_status', '=', 'paid')]}"/>
+            </xpath>
+
+            <field name="title_type_id" position="after">
+                <field name="payment_mode_id" readonly="1"/>
+                <button name="action_alter_operation" string="Alter Operation"
+                    type="object"/>
+            </field>
+            
+        </field>
+    </record>
+
+    <record id="view_payments_tree_a_receber" model="ir.ui.view">
+        <field name="name">Payments</field>
+        <field name="model">account.move</field>
+        <field name="field_parent">partner_id</field>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <tree default_order="date_maturity_current" string="Payments" colors="grey:reconciled==True;red:date_maturity_current&lt;current_date" create="false">
+                <field name="partner_id" readonly="1"/>
+                <field name="amount" sum="Total das parcelas"/>
+                <field name="amount_residual" readonly="1" sum="Total"/>
+                <field name="date_maturity_current"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_payments_tree_a_pagar" model="ir.ui.view">
+        <field name="name">Payments</field>
+        <field name="model">account.move</field>
+        <field name="field_parent">partner_id</field>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <tree default_order="date_maturity_current" string="Payments" colors="grey:reconciled==True;red:date_maturity_current&lt;current_date" create="false">
+                <field name="partner_id" readonly="1"/>
+                <field name="amount" sum="Total das parcelas"/>
+                <field name="amount_residual" readonly="1" sum="Total"/>
+                <field name="date_maturity_current"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_payments_filter" model="ir.ui.view">
+        <field name="name">Payments Select</field>
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <search string="Search Payments">
+                <field name="partner_id"/>
+                <field name="date_maturity_current"/>
+                <group expand="0" string="Agrupar por...">
+                    <filter string="Parceiro" domain="[]" context="{'group_by':'partner_id'}"/>
+                    <filter string="Data de Vencimento" domain="[]" context="{'group_by':'date_maturity_current:day'}"/>
+                    <filter string="Mês" domain="[]" context="{'group_by':'date_maturity_current'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_receivable_move" model="ir.actions.act_window">
+        <field name="name">Contas a Receber</field>
+        <field name="res_model">account.move</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_payments_tree_a_receber"/>
+        <field name="search_view_id" ref="view_payments_filter"/>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="domain">[('account_type', '=', 'receivable'), ('state','=','posted')]
+        </field>
+    </record>
+
+    <record id="action_payable_move" model="ir.actions.act_window">
+        <field name="name">Contas a Pagar</field>
+        <field name="res_model">account.move</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_payments_tree_a_pagar"/>
+        <field name="search_view_id" ref="view_payments_filter"/>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="domain">[('account_type', '=', 'payable'), ('state','=','posted')]
+        </field>
+    </record>
+
+    <menuitem sequence="10" action="action_receivable_move"
+              id="menu_action_receivable_move"
+              parent="menu_br_payments"/>
+
+    <menuitem sequence="20" action="action_payable_move"
+              id="menu_action_payable_move"
+              parent="menu_br_payments"/>
+
+</odoo>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="account_move_alter_date_form">
+        <field name="name">account.move.alter.date</field>
+        <field name="model">account.move.alter.date</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Alter Date Maturity">
+                <style>
+                    @media screen and (min-width: 900px) {
+                        .modal-lg{
+                            max-width: 400px !important;
+                            max-height: 500px !important;
+                        }
+                        .modal-lg .modal-footer button{
+                            width: calc(50% - 2.5px) !important;
+                        }
+                        .modal-lg p{
+                            text-align: center;
+                        }
+                    }
+                </style>
+                <group>
+                    <field name="old_date_maturity"/>
+                </group>
+                <group>
+                    <field name="new_date_maturity"/>
+                </group>
+                <footer>
+                    <button name="cancel" string="Cancel"
+                        class="oe_highlight"
+                        type="object"/>
+                    <button name="alter_date_maturity" string="Alter"
+                        class="oe_highlight"
+                        type="object"
+                        confirm="this action will generate a maturity date alteration send line, you wish to proceed ?"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

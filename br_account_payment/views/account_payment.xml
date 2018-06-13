@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
         <field name="arch" type="xml">
             <field name="state" position="after">
-                <field name="move_line_id" invisible="1"/>
+                <field name="move_id" invisible="1"/>
             </field>
         </field>
     </record>
