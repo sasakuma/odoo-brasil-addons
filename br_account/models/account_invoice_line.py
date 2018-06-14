@@ -472,6 +472,8 @@ class AccountInvoiceLine(models.Model):
 
     @api.depends('price_subtotal', 'invoice_id.total_bruto')
     def _compute_percent_subtotal(self):
+        """Calcula porcentagem do preço total da linha sobre o total da fatura.
+        """
 
         for line in self:
             if line.invoice_id.total_bruto:

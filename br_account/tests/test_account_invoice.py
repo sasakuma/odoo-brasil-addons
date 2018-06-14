@@ -155,7 +155,7 @@ class TestAccountInvoice(TestBaseBr):
 
         for inv in self.invoices:
 
-            # Confirmamos a fatura e verificamos se os 
+            # Confirmamos a fatura e verificamos se os
             # respectivos campos foram populados
             inv.action_br_account_invoice_open()
 
@@ -466,7 +466,7 @@ class TestAccountInvoice(TestBaseBr):
             # Cada parcela deve criar uma account.move para a fatura
             self.assertEqual(len(inv.parcel_ids), len(inv.move_ids))
 
-            # Verificamos se os campos da account.move foram 
+            # Verificamos se os campos da account.move foram
             # preenchidos corretamente
             for parcel, move in zip(inv.parcel_ids, inv.move_ids):
                 self.assertEqual(move.date_maturity_current,
@@ -516,7 +516,7 @@ class TestAccountInvoice(TestBaseBr):
                 # Assim sobram as linhas com 'credit' diferente de zero
                 credit_lines = move.line_ids - debit_lines
 
-                # Cada account.move.line possui uma invoice.line como 
+                # Cada account.move.line possui uma invoice.line como
                 # geradora e uma invoice.line  pode gerar varias
                 # account.move.line
                 self.assertEqual(len(credit_lines), len(inv.invoice_line_ids))
@@ -525,7 +525,7 @@ class TestAccountInvoice(TestBaseBr):
                                  parcel.abs_parceling_value)
 
                 # Ordenamos os records para garantir que as comparacoes
-                # estao na ordem correta. 
+                # estao na ordem correta.
                 credit_lines = credit_lines.sorted(lambda r: r.id)
                 invoice_lines = inv.invoice_line_ids.sorted(lambda r: r.id)
 
@@ -580,3 +580,11 @@ class TestAccountInvoice(TestBaseBr):
         for inv in self.incomplete_inv:
             with self.assertRaises(UserError):
                 inv.action_open_periodic_entry_wizard()
+
+    def test__compute_percent_subtotal(self):
+
+        for inv in self.invoices:
+            for line in inv.invoice_line_ids:
+                line._compute_percent_subtotal()
+                self.assertEqual(line.percent_subtotal,
+                                 round(line.price_subtotal / line.invoice_id.total_bruto, 6))
