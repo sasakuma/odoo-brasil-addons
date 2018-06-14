@@ -382,15 +382,6 @@ class AccountInvoice(models.Model):
         self.fiscal_comment = self.fiscal_position_id.note
 
     @api.multi
-    def percent_from_total_bruto(self):
-        """Calcula a razão entre o preço bruto de cada linha da 
-        fatura em relação ao total bruto da fatura.
-        """
-        for inv in self:
-            for line in inv.invoice_line_ids:
-                line.percent_subtotal = line.price_subtotal / inv.total_bruto
-
-    @api.multi
     def action_move_create(self):
         """Cria lançamento de diario a partir da confirmação da fatura.
         Diferente do mesmo metodo presente no core, este metodo altera
