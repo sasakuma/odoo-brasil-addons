@@ -58,7 +58,7 @@
 
     <menuitem id="menu_invoice_electronic_inutilized"
               name="Séries Inutilizadas"
-              parent="br_account.menu_br_account"
+              parent="sale.menu_sale_invoicing"
               action="action_invoice_electronic_inutilized"
               sequence="21"/>
 

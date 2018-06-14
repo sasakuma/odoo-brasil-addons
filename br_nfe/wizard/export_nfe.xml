@@ -38,7 +38,7 @@
 
     <menuitem id="menu_nfe_export"
               name="Exportar NFe"
-              parent="br_account.menu_br_account"
+              parent="sale.menu_sale_invoicing"
               action="action_export_nfe_wizard"
               sequence="13"/>
 

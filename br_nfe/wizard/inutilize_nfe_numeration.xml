@@ -37,7 +37,7 @@
 
     <menuitem id="menu_nfe_inutilization"
               name="Inutilizar Numeração NFe"
-              parent="br_account.menu_br_account"
+              parent="sale.menu_sale_invoicing"
               action="action_inutilize_nfe_wizard"
               sequence="13"/>
 
