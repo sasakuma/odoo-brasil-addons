@@ -729,7 +729,6 @@ class AccountInvoice(models.Model):
             'state': 'cancel',
             'move_ids': False,
             'move_id': False,
-            'date_invoice': '',
             'cancel_invoice_date': fields.Date.today(),
         })
 

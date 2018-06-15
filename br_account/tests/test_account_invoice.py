@@ -164,7 +164,6 @@ class TestAccountInvoice(TestBaseBr):
             inv.action_br_account_invoice_open()
 
             self.assertNotEqual(inv.state, 'cancel')
-            self.assertTrue(inv.date_invoice)
             self.assertTrue(inv.move_id)
             self.assertTrue(inv.move_ids)
 
@@ -176,7 +175,6 @@ class TestAccountInvoice(TestBaseBr):
             self.assertTrue(inv.action_cancel())
 
             self.assertEqual(inv.state, 'cancel')
-            self.assertFalse(inv.date_invoice)
             self.assertFalse(inv.move_id)
             self.assertFalse(inv.move_ids)
 
