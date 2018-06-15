@@ -136,6 +136,10 @@ class AccountInvoice(models.Model):
                                    copy=False,
                                    default=fields.Date.today)
 
+    cancel_invoice_date = fields.Date(string='Data da Cancelamento',
+                                      readonly=True,
+                                      copy=False)
+
     date_invoice = fields.Date(copy=False)
 
     internal_number = fields.Integer(string='Invoice Number',
@@ -722,6 +726,7 @@ class AccountInvoice(models.Model):
             'move_ids': False,
             'move_id': False,
             'date_invoice': '',
+            'cancel_invoice_date': fields.Date.today(),
         })
 
         if moves:

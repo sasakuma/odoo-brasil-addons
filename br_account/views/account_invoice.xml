@@ -40,7 +40,9 @@
             </xpath>
             <field name="date_invoice" position="replace">
                 <field name="date_invoice" attrs="{'readonly': 1, 'invisible': [('state', '=', 'draft')]}"/>
-                <field name="pre_invoice_date" attrs="{'readonly':[('state','!=','draft')]}"/></field>
+                <field name="pre_invoice_date" attrs="{'readonly':[('state','!=','draft')]}"/>
+                <field name="cancel_invoice_date" attrs="{'readonly': 1, 'invisible': [('state', '!=', 'draft')]}"/>
+            </field>
             <field name="date_due" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
@@ -185,6 +187,7 @@
             <field name="date_invoice" position="after">
                 <field name="is_electronic" invisible="1"/>
                 <field name="issuer"/>
+                <field name="cancel_invoice_date" attrs="{'readonly': 1, 'invisible': [('state', '!=', 'draft')]}"/>
                 <field name="fiscal_document_id" attrs="{'invisible': [('issuer','=', '0')]}"/>
                 <field name="document_serie_id" attrs="{'invisible': [('issuer','=', '0')]}"/>
                 <field name="vendor_number" attrs="{'invisible': [('issuer','=', '1')]}"/>

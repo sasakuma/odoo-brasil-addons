@@ -151,7 +151,11 @@ class TestAccountInvoice(TestBaseBr):
             with self.assertRaises(UserError):
                 inv.action_cancel()
 
-    def test_action_cancel_success(self):
+    @mock.patch('odoo.fields.Date.today')
+    def test_action_cancel_success(self, mk):
+
+        # Realizamos o mock da data de cancelamento da fatura
+        mk.return_value = '2017-09-04'
 
         for inv in self.invoices:
 
@@ -175,6 +179,8 @@ class TestAccountInvoice(TestBaseBr):
             self.assertFalse(inv.date_invoice)
             self.assertFalse(inv.move_id)
             self.assertFalse(inv.move_ids)
+
+            self.assertEqual(inv.cancel_invoice_date, '2017-09-04')
 
             # Verificamos se as account.move da fatura foram
             # realmente excluidas do banco
