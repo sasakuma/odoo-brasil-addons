@@ -151,6 +151,9 @@ class AccountInvoice(models.Model):
                                      computed automatically when the invoice
                                      is created.""")
 
+    number_backup = fields.Char(copy=False, 
+                                string='Backup do numero do pedido')
+
     is_electronic = fields.Boolean(related='fiscal_document_id.electronic',
                                    type='boolean',
                                    store=True,
@@ -514,6 +517,7 @@ class AccountInvoice(models.Model):
                     'move_id': move.id,
                     'date': date,
                     'move_name': move.name,
+                    'number_backup': move.name,
                 }
 
                 inv.with_context(ctx).write(values)

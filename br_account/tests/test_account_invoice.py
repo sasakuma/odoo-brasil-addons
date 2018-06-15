@@ -476,6 +476,9 @@ class TestAccountInvoice(TestBaseBr):
             # Cada parcela deve criar uma account.move para a fatura
             self.assertEqual(len(inv.parcel_ids), len(inv.move_ids))
 
+            # Verificamos se o backup do numero do pedido foi salvo
+            self.assertEqual(inv.number_backup, inv.number)
+
             # Verificamos se os campos da account.move foram
             # preenchidos corretamente
             for parcel, move in zip(inv.parcel_ids, inv.move_ids):

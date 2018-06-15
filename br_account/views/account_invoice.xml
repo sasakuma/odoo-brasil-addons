@@ -7,9 +7,16 @@
         <field name="inherit_id" ref="account.invoice_tree"/>
         <field name="arch" type="xml">
             <field name="date_due" position="after">
-                <field name="fiscal_position_id"/></field>
+                <field name="fiscal_position_id"/>
+            </field>
             <field name="company_id" position="attributes">
                 <attribute name="invisible">1</attribute>
+            </field>
+            <field name="number" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="number" position="after">
+                <field name="number_backup"/>
             </field>
         </field>
     </record>
@@ -52,6 +59,7 @@
                 <field name="fiscal_position_id" required="1"/></field>
             <field name="date_invoice" position="before">
                 <field name="is_electronic" invisible="1"/>
+                <field name="number_backup" invisible="1"/>
                 <field name="fiscal_document_id"/>
                 <field name="document_serie_id"/>
                 <field name="invoice_model" invisible="1"/></field>
@@ -186,6 +194,7 @@
                 <field name="fiscal_position_id"/></field>
             <field name="date_invoice" position="after">
                 <field name="is_electronic" invisible="1"/>
+                <field name="number_backup" invisible="1"/>
                 <field name="issuer"/>
                 <field name="cancel_invoice_date" attrs="{'readonly': 1, 'invisible': [('state', '!=', 'draft')]}"/>
                 <field name="fiscal_document_id" attrs="{'invisible': [('issuer','=', '0')]}"/>
