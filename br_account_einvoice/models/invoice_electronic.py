@@ -179,10 +179,16 @@ class InvoiceElectronic(models.Model):
     xml_to_send_name = fields.Char(
         string="Nome xml a ser enviado", size=100, readonly=True)
 
-    email_sent = fields.Boolean(string="Fatura na fila de emails",
+    email_sent = fields.Boolean(string="Email de confirmação na fila de email",
                                 default=False,
                                 readonly=True,
                                 states=STATE)
+
+    cancel_email_sent = fields.Boolean(
+        string="Email de cancelamento na fila de email",
+        default=False,
+        readonly=True,
+        states=STATE)
 
     def _create_attachment(self, prefix, event, data):
         file_name = '%s-%s.xml' % (

@@ -211,6 +211,7 @@
                                 <field name="payment_term_id"/>
                                 <field name="fiscal_position_id"/>
                                 <field name="email_sent"/>
+                                <field name="cancel_email_sent"/>
                             </group>
                         </group>
                         <notebook>
