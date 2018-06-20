@@ -58,6 +58,10 @@ class InvoiceElectronic(models.Model):
         string='Data Entrada/Saída', readonly=True, states=STATE)
     data_autorizacao = fields.Char(
         string='Data de autorização', size=30, readonly=True, states=STATE)
+    cancel_date = fields.Date(
+        string='Data da Cancelamento', 
+        readonly=True,
+        states=STATE)
     ambiente = fields.Selection(
         [('homologacao', 'Homologação'),
          ('producao', 'Produção')],
@@ -425,7 +429,19 @@ class InvoiceElectronic(models.Model):
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
-        pass
+        """Metodo base para cancelamento do documento eletrônico.
+        Este metodo deve ser herdado em metodos filhos para adaptar o 
+        cancelamento para cada tipo de prefeitura e normalmente pode
+        ser chamado atraves de uma wizard.
+        
+        Keyword Arguments:
+            context {dict} -- Dict contendo o 'context' do Odoo (default: {None})
+            justificativa {str} -- Justificativa para o cancelamento do documento. (default: {None})
+        """
+
+        self.write({
+            'cancel_date': fields.Date.today(),
+        })
 
     @api.multi
     def action_back_to_draft(self):

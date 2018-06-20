@@ -1,6 +1,8 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from unittest import mock
+
 from odoo.tests.common import TransactionCase
 from odoo.exceptions import UserError
 
@@ -134,3 +136,22 @@ class TestElectronicInvoice(TransactionCase):
         self.assertEqual(values['type'], 'ir.actions.act_window')
         self.assertEqual(values['res_model'], 'invoice.electronic')
         self.assertEqual(values['res_id'], invoice_electronic.id)
+
+    @mock.patch('odoo.fields.Date.today')
+    def test_action_cancel_document(self, mk):
+
+        mk.return_value = '2018-06-01'
+
+        # Criamos os documentos eletronicos e as linkamos com as faturas
+        values = {
+            'code': '100',
+            'name': 'Elec.Doc.',
+            'state': 'done',
+            'invoice_id': self.inv_incomplete.id,
+        }
+        docs = self.env['invoice.electronic'].create(values)
+        docs.action_cancel_document()
+
+        for doc in docs:
+            self.assertEqual(doc.cancel_date, '2018-06-01')
+            self.assertFalse(doc.email_sent)
