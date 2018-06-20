@@ -381,8 +381,8 @@ class InvoiceElectronic(models.Model):
                 self._create_attachment('canc-ret', self,
                                         resposta['received_xml'])
 
-        else:
-            return super(InvoiceElectronic, self).action_cancel_document(
+
+        return super(InvoiceElectronic, self).action_cancel_document(
                 justificativa=justificativa, context=context)
 
     def get_nfse_observation_text(self):
