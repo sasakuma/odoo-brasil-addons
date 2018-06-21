@@ -911,76 +911,77 @@ class InvoiceElectronic(models.Model):
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
-        if self.model not in ('55', '65'):
-            return super(InvoiceElectronic, self).action_cancel_document(
-                context=context, justificativa=justificativa)
 
-        if not justificativa:
-            return {
-                'name': 'Cancelamento NFe',
-                'type': 'ir.actions.act_window',
-                'res_model': 'wizard.cancel.nfe',
-                'view_type': 'form',
-                'view_mode': 'form',
-                'target': 'new',
-                'context': {
-                    'default_edoc_id': self.id
+        if self.model in ('55', '65'):
+            if not justificativa:
+                return {
+                    'name': 'Cancelamento NFe',
+                    'type': 'ir.actions.act_window',
+                    'res_model': 'wizard.cancel.nfe',
+                    'view_type': 'form',
+                    'view_mode': 'form',
+                    'target': 'new',
+                    'context': {
+                        'default_edoc_id': self.id
+                    }
                 }
+
+            cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
+            cert_pfx = base64.decodestring(cert)
+            certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
+
+            id_canc = "ID110111%s%02d" % (self.chave_nfe, self.sequencial_evento)
+            cancelamento = {
+                'idLote': self.id,
+                'estado': self.company_id.state_id.ibge_code,
+                'ambiente': 2 if self.ambiente == 'homologacao' else 1,
+                'eventos': [{
+                    'Id': id_canc,
+                    'cOrgao': self.company_id.state_id.ibge_code,
+                    'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
+                    'CNPJ': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
+                    'chNFe': self.chave_nfe,
+                    'dhEvento': datetime.utcnow().strftime(
+                        '%Y-%m-%dT%H:%M:%S-00:00'),
+                    'nSeqEvento': self.sequencial_evento,
+                    'nProt': self.protocolo_nfe,
+                    'xJust': justificativa
+                }]
             }
+            resp = recepcao_evento_cancelamento(certificado, **cancelamento)
+            resposta = resp['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
 
-        cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
-        cert_pfx = base64.decodestring(cert)
-        certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
+            if resposta.cStat == 128 and resposta.retEvento.infEvento.cStat in (135, 136, 155):  # noqa: 501
+                values = {
+                    'state': 'cancel',
+                    'codigo_retorno': resposta.retEvento.infEvento.cStat,
+                    'mensagem_retorno': resposta.retEvento.infEvento.xMotivo,
+                    'sequencial_evento': self.sequencial_evento + 1,
+                }
 
-        id_canc = "ID110111%s%02d" % (self.chave_nfe, self.sequencial_evento)
-        cancelamento = {
-            'idLote': self.id,
-            'estado': self.company_id.state_id.ibge_code,
-            'ambiente': 2 if self.ambiente == 'homologacao' else 1,
-            'eventos': [{
-                'Id': id_canc,
-                'cOrgao': self.company_id.state_id.ibge_code,
-                'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
-                'CNPJ': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
-                'chNFe': self.chave_nfe,
-                'dhEvento': datetime.utcnow().strftime(
-                    '%Y-%m-%dT%H:%M:%S-00:00'),
-                'nSeqEvento': self.sequencial_evento,
-                'nProt': self.protocolo_nfe,
-                'xJust': justificativa
-            }]
-        }
-        resp = recepcao_evento_cancelamento(certificado, **cancelamento)
-        resposta = resp['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
+            elif resposta.cStat == 128:
+                values = {
+                    'codigo_retorno': resposta.retEvento.infEvento.cStat,
+                    'mensagem_retorno': resposta.retEvento.infEvento.xMotivo,
+                }
+            else:
+                values = {
+                    'codigo_retorno': resposta.cStat,
+                    'mensagem_retorno': resposta.xMotivo,
+                }
 
-        if resposta.cStat == 128 and resposta.retEvento.infEvento.cStat in (135, 136, 155):  # noqa: 501
-            values = {
-                'state': 'cancel',
-                'codigo_retorno': resposta.retEvento.infEvento.cStat,
-                'mensagem_retorno': resposta.retEvento.infEvento.xMotivo,
-                'sequencial_evento': self.sequencial_evento + 1,
-            }
+            self.write(values)
 
-        elif resposta.cStat == 128:
-            values = {
-                'codigo_retorno': resposta.retEvento.infEvento.cStat,
-                'mensagem_retorno': resposta.retEvento.infEvento.xMotivo,
-            }
-        else:
-            values = {
-                'codigo_retorno': resposta.cStat,
-                'mensagem_retorno': resposta.xMotivo,
-            }
+            self.env['invoice.electronic.event'].create({
+                'code': self.codigo_retorno,
+                'name': self.mensagem_retorno,
+                'invoice_electronic_id': self.id,
+            })
+            self._create_attachment('canc', self, resp['sent_xml'])
+            self._create_attachment('canc-ret', self, resp['received_xml'])
 
-        self.write(values)
-
-        self.env['invoice.electronic.event'].create({
-            'code': self.codigo_retorno,
-            'name': self.mensagem_retorno,
-            'invoice_electronic_id': self.id,
-        })
-        self._create_attachment('canc', self, resp['sent_xml'])
-        self._create_attachment('canc-ret', self, resp['received_xml'])
+        return super(InvoiceElectronic, self).action_cancel_document(
+                context=context, justificativa=justificativa)
 
     @api.multi
     def action_print_einvoice_report(self):
