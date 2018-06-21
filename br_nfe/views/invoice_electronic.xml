@@ -98,7 +98,7 @@
             <field name="numero_controle" position="after">
                 <field name="recibo_nfe" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}"/>
                 <field name="nfe_processada_name" invisible="1"/>
-                <field name="nfe_processada" filename="nfe_processada_name"/>
+                <field name="nfe_processada" filename="nfe_processada_name" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}"/>
             </field>
             <field name="finalidade_emissao" position="after">
                 <field name="tipo_emissao" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}"/>
