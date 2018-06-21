@@ -67,6 +67,32 @@ class TestAccountInvoice(TestBaseBr):
             'pre_invoice_date': '2017-07-01',
         }
 
+        payment_lines = [(0, 0, {
+                'value': 'percent',
+                'value_amount': 33.3,
+                'sequence': 8,
+                'days': 0,
+                'option': 'day_after_invoice_date',
+            }), (0, 0, {
+                'value': 'percent',
+                'value_amount': 33.3,
+                'sequence': 9,
+                'days': 30,
+                'option': 'day_after_invoice_date',
+            }), (0, 0, {
+                'value': 'balance',
+                'value_amount': 0.0,
+                'sequence': 10,
+                'days': 60,
+                'option': 'day_after_invoice_date',
+            })]
+
+        self.custom_payment_term = self.env['account.payment.term'].create({
+            'name': '0/30/60',
+            'note': '0/30/60',
+            'line_ids': payment_lines,
+        })
+
         incomplete_inv = {
             'name': 'Teste Fatura Incompleta',
             'partner_id': self.partner.id,
@@ -187,11 +213,29 @@ class TestAccountInvoice(TestBaseBr):
     def test_compute_total_values(self):
 
         for invoice in self.invoices:
-            self.assertEqual(invoice.amount_total, 650.0)
-            self.assertEqual(invoice.amount_total_signed, 650.0)
-            self.assertEqual(invoice.amount_untaxed, 650.0)
-            self.assertEqual(invoice.amount_tax, 0.0)
-            self.assertEqual(invoice.total_tax, 0.0)
+            if invoice.partner_id == self.partner:
+                invoice.payment_term_id = self.custom_payment_term.id
+                invoice.invoice_line_ids = [(0, 0, {
+                    'product_id': self.other_product.id,
+                    'quantity': 1.0,
+                    'price_unit': self.other_product.list_price,
+                    'account_id': self.revenue_account.id,
+                    'name': 'product test 5',
+                    })]
+                invoice.generate_parcel_entry(self.financial_operation,
+                                          self.title_type)
+
+                self.assertEqual(invoice.amount_total, 652.47)
+                self.assertEqual(invoice.amount_total_signed, 652.47)
+                self.assertEqual(invoice.amount_untaxed, 652.47)
+                self.assertEqual(invoice.amount_tax, 0.0)
+                self.assertEqual(invoice.total_tax, 0.0)
+            else:
+                self.assertEqual(invoice.amount_total, 650.0)
+                self.assertEqual(invoice.amount_total_signed, 650.0)
+                self.assertEqual(invoice.amount_untaxed, 650.0)
+                self.assertEqual(invoice.amount_tax, 0.0)
+                self.assertEqual(invoice.total_tax, 0.0)
 
             # Verifico as linhas recebiveis
             self.assertEqual(len(invoice.move_ids), 0)
@@ -200,7 +244,10 @@ class TestAccountInvoice(TestBaseBr):
             invoice.action_br_account_invoice_open()
 
             # Verifico as linhas recebiveis
-            self.assertEqual(len(invoice.move_ids), 1)
+            if invoice.partner_id == self.partner:
+                self.assertEqual(len(invoice.move_ids), 3)
+            else:
+                self.assertEqual(len(invoice.move_ids), 1)
             self.assertEqual(all(move.account_type == 'receivable'
                 for move in invoice.move_ids), True)
             self.assertEqual(all(move.amount == move.amount_residual
@@ -464,7 +511,18 @@ class TestAccountInvoice(TestBaseBr):
     def test_action_br_account_invoice_open(self):
 
         for inv in self.invoices:
-
+            if inv.partner_id == self.partner:
+                inv.payment_term_id = self.custom_payment_term.id
+                inv.invoice_line_ids = [(0, 0,
+                    {
+                        'product_id': self.other_product.id,
+                        'quantity': 1.0,
+                        'price_unit': self.other_product.list_price,
+                        'account_id': self.revenue_account.id,
+                        'name': 'product test 5',
+                    })]
+                inv.generate_parcel_entry(self.financial_operation,
+                                          self.title_type)
             # O valor total das parcelas deve ser igual ao valor total
             # da fatura
             self.assertTrue(inv.action_br_account_invoice_open())
@@ -479,7 +537,9 @@ class TestAccountInvoice(TestBaseBr):
 
             # Verificamos se os campos da account.move foram
             # preenchidos corretamente
-            for parcel, move in zip(inv.parcel_ids, inv.move_ids):
+            parcels = inv.parcel_ids.sorted(lambda r: r.date_maturity)
+            moves = inv.move_ids.sorted(lambda r: r.date_maturity_current)
+            for parcel, move in zip(parcels, moves):
                 self.assertEqual(move.date_maturity_current,
                                  parcel.date_maturity)
                 self.assertEqual(move.date_maturity_origin,
@@ -496,7 +556,10 @@ class TestAccountInvoice(TestBaseBr):
                 self.assertEqual(move.narration, inv.comment)
                 self.assertEqual(move.invoice_id, inv)
 
-                self.assertEqual(len(move.line_ids), 3)
+                if move.partner_id == self.partner:
+                    self.assertEqual(len(move.line_ids), 4)
+                else:
+                    self.assertEqual(len(move.line_ids), 3)
 
                 self.assertEqual(parcel.abs_parceling_value, move.amount)
                 self.assertEqual(parcel.abs_parceling_value,
@@ -518,7 +581,8 @@ class TestAccountInvoice(TestBaseBr):
                     lambda x: x.account_id.code_first_digit == '1')
 
                 self.assertEqual(len(debit_lines), 1)
-                self.assertEqual(debit_lines[0].name, parcel.name)
+                if inv.partner_id != self.partner:
+                    self.assertEqual(debit_lines[0].name, parcel.name)
                 self.assertEqual(debit_lines[0].debit,
                                  parcel.abs_parceling_value)
                 self.assertFalse(debit_lines[0].credit)
@@ -539,12 +603,12 @@ class TestAccountInvoice(TestBaseBr):
                 # estao na ordem correta.
                 credit_lines = credit_lines.sorted(lambda r: r.id)
                 invoice_lines = inv.invoice_line_ids.sorted(lambda r: r.id)
-
-                for credit_lines, inv_line in zip(credit_lines, invoice_lines):
+                for credit_lines, inv_line in zip(credit_lines, invoice_lines):                        
                     self.assertEqual(credit_lines.name, inv_line.name)
                     self.assertFalse(credit_lines.debit)
-                    self.assertEqual(credit_lines.credit,
-                                     round(parcel.parceling_value * inv_line.percent_subtotal, 2))
+                    if inv.partner_id != self.partner:
+                        self.assertEqual(credit_lines.credit,
+                                        round(parcel.parceling_value * inv_line.percent_subtotal, 2))
 
             self.assertTrue(inv.move_id)
             self.assertTrue(inv.move_name)

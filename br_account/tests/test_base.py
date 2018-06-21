@@ -22,6 +22,12 @@ class TestBaseBr(TransactionCase):
             'list_price': 15.0
         })
 
+        self.other_product = self.env['product.product'].create({
+            'name': 'Other Product',
+            'fiscal_classification_id': self.default_ncm.id,
+            'list_price': 2.47
+        })
+
         self.st_product = self.env['product.product'].create({
             'name': 'Product for ICMS ST',
             'fiscal_classification_id': self.default_ncm.id,

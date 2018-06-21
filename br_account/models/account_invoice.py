@@ -446,13 +446,29 @@ class AccountInvoice(models.Model):
                 parcel.update_date_maturity(inv.date_invoice)
 
                 new_iml = copy.deepcopy(iml)
-
-                for ml in new_iml:
+                
+                # Itera sobre a lista de imls de receita/despesa para
+                # atribuir valor e data de vencimento
+                for index, ml in enumerate(new_iml):
                     invl_obj = self.env['account.invoice.line'].browse(
                         ml['invl_id'])
                     signal = -1 if ml['price'] < 0 else 1
-                    ml['price'] = round(
-                        signal * parcel.abs_parceling_value * invl_obj.percent_subtotal, 2)
+                    # Os condicionais abaixo servem para garantir que em caso
+                    # de dizima no valor a ser distribuido nas imls, o eventual
+                    # residuo deixado pelo arredondamento, seja aplicado a 
+                    # ultima das imls
+                    if index == len(new_iml) -1:
+                        # Lista equivalente a imls anteriores a ultima
+                        previous_lines = new_iml[:len(new_iml) - 1]
+
+                        sum_in_previous_lines = sum(
+                            l['price'] for l in previous_lines)
+                        ml['price'] = round(
+                            signal * (parcel.abs_parceling_value - abs(
+                                sum_in_previous_lines)), 2)
+                    else:
+                        ml['price'] = round(
+                                signal * parcel.abs_parceling_value * invl_obj.percent_subtotal)
                     ml['date_maturity'] = parcel.date_maturity
 
                 new_iml.append({
@@ -472,6 +488,7 @@ class AccountInvoice(models.Model):
 
                 line = [(0, 0, self.line_get_convert(l, part.id))
                         for l in new_iml]
+
                 line = inv.group_lines(new_iml, line)
 
                 journal = inv.journal_id.with_context(ctx)
@@ -499,7 +516,6 @@ class AccountInvoice(models.Model):
 
                 ctx_nolang = ctx.copy()
                 ctx_nolang.pop('lang', None)
-
                 move = account_move.with_context(ctx_nolang).create(move_vals)
 
                 # Como o campo 'amout' e computavel, precisamos
@@ -909,7 +925,7 @@ class AccountInvoice(models.Model):
 
                 values = {
                     'name': str(i + 1).zfill(2),
-                    'parceling_value': t[1],
+                    'parceling_value': round(t[1], 2),
                     'date_maturity': t[0],
                     'old_date_maturity': t[0],
                     'financial_operation_id': financial_operation.id,
