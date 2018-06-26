@@ -19,7 +19,8 @@
     'data': [
         'views/br_sale.xml',
         'views/br_sale_parcel.xml',
-        'views/sale_view.xml',
+        'views/sale_order.xml',
+        'views/account_invoice.xml',
         'security/ir.model.access.csv',
         'security/l10n_br_sale_security.xml',
         'wizard/br_sale_parcel_wizard.xml',
