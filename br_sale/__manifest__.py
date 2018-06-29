@@ -14,6 +14,7 @@
         'sale',
         'contacts',
         'br_zip',
+        'br_account',
         'br_data_account_product',
     ],
     'data': [
