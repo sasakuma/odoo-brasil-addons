@@ -21,12 +21,25 @@ class SaleOrderLine(models.Model):
 
     @api.model
     def _default_company_fiscal_type(self):
+        """Retorna valor default para o tipo fiscal
+        da empresa.
+
+        Returns:
+            str -- Tipo fiscal da empresa (regime normal, simples nacional e etc).
+        """
+
         if self.order_id:
             return self.order_id.company_id.fiscal_type
         else:
             return self.env.user.company_id.fiscal_type
 
     def _prepare_tax_context(self):
+        """Retorna dict para ser utilizado como context do Odoo. Este
+        contexto é utilizado durante o calculo das taxas.
+
+        Returns:
+            dict -- Dicionario com campos a serem utilizados no context.
+        """
         return {
             'incluir_ipi_base': self.incluir_ipi_base,
             'icms_st_aliquota_mva': self.icms_st_aliquota_mva,
@@ -56,6 +69,8 @@ class SaleOrderLine(models.Model):
                  'icms_st_aliquota_reducao_base', 'icms_aliquota_credito',
                  'icms_st_aliquota_deducao')
     def _compute_price(self):
+        """Metodo computavel para calculo do preço total incluindo impostos.
+        """
         currency = self.order_id and self.order_id.currency_id or None
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
 
@@ -150,6 +165,8 @@ class SaleOrderLine(models.Model):
     @api.depends('icms_cst_normal', 'icms_csosn_simples',
                  'company_fiscal_type')
     def _compute_cst_icms(self):
+        """Metodo computavel para atribuição do valor do campo cst_icms.
+        """
         for item in self:
             item.icms_cst = item.icms_cst_normal \
                 if item.company_fiscal_type == '3' else item.icms_csosn_simples
@@ -481,6 +498,8 @@ class SaleOrderLine(models.Model):
                     line.price_subtotal / line.order_id.total_bruto, 6)
 
     def _update_tax_from_ncm(self):
+        """Atualiza taxas a partir do ncm (classificação fiscal).
+        """
         if self.product_id:
             ncm = self.product_id.fiscal_classification_id
             taxes = ncm.tax_icms_st_id | ncm.tax_ipi_id
@@ -497,7 +516,11 @@ class SaleOrderLine(models.Model):
             })
 
     def _set_taxes(self):
-        """ Used in on_change to set taxes and price."""
+        """Utilizado no onchange para setar o valor de atribuir 
+        impostos e preços. Atualza o campo tax_id, responsável
+        pelo impostos do sale.order.line.
+        """
+
         taxes = self.product_id.taxes_id
 
         # Keep only taxes of the company
@@ -537,6 +560,13 @@ class SaleOrderLine(models.Model):
                        self.tax_inss_id)
 
     def _set_extimated_taxes(self, price):
+        """Calcula valor para os tributos estimados
+        (federal, estaual e nacional).
+
+        Arguments:
+            price {float} -- preço do produto.
+        """
+
         service = self.fiscal_position_id.service_type_id
         ncm = self.product_id.fiscal_classification_id
 
@@ -558,23 +588,10 @@ class SaleOrderLine(models.Model):
                                    self.tributos_estimados_estaduais +
                                    self.tributos_estimados_municipais)
 
-    @api.onchange('price_subtotal')
-    def _br_account_onchange_quantity(self):
-        self._set_extimated_taxes(self.price_subtotal)
-
-    @api.onchange('product_id')
-    def _br_sale_onchange_product_id(self):
-        self._set_taxes()
-        self.product_type = self.product_id.fiscal_type
-        self.icms_origem = self.product_id.origin
-        ncm = self.product_id.fiscal_classification_id
-        service = self.fiscal_position_id.service_type_id
-        self.fiscal_classification_id = ncm.id
-        self.service_type_id = service.id
-
-        self._set_extimated_taxes(self.product_id.lst_price)
-
     def _update_sale_order_line_ids(self):
+        """Atializa o campo de impostos tax_id da sale.order.line.
+        """
+
         other_taxes = self.tax_id.filtered(
             lambda x: not x.domain)
         self.tax_id = (other_taxes |
@@ -593,78 +610,127 @@ class SaleOrderLine(models.Model):
                        self.tax_irrf_id |
                        self.tax_inss_id)
 
+    @api.onchange('product_id')
+    def _br_sale_onchange_product_id(self):
+        """Metodo onchange para o campo 'product_id'.
+        Realiza o preenchimento dos impostos a partir da posição fiscal.
+        """
+        self._set_taxes()
+        self.product_type = self.product_id.fiscal_type
+        self.icms_origem = self.product_id.origin
+        ncm = self.product_id.fiscal_classification_id
+        service = self.fiscal_position_id.service_type_id
+        self.fiscal_classification_id = ncm.id
+        self.service_type_id = service.id
+
+        self._set_extimated_taxes(self.product_id.lst_price)
+
+    @api.onchange('price_subtotal')
+    def _onchange_price_subtotal(self):
+        """Metodo onchange para o campo 'price_subtotal'.
+        """
+        self._set_extimated_taxes(self.price_subtotal)
+
     @api.onchange('tax_icms_id')
     def _onchange_tax_icms_id(self):
+        """Metodo onchange para o campo 'tax_icms_id'.
+        """
         if self.tax_icms_id:
             self.icms_aliquota = self.tax_icms_id.amount
         self._update_sale_order_line_ids()
 
     @api.onchange('tax_icms_st_id')
     def _onchange_tax_icms_st_id(self):
+        """Metodo onchange para o campo 'tax_icms_st_id'.
+        """
         if self.tax_icms_st_id:
             self.icms_st_aliquota = self.tax_icms_st_id.amount
         self._update_sale_order_line_ids()
 
     @api.onchange('tax_icms_inter_id')
     def _onchange_tax_icms_inter_id(self):
+        """Metodo onchange para o campo 'tax_icms_inter_id'.
+        """
         self._update_sale_order_line_ids()
 
     @api.onchange('tax_icms_intra_id')
     def _onchange_tax_icms_intra_id(self):
+        """Metodo onchange para o campo 'tax_icms_intra_id'.
+        """
         self._update_sale_order_line_ids()
 
     @api.onchange('tax_icms_fcp_id')
     def _onchange_tax_icms_fcp_id(self):
+        """Metodo onchange para o campo 'tax_icms_fcp_id'.
+        """
         self._update_sale_order_line_ids()
 
     @api.onchange('tax_simples_id')
     def _onchange_tax_simples_id(self):
+        """Metodo onchange para o campo 'tax_simples_id'.
+        """
         self._update_sale_order_line_ids()
 
     @api.onchange('tax_pis_id')
     def _onchange_tax_pis_id(self):
+        """Metodo onchange para o campo 'tax_pis_id'.
+        """
         if self.tax_pis_id:
             self.pis_aliquota = self.tax_pis_id.amount
         self._update_sale_order_line_ids()
 
     @api.onchange('tax_cofins_id')
     def _onchange_tax_cofins_id(self):
+        """Metodo onchange para o campo 'tax_cofins_id'.
+        """
         if self.tax_cofins_id:
             self.cofins_aliquota = self.tax_cofins_id.amount
         self._update_sale_order_line_ids()
 
     @api.onchange('tax_ipi_id')
     def _onchange_tax_ipi_id(self):
+        """Metodo onchange para o campo 'tax_ipi_id'.
+        """
         if self.tax_ipi_id:
             self.ipi_aliquota = self.tax_ipi_id.amount
         self._update_sale_order_line_ids()
 
     @api.onchange('tax_ii_id')
     def _onchange_tax_ii_id(self):
+        """Metodo onchange para o campo 'tax_ii_id'.
+        """
         if self.tax_ii_id:
             self.ii_aliquota = self.tax_ii_id.amount
         self._update_sale_order_line_ids()
 
     @api.onchange('tax_issqn_id')
     def _onchange_tax_issqn_id(self):
+        """Metodo onchange para o campo 'tax_issqn_id'.
+        """
         if self.tax_issqn_id:
             self.issqn_aliquota = self.tax_issqn_id.amount
         self._update_sale_order_line_ids()
 
     @api.onchange('tax_csll_id')
     def _onchange_tax_csll_id(self):
+        """Metodo onchange para o campo 'tax_csll_id'.
+        """
         if self.tax_csll_id:
             self.csll_aliquota = self.tax_csll_id.amount
         self._update_sale_order_line_ids()
 
     @api.onchange('tax_irrf_id')
     def _onchange_tax_irrf_id(self):
+        """Metodo onchange para o campo 'tax_irrf_id'.
+        """
         if self.tax_irrf_id:
             self.irrf_aliquota = self.tax_irrf_id.amount
         self._update_sale_order_line_ids()
 
     @api.onchange('tax_inss_id')
     def _onchange_tax_inss_id(self):
+        """Metodo onchange para o campo 'tax_inss_id'.
+        """
         if self.tax_inss_id:
             self.inss_aliquota = self.tax_inss_id.amount
         self._update_sale_order_line_ids()
@@ -674,6 +740,8 @@ class SaleOrderLine(models.Model):
                  'icms_aliquota_reducao_base', 'icms_st_aliquota_reducao_base',
                  'ipi_reducao_bc', 'icms_st_aliquota_deducao')
     def _compute_amount(self):
+        """Calcula total da sale.order.line adicionando os impostos.
+        """
         for line in self:
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             ctx = line._prepare_tax_context()
@@ -732,6 +800,15 @@ class SaleOrderLine(models.Model):
 
     @api.multi
     def _prepare_invoice_line(self, qty):
+        """Prepara os valores para serem utilizados durante a criação da
+        invoice.line a partir da confirmação da sale.order.
+
+        Arguments:
+            qty {int} -- Quantidade do produto presente na sale.order.line.
+
+        Returns:
+            dict -- Dicionario contendo os valores para criação da linha da fatura.
+        """
         res = super(SaleOrderLine, self)._prepare_invoice_line(qty)
 
         res['valor_desconto'] = self.valor_desconto
