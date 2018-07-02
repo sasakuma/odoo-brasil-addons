@@ -128,7 +128,7 @@ class AccountMove(models.Model):
         if self.account_id:
             if self.currency_id and is_residual_zero:
                 values['paid_status'] = 'paid'
-            elif self.amount_residual < self.amount:
+            elif abs(self.amount_residual) < self.amount:
                 values['paid_status'] = 'partial'
             else:
                 values['paid_status'] = 'open'
@@ -143,6 +143,6 @@ class AccountMove(models.Model):
         for record in self:
             for line in record.line_ids:
                 if line.user_type_id.type in ['receivable', 'payable']:
-                    record.amount_residual = line.amount_residual
+                    record.amount_residual = abs(line.amount_residual)
                     record.amount_residual_currency = line.amount_residual_currency
                     record.write({})
