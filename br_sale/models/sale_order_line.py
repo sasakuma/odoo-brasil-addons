@@ -625,6 +625,29 @@ class SaleOrderLine(models.Model):
 
         self._set_extimated_taxes(self.product_id.lst_price)
 
+    @api.onchange('fiscal_position_id')
+    def _onchange_fiscal_position_id(self):
+        """Onchange utilizado para alterar o domain do campo 'product_id'.
+        Isso teve de ser feito devido ao modo com que o domain do campo
+        'product_id' foi feito (diretamente na declaração do campo) que
+        não permite extendâ-lo através da view ou do metodo fields_view_get
+        (uma vez que a form é declarada dentro do campo 'order_line').
+        
+        Returns:
+            dict -- Dicionario contendo o domain para o campo 'product_id'.
+        """
+
+        res = {
+            'domain': {
+                'product_id': [
+                    ('sale_ok', '=', True),
+                    ('fiscal_type', '=', self.fiscal_position_id.position_type),
+                ],
+            }
+        }
+
+        return res
+
     @api.onchange('price_subtotal')
     def _onchange_price_subtotal(self):
         """Metodo onchange para o campo 'price_subtotal'.

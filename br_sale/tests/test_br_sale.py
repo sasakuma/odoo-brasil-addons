@@ -189,7 +189,8 @@ class TestBrSaleOrder(TransactionCase):
         })
 
         self.fpos = self.env['account.fiscal.position'].create({
-            'name': 'Venda'
+            'name': 'Venda',
+            'position_type': 'product',
         })
 
         order_line_data = [
@@ -492,3 +493,16 @@ class TestBrSaleOrder(TransactionCase):
                 self.assertEqual(item.icms_aliquota, 17.0)
 
                 self.assertEqual(len(item.tax_id), 1)
+
+    def test__onchange_fiscal_position_id(self):
+
+        for order in self.sales_order:
+
+            first_item = order.order_line[0]
+
+            res = first_item._onchange_fiscal_position_id()
+
+            self.assertIn('domain', res)
+            self.assertIn('product_id', res['domain'])
+            self.assertIn(('sale_ok', '=', True), res['domain']['product_id'])
+            self.assertIn(('fiscal_type', '=', self.fpos.position_type), res['domain']['product_id'])
