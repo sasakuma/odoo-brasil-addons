@@ -2,6 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import mock
+from datetime import datetime, timedelta
 
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.translate import _
@@ -507,6 +508,20 @@ class TestAccountInvoice(TestBaseBr):
 
             with self.assertRaises(UserError):
                 inv.action_br_account_invoice_open()
+
+    def test_validate_date_maturity_from_parcels(self):
+
+        for inv in self.invoices:
+            old_pre_invoice_date = inv.pre_invoice_date
+
+            inv.pre_invoice_date = str(datetime.strptime(
+                inv.pre_invoice_date, '%Y-%m-%d') + timedelta(days=700))
+            
+            with self.assertRaises(UserError):
+                inv.validate_date_maturity_from_parcels()
+            
+            inv.pre_invoice_date = old_pre_invoice_date
+            inv.validate_date_maturity_from_parcels()
 
     def test_action_br_account_invoice_open(self):
 

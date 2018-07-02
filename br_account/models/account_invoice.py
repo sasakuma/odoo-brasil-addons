@@ -648,6 +648,7 @@ class AccountInvoice(models.Model):
         """
 
         if self.parcel_ids:
+            self.validate_date_maturity_from_parcels()
             if self.compare_total_parcel_value():
                 return super(AccountInvoice, self).with_context(
                     use_parcel_system=True).action_invoice_open()
@@ -696,6 +697,28 @@ class AccountInvoice(models.Model):
             return False
         else:
             return True
+
+    @api.multi
+    def validate_date_maturity_from_parcels(self):
+        """Verifica se algum registro no campo parcel_ids tem data de 
+        vencimento menor que o campo pre_invoice_date da fatura.
+        
+        Raises:
+            UserError -- Ao menos uma parcela gerada tem data de vencimento
+            menor que a data de pré fatura.
+        """
+        for inv in self:
+            if inv.journal_id.type == 'sale':
+                has_incoerent_parcel = any(
+                    parcel.date_maturity < inv.pre_invoice_date
+                    for parcel in inv.parcel_ids)
+
+                if has_incoerent_parcel:
+                    raise UserError(_
+                        ('Pelo menos um registro de parcela foi criado com '
+                        'data de vencimento menor do que a data da '
+                        'pré-fatura, por favor, considere verificar o campo '
+                        'payment_term_id'))
 
     @api.multi
     def action_invoice_cancel_paid(self):
