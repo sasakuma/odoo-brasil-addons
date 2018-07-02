@@ -19,15 +19,7 @@
                     ('account_type', '=', False)]}">
 
                     <field name="paid_status" invisible="1"/>
-
-                    <button name="action_register_payment" string="Pagar"                        
-                        attrs="{'invisible': [('account_type', '=', 'receivable')]}"
-                        type="object"
-                        class="btn btn-primary btn-sm"
-                        groups="account.group_account_invoice"/>
-
-                    <button name="action_register_payment" string="Receber"
-                        domain="{'invisible': [('account_type', '=', 'payable')]}"
+                    <button name="action_register_payment" string="Baixar"
                         type="object"
                         class="btn btn-primary btn-sm"
                         groups="account.group_account_invoice"/>
