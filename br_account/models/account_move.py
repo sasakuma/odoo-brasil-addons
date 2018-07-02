@@ -22,6 +22,8 @@ class AccountMove(models.Model):
         ('reversal_discount', 'Reversal Discount'),
         ('reversal_interest', 'Reversal Interest'),
         ('company_expense', 'Company Expense'),
+        ('company_revenue', 'Company Revenue'),
+        ('company_renegotiation', 'Company Renegotiation'),
         ('employee_expense', 'Employee Expense'),
         ('releases', 'Releases'),
     ]
@@ -115,7 +117,8 @@ class AccountMove(models.Model):
                 rec.origin_type = journal_type
         if 'move_reference' in rec.env.context:
             rec.ref_move_id = rec.env.context['move_reference']
-        if rec.journal_id.type in ['purchase', 'sale'] and rec.amount_residual:
+        journal_types = ['sale', 'company_expense', 'company_renegotiation', 'company_revenue']
+        if rec.journal_id.type in journal_types and rec.amount_residual:
             for line in rec.line_ids:
                 if line.user_type_id.type in ['receivable', 'payable']:
                     line.move_id.account_id = line.account_id
