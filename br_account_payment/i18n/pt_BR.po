@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-11 13:18+0000\n"
-"PO-Revision-Date: 2018-05-11 10:19-0300\n"
+"POT-Creation-Date: 2018-07-04 15:01+0000\n"
+"PO-Revision-Date: 2018-07-04 12:03-0300\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,9 +18,9 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 
 #. module: br_account_payment
-#: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
-msgid "Abertos"
-msgstr "Abertos"
+#: model:ir.model,name:br_account_payment.model_account_move
+msgid "Account Entry"
+msgstr "Lançamento Contábil"
 
 #. module: br_account_payment
 #: model:ir.model.fields,field_description:br_account_payment.field_account_journal_acc_partner_id
@@ -43,10 +43,43 @@ msgid "Agência"
 msgstr "Agência"
 
 #. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.account_move_alter_date_form
+#: model:ir.ui.view,arch_db:br_account_payment.account_move_alter_operation_form
+msgid "Alter"
+msgstr "Alter"
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.account_move_alter_date_form
+#: model:ir.ui.view,arch_db:br_account_payment.view_move_form
+msgid "Alter Date Maturity"
+msgstr "Alter Date Maturity"
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_move_form
+msgid "Alter Operation"
+msgstr "Alter Operation"
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.account_move_alter_operation_form
+msgid "Alter Operation(s)"
+msgstr "Alter Operation(s)"
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_account_payment_tree
+msgid "Amount"
+msgstr "Valor"
+
+#. module: br_account_payment
 #: model:ir.model.fields,field_description:br_account_payment.field_account_journal_bank_currency_id
 #: model:ir.model.fields,field_description:br_account_payment.field_payment_mode_bank_account_id
 msgid "Bank Account"
 msgstr "Conta Bancária"
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.account_move_alter_date_form
+#: model:ir.ui.view,arch_db:br_account_payment.account_move_alter_operation_form
+msgid "Cancel"
+msgstr "Cancelar"
 
 #. module: br_account_payment
 #: model:ir.model.fields,field_description:br_account_payment.field_payment_mode_company_id
@@ -54,23 +87,27 @@ msgid "Company"
 msgstr "Empresa"
 
 #. module: br_account_payment
-#: model:ir.actions.act_window,name:br_account_payment.action_payable_move_lines
-#: model:ir.ui.menu,name:br_account_payment.menu_action_payable_move_lines
+#: model:ir.actions.act_window,name:br_account_payment.action_payable_move
+#: model:ir.ui.menu,name:br_account_payment.menu_action_payable_move
 msgid "Contas a Pagar"
 msgstr "Contas a Pagar"
 
 #. module: br_account_payment
-#: model:ir.actions.act_window,name:br_account_payment.action_receivable_move_line
-#: model:ir.ui.menu,name:br_account_payment.menu_action_receivable_move_line
+#: model:ir.actions.act_window,name:br_account_payment.action_receivable_move
+#: model:ir.ui.menu,name:br_account_payment.menu_action_receivable_move
 msgid "Contas a Receber"
 msgstr "Contas a Receber"
 
 #. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_date_create_uid
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_operation_create_uid
 #: model:ir.model.fields,field_description:br_account_payment.field_payment_mode_create_uid
 msgid "Created by"
 msgstr "Criado por"
 
 #. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_date_create_date
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_operation_create_date
 #: model:ir.model.fields,field_description:br_account_payment.field_payment_mode_create_date
 msgid "Created on"
 msgstr "Criado em"
@@ -91,6 +128,8 @@ msgid "Digito Conta"
 msgstr "Digito Conta"
 
 #. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_date_display_name
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_operation_display_name
 #: model:ir.model.fields,field_description:br_account_payment.field_payment_mode_display_name
 msgid "Display Name"
 msgstr "Nome exibido"
@@ -101,11 +140,8 @@ msgid "Dígito Agência"
 msgstr "Dígito Agência"
 
 #. module: br_account_payment
-#: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
-msgid "Em atraso"
-msgstr "Em atraso"
-
-#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_date_id
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_operation_id
 #: model:ir.model.fields,field_description:br_account_payment.field_payment_mode_id
 msgid "ID"
 msgstr "ID"
@@ -121,32 +157,35 @@ msgid "Journal"
 msgstr "Diário"
 
 #. module: br_account_payment
-#: model:ir.model,name:br_account_payment.model_account_move_line
-msgid "Journal Item"
-msgstr "Item de Diário"
-
-#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_date___last_update
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_operation___last_update
 #: model:ir.model.fields,field_description:br_account_payment.field_payment_mode___last_update
 msgid "Last Modified on"
 msgstr "Última modificação em"
 
 #. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_date_write_uid
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_operation_write_uid
 #: model:ir.model.fields,field_description:br_account_payment.field_payment_mode_write_uid
 msgid "Last Updated by"
 msgstr "Última atualização por"
 
 #. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_date_write_date
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_operation_write_date
 #: model:ir.model.fields,field_description:br_account_payment.field_payment_mode_write_date
 msgid "Last Updated on"
 msgstr "Última atualização em"
 
 #. module: br_account_payment
-#: model:ir.model.fields,field_description:br_account_payment.field_account_payment_move_line_id
+#: model:ir.model.fields,field_description:br_account_payment.field_account_payment_move_id
 msgid "Linha de fatura"
 msgstr "Linha de fatura"
 
 #. module: br_account_payment
 #: model:ir.model.fields,field_description:br_account_payment.field_account_invoice_payment_mode_id
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_backup_payment_mode_id
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_payment_mode_id
 msgid "Modo de pagamento"
 msgstr "Modo de pagamento"
 
@@ -161,30 +200,49 @@ msgid "Name"
 msgstr "Nome"
 
 #. module: br_account_payment
-#: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
-msgid "Pagamentos em aberto"
-msgstr "Pagamentos em aberto"
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_date_new_date_maturity
+msgid "New Date Maturity"
+msgstr "Nova Data de Vencimento"
 
 #. module: br_account_payment
-#: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
-msgid "Pagamentos em atraso"
-msgstr "Pagamentos em atraso"
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_operation_new_financial_operation
+msgid "New Financial Operation"
+msgstr "Nova Operação Financeira"
 
 #. module: br_account_payment
-#: model:ir.ui.view,arch_db:br_account_payment.view_move_line_form
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_operation_new_payment_mode
+msgid "New Payment Mode"
+msgstr "Novo Modo de Pagamento"
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_operation_new_title_type
+msgid "New Title Type"
+msgstr "Novo Tipo de Título"
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_date_old_date_maturity
+msgid "Old Date Maturity"
+msgstr "Antiga Data de Vencimento"
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_operation_old_financial_operation
+msgid "Old Financial Operation"
+msgstr "Antiga Operação Financeira"
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_operation_old_payment_mode
+msgid "Old Payment Mode"
+msgstr "Antigo Modo de Pagamento"
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_alter_operation_old_title_type
+msgid "Old Title Type"
+msgstr "Antigo Tipo de Título"
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_move_form
 msgid "Pagar"
 msgstr "Pagar"
-
-#. module: br_account_payment
-#: model:ir.ui.view,arch_db:br_account_payment.view_payments_tree_a_pagar
-#: model:ir.ui.view,arch_db:br_account_payment.view_payments_tree_a_receber
-msgid "Pago"
-msgstr "Pago"
-
-#. module: br_account_payment
-#: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
-msgid "Pagos"
-msgstr "Pagos"
 
 #. module: br_account_payment
 #: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
@@ -192,8 +250,11 @@ msgid "Parceiro"
 msgstr "Parceiro"
 
 #. module: br_account_payment
-#: model:ir.model.fields,field_description:br_account_payment.field_account_move_backup_line_payment_mode_id
-#: model:ir.model.fields,field_description:br_account_payment.field_account_move_line_payment_mode_id
+#: model:ir.ui.view,arch_db:br_account_payment.view_account_payment_tree
+msgid "Partner"
+msgstr "Parceiro"
+
+#. module: br_account_payment
 #: model:ir.ui.view,arch_db:br_account_payment.account_payment_mode_form
 msgid "Payment Mode"
 msgstr "Forma de Pagamento"
@@ -214,7 +275,7 @@ msgid "Payments"
 msgstr "Pagamentos"
 
 #. module: br_account_payment
-#: model:ir.ui.view,arch_db:br_account_payment.view_move_line_form
+#: model:ir.ui.view,arch_db:br_account_payment.view_move_form
 msgid "Receber"
 msgstr "Receber"
 
@@ -222,11 +283,6 @@ msgstr "Receber"
 #: model:ir.ui.menu,name:br_account_payment.menu_br_payments
 msgid "Receber e Pagar"
 msgstr "Receber e Pagar"
-
-#. module: br_account_payment
-#: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
-msgid "Registros pagos"
-msgstr "Registros pagos"
 
 #. module: br_account_payment
 #: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
@@ -251,12 +307,26 @@ msgid "Total das parcelas"
 msgstr "Total das parcelas"
 
 #. module: br_account_payment
-#: model:ir.model.fields,field_description:br_account_payment.field_account_move_backup_line_payment_value
-#: model:ir.model.fields,field_description:br_account_payment.field_account_move_line_payment_value
-msgid "Valor"
-msgstr "Valor"
-
-#. module: br_account_payment
 #: model:ir.ui.view,arch_db:br_account_payment.view_br_account_payment_payment_form_inherit
 msgid "Valor do Pagamento"
 msgstr "Valor do Pagamento"
+
+#. module: br_account_payment
+#: model:ir.model,name:br_account_payment.model_account_move_alter_date
+msgid "account.move.alter.date"
+msgstr "account.move.alter.date"
+
+#. module: br_account_payment
+#: model:ir.model,name:br_account_payment.model_account_move_alter_operation
+msgid "account.move.alter.operation"
+msgstr "account.move.alter.operation"
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.account_move_alter_operation_form
+msgid "this action will alter operation(s) in this title, you wish to proceed ?"
+msgstr "this action will alter operation(s) in this title, you wish to proceed ?"
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.account_move_alter_date_form
+msgid "this action will generate a maturity date alteration send line, you wish to proceed ?"
+msgstr "this action will generate a maturity date alteration send line, you wish to proceed ?"
