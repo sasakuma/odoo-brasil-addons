@@ -727,3 +727,302 @@ msgstr ""
 "\">MultiERP</a></strong>\n"
 "    </p>\n"
 "</div>"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/xml/chatter.xml:60
+#, python-format
+msgid "Schedule activity"
+msgstr "Programar atividade"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/xml/web_kanban_activity.xml:56
+#, python-format
+msgid "Schedule an activity"
+msgstr "Programar uma atividade"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/xml/chatter.xml:56
+#, python-format
+msgid "Log note"
+msgstr "Nota de registro"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/xml/chatter.xml:53
+#, python-format
+msgid "Send message"
+msgstr "Enviar mensagem"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/js/activity.js:32
+#, python-format
+msgid "%d days overdue"
+msgstr "%d dias atrasados"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/xml/activity.xml:59
+#, python-format
+msgid "Mark Done"
+msgstr "Marcar Concluído"
+
+msgid "Next Activity Type"
+msgstr "Próximo tipo de atividade"
+
+#. module: mail
+#: model:ir.model.fields,field_description:mail.field_mail_activity_has_recommended_activities
+msgid "Next activities available"
+msgstr "Próximas atividades disponíveis"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/xml/systray.xml:58
+#: code:addons/mail/static/src/xml/web_kanban_activity.xml:22
+#, python-format
+msgid "No activities planned."
+msgstr "Nenhuma atividade planejada."
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/xml/systray.xml:47
+#, python-format
+msgid "No discussion yet..."
+msgstr "Nenhuma discussão ainda ..."
+
+#. module: mail
+#: model:ir.model.fields,field_description:mail.field_res_users_notification_type
+msgid "Notification Management"
+msgstr "Gerenciamento de Notificações"
+
+#. module: mail
+#: model:ir.model.fields,help:mail.field_mail_activity_type_days
+msgid ""
+"Number of days before executing the action. It allows to plan the action "
+"deadline."
+msgstr "Número de dias antes de executar a ação. Permite planejar o prazo da ação."
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/js/client_action.js:895
+#, python-format
+msgid ""
+"Odoo has now the permission to send you native notifications on this device."
+msgstr "O MultiERP agora tem permissão para enviar notificações nativas neste dispositivo"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/js/client_action.js:892
+#, python-format
+msgid ""
+"Odoo will not have the permission to send native notifications on this "
+"device."
+msgstr "O MultiERP não terá permissão para enviar notificações nativas neste dispositivo"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/js/tour.js:24
+#, python-format
+msgid ""
+"Once a message has been starred, you can come back and review it at any time"
+" here."
+msgstr "Quando uma mensagem for marcada com uma estrela, você poderá voltar e analisá-la a qualquer momento aqui."
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/xml/extended_chat_window.xml:15
+#, python-format
+msgid "Open in Discuss"
+msgstr "Abrir Discussão"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/js/client_action.js:891
+#, python-format
+msgid "Permission denied"
+msgstr "Permissão negada"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/js/client_action.js:894
+#, python-format
+msgid "Permission granted"
+msgstr "Permissão concedida"
+
+msgid "Planned"
+msgstr "Planejado"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/xml/activity.xml:6
+#, python-format
+msgid "Planned activities"
+msgstr "Atividades Planejadas"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/xml/thread.xml:282
+#, python-format
+msgid "Play this video"
+msgstr "Assistir este vídeo"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/js/chatter_composer.js:158
+#, python-format
+msgid "Please complete customer's informations"
+msgstr "Por favor preencha as informações do cliente"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/js/many2many_tags_email.js:84
+#, python-format
+msgid "Please complete customer's informations and email"
+msgstr "Por favor preencha as informações do cliente e e-mail"
+
+#. module: mail
+#: model:ir.model.fields,help:mail.field_res_users_notification_type
+msgid ""
+"Policy on how to handle Chatter notifications:\n"
+"- Emails: notifications are sent to your email\n"
+"- Odoo: notifications appear in your Odoo Inbox"
+msgstr ""
+"Política sobre como lidar com as notificações do Chatter:\n"
+"- E-mails: as notificações são enviadas para o seu e-mail\n"
+"- MultiERP: notificações aparecem em sua caixa de entrada MultiERP"
+
+#. module: mail
+#: model:ir.model.fields,field_description:mail.field_mail_activity_type_previous_type_ids
+msgid "Preceding Activities"
+msgstr "Atividades precedentes"
+
+#. module: mail
+#: model:ir.model.fields,field_description:mail.field_mail_activity_previous_activity_type_id
+msgid "Previous Activity Type"
+msgstr "Tipo de Atividade Anterior"
+
+#. module: mail
+#: model:ir.actions.server,name:mail.ir_cron_module_update_notification_ir_actions_server
+#: model:ir.cron,cron_name:mail.ir_cron_module_update_notification
+#: model:ir.cron,name:mail.ir_cron_module_update_notification
+msgid "Publisher: Update Notification"
+msgstr "Editor: Atualizar Notificação"
+
+#. module: mail
+#: selection:mail.notification,email_status:0
+msgid "Ready to Send"
+msgstr "Pronto para enviar"
+
+#. module: mail
+#: model:ir.model.fields,field_description:mail.field_mail_activity_recommended_activity_type_id
+msgid "Recommended Activity Type"
+msgstr "Tipo de atividade recomendado"
+
+#. module: mail
+#: model:ir.model.fields,field_description:mail.field_mail_activity_type_next_type_ids
+msgid "Recommended Next Activities"
+msgstr "Atividades Seguintes Recomendadas"
+
+#. module: mail
+#: model:ir.model.fields,field_description:mail.field_mail_followers_res_model
+msgid "Related Document Model Name"
+msgstr "Nome do modelo do documento relacionado"
+
+#. module: mail
+#: model:ir.model.fields,field_description:mail.field_mail_mail_scheduled_date
+#: model:ir.ui.view,arch_db:mail.email_template_form
+msgid "Scheduled Send Date"
+msgstr "Data de envio agendada"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/js/thread_field.js:83
+#, python-format
+msgid "Sending Error"
+msgstr "Erro de envio"
+
+#. module: mail
+#: code:addons/mail/models/mail_channel.py:667
+#, python-format
+msgid "Show an helper message"
+msgstr "Mostrar uma mensagem auxiliar"
+
+#. module: mail
+#: model:ir.model.fields,help:mail.field_mail_activity_type_res_model_id
+msgid ""
+"Specify a model if the activity should be specific to a model and not "
+"available when managing activities for other models."
+msgstr ""
+"Especifique um modelo se a atividade deve ser específica para um modelo e não"
+"disponível ao gerenciar atividades para outros modelos."
+
+#. module: mail
+#: model:ir.model.fields,help:mail.field_account_invoice_activity_state
+#: model:ir.model.fields,help:mail.field_crm_lead_activity_state
+#: model:ir.model.fields,help:mail.field_event_track_activity_state
+#: model:ir.model.fields,help:mail.field_hr_applicant_activity_state
+#: model:ir.model.fields,help:mail.field_mail_activity_mixin_activity_state
+#: model:ir.model.fields,help:mail.field_maintenance_equipment_activity_state
+#: model:ir.model.fields,help:mail.field_maintenance_request_activity_state
+#: model:ir.model.fields,help:mail.field_mrp_production_activity_state
+#: model:ir.model.fields,help:mail.field_mrp_repair_activity_state
+#: model:ir.model.fields,help:mail.field_mrp_unbuild_activity_state
+#: model:ir.model.fields,help:mail.field_note_note_activity_state
+#: model:ir.model.fields,help:mail.field_product_product_activity_state
+#: model:ir.model.fields,help:mail.field_product_template_activity_state
+#: model:ir.model.fields,help:mail.field_project_task_activity_state
+#: model:ir.model.fields,help:mail.field_purchase_order_activity_state
+#: model:ir.model.fields,help:mail.field_res_partner_activity_state
+#: model:ir.model.fields,help:mail.field_res_users_activity_state
+#: model:ir.model.fields,help:mail.field_sale_order_activity_state
+#: model:ir.model.fields,help:mail.field_stock_picking_activity_state
+#: model:ir.model.fields,help:mail.field_survey_survey_activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Status baseado em atividades\n"
+"Em atraso: a data de vencimento já foi passada\n"
+"Hoje: a data da atividade é hoje\n"
+"Planejado: atividades futuras".
+
+#. module: mail
+#: model:ir.model.fields,help:mail.field_mail_activity_has_recommended_activities
+msgid "Technical field for UX purpose"
+msgstr "Campo técnico para finalidade UX"
+
+#. module: mail
+#: model:ir.model,name:mail.model_mail_test_simple
+msgid "Test Simple Chatter Record"
+msgstr "Teste de conversa simples"
+
+#. module: mail
+#: model:ir.model.fields,help:mail.field_mail_shortcode_substitution
+msgid "The escaped html code replacing the shortcut"
+msgstr "O código html que escapou substituindo o atalho"
+
+#. module: mail
+#: model:ir.model.fields,help:mail.field_mail_shortcode_source
+msgid "The shortcut which must be replaced in the Chat Messages"
+msgstr "O atalho que deve ser substituído nas mensagens de bate-papo"
+
+#. module: mail
+#: model:ir.model.fields,help:mail.field_mail_shortcode_unicode_source
+msgid "The source is replaced by this unicode character in the Chat Messages"
+msgstr "A fonte é substituída por este caractere unicode nas mensagens de chat"
+
+#. module: mail
+#: model:ir.model.fields,help:mail.field_email_template_preview_model_id
+#: model:ir.model.fields,help:mail.field_mail_template_model_id
+msgid "The type of document this template can be used with"
+msgstr "O tipo de documento em que esse modelo pode ser usado"
+
+#. module: mail
+#: model:ir.ui.view,arch_db:mail.message_origin_link
+msgid "This"
+msgstr "Este"
