@@ -148,4 +148,3 @@ class AccountMove(models.Model):
                 if line.user_type_id.type in ['receivable', 'payable']:
                     record.amount_residual = abs(line.amount_residual)
                     record.amount_residual_currency = line.amount_residual_currency
-                    record.write({})
