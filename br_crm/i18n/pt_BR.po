@@ -1178,9 +1178,11 @@ msgid "Bounce"
 msgstr "Rejeitado"
 
 #. module: crm
+#: model:ir.ui.menu,name:crm.crm_menu_root
 #: model:ir.ui.view,arch_db:crm.view_sale_config_settings
+#: model:ir.ui.view,arch_db:crm.res_config_settings_view_form
 msgid "CRM"
-msgstr "CRM"
+msgstr "Gestão de Oportunidades"
 
 #. module: crm
 #: model:ir.model,name:crm.model_crm_activity
