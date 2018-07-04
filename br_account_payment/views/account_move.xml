@@ -46,8 +46,12 @@
 
             <field name="title_type_id" position="after">
                 <field name="payment_mode_id" readonly="1"/>
-                <button name="action_alter_operation" string="Alter Operation"
-                    type="object"/>
+                <button name="action_alter_operation" 
+                        string="Alter Operation"
+                        attrs="{'invisible': ['|',
+                                ('account_type', '=', False),
+                                ('paid_status', '=', 'paid')]}"
+                        type="object"/>
             </field>
             
         </field>
