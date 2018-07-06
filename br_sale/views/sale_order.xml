@@ -40,6 +40,7 @@
                                                domain="[('fiscal_type', '=', fiscal_position_type)]"
                                                context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}" attrs="{'readonly': [('product_updatable', '=', False)]}" 
                                                force_save="1" />
+                                        <field name="layout_category_id" groups="sale.group_sale_layout"/>
                                         <field name="product_type" invisible="1"/>
                                         <field name="company_fiscal_type" invisible="1"/>
                                         <label for="product_uom_qty"/>
