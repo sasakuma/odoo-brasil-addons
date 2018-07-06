@@ -9,9 +9,9 @@
             <group name="accounting" position="inside">
                 <group>
                     <field name="fiscal_type"/>
-                    <field name="origin" attrs="{'required': [('fiscal_type', '=', 'product')], 'invisible': [('fiscal_type', '=', 'service')]}"/>
-                    <field name="fiscal_classification_id" attrs="{'required': [('fiscal_type', '=', 'product')], 'invisible': [('fiscal_type', '=', 'service')]}"/>
-                    <field name="cest" attrs="{'invisible': [('fiscal_type', '=', 'service')]}"/>
+                    <field name="origin" attrs="{'required': [('fiscal_type', '=', 'product')], 'invisible': [('fiscal_type', '!=', 'product')]}"/>
+                    <field name="fiscal_classification_id" attrs="{'required': [('fiscal_type', '=', 'product')], 'invisible': [('fiscal_type', '!=', 'product')]}"/>
+                    <field name="cest" attrs="{'invisible': [('fiscal_type', '!=', 'product')]}"/>
                 </group>
             </group>
             <group name="description" position="inside">
