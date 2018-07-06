@@ -308,6 +308,29 @@
                     <field nolabel="1" name="parcel_ids"/>
                 </page>
             </xpath>
+
+            <!-- Existem dois botoes com o mesmo name='action_confirm' na view original,
+            por isso selecionamos os indexs para ficarem invisiveis.-->
+            <xpath expr="//button[@id='action_confirm'][1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_confirm'][2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='action_confirm']" position="before">
+                <button name="action_br_sale_confirm" 
+                        id="action_br_sale_confirm" 
+                        string="Confirm Sale" 
+                        class="btn-primary" 
+                        type="object" 
+                        attrs="{'invisible': [('state', 'not in', ['sent'])]}"/>
+
+                <button name="action_br_sale_confirm" 
+                        string="Confirm Sale" 
+                        type="object" 
+                        attrs="{'invisible': [('state', 'not in', ['draft'])]}"/>
+            </xpath>
         </field>
     </record>
 

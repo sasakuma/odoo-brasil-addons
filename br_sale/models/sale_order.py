@@ -4,8 +4,9 @@
 # © 2018 Michell Stuttgart, MultidadosTI
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.addons import decimal_precision as dp
+from odoo.tools import float_is_zero, float_compare
 from odoo.exceptions import UserError, ValidationError
 
 
@@ -233,3 +234,67 @@ class SaleOrder(models.Model):
                 self.env['br_sale.parcel'].create(values)
 
         return True
+
+    @api.multi
+    def compare_total_parcel_value(self):
+
+        # Obtemos o total dos valores da parcela
+        total = sum([abs(p.parceling_value) for p in self.parcel_ids])
+
+        # Obtemos a precisao configurada
+        prec = self.env['decimal.precision'].precision_get('Account')
+
+        # Comparamos o valor total da cotação e das parcelas
+        # a fim de verificar se os valores sao os mesmos
+        # float_compare retorna 0, se os valores forem iguais
+        # float_compare retorna -1, se amount_total for menor que total
+        # float_compare retorna 1, se amount_total for maior que total
+        if float_compare(self.amount_total, total, precision_digits=prec):
+            return False
+        else:
+            return True
+
+    @api.multi
+    def validate_date_maturity_from_parcels(self):
+        """Verifica se algum registro no campo parcel_ids tem data de 
+        vencimento menor que o campo pre_invoice_date da cotação.
+
+        Raises:
+            UserError -- Ao menos uma parcela gerada tem data de vencimento
+            menor que a data.
+        """
+        for inv in self:
+
+            has_incoerent_parcel = any(
+                parcel.date_maturity < inv.quotation_date
+                for parcel in inv.parcel_ids)
+
+            if has_incoerent_parcel:
+                raise UserError(_('Pelo menos um registro de parcela foi criado com '
+                                  'data de vencimento menor do que a data da '
+                                  'cotação, por favor, considere verificar o campo '
+                                  'payment_term_id'))
+
+    @api.multi
+    def action_br_sale_confirm(self):
+        """Metodo criado para manter a compatibilidade dos testes do core
+        com o sistema de criação de parcelas do br_sale. Anteriormente
+        o metodo 'action_confirm' era chamado ao clicar no botao 'Confirmar Venda'
+        da Cotação. Este metodo realiza a verificacao das parcelas ao mesmo
+        tempo que permite compatibilidade com os testes do core
+
+        :return: True se o record foi salvo e False, caso contrário.
+        """
+
+        if self.parcel_ids:
+            self.validate_date_maturity_from_parcels()
+            if self.compare_total_parcel_value():
+                return super(SaleOrder, self).with_context(
+                    use_parcel_system=True).action_confirm()
+            else:
+                raise UserError(_('O valor total da cotação e total das '
+                                  'parcelas divergem! Por favor, gere as '
+                                  'parcelas novamente.'))
+        else:
+            raise ValidationError(
+                'Campo parcela está vazio. Por favor, crie as parcelas')
