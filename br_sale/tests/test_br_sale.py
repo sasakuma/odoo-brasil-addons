@@ -1,6 +1,8 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from datetime import datetime, timedelta
+
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests.common import TransactionCase
 
@@ -506,3 +508,41 @@ class TestBrSaleOrder(TransactionCase):
             self.assertIn('product_id', res['domain'])
             self.assertIn(('sale_ok', '=', True), res['domain']['product_id'])
             self.assertIn(('fiscal_type', '=', self.fpos.position_type), res['domain']['product_id'])
+
+    def test_validate_date_maturity_from_parcels(self):
+
+        for inv in self.sales_order:
+            old_quotation_date = inv.quotation_date
+
+            inv.quotation_date = str(datetime.strptime(
+                inv.quotation_date, '%Y-%m-%d') + timedelta(days=700))
+
+            with self.assertRaises(UserError):
+                inv.validate_date_maturity_from_parcels()
+
+            inv.quotation_date = old_quotation_date
+            inv.validate_date_maturity_from_parcels()
+
+    def test_compare_total_parcel_value(self):
+
+        for inv in self.sales_order:
+            self.assertTrue(inv.compare_total_parcel_value())
+
+            # Mudamos o valor da fatura para disparar o erro
+            inv.amount_total = '1000.00'
+
+            self.assertTrue(inv.parcel_ids)
+            self.assertFalse(inv.compare_total_parcel_value())
+
+    def test_action_br_sale_confirm(self):
+
+        for inv in self.sales_order:
+            self.assertTrue(inv.action_br_sale_confirm())
+
+            inv.amount_total = '2000.00'
+            with self.assertRaises(UserError):
+                inv.action_br_sale_confirm()
+
+            inv.parcel_ids = False
+            with self.assertRaises(ValidationError):
+                inv.action_br_sale_confirm()
