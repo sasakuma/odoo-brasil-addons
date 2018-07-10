@@ -18,7 +18,6 @@
         'crm',
     ],
     'data': [
-        'views/crm_lead.xml',
         'views/crm_opportunity.xml',
     ],
     'installable': True,
