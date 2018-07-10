@@ -1,49 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- CRM Opportunity Form View  -->
-    <record model="ir.ui.view" id="br_crm_case_form_view_oppor1">
-        <field name="name">br_crm.opportunities1</field>
+    <record id="crm_case_form_view_oppor" model="ir.ui.view">
+        <field name="name">br_crm.crm.case.form.view</field>
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
         <field name="arch" type="xml">
 
-            <field name="city" position="replace">
-                <field name="city" invisible="1"/>
-            </field>
-            <field name="zip" position="replace"/>
-            <field name="street" position="replace">
-                <field name="zip" placeholder="CEP" class="o_address_zip oe_inline"/>
-                <field name="street" class="o_address_street" placeholder="Logradouro"/>
-                <field name="number" class="o_address_street" placeholder="Número"/>
-                <field name="district" class="o_address_street" placeholder="Bairro"/>
-            </field>
-            <field name="street2" position="replace">
-                <field name="street2" placeholder="Complemento" class="o_address_street"/>
-            </field>
-            <field name="state_id" position="attributes">
-                <attribute name="domain">[('country_id','=',country_id)]</attribute>
-                <attribute name="options">{'no_create': True, 'no_create_edit': True}</attribute>
-            </field>
-            <field name="state_id" position="after">
-                <field name="city_id" class="o_address_country" placeholder="Cidade" options="{'no_create': True, 'no_create_edit': True}"/>
-            </field>
-            <field name="country_id" position="replace"/>
-            <field name="state_id" position="before">
-                <field name="country_id" placeholder="País" class="o_address_country" options="{'no_create': True, 'no_create_edit': True}"/>
+            <field name="partner_id" position="replace"/>
+
+            <xpath expr="//page[@name='lead']/group/group/field[@name='partner_name']" position="before">
+                <field name="partner_id" string="Customer" domain="[('customer', '=', True)]" context="{'search_default_customer': 1,
+                                        'default_name': partner_name, 'default_street': street,
+                                        'default_street2': street2, 'default_city': city,
+                                        'default_state_id': state_id, 'default_zip': zip,
+                                        'default_country_id': country_id, 'default_function': function,
+                                        'default_phone': phone, 'default_mobile': mobile,
+                                        'default_email': email_from, 'default_customer': False,
+                                        'default_is_company': 'company',
+                                        'default_user_id': user_id, 'default_team_id': team_id, 'default_website': website}"/>
+            </xpath>
+
+            <xpath expr="//page[@name='lead']/group/group/field[@name='partner_name']" position="replace"/>
+            <xpath expr="//page[@name='lead']/group/group/field[@name='mobile']" position="replace"/>
+
+            <field name="email_from" position="before">
+                <field name="partner_name"/>
             </field>
 
-            <field name="partner_name" position="after">
-                <field name="legal_name"/>
-                <field name="cnpj"/>
-                <field name="inscr_est"/>
-                <field name="inscr_mun"/>
-                <field name="suframa"/>
+            <field name="phone" position="before">
+                <field name="mobile"/>
             </field>
-            <field name="email_from" position="before">
-                <field name="name_surname"/>
-                <field name="cpf"/>
-                <field name="rg"/>
-            </field>
+
+            <xpath expr="//field[@name='website']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//label[@for='contact_name']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='contact_name']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='function']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='title']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//page[@name='lead']/group/group/label[@for='street']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//page[@name='lead']/group/group/div[hasclass('o_address_format')]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
         </field>
     </record>
 </odoo>
