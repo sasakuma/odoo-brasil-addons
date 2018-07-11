@@ -32,10 +32,10 @@
         </field>
     </record>
 
-    <record id="view_br_account_payment_payment_form_inherit" model="ir.ui.view">
+    <record id="view_br_account_payment_payment_cancel_form_inherit" model="ir.ui.view">
         <field name="name">view.br.account.payment.form.inherit</field>
         <field name="model">account.payment</field>
-        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="inherit_id" ref="account_cancel.payment_cancel_form_inherit"/>
         <field name="arch" type="xml">
             <field name="partner_type" position="replace"/>
             <field name="partner_id" position="replace"/>
