@@ -31,6 +31,10 @@
                 <attribute name="domain">[('internal_type','=','other'),('deprecated','=',False),('code_first_digit', '=', 3)]</attribute>
             </xpath>
 
+            <xpath expr="//field[@name='property_account_expense_id']" position="attributes">
+                <attribute name="domain">[('internal_type','=','other'),('deprecated','=',False),('code_first_digit', 'in', (4, 5))]</attribute>
+            </xpath>
+
         </field>
     </record>
 
