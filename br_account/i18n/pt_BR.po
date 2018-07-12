@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 10.0\n"
+"Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-29 16:54+0000\n"
-"PO-Revision-Date: 2017-11-29 14:59-0200\n"
+"POT-Creation-Date: 2018-07-16 20:09+0000\n"
+"PO-Revision-Date: 2018-07-16 17:13-0300\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -90,6 +90,69 @@ msgstr "(=) Valor Bruto"
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
 msgid "(=) Valor Líquido"
 msgstr "(=) Valor Líquido"
+
+#. module: br_account
+#: code:addons/br_account/models/res_company.py:50
+#: code:addons/br_account/models/res_partner.py:72
+#, python-format
+msgid "-CNPJ/CPF \n"
+msgstr "-CNPJ/CPF \n"
+
+#. module: br_account
+#: code:addons/br_account/models/res_company.py:56
+#: code:addons/br_account/models/res_partner.py:78
+#, python-format
+msgid "-City\n"
+msgstr "-Cidade\n"
+
+#. module: br_account
+#: code:addons/br_account/models/res_company.py:58
+#: code:addons/br_account/models/res_partner.py:80
+#, python-format
+msgid "-Country\n"
+msgstr "-País\n"
+
+#. module: br_account
+#: code:addons/br_account/models/res_company.py:52
+#: code:addons/br_account/models/res_partner.py:74
+#, python-format
+msgid "-District\n"
+msgstr "-Bairro\n"
+
+#. module: br_account
+#: code:addons/br_account/models/res_company.py:48
+#: code:addons/br_account/models/res_partner.py:70
+#, python-format
+msgid "-Legal Name\n"
+msgstr "-Razão Social\n"
+
+#. module: br_account
+#: code:addons/br_account/models/res_company.py:62
+#: code:addons/br_account/models/res_partner.py:84
+#, python-format
+msgid "-Number\n"
+msgstr "-Número\n"
+
+#. module: br_account
+#: code:addons/br_account/models/res_company.py:64
+#: code:addons/br_account/models/res_partner.py:86
+#, python-format
+msgid "-State\n"
+msgstr "-Estado\n"
+
+#. module: br_account
+#: code:addons/br_account/models/res_company.py:60
+#: code:addons/br_account/models/res_partner.py:82
+#, python-format
+msgid "-Street\n"
+msgstr "-Rua\n"
+
+#. module: br_account
+#: code:addons/br_account/models/res_company.py:54
+#: code:addons/br_account/models/res_partner.py:76
+#, python-format
+msgid "-ZIP\n"
+msgstr "-CEP\n"
 
 #. module: br_account
 #: selection:account.invoice.line,icms_tipo_base:0
@@ -750,6 +813,8 @@ msgstr "99 - Outras Saídas"
 
 #. module: br_account
 #: model:ir.model,name:br_account.model_account_account
+#: model:ir.model.fields,field_description:br_account.field_account_move_account_id
+#: model:ir.model.fields,field_description:br_account.field_account_move_backup_account_id
 msgid "Account"
 msgstr "Conta"
 
@@ -757,6 +822,17 @@ msgstr "Conta"
 #: model:ir.model,name:br_account.model_account_move
 msgid "Account Entry"
 msgstr "Lançamento Contábil"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_move_ids
+msgid "Account Move"
+msgstr "Movimentação de Conta"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_move_account_type
+#: model:ir.model.fields,field_description:br_account.field_account_move_backup_account_type
+msgid "Account Type"
+msgstr "Tipo de Conta"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_move_line_form
@@ -781,7 +857,7 @@ msgstr "Agrupar Por..."
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_title_type_allow_cnab_sending
 msgid "Allow CNAB Sending"
-msgstr "Allow CNAB Sending"
+msgstr "Permitir envio de CNAB"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_cofins_id
@@ -898,10 +974,9 @@ msgid "Ativo"
 msgstr "Ativo"
 
 #. module: br_account
-#: code:addons/br_account/models/account_invoice.py:383
-#, python-format
-msgid "Attention"
-msgstr "Atenção"
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_number_backup
+msgid "Backup do numero do pedido"
+msgstr "Backup do numero do pedido"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_cofins_base
@@ -975,6 +1050,7 @@ msgstr "Brasil"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_cest
+#: model:ir.model.fields,field_description:br_account.field_product_product_cest
 #: model:ir.model.fields,field_description:br_account.field_product_template_cest
 msgid "CEST"
 msgstr "CEST"
@@ -1178,6 +1254,7 @@ msgid "Classificação Fiscal"
 msgstr "Classificação Fiscal"
 
 #. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_product_product_fiscal_classification_id
 #: model:ir.model.fields,field_description:br_account.field_product_template_fiscal_classification_id
 msgid "Classificação Fiscal (NCM)"
 msgstr "Classificação Fiscal (NCM)"
@@ -1192,6 +1269,21 @@ msgid "Classificações Fiscais (NCM)"
 msgstr "Classificações Fiscais (NCM)"
 
 #. module: br_account
+#: code:addons/br_account/models/res_partner.py:88
+#, python-format
+msgid ""
+"Client: %s\n"
+"Missing Fields:\n"
+"%s\n"
+"\n"
+msgstr ""
+"Clientes: %s\n"
+"Campos vazios:\n"
+"%s\n"
+"\n"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_fiscal_document_code
 #: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_document_code
 msgid "Codigo"
 msgstr "Codigo"
@@ -1202,14 +1294,43 @@ msgid "Companies"
 msgstr "Empresas"
 
 #. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_move_backup_company_currency_id
+#: model:ir.model.fields,field_description:br_account.field_account_move_company_currency_id
 #: model:ir.model.fields,field_description:br_account.field_br_account_invoice_parcel_company_currency_id
 msgid "Company Currency"
 msgstr "Moeda da Empresa"
 
 #. module: br_account
 #: selection:account.move,origin_type:0
+#: selection:account.move.backup,origin_type:0
 msgid "Company Expense"
-msgstr "Company Expense"
+msgstr "Despesas da Empresa"
+
+#. module: br_account
+#: selection:account.move,origin_type:0
+#: selection:account.move.backup,origin_type:0
+msgid "Company Renegotiation"
+msgstr "Renegociação da Empresa"
+
+#. module: br_account
+#: selection:account.move,origin_type:0
+#: selection:account.move.backup,origin_type:0
+msgid "Company Revenue"
+msgstr "Receita da empresa"
+
+#. module: br_account
+#: code:addons/br_account/models/res_company.py:66
+#, python-format
+msgid ""
+"Company: %s\n"
+"Missing Fields:\n"
+"%s\n"
+"\n"
+msgstr ""
+"Clientes: %s\n"
+"Campos vazios:\n"
+"%s\n"
+"\n"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_invoice_parcel_wizard_payment_term_id
@@ -1232,12 +1353,12 @@ msgid "Confirmar"
 msgstr "Confirmar"
 
 #. module: br_account
-#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_account_id_8045
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_account_id_5688
 msgid "Conta Contábil"
 msgstr "Conta Contábil"
 
 #. module: br_account
-#: model:ir.model.fields,help:br_account.field_account_fiscal_position_account_id_8045
+#: model:ir.model.fields,help:br_account.field_account_fiscal_position_account_id_5688
 msgid "Conta Contábil a ser utilizada na fatura."
 msgstr "Conta Contábil a ser utilizada na fatura."
 
@@ -1327,6 +1448,7 @@ msgstr "Código"
 
 #. module: br_account
 #: model:ir.model.fields,help:br_account.field_product_fiscal_classification_cest
+#: model:ir.model.fields,help:br_account.field_product_product_cest
 #: model:ir.model.fields,help:br_account.field_product_template_cest
 msgid "Código Especificador da Substituição Tributária"
 msgstr "Código Especificador da Substituição Tributária"
@@ -1362,6 +1484,11 @@ msgid "Data Fixa"
 msgstr "Data Fixa"
 
 #. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_cancel_invoice_date
+msgid "Data da Cancelamento"
+msgstr "Data da Cancelamento"
+
+#. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_invoice_parcel_wizard_pre_invoice_date
 msgid "Data da Fatura"
 msgstr "Data da Fatura"
@@ -1382,12 +1509,21 @@ msgid "Data de Registro"
 msgstr "Data de Registro"
 
 #. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_move_backup_date_maturity_current
+#: model:ir.model.fields,field_description:br_account.field_account_move_date_maturity_current
 #: model:ir.model.fields,field_description:br_account.field_br_account_invoice_parcel_date_maturity
 #: model:ir.model.fields,field_description:br_account.field_br_account_invoice_parcel_old_date_maturity
 msgid "Data de Vencimento"
 msgstr "Data de Vencimento"
 
 #. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_move_backup_date_maturity_origin
+#: model:ir.model.fields,field_description:br_account.field_account_move_date_maturity_origin
+msgid "Data de Vencimento Original"
+msgstr "Data de Vencimento Original"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_move_form
 #: model:ir.ui.view,arch_db:br_account.view_move_line_form
 msgid "Dates"
 msgstr "Datas"
@@ -1471,13 +1607,15 @@ msgstr "Difal?"
 
 #. module: br_account
 #: selection:account.move,origin_type:0
+#: selection:account.move.backup,origin_type:0
 msgid "Discharge"
-msgstr "Discharge"
+msgstr "Baixa"
 
 #. module: br_account
 #: selection:account.move,origin_type:0
+#: selection:account.move.backup,origin_type:0
 msgid "Discount"
-msgstr "Discount"
+msgstr "Desconto"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_financial_operation_display_name
@@ -1498,7 +1636,7 @@ msgstr "Discount"
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_display_name
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_wizard_display_name
 msgid "Display Name"
-msgstr "Nome para Exibição"
+msgstr "Nome exibido"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_journal_id
@@ -1513,7 +1651,7 @@ msgstr "Diário Contábil a ser utilizado na fatura."
 #. module: br_account
 #: model:ir.actions.act_window,name:br_account.action_br_account_document_serie_form
 msgid "Document Serie"
-msgstr "Document Serie"
+msgstr "Série do Documento"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_fiscal_document_id
@@ -1528,7 +1666,6 @@ msgstr "Documento"
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_related_invoice_related_id
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_fiscal_document_id
 #: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_observation_document_id
-#: model:ir.ui.menu,name:br_account.menu_action_br_account_fiscal_document_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_fiscal_document_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_fiscal_document_tree
 msgid "Documento Fiscal"
@@ -1567,8 +1704,9 @@ msgstr "Emitente"
 
 #. module: br_account
 #: selection:account.move,origin_type:0
+#: selection:account.move.backup,origin_type:0
 msgid "Employee Expense"
-msgstr "Employee Expense"
+msgstr "Despesa de funcionários"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_company_id
@@ -1586,6 +1724,16 @@ msgstr "Entrada"
 #: model:ir.ui.view,arch_db:br_account.view_br_account_company_form
 msgid "Escritório de contabilidade"
 msgstr "Escritório de contabilidade"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_cancel_form
+msgid "Esta ação além de alterar o status da fatura,                         também irá deletar os registros de título. Deseja Continuar?"
+msgstr "Esta ação além de alterar o status da fatura,                         também irá deletar os registros de título. Deseja Continuar?"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
+msgid "Esta ação irá confirmar a fatura. Deseja continuar?"
+msgstr "Esta ação irá confirmar a fatura. Deseja continuar?"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_position_form
@@ -1661,11 +1809,15 @@ msgid "Faturamento dos últimos 12 meses"
 msgstr "Faturamento dos últimos 12 meses"
 
 #. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_move_form
 #: model:ir.ui.view,arch_db:br_account.view_move_line_form
 msgid "Financial"
 msgstr "Financeiro"
 
 #. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_move_backup_financial_operation_id
+#: model:ir.model.fields,field_description:br_account.field_account_move_backup_line_financial_operation_id
+#: model:ir.model.fields,field_description:br_account.field_account_move_financial_operation_id
 #: model:ir.model.fields,field_description:br_account.field_account_move_line_financial_operation_id
 msgid "Financial Operation"
 msgstr "Operação Financeira"
@@ -1773,6 +1925,7 @@ msgstr "INSS Retido"
 
 #. module: br_account
 #: selection:account.move,origin_type:0
+#: selection:account.move.backup,origin_type:0
 msgid "IOF"
 msgstr "IOF"
 
@@ -1898,13 +2051,13 @@ msgstr "Informações Adicionais"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_position_form
-msgid "Informações NFS-e"
-msgstr "Informações NFS-e"
+msgid "Informações NF de Serviço"
+msgstr "Informações NF de Serviço"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_title_type_initials
 msgid "Initials"
-msgstr "Initials"
+msgstr "Iniciais"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_related_inscr_est
@@ -1913,11 +2066,14 @@ msgstr "Inscr. Estadual/RG"
 
 #. module: br_account
 #: selection:account.move,origin_type:0
+#: selection:account.move.backup,origin_type:0
 msgid "Interest"
-msgstr "Interest"
+msgstr "Juros"
 
 #. module: br_account
 #: model:ir.model,name:br_account.model_account_invoice
+#: model:ir.model.fields,field_description:br_account.field_account_move_backup_invoice_id
+#: model:ir.model.fields,field_description:br_account.field_account_move_invoice_id
 #: model:ir.model.fields,field_description:br_account.field_br_account_invoice_parcel_invoice_id
 msgid "Invoice"
 msgstr "Fatura"
@@ -1929,12 +2085,17 @@ msgid "Invoice Line"
 msgstr "Linha da Fatura"
 
 #. module: br_account
-#: model:ir.ui.view,arch_db:br_account.br_account_invoice_parcel_wizard_form
-msgid "Invoice Parcels Wizard"
-msgstr "Wizard Para Parcelas da Fatura"
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_internal_number
+msgid "Invoice Number"
+msgstr "Número da fatura"
 
 #. module: br_account
-#: code:addons/br_account/models/account_invoice.py:632
+#: model:ir.ui.view,arch_db:br_account.br_account_invoice_parcel_wizard_form
+msgid "Invoice Parcels Wizard"
+msgstr "Janela Para Parcelas da Fatura"
+
+#. module: br_account
+#: code:addons/br_account/models/account_invoice.py:727
 #, python-format
 msgid "Invoice must be in draft, Pro-forma or open                               state in order to be cancelled."
 msgstr "Fatura deve estar com Provisório, Pro-Forma ou Em Aberto para ser cancelada."
@@ -1979,7 +2140,7 @@ msgstr "Já existe um CFOP com esse código!"
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification___last_update
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_wizard___last_update
 msgid "Last Modified on"
-msgstr "Última Modificação em"
+msgstr "Última modificação em"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_financial_operation_write_uid
@@ -2066,6 +2227,7 @@ msgstr "Mensagem a ser destacada no documento eletrônico"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_fiscal_observation_ids
+#: model:ir.model.fields,field_description:br_account.field_product_product_fiscal_observation_ids
 #: model:ir.model.fields,field_description:br_account.field_product_template_fiscal_observation_ids
 msgid "Mensagens Doc. Eletrônico"
 msgstr "Mensagens Doc. Eletrônico"
@@ -2077,10 +2239,16 @@ msgid "Mensagens Documento Eletrônico"
 msgstr "Mensagens Documento Eletrônico"
 
 #. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_move_backup_line_title_value
 #: model:ir.model.fields,field_description:br_account.field_account_move_line_title_value
 #: model:ir.model.fields,field_description:br_account.field_account_title_type_minimum_plot_value
 msgid "Minimum Plot Value"
 msgstr "Valor Mínimo de Parcela"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_invoice_model
+msgid "Modelo de Fatura"
+msgstr "Modelo de Fatura"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_product_fiscal_classification_search
@@ -2170,7 +2338,7 @@ msgid "O valor da parcela expresso em outra moeda opcional se houver uma entrada
 msgstr "O valor da parcela expresso em outra moeda opcional se houver uma entrada multi-moeda."
 
 #. module: br_account
-#: code:addons/br_account/models/account_invoice.py:583
+#: code:addons/br_account/models/account_invoice.py:656
 #, python-format
 msgid "O valor total da fatura e total das parcelas divergem! Por favor, gere as parcelas novamente."
 msgstr "O valor total da fatura e total das parcelas divergem! Por favor, gere as parcelas novamente."
@@ -2205,6 +2373,13 @@ msgid "Observações Fiscais"
 msgstr "Observações Fiscais"
 
 #. module: br_account
+#: selection:account.move,paid_status:0
+#: selection:account.move.backup,paid_status:0
+msgid "Open"
+msgstr "Aberto"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_move_form
 #: model:ir.ui.view,arch_db:br_account.view_move_line_form
 msgid "Operation"
 msgstr "Operação"
@@ -2217,14 +2392,22 @@ msgstr "Operação Financeira"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_origem
+#: model:ir.model.fields,field_description:br_account.field_product_product_origin
 #: model:ir.model.fields,field_description:br_account.field_product_template_origin
 msgid "Origem"
 msgstr "Origem"
 
 #. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_move_backup_origin_type
 #: model:ir.model.fields,field_description:br_account.field_account_move_origin_type
 msgid "Origin Type"
 msgstr "Tipo de Origem"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_move_amount_origin
+#: model:ir.model.fields,field_description:br_account.field_account_move_backup_amount_origin
+msgid "Original Amount"
+msgstr "Valor Original"
 
 #. module: br_account
 #: model:ir.model.fields,help:br_account.field_br_account_invoice_parcel_currency_id
@@ -2261,21 +2444,33 @@ msgid "Pagamento à Vista"
 msgstr "Pagamento à Vista"
 
 #. module: br_account
-#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
-#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_supplier_form
-msgid "Pago"
-msgstr "Pago"
-
-#. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_parent_id
 msgid "Pai"
 msgstr "Pai"
+
+#. module: br_account
+#: selection:account.move,paid_status:0
+#: selection:account.move.backup,paid_status:0
+msgid "Paid"
+msgstr "Pago"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_move_backup_paid_status
+#: model:ir.model.fields,field_description:br_account.field_account_move_paid_status
+msgid "Paid Status"
+msgstr "Status Pago"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_partner_ids
 #: model:ir.ui.view,arch_db:br_account.br_account_tax_rule_form
 msgid "Parceiros"
 msgstr "Parceiros"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_move_backup_parcel_id
+#: model:ir.model.fields,field_description:br_account.field_account_move_parcel_id
+msgid "Parcel"
+msgstr "Parcela"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_invoice_parcel_name
@@ -2292,18 +2487,19 @@ msgid "Parcelas"
 msgstr "Parcelas"
 
 #. module: br_account
+#: selection:account.move,paid_status:0
+#: selection:account.move.backup,paid_status:0
+msgid "Partial"
+msgstr "Parcial"
+
+#. module: br_account
 #: model:ir.model,name:br_account.model_res_partner
 msgid "Partner"
 msgstr "Parceiro"
 
 #. module: br_account
-#: model:ir.model.fields,field_description:br_account.field_account_invoice_payable_move_line_ids
-msgid "Payable Move Lines"
-msgstr "Linhas Pagáveis"
-
-#. module: br_account
 #: model:ir.model,name:br_account.model_account_payment_term
-msgid "Payment Term"
+msgid "Payment Terms"
 msgstr "Condições de Pagamento"
 
 #. module: br_account
@@ -2347,6 +2543,11 @@ msgid "Perc PIS"
 msgstr "Perc PIS"
 
 #. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_percent_subtotal
+msgid "Percent Total"
+msgstr "Percentual Total"
+
+#. module: br_account
 #: selection:account.invoice.line,cofins_tipo:0
 #: selection:account.invoice.line,ipi_tipo:0
 #: selection:account.invoice.line,pis_tipo:0
@@ -2355,13 +2556,13 @@ msgid "Percentual"
 msgstr "Percentual"
 
 #. module: br_account
-#: code:addons/br_account/models/account_invoice.py:437
+#: code:addons/br_account/models/account_invoice.py:417
 #, python-format
 msgid "Please create some invoice lines."
 msgstr "Por favor, crie algumas linhas de fatura."
 
 #. module: br_account
-#: code:addons/br_account/models/account_invoice.py:433
+#: code:addons/br_account/models/account_invoice.py:413
 #, python-format
 msgid "Please define sequence on the journal related to this invoice."
 msgstr "Por favor, defina a sequência do diário relacionado a esta invoice."
@@ -2376,6 +2577,11 @@ msgstr "Posição Fiscal"
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_wizard_has_quote_char
 msgid "Possui caracter de citação?"
 msgstr "Possui caracter de citação?"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_account_code_first_digit
+msgid "Primeiro Dígito"
+msgstr "Primeiro Dígito"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_invoice_print_view
@@ -2404,6 +2610,7 @@ msgstr "Produtos"
 
 #. module: br_account
 #: selection:account.move,origin_type:0
+#: selection:account.move.backup,origin_type:0
 msgid "Purchase"
 msgstr "Compra"
 
@@ -2411,11 +2618,6 @@ msgstr "Compra"
 #: model:ir.model.fields,field_description:br_account.field_br_account_invoice_parcel_amount_days
 msgid "Quantidade de Dias"
 msgstr "Quantidade de Dias"
-
-#. module: br_account
-#: model:ir.model.fields,field_description:br_account.field_account_invoice_receivable_move_line_ids
-msgid "Receivable Move Lines"
-msgstr "Linhas Recebiveis"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_reducao_icms
@@ -2433,9 +2635,10 @@ msgid "Redução de base ST"
 msgstr "Redução de base ST"
 
 #. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_move_backup_ref_move_id
 #: model:ir.model.fields,field_description:br_account.field_account_move_ref_move_id
 msgid "Reference Account Move"
-msgstr "Reference Account Move"
+msgstr "Mover Conta de Referência"
 
 #. module: br_account
 #: selection:account.invoice.line,company_fiscal_type:0
@@ -2569,8 +2772,21 @@ msgstr "Regras de PIS"
 
 #. module: br_account
 #: selection:account.move,origin_type:0
+#: selection:account.move.backup,origin_type:0
 msgid "Releases"
-msgstr "Releases"
+msgstr "Lançamentos"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_move_amount_residual
+#: model:ir.model.fields,field_description:br_account.field_account_move_backup_amount_residual
+msgid "Residual Amount"
+msgstr "Valor Residual"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_move_amount_residual_currency
+#: model:ir.model.fields,field_description:br_account.field_account_move_backup_amount_residual_currency
+msgid "Residual Amount in Currency"
+msgstr "Valor residual em Moeda"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
@@ -2585,31 +2801,37 @@ msgstr "Retida"
 
 #. module: br_account
 #: selection:account.move,origin_type:0
+#: selection:account.move.backup,origin_type:0
 msgid "Reversal"
-msgstr "Reversal"
+msgstr "Estorno"
 
 #. module: br_account
 #: selection:account.move,origin_type:0
+#: selection:account.move.backup,origin_type:0
 msgid "Reversal Discount"
-msgstr "Reversal Discount"
+msgstr "Estorno do Desconto"
 
 #. module: br_account
 #: selection:account.move,origin_type:0
+#: selection:account.move.backup,origin_type:0
 msgid "Reversal IOF"
-msgstr "Reversal IOF"
+msgstr "Estorno do IOF"
 
 #. module: br_account
 #: selection:account.move,origin_type:0
+#: selection:account.move.backup,origin_type:0
 msgid "Reversal Interest"
-msgstr "Reversal Interest"
+msgstr "Estorno dos Juros"
 
 #. module: br_account
 #: selection:account.move,origin_type:0
+#: selection:account.move.backup,origin_type:0
 msgid "Reversed Discharge"
-msgstr "Reversed Discharge"
+msgstr "Estorno da Baixa"
 
 #. module: br_account
 #: selection:account.move,origin_type:0
+#: selection:account.move.backup,origin_type:0
 msgid "Sale"
 msgstr "Venda"
 
@@ -2625,7 +2847,7 @@ msgid "Se marcado o valor do IPI inclui a base de cálculo"
 msgstr "Se marcado o valor do IPI inclui a base de cálculo"
 
 #. module: br_account
-#: code:addons/br_account/wizard/account_invoice_confirm.py:25
+#: code:addons/br_account/wizard/account_invoice_confirm.py:23
 #, python-format
 msgid "Selected invoice(s) cannot be confirmed as they are not in 'Draft' or 'Pro-Forma' state."
 msgstr "Fatura(s) selecionada(s) não pode ser confirmada(s) se não estiver(em) como 'Provisório' ou 'Pro-Forma'."
@@ -2641,11 +2863,6 @@ msgstr "Sequência"
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_internal_sequence_id
 msgid "Sequência Interna"
 msgstr "Sequência Interna"
-
-#. module: br_account
-#: model:ir.ui.menu,name:br_account.menu_action_document_serie_form
-msgid "Serie de Documento Fiscal"
-msgstr "Serie de Documento Fiscal"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_document_serie_form
@@ -2676,11 +2893,6 @@ msgstr "Simples Nacional"
 #: selection:res.company,fiscal_type:0
 msgid "Simples Nacional – excesso de sublimite de receita bruta"
 msgstr "Simples Nacional – excesso de sublimite de receita bruta"
-
-#. module: br_account
-#: model:ir.ui.view,arch_db:br_account.view_account_invoice_filter
-msgid "Situação"
-msgstr "Situação"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_invoice_print_view
@@ -2727,6 +2939,7 @@ msgstr "Série do número da Nota Fiscal do Fornecedor"
 
 #. module: br_account
 #: selection:account.move,origin_type:0
+#: selection:account.move.backup,origin_type:0
 #: model:ir.model,name:br_account.model_account_tax
 msgid "Tax"
 msgstr "Imposto"
@@ -2745,6 +2958,24 @@ msgstr "Modelos para Impostos"
 #: selection:account.invoice,issuer:0
 msgid "Terceiros"
 msgstr "Terceiros"
+
+#. module: br_account
+#: model:ir.model.fields,help:br_account.field_account_move_account_type
+#: model:ir.model.fields,help:br_account.field_account_move_backup_account_type
+msgid "The 'Internal Type' is used for features available on different types of accounts: liquidity type is for cash or bank accounts, payable/receivable is for vendor/customer accounts."
+msgstr "O 'Tipo Interno' é usado para as funções disponíveis em diferentes tipos de contas: Tipo de liquidez é para contas de caixa ou de banco, a pagar/receber é para contas de fornecedor/cliente."
+
+#. module: br_account
+#: model:ir.model.fields,help:br_account.field_account_move_amount_residual_currency
+#: model:ir.model.fields,help:br_account.field_account_move_backup_amount_residual_currency
+msgid "The residual amount on a journal item expressed in its currency (possibly not the company currency)."
+msgstr "O valor residual em um item de diário expresso na sua moeda (possivelmente não a moeda da empresa)."
+
+#. module: br_account
+#: model:ir.model.fields,help:br_account.field_account_move_amount_residual
+#: model:ir.model.fields,help:br_account.field_account_move_backup_amount_residual
+msgid "The residual amount on a journal item expressed in the company currency."
+msgstr "O valor residual em um item diário expresso na moeda da empresa."
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_tax_domain
@@ -2778,6 +3009,7 @@ msgstr "Tipo Documento"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_fiscal_type
+#: model:ir.model.fields,field_description:br_account.field_product_product_fiscal_type
 #: model:ir.model.fields,field_description:br_account.field_product_template_fiscal_type
 msgid "Tipo Fiscal"
 msgstr "Tipo Fiscal"
@@ -2869,7 +3101,10 @@ msgstr "Tipo produto"
 
 #. module: br_account
 #: model:ir.actions.act_window,name:br_account.account_title_type_action
+#: model:ir.model.fields,field_description:br_account.field_account_move_backup_line_title_type_id
+#: model:ir.model.fields,field_description:br_account.field_account_move_backup_title_type_id
 #: model:ir.model.fields,field_description:br_account.field_account_move_line_title_type_id
+#: model:ir.model.fields,field_description:br_account.field_account_move_title_type_id
 #: model:ir.ui.menu,name:br_account.account_title_type_menu
 msgid "Title Type"
 msgstr "Tipo de Titulo"
@@ -2936,8 +3171,20 @@ msgstr "Tributos Municipais"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_supplier_form
 msgid "Títulos"
 msgstr "Títulos"
+
+#. module: br_account
+#: model:ir.model.fields,help:br_account.field_account_invoice_internal_number
+msgid ""
+"Unique number of the invoice,\n"
+"                                     computed automatically when the invoice\n"
+"                                     is created."
+msgstr ""
+"Número único da fatura,\n"
+"                                      computado automaticamente quando a fatura\n"
+"                                      é criada."
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_tax_rule_form
@@ -2945,6 +3192,8 @@ msgid "Usar a seguinte tributação"
 msgstr "Usar a seguinte tributação"
 
 #. module: br_account
+#: model:ir.model.fields,help:br_account.field_account_move_backup_company_currency_id
+#: model:ir.model.fields,help:br_account.field_account_move_company_currency_id
 #: model:ir.model.fields,help:br_account.field_br_account_invoice_parcel_company_currency_id
 msgid "Utility field to express amount currency"
 msgstr "Campo utilitário para expressar total em moeda"
@@ -3040,7 +3289,6 @@ msgid "Valor ISSQN"
 msgstr "Valor ISSQN"
 
 #. module: br_account
-#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_price_total
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
 msgid "Valor Líquido"
 msgstr "Valor Líquido"
@@ -3082,6 +3330,11 @@ msgid "Valor total do ICMS Interestadual para a UF do Remetente"
 msgstr "Valor total do ICMS Interestadual para a UF do Remetente"
 
 #. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_move_form
+msgid "Valores"
+msgstr "Valores"
+
+#. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_supplier_form
 msgid "Vencimentos"
@@ -3115,15 +3368,15 @@ msgid "Vlr. desconto"
 msgstr "Vlr. desconto"
 
 #. module: br_account
-#: code:addons/br_account/models/account_invoice.py:384
-#, python-format
-msgid "When changing the payment conditions,please re-generate the parcels for recalculation."
-msgstr "Ao alterar as condições de pagamento, favor re-gerar as parcelas para o recálculo."
-
-#. module: br_account
 #: model:ir.model,name:br_account.model_br_account_invoice_parcel_wizard
 msgid "Wizard para criar parcelas na fatura"
-msgstr "Wizard para criar parcelas na fatura"
+msgstr "Janela para criar parcelas na fatura"
+
+#. module: br_account
+#: code:addons/br_account/models/account_invoice.py:760
+#, python-format
+msgid "You cannot cancel an invoice which is partially paid.You need to unreconcile related payment entries first."
+msgstr "Você não pode cancelar uma fatura parcialmente paga. É necessário primeiro desmarcar as entradas de pagamento relacionadas."
 
 #. module: br_account
 #: model:ir.model,name:br_account.model_account_financial_operation
@@ -3159,6 +3412,16 @@ msgstr "br_account.import.declaration.line"
 #: model:ir.model,name:br_account.model_br_account_invoice_print
 msgid "br_account.invoice.print"
 msgstr "br_account.invoice.print"
+
+#. module: br_account
+#: model:ir.ui.menu,name:br_account.menu_action_br_account_fiscal_document_form
+msgid "br_account.menu_action_br_account_fiscal_document_form"
+msgstr "Documento Fiscal"
+
+#. module: br_account
+#: model:ir.ui.menu,name:br_account.menu_action_document_serie_form
+msgid "br_account.menu_action_document_serie_form"
+msgstr "Série do Documento Fiscal"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_invoice_parcel_wizard_form
