@@ -6,15 +6,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-04 15:01+0000\n"
-"PO-Revision-Date: 2018-07-04 12:03-0300\n"
+"POT-Creation-Date: 2018-07-17 12:45+0000\n"
+"PO-Revision-Date: 2018-07-17 09:51-0300\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
-"Language: pt_BR\n"
+"Language: pt\n"
 "X-Generator: Poedit 1.8.7.1\n"
 
 #. module: br_account_payment
@@ -46,28 +46,33 @@ msgstr "Agência"
 #: model:ir.ui.view,arch_db:br_account_payment.account_move_alter_date_form
 #: model:ir.ui.view,arch_db:br_account_payment.account_move_alter_operation_form
 msgid "Alter"
-msgstr "Alter"
+msgstr "Alterar"
 
 #. module: br_account_payment
 #: model:ir.ui.view,arch_db:br_account_payment.account_move_alter_date_form
 #: model:ir.ui.view,arch_db:br_account_payment.view_move_form
 msgid "Alter Date Maturity"
-msgstr "Alter Date Maturity"
+msgstr "Alterar Data de Vencimento"
 
 #. module: br_account_payment
 #: model:ir.ui.view,arch_db:br_account_payment.view_move_form
 msgid "Alter Operation"
-msgstr "Alter Operation"
+msgstr "Alterar Operação"
 
 #. module: br_account_payment
 #: model:ir.ui.view,arch_db:br_account_payment.account_move_alter_operation_form
 msgid "Alter Operation(s)"
-msgstr "Alter Operation(s)"
+msgstr "Alterar Operação (ões)"
 
 #. module: br_account_payment
 #: model:ir.ui.view,arch_db:br_account_payment.view_account_payment_tree
 msgid "Amount"
-msgstr "Valor"
+msgstr "Montante"
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_move_form
+msgid "Baixar"
+msgstr "Baixar"
 
 #. module: br_account_payment
 #: model:ir.model.fields,field_description:br_account_payment.field_account_journal_bank_currency_id
@@ -113,7 +118,7 @@ msgid "Created on"
 msgstr "Criado em"
 
 #. module: br_account_payment
-#: model:ir.ui.view,arch_db:br_account_payment.view_br_account_payment_payment_form_inherit
+#: model:ir.ui.view,arch_db:br_account_payment.view_br_account_payment_payment_cancel_form_inherit
 msgid "Data de Pagamento"
 msgstr "Data de Pagamento"
 
@@ -240,11 +245,6 @@ msgid "Old Title Type"
 msgstr "Antigo Tipo de Título"
 
 #. module: br_account_payment
-#: model:ir.ui.view,arch_db:br_account_payment.view_move_form
-msgid "Pagar"
-msgstr "Pagar"
-
-#. module: br_account_payment
 #: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
 msgid "Parceiro"
 msgstr "Parceiro"
@@ -275,11 +275,6 @@ msgid "Payments"
 msgstr "Pagamentos"
 
 #. module: br_account_payment
-#: model:ir.ui.view,arch_db:br_account_payment.view_move_form
-msgid "Receber"
-msgstr "Receber"
-
-#. module: br_account_payment
 #: model:ir.ui.menu,name:br_account_payment.menu_br_payments
 msgid "Receber e Pagar"
 msgstr "Receber e Pagar"
@@ -290,7 +285,7 @@ msgid "Search Payments"
 msgstr "Procurar Pagamentos"
 
 #. module: br_account_payment
-#: model:ir.ui.view,arch_db:br_account_payment.view_br_account_payment_payment_form_inherit
+#: model:ir.ui.view,arch_db:br_account_payment.view_br_account_payment_payment_cancel_form_inherit
 msgid "Tipo de Parceiro"
 msgstr "Tipo de Parceiro"
 
@@ -307,7 +302,7 @@ msgid "Total das parcelas"
 msgstr "Total das parcelas"
 
 #. module: br_account_payment
-#: model:ir.ui.view,arch_db:br_account_payment.view_br_account_payment_payment_form_inherit
+#: model:ir.ui.view,arch_db:br_account_payment.view_br_account_payment_payment_cancel_form_inherit
 msgid "Valor do Pagamento"
 msgstr "Valor do Pagamento"
 
@@ -324,9 +319,9 @@ msgstr "account.move.alter.operation"
 #. module: br_account_payment
 #: model:ir.ui.view,arch_db:br_account_payment.account_move_alter_operation_form
 msgid "this action will alter operation(s) in this title, you wish to proceed ?"
-msgstr "this action will alter operation(s) in this title, you wish to proceed ?"
+msgstr "esta ação irá alterar a (s) operação (ões) neste título, você deseja continuar?"
 
 #. module: br_account_payment
 #: model:ir.ui.view,arch_db:br_account_payment.account_move_alter_date_form
 msgid "this action will generate a maturity date alteration send line, you wish to proceed ?"
-msgstr "this action will generate a maturity date alteration send line, you wish to proceed ?"
+msgstr "esta ação irá gerar uma linha de envio de alteração de data de vencimento, você deseja prosseguir?"
