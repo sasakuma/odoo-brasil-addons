@@ -1,0 +1,21 @@
+<odoo>
+
+    <menuitem
+        id="menu_calendar_configuration"
+        name="Configuration"
+        parent="calendar.mail_menu_calendar"
+        groups="base.group_no_one"/>
+
+    <menuitem
+        id="calendar.menu_calendar_event_type"
+        parent="menu_calendar_configuration"
+        action="calendar.action_calendar_event_type"
+        groups="base.group_no_one"/>
+
+    <menuitem
+        id="calendar.menu_calendar_alarm"
+        parent="menu_calendar_configuration"
+        action="calendar.action_calendar_alarm"
+        groups="base.group_no_one"/>
+
+</odoo>
