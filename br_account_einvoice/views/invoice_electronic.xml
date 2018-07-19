@@ -160,6 +160,9 @@
                                 string="Enviar"
                                 type="object"
                                 class="oe_highlight"
+                                attrs="{'invisible':[
+                                       ('expire_cert', '=', True), 
+                                       ('model', 'in', ('001', '55'))]}" 
                                 confirm="Deseja confirmar o envio?"/>
 
                         <button name="action_back_to_draft"
@@ -198,6 +201,31 @@
                             </div>
                         </div>
                     </div>
+                    <field name="days_to_expire_cert" invisible="1"/>
+                    <field name="expire_cert" invisible="1"/>
+
+                    <div class="alert alert-warning" 
+                         role="alert" 
+                         style="margin-bottom:0px;" 
+                         attrs="{'invisible': ['|','|','|',
+                                ('expire_cert', '=', True),
+                                ('days_to_expire_cert', '&gt;', 30),
+                                ('days_to_expire_cert', '&lt;', 0),
+                                ('model', 'not in', ('001', '55'))]}">
+                         <p>Certificado próximo de expirar.</p>
+                         <b>Faltam: <field name="days_to_expire_cert" class="oe_inline"/> dias.</b>
+                    </div>
+
+                    <div class="alert alert-warning" 
+                                role="alert" 
+                                style="margin-bottom:0px;" 
+                                attrs="{'invisible': ['|',
+                                ('expire_cert', '=', False),
+                                ('model', 'not in', ('001', '55'))]}">
+                        <p>Certificado expirado.</p>
+                        <b>Expirou em: <field name="cert_expire_date" class="oe_inline"/></b>
+                    </div>
+
                     <sheet string="Documento Eletronico">
                         <group>
                             <group>
