@@ -155,3 +155,34 @@ class TestElectronicInvoice(TransactionCase):
         for doc in docs:
             self.assertEqual(doc.cancel_date, '2018-06-01')
             self.assertFalse(doc.email_sent)
+
+    @mock.patch('odoo.fields.Date.today')
+    def test__compute_days_to_expire_cert(self, mk):
+
+        # Mockamos a data atual para ser inferior a data de
+        # expiração do certificado.
+        mk.return_value = '2018-06-01'
+
+        # Criamos os documentos eletronicos e as linkamos com as faturas
+        values = {
+            'code': '100',
+            'name': 'Elec.Doc.',
+            'state': 'done',
+            'invoice_id': self.inv_incomplete.id,
+        }
+        docs = self.env['invoice.electronic'].create(values)
+
+        for inv in docs:
+            inv.cert_expire_date = '2020-06-01'
+            inv._compute_days_to_expire_cert()
+            self.assertFalse(inv.expire_cert)
+            self.assertGreater(inv.days_to_expire_cert, 0)
+            
+        # Alteramos a data atual para ser maior que a
+        # data de expiração do certificado, fazendo o mesmo ficar
+        # expirado.
+        mk.return_value = '2022-06-01'
+        for inv in docs:
+            inv._compute_days_to_expire_cert()
+            self.assertTrue(inv.expire_cert)
+            self.assertLess(inv.days_to_expire_cert, 0)

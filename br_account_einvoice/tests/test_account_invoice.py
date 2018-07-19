@@ -1,6 +1,7 @@
 # © 2017 Michell Stuttgart, MultidadosTI
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import mock
 from odoo.addons.br_account.tests.test_base import TestBaseBr
 
 
@@ -109,3 +110,23 @@ class TestAccountInvoice(TestBaseBr):
             inv._compute_invoice_electronic_state()
 
             self.assertEqual(inv.invoice_electronic_state, 'done')
+
+    @mock.patch('odoo.fields.Date.today')
+    def test__compute_days_to_expire_cert(self, mk):
+        
+        # Mockamos a data atual para ser inferior a data de 
+        # expiração do certificado.
+        mk.return_value = '2018-06-01'
+
+        for inv in self.invoices:
+            inv.cert_expire_date = '2020-06-01'
+            inv._compute_days_to_expire_cert()
+            self.assertGreater(inv.days_to_expire_cert, 0)
+
+        # Alteramos a data atual para ser maior que a 
+        # data de expiração do certificado, fazendo o mesmo ficar
+        # expirado.
+        mk.return_value = '2022-06-01'
+        for inv in self.invoices:
+            inv._compute_days_to_expire_cert()
+            self.assertLess(inv.days_to_expire_cert, 0)
