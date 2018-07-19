@@ -35,6 +35,41 @@
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="br_account.view_br_account_invoice_form"/>
         <field name="arch" type="xml">
+
+            <div class="alert alert-info" position="after">
+                <field name="expire_cert" invisible="1"/>
+                <field name="days_to_expire_cert" invisible="1"/>
+
+                <div class="alert alert-warning" 
+                    role="alert" 
+                    style="margin-bottom:0px;" 
+                    attrs="{'invisible': ['|','|','|',
+                            ('expire_cert', '=', True),
+                            ('days_to_expire_cert', '&gt;', 30),
+                            ('days_to_expire_cert', '&lt;', 0),
+                            ('invoice_model', 'not in', ('001', '55'))]}">
+                    <p>Certificado próximo de expirar.</p>
+                    <b>Faltam:<field name="days_to_expire_cert" class="oe_inline"/>dias.</b>
+                </div>
+
+                <div class="alert alert-warning" 
+                    role="alert" 
+                    style="margin-bottom:0px;" 
+                    attrs="{'invisible': ['|',
+                            ('expire_cert', '=', False),
+                            ('invoice_model', 'not in', ('001', '55'))]}">
+                    <p>Certificado expirado.</p>
+                    <b>Expirou em:<field name="cert_expire_date" class="oe_inline"/></b>
+                </div>
+            </div>
+
+            <xpath expr="//button[@name='action_br_account_invoice_open']" position="attributes">
+                <attribute name="attrs">{'invisible': [
+                              ('expire_cert', '=', True),
+                              ('invoice_model', 'in', ('001', '55'))]}
+                </attribute>
+            </xpath>
+            
             <div name="button_box" position="inside">
                 <button name="action_view_edocs"
                         type="object"
