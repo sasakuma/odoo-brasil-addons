@@ -770,9 +770,6 @@ msgstr "%d dias atrasados"
 msgid "Mark Done"
 msgstr "Marcar Concluído"
 
-msgid "Next Activity Type"
-msgstr "Próximo tipo de atividade"
-
 #. module: mail
 #: model:ir.model.fields,field_description:mail.field_mail_activity_has_recommended_activities
 msgid "Next activities available"
@@ -851,9 +848,6 @@ msgstr "Permissão negada"
 #, python-format
 msgid "Permission granted"
 msgstr "Permissão concedida"
-
-msgid "Planned"
-msgstr "Planejado"
 
 #. module: mail
 #. openerp-web
