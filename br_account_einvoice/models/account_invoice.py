@@ -24,10 +24,10 @@ class AccountInvoice(models.Model):
 
     days_to_expire_cert = fields.Integer(string='Days to Expire Certificate',
                                          compute='_compute_days_to_expire_cert',
-                                         default = 60)
+                                         default=60)
 
-    expire_cert = fields.Boolean(string='Expire Certificate',
-                                 compute='_compute_days_to_expire_cert')
+    cert_state = fields.Selection(string='Expire Certificate',
+                                  related='company_id.cert_state')
 
     @api.multi
     def _compute_total_edocs(self):
@@ -258,13 +258,7 @@ class AccountInvoice(models.Model):
         ao campo 'expire_cert' dependendo da condição.
         """
         
-        date_cert = datetime.strptime(self.cert_expire_date, '%Y-%m-%d')
-        date_today = datetime.strptime(fields.Date.today(), '%Y-%m-%d')
-
-        self.days_to_expire_cert = (date_cert - date_today).days
-
-        if self.days_to_expire_cert <= 30 and self.days_to_expire_cert >= 0:
-            self.expire_cert = False
-
-        elif self.days_to_expire_cert < 0:
-            self.expire_cert = True
+        for inv in self:
+            date_cert = datetime.strptime(inv.cert_expire_date, '%Y-%m-%d')
+            date_today = datetime.strptime(fields.Date.today(), '%Y-%m-%d')
+            inv.days_to_expire_cert = (date_cert - date_today).days

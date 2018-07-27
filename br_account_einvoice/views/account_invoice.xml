@@ -37,35 +37,36 @@
         <field name="arch" type="xml">
 
             <div class="alert alert-info" position="after">
-                <field name="expire_cert" invisible="1"/>
+                <field name="cert_state" invisible="1"/>
                 <field name="days_to_expire_cert" invisible="1"/>
 
                 <div class="alert alert-warning" 
                     role="alert" 
                     style="margin-bottom:0px;" 
                     attrs="{'invisible': ['|','|','|',
-                            ('expire_cert', '=', True),
+                            ('cert_state', '=', 'expired'),
                             ('days_to_expire_cert', '&gt;', 30),
                             ('days_to_expire_cert', '&lt;', 0),
                             ('invoice_model', 'not in', ('001', '55'))]}">
                     <p>Certificado próximo de expirar.</p>
-                    <b>Faltam:<field name="days_to_expire_cert" class="oe_inline"/>dias.</b>
+                    <b>Faltam: <field name="days_to_expire_cert" class="oe_inline"/> dias</b>
                 </div>
 
                 <div class="alert alert-warning" 
                     role="alert" 
                     style="margin-bottom:0px;" 
                     attrs="{'invisible': ['|',
-                            ('expire_cert', '=', False),
+                            ('cert_state', '!=', 'expired'),
                             ('invoice_model', 'not in', ('001', '55'))]}">
                     <p>Certificado expirado.</p>
-                    <b>Expirou em:<field name="cert_expire_date" class="oe_inline"/></b>
+                    <b>Expirou em: <field name="cert_expire_date" class="oe_inline"/></b>
                 </div>
             </div>
 
             <xpath expr="//button[@name='action_br_account_invoice_open']" position="attributes">
-                <attribute name="attrs">{'invisible': [
-                              ('expire_cert', '=', True),
+                <attribute name="attrs">{'invisible': ['|',
+                              ('state', '!=', 'draft'),
+                              ('cert_state', '=', 'expired'),
                               ('invoice_model', 'in', ('001', '55'))]}
                 </attribute>
             </xpath>

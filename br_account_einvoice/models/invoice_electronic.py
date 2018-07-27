@@ -191,14 +191,15 @@ class InvoiceElectronic(models.Model):
         states=STATE)
 
     cert_expire_date = fields.Date(string='Expire Date',
-                                   related='company_id.cert_expire_date',
+                                   related='invoice_id.cert_expire_date',
                                    readonly=True)
 
     days_to_expire_cert = fields.Integer(string='Days to Expire Certificate',
-                                         compute='_compute_days_to_expire_cert')
+                                         related='invoice_id.days_to_expire_cert',
+                                         default=60)
 
-    expire_cert = fields.Boolean(string='Expire Certificate',
-                                 compute='_compute_days_to_expire_cert')
+    cert_state = fields.Selection(string='Expire Certificate',
+                                  related='invoice_id.cert_state')
 
     def _create_attachment(self, prefix, event, data):
         file_name = '%s-%s.xml' % (
@@ -492,27 +493,13 @@ class InvoiceElectronic(models.Model):
         inv_obj = self.env['invoice.electronic'].with_context({
             'lang': self.env.user.lang, 'tz': self.env.user.tz})
         states = self._get_state_to_send()
-        nfes = inv_obj.search([('state', 'in', states),('expire_cert','=', False)])
+        nfes = inv_obj.search([('state', 'in', states)])
+
+        # Verificamos os records que possuem certificado nao expirado
+        nfes = nfes.filtered(lambda r: r.cert_state != 'expired')
+
         for item in nfes:
             try:
                 item.action_send_electronic_invoice()
             except Exception as e:
                 item.log_exception(e)
-
-
-    @api.multi
-    def _compute_days_to_expire_cert(self):
-        """ Atribui ao campo 'days_to_expire_cert' a diferença de datas entre 
-        a data de expiração do certificado e a atual.E atribui 'True' ou 'False'
-        ao campo 'expire_cert' dependendo da condição.
-        """
-        date_cert = datetime.strptime(self.cert_expire_date, '%Y-%m-%d')
-        date_today = datetime.strptime(fields.Date.today(), '%Y-%m-%d')
-        
-        self.days_to_expire_cert = (date_cert - date_today).days
-
-        if self.days_to_expire_cert <= 30 and self.days_to_expire_cert >= 0:
-            self.expire_cert = False
-    
-        elif self.days_to_expire_cert < 0:
-            self.expire_cert = True
