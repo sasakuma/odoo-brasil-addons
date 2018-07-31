@@ -259,6 +259,12 @@ class AccountInvoice(models.Model):
         """
         
         for inv in self:
-            date_cert = datetime.strptime(inv.cert_expire_date, '%Y-%m-%d')
-            date_today = datetime.strptime(fields.Date.today(), '%Y-%m-%d')
-            inv.days_to_expire_cert = (date_cert - date_today).days
+
+            # Quando utilizamos multicompany, nem todas as empresas
+            # cadastradas podem possuir certificados
+            if inv.cert_expire_date:
+                date_cert = datetime.strptime(inv.cert_expire_date, '%Y-%m-%d')
+                date_today = datetime.strptime(fields.Date.today(), '%Y-%m-%d')
+                inv.days_to_expire_cert = (date_cert - date_today).days
+            else:
+                inv.days_to_expire_cert = 0
