@@ -106,6 +106,13 @@ class AccountMove(models.Model):
         related='account_id.user_type_id.type',
         readonly=True)
 
+    def _journal_type_hook(self):
+        return ['sale', 'company_expense', 'company_renegotiation',
+        'company_revenue']
+
+    def _account_user_type_hook(self):
+        return ['receivable', 'payable']
+
     @api.model
     def create(self, values):
         rec = super(AccountMove, self).create(values)
@@ -117,10 +124,10 @@ class AccountMove(models.Model):
                 rec.origin_type = journal_type
         if 'move_reference' in rec.env.context:
             rec.ref_move_id = rec.env.context['move_reference']
-        journal_types = ['sale', 'company_expense', 'company_renegotiation', 'company_revenue']
-        if rec.journal_id.type in journal_types and rec.amount_residual:
+        if (rec.journal_id.type in self._journal_type_hook()
+            and rec.amount_residual):
             for line in rec.line_ids:
-                if line.user_type_id.type in ['receivable', 'payable']:
+                if line.user_type_id.type in self._account_user_type_hook():
                     line.move_id.account_id = line.account_id
         return rec
 
@@ -145,6 +152,6 @@ class AccountMove(models.Model):
         """
         for record in self:
             for line in record.line_ids:
-                if line.user_type_id.type in ['receivable', 'payable']:
+                if line.user_type_id.type in self._account_user_type_hook():
                     record.amount_residual = abs(line.amount_residual)
                     record.amount_residual_currency = line.amount_residual_currency
