@@ -59,6 +59,9 @@
                 <field name="partner_id" readonly="1"/>
                 <field name="amount" sum="Total das parcelas"/>
                 <field name="amount_residual" readonly="1" sum="Total"/>
+                <field name="state" invisible="1"/>
+                <field name="date"/>
+                <field name="date_maturity_origin"/>
                 <field name="date_maturity_current"/>
             </tree>
         </field>
@@ -74,6 +77,9 @@
                 <field name="partner_id" readonly="1"/>
                 <field name="amount" sum="Total das parcelas"/>
                 <field name="amount_residual" readonly="1" sum="Total"/>
+                <field name="state" invisible="1"/>
+                <field name="date"/>
+                <field name="date_maturity_origin"/>
                 <field name="date_maturity_current"/>
             </tree>
         </field>
