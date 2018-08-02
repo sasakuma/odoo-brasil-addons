@@ -152,6 +152,6 @@ class AccountMove(models.Model):
         """
         for record in self:
             for line in record.line_ids:
-                if line.user_type_id.type in self._account_user_type_hook():
+                if line.user_type_id.type in self._account_user_type_hook() and record.invoice_id:
                     record.amount_residual = abs(line.amount_residual)
                     record.amount_residual_currency = line.amount_residual_currency
