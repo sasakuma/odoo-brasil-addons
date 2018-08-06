@@ -675,7 +675,7 @@ class AccountInvoice(models.Model):
                         'Configure a sequência para a numeração da nota')
                 else:
                     seq_number = invoice.document_serie_id.internal_sequence_id.next_by_id()  # noqa: 501
-                    self.internal_number = seq_number
+                    invoice.internal_number = seq_number
 
         return True
 
