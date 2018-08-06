@@ -66,6 +66,7 @@
             <xpath expr="//button[@name='action_br_account_invoice_open']" position="attributes">
                 <attribute name="attrs">{'invisible': ['|',
                               ('state', '!=', 'draft'),
+                              '&amp;',
                               ('cert_state', '=', 'expired'),
                               ('invoice_model', 'in', ('001', '55'))]}
                 </attribute>
