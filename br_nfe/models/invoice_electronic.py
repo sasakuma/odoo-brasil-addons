@@ -296,7 +296,7 @@ class InvoiceElectronic(models.Model):
                                                             height=100,
                                                             humanreadable=0)
         except ValueError as exc:
-            _logger.info('Cannot convert inn barcode. %s' % exc.message,
+            _logger.info('Cannot convert inn barcode. %s' % exc,
                          exc_info=True)
         return base64.b64encode(barcode).decode('utf-8')
 

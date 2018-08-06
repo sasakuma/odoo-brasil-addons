@@ -298,7 +298,7 @@ class InvoiceElectronic(models.Model):
                             'codigo_retorno': '000',
                             'mensagem_retorno': 'Um erro inesperado ocorreu durante o retorno da NFSe.',
                         })
-                        _logger.error(exc.message)
+                        _logger.error(exc)
 
                 self.write(values)
 
