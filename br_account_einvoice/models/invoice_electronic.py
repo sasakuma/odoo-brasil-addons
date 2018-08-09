@@ -493,7 +493,7 @@ class InvoiceElectronic(models.Model):
         inv_obj = self.env['invoice.electronic'].with_context({
             'lang': self.env.user.lang, 'tz': self.env.user.tz})
         states = self._get_state_to_send()
-        nfes = inv_obj.search([('state', 'in', states)])
+        nfes = inv_obj.search([('state', 'in', states)], limit=5)
 
         # Verificamos os records que possuem certificado nao expirado
         nfes = nfes.filtered(lambda r: r.cert_state != 'expired')
