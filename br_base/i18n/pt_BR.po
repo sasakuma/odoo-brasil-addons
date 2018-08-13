@@ -437,6 +437,27 @@ msgstr "ex. www.multidadosti.com.br"
 msgid "e.g. Your Bank Accounts, one per line"
 msgstr "ex. Suas Contas Bancárias, uma por linha"
 
+#. module: base
+#: model:ir.actions.act_window,name:base.res_partner_industry_action
+#: model:ir.model,name:base.model_res_partner_industry
+#: model:ir.model.fields,field_description:base.field_res_partner_industry_id
+#: model:ir.model.fields,field_description:base.field_res_users_industry_id
+#: model:ir.ui.view,arch_db:base.res_partner_industry_view_form
+#: model:ir.ui.view,arch_db:base.res_partner_industry_view_tree
+msgid "Industry"
+msgstr "Indústria"
+
+#. module: base
+#: model:ir.actions.act_window,name:base.action_res_company_form
+#: model:ir.actions.act_window,name:base.company_normal_action_tree
+#: model:ir.model,name:base.model_res_company
+#: model:ir.model.fields,field_description:base.field_res_users_company_ids
+#: model:ir.ui.menu,name:base.menu_action_res_company_form
+#: model:ir.ui.view,arch_db:base.view_company_tree
+#: model:ir.ui.view,arch_db:base.view_res_partner_filter
+msgid "Companies"
+msgstr "Empresas"
+
 #. module: web
 #. openerp-web
 #: code:addons/web/static/src/js/views/basic/basic_controller.js:290
