@@ -483,7 +483,7 @@ class InvoiceElectronic(models.Model):
         super(InvoiceElectronic, self).unlink()
 
     def log_exception(self, exc):
-        self.codigo_retorno = -1
+        self.codigo_retorno = '-1'
         self.mensagem_retorno = exc
 
     def _get_state_to_send(self):
