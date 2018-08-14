@@ -469,9 +469,10 @@ class InvoiceElectronic(models.Model):
         self.state = 'edit'
 
     def can_unlink(self):
-        if self.state not in ('done', 'cancel'):
+        if self.state not in ('error', 'edit', 'done', 'cancel'):
             return True
-        return False
+        else:
+            return False
 
     @api.multi
     def unlink(self):
