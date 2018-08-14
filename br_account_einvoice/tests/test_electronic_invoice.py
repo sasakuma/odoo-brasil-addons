@@ -116,7 +116,7 @@ class TestElectronicInvoice(TransactionCase):
         # Cria parcelas
         self.inv_incomplete.generate_parcel_entry(self.financial_operation,
                                                   self.title_type)
-        
+
         self.doc = self.env['invoice.electronic'].create({
             'code': '100',
             'name': 'Elec.Doc.',
@@ -188,3 +188,28 @@ class TestElectronicInvoice(TransactionCase):
         self.doc.state = 'draft'
         self.doc.unlink()
         self.assertFalse(self.doc.exists())
+
+    def test_action_back_to_draft(self):
+        self.doc.state = 'cancel'
+        self.doc.action_back_to_draft()
+        self.assertEqual(self.doc.state, 'draft')
+
+    def test_action_edit_edoc(self):
+        self.doc.state = 'cancel'
+        self.doc.action_edit_edoc()
+        self.assertEqual(self.doc.state, 'edit')
+
+    def test_log_exception(self):
+        self.doc.log_exception('Erro')
+        self.assertEqual(self.doc.codigo_retorno, '-1')
+        self.assertEqual(self.doc.mensagem_retorno, 'Erro')
+
+    def test__get_state_to_send(self):
+        res = self.doc._get_state_to_send()
+        self.assertIsInstance(res, tuple)
+        self.assertIn('draft', res)
+
+    def test_action_send_electronic_invoice(self):
+        with self.assertRaises(UserError):
+            self.doc.state = 'done'
+            self.doc.action_send_electronic_invoice()
