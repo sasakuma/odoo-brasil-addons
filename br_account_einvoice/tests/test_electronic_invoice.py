@@ -116,6 +116,11 @@ class TestElectronicInvoice(TransactionCase):
         # Cria parcelas
         self.inv_incomplete.generate_parcel_entry(self.financial_operation,
                                                   self.title_type)
+        
+        self.doc = self.env['invoice.electronic'].create({
+            'code': '100',
+            'name': 'Elec.Doc.',
+        })
 
     def test_basic_validation_for_electronic_doc(self):
         self.assertEqual(self.inv_incomplete.total_edocs, 0)
@@ -142,16 +147,44 @@ class TestElectronicInvoice(TransactionCase):
 
         mk.return_value = '2018-06-01'
 
-        # Criamos os documentos eletronicos e as linkamos com as faturas
-        values = {
-            'code': '100',
-            'name': 'Elec.Doc.',
-            'state': 'done',
-            'invoice_id': self.inv_incomplete.id,
-        }
-        docs = self.env['invoice.electronic'].create(values)
-        docs.action_cancel_document()
+        self.doc.state = 'done'
 
-        for doc in docs:
-            self.assertEqual(doc.cancel_date, '2018-06-01')
-            self.assertFalse(doc.email_sent)
+        self.doc.action_cancel_document()
+        self.assertEqual(self.doc.cancel_date, '2018-06-01')
+        self.assertFalse(self.doc.email_sent)
+
+    def test_can_unlink(self):
+
+        self.assertEqual(self.doc.state, 'draft')
+        self.assertTrue(self.doc.can_unlink())
+
+        self.doc.state = 'edit'
+        self.assertFalse(self.doc.can_unlink())
+
+        self.doc.state = 'error'
+        self.assertFalse(self.doc.can_unlink())
+
+        self.doc.state = 'done'
+        self.assertFalse(self.doc.can_unlink())
+
+        self.doc.state = 'cancel'
+        self.assertFalse(self.doc.can_unlink())
+
+    def test_unlink(self):
+
+        with self.assertRaises(UserError):
+            self.doc.state = 'edit'
+            self.doc.unlink()
+
+            self.doc.state = 'error'
+            self.doc.unlink()
+
+            self.doc.state = 'done'
+            self.doc.unlink()
+
+            self.doc.state = 'cancel'
+            self.doc.unlink()
+
+        self.doc.state = 'draft'
+        self.doc.unlink()
+        self.assertFalse(self.doc.exists())
