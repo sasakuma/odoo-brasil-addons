@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <data noupdate="0">
+    <data noupdate="1">
 
         <!-- Mouse, Optical (depende de product_fiscal_classification.xml)-->
         <record id="product.product_product_10_product_template" model="product.template">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <data noupdate="0">
+    <data noupdate="1">
 
         <record id="source_operation_T" model="br_account.nfse.source.operation">
             <field name="name">Tributado em São Paulo</field>
