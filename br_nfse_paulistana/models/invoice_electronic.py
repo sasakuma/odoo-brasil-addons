@@ -373,19 +373,28 @@ class InvoiceElectronic(models.Model):
                     'codigo_retorno': '100',
                     'mensagem_retorno': 'Nota Fiscal Paulistana Cancelada',
                 })
+
+                self.env['invoice.electronic.event'].create({
+                    'code': values['codigo_retorno'],
+                    'name': values['mensagem_retorno'],
+                    'category':'info',
+                    'invoice_electronic_id': self.id,
+                })
+
             else:
                 values.update({
                     'codigo_retorno': retorno.Erro.Codigo,
                     'mensagem_retorno': retorno.Erro.Descricao,
                 })
 
-            self.write(values)
+                self.env['invoice.electronic.event'].create({
+                    'code': values['codigo_retorno'],
+                    'name': values['mensagem_retorno'],
+                    'category': 'error',
+                    'invoice_electronic_id': self.id,
+                })
 
-            self.env['invoice.electronic.event'].create({
-                'code': self.codigo_retorno,
-                'name': self.mensagem_retorno,
-                'invoice_electronic_id': self.id,
-            })
+            self.write(values)
 
             if self.ambiente == 'producao':
                 self._create_attachment('canc', self, resposta['sent_xml'])
