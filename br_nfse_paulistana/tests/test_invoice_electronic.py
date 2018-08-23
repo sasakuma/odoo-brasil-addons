@@ -280,13 +280,30 @@ class TestNFeBrasil(TransactionCase):
             invoice_electronic.action_send_electronic_invoice()
 
             self.assertEqual(invoice_electronic.state, 'done')
-            self.assertEqual(invoice_electronic.codigo_retorno, '224')
+            self.assertEqual(invoice_electronic.codigo_retorno, '100')
             self.assertEqual(invoice_electronic.numero_nfse, '99999999')
             self.assertEqual(invoice_electronic.mensagem_retorno,
-                             '            RPS ja convertido na NFS-e 99999999. RPS nao sera processado.        ')
+                             'Nota Fiscal Paulistana emitida com sucesso')
             self.assertEqual(invoice_electronic.invoice_id.internal_number,
                              99999999)
-            self.assertEqual(len(invoice_electronic.electronic_event_ids), 1)
+
+            events = invoice_electronic.electronic_event_ids
+
+            # Devemos ter 2 eventos do tipo 'warning', uma vez que o 
+            # xml de teste possui dos 'Alertas'
+            warnings = events.filtered(lambda r: r.category == 'warning')
+
+            self.assertEqual(len(warnings), 2)
+
+            for warn in warnings:
+                self.assertIn(warn.code, ['221', '224'])
+
+            # Informação a respeito mensagem de retorno da NFSe
+            info = events.filtered(lambda r: r.category == 'info')
+
+            self.assertEqual(len(info), 1)
+            self.assertEqual(info.code, '100')
+            
 
     @mock.patch('pytrustnfe.nfse.paulistana.cancelamento_nfe')
     def test_nfse_cancel(self, cancelar):

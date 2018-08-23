@@ -254,67 +254,78 @@ class InvoiceElectronic(models.Model):
 
             values = {}
 
-            if retorno.Cabecalho.Sucesso:
+            # Realizamos o parser das mensagens de alerta
+            try:
 
-                try:
+                for alerta in retorno.Alerta:
 
-                    values.update({
-                        'state': 'done',
-                        'codigo_retorno': '100',
-                        'mensagem_retorno': 'Nota Fiscal Paulistana emitida com sucesso',
+                    self.env['invoice.electronic.event'].create({
+                            'code': str(alerta.Codigo),
+                            'name': str(alerta.Descricao),
+                            'category': 'warning',
+                            'invoice_electronic_id': self.id,
                     })
 
-                    if self.ambiente == 'producao':  # Apenas producao tem essa tag
+                    if str(alerta.Codigo) == '224':
+                        # Captura o numero da nota a partir da descricao do erro
+                        values['numero_nfse'] = re.compile(r'[^0-9]').sub('', str(alerta.Descricao)) 
+                        self.invoice_id.internal_number = int(values['numero_nfse'])  
+
+            except AttributeError:
+                _logger.info('Chave "Alerta" não encontrada. O retorno não possui nenhuma mensagem de alerta.')
+
+
+            if retorno.Cabecalho.Sucesso:
+
+                values.update({
+                    'state': 'done',
+                    'codigo_retorno': '100',
+                    'mensagem_retorno': 'Nota Fiscal Paulistana emitida com sucesso',
+                })
+
+                if self.ambiente == 'producao':  # Apenas producao tem essa tag
+
+                    try:
                         values.update({
                             'verify_code': retorno.ChaveNFeRPS.ChaveNFe.CodigoVerificacao,
                             'numero_nfse': retorno.ChaveNFeRPS.ChaveNFe.NumeroNFe,
                         })
-                    else:
-                        values.update({
-                            'verify_code': u'X' * 8,
-                            'numero_nfse': u'9' * 8,
-                        })
 
+                    except AttributeError:
+                        # Excecao normalmente ocorre quando o RPS ja
+                        # foi convertido em NFSe
+                        _logger.info('Chave "ChaveNFeRPS" não encontrada.')
+
+                else:
+                    values.update({
+                        'verify_code': u'X' * 8,
+                        'numero_nfse': u'9' * 8,
+                    })
                     self.invoice_id.internal_number = int(values['numero_nfse'])
 
-                except AttributeError as exc:
-
-                    if str(retorno.Alerta.Codigo) == '224':
-
-                        # Captura o numero da nota a partir da descricao do erro
-                        numero_nfse = re.compile(r'[^0-9]').sub('', str(retorno.Alerta.Descricao))
-
-                        values.update({
-                            'state': 'done',
-                            'codigo_retorno': str(retorno.Alerta.Codigo),
-                            'mensagem_retorno': str(retorno.Alerta.Descricao),
-                            'numero_nfse': numero_nfse,
-                        })
-
-                        self.invoice_id.internal_number = int(values['numero_nfse'])
-                    else:
-                        values.update({
-                            'state': 'error',
-                            'codigo_retorno': '000',
-                            'mensagem_retorno': 'Um erro inesperado ocorreu durante o retorno da NFSe.',
-                        })
-                        _logger.error(exc)
-
-                self.write(values)
+                self.env['invoice.electronic.event'].create({
+                    'code': values['codigo_retorno'],
+                    'name': values['mensagem_retorno'],
+                    'category': 'info',
+                    'invoice_electronic_id': self.id,
+                })
 
             else:
                 values.update({
+                    'state': 'error',
                     'codigo_retorno': retorno.Erro.Codigo,
                     'mensagem_retorno': retorno.Erro.Descricao,
                 })
 
-                self.write(values)
+                self.env['invoice.electronic.event'].create({
+                    'code': values['codigo_retorno'],
+                    'name': values['mensagem_retorno'],
+                    'category': 'error',
+                    'invoice_electronic_id': self.id,
+                })
 
-            self.env['invoice.electronic.event'].create({
-                'code': self.codigo_retorno,
-                'name': self.mensagem_retorno,
-                'invoice_electronic_id': self.id,
-            })
+            self.write(values)
+
             self._create_attachment('nfse-envio', self, resposta['sent_xml'])
             self._create_attachment('nfse-ret', self, resposta['received_xml'])
 
