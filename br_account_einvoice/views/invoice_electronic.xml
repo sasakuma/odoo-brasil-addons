@@ -336,6 +336,7 @@
                                         <tree name="Eventos">
                                             <field name="state" invisible="1"/>
                                             <field name="code"/>
+                                            <field name="category"/>
                                             <field name="name"/>
                                             <field name="create_date"/>
                                             <field name="create_uid"/>

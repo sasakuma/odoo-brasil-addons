@@ -19,3 +19,6 @@ class InvoiceElectronicEvent(models.Model):
         readonly=True, states=STATE)
     state = fields.Selection(
         related='invoice_electronic_id.state', string="State")
+    category = fields.Selection(string='Tipo', selection=[('info', 'Info'),
+                                                          ('warning', 'Aviso'),
+                                                          ('error', 'Erro')])
