@@ -264,7 +264,7 @@ class TestNFeBrasil(TransactionCase):
             invoice.action_br_account_invoice_open()
 
             # Lote recebido com sucesso
-            with open(os.path.join(self.caminho, 'xml', 'retorno_envio_loterps_nfse_erro_224.xml')) as xml:
+            with open(os.path.join(self.caminho, 'xml', 'retorno_envio_loterps_nfse_alertas.xml')) as xml:
                 xml_recebido = xml.read().replace('\n', '')
 
             resp = sanitize_response(xml_recebido)

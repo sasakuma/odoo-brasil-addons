@@ -1,4 +1,6 @@
-<RetornoEnvioLoteRPS xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.prefeitura.sp.gov.br/nfe">
+<RetornoEnvioLoteRPS xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns="http://www.prefeitura.sp.gov.br/nfe">
     <Cabecalho xmlns="" Versao="1">
         <Sucesso>true</Sucesso>
         <InformacoesLote>
@@ -13,6 +15,15 @@
             <ValorTotalServicos>825.17</ValorTotalServicos>
         </InformacoesLote>
     </Cabecalho>
+    <Alerta xmlns="">
+        <Codigo>221</Codigo>
+        <Descricao>O CNPJ informado (01.487.133/0001-05) possui inscrição municipal em São Paulo, porém foi informado endereço de fora do município (Itapecerica da Serra/SP).</Descricao>
+        <ChaveRPS>
+            <InscricaoPrestador>93595000</InscricaoPrestador>
+            <SerieRPS>1</SerieRPS>
+            <NumeroRPS>9749</NumeroRPS>
+        </ChaveRPS>
+    </Alerta>
     <Alerta xmlns="">
         <Codigo>224</Codigo>
         <Descricao>
