@@ -204,12 +204,12 @@ class TestNFeBrasil(TransactionCase):
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_br_account_invoice_open()
 
-            inv_eletr = self.env['invoice.electronic'].search(
+            elec_inv = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
 
             # TODO Validar os itens que foi setado no invoice e verficar
             #  com o documento eletronico
-            self.assertEqual(inv_eletr.partner_id, invoice.partner_id)
+            self.assertEqual(elec_inv.partner_id, invoice.partner_id)
 
     @mock.patch('pytrustnfe.nfse.paulistana.teste_envio_lote_rps')
     def test_nfse_sucesso_homologacao(self, envio_lote):
@@ -235,17 +235,24 @@ class TestNFeBrasil(TransactionCase):
                 'received_xml': xml_recebido,
             }
 
-            invoice_electronic = self.env['invoice.electronic'].search(
+            elec_inv = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
-            invoice_electronic.action_send_electronic_invoice()
 
-            self.assertEqual(invoice_electronic.state, 'done')
-            self.assertEqual(invoice_electronic.codigo_retorno, '100')
-            self.assertEqual(invoice_electronic.numero_nfse, '99999999')
-            self.assertEqual(invoice_electronic.verify_code, 'XXXXXXXX')
-            self.assertEqual(invoice_electronic.invoice_id.internal_number,
+            elec_inv.action_send_electronic_invoice()
+
+            self.assertEqual(elec_inv.state, 'done')
+            self.assertEqual(elec_inv.codigo_retorno, '100')
+            self.assertEqual(elec_inv.numero_nfse, '99999999')
+            self.assertEqual(elec_inv.verify_code, 'XXXXXXXX')
+            self.assertEqual(elec_inv.invoice_id.internal_number,
                              99999999)
-            self.assertEqual(len(invoice_electronic.electronic_event_ids), 1)
+
+            events = elec_inv.electronic_event_ids
+
+            self.assertEqual(len(events), 1)
+            self.assertEqual(events.code, '100')
+            self.assertEqual(events.name, elec_inv.mensagem_retorno)
+            self.assertEqual(events.category, 'info')
 
     @mock.patch('pytrustnfe.nfse.paulistana.envio_lote_rps')
     def test_nfse_return_code_224(self, envio_lote):
@@ -275,19 +282,18 @@ class TestNFeBrasil(TransactionCase):
                 'received_xml': xml_recebido,
             }
 
-            invoice_electronic = self.env['invoice.electronic'].search(
+            elec_inv = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
-            invoice_electronic.action_send_electronic_invoice()
+            elec_inv.action_send_electronic_invoice()
 
-            self.assertEqual(invoice_electronic.state, 'done')
-            self.assertEqual(invoice_electronic.codigo_retorno, '100')
-            self.assertEqual(invoice_electronic.numero_nfse, '99999999')
-            self.assertEqual(invoice_electronic.mensagem_retorno,
+            self.assertEqual(elec_inv.state, 'done')
+            self.assertEqual(elec_inv.codigo_retorno, '100')
+            self.assertEqual(elec_inv.numero_nfse, '99999999')
+            self.assertEqual(elec_inv.mensagem_retorno,
                              'Nota Fiscal Paulistana emitida com sucesso')
-            self.assertEqual(invoice_electronic.invoice_id.internal_number,
-                             99999999)
+            self.assertEqual(elec_inv.invoice_id.internal_number, 99999999)
 
-            events = invoice_electronic.electronic_event_ids
+            events = elec_inv.electronic_event_ids
 
             # Devemos ter 2 eventos do tipo 'warning', uma vez que o 
             # xml de teste possui dos 'Alertas'
@@ -329,17 +335,23 @@ class TestNFeBrasil(TransactionCase):
                 'received_xml': xml_recebido,
             }
 
-            invoice_electronic = self.env['invoice.electronic'].search(
+            elec_inv = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
-            invoice_electronic.verify_code = '123'
-            invoice_electronic.numero_nfse = '123'
-            invoice_electronic.action_cancel_document(
-                justificativa='Cancelamento de teste')
 
-            self.assertEqual(invoice_electronic.state, 'cancel')
-            self.assertEqual(invoice_electronic.codigo_retorno, '100')
-            self.assertEqual(invoice_electronic.mensagem_retorno,
-                             'Nota Fiscal Paulistana Cancelada')
+            elec_inv.verify_code = '123'
+            elec_inv.numero_nfse = '123'
+            elec_inv.action_cancel_document(justificativa='Cancelamento de teste')
+
+            self.assertEqual(elec_inv.state, 'cancel')
+            self.assertEqual(elec_inv.codigo_retorno, '100')
+            self.assertEqual(elec_inv.mensagem_retorno, 'Nota Fiscal Paulistana Cancelada')
+
+            events = elec_inv.electronic_event_ids
+
+            self.assertEqual(len(events), 1)
+            self.assertEqual(events.code, '100')
+            self.assertEqual(events.name, elec_inv.mensagem_retorno)
+            self.assertEqual(events.category, 'info')
 
     @mock.patch('pytrustnfe.nfse.paulistana.cancelamento_nfe')
     def test_nfse_cancelamento_erro(self, cancelar):
@@ -365,15 +377,25 @@ class TestNFeBrasil(TransactionCase):
                 'received_xml': xml_recebido,
             }
 
-            invoice_electronic = self.env['invoice.electronic'].search(
+            elec_inv = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
-            invoice_electronic.verify_code = '123'
-            invoice_electronic.numero_nfse = '123'
-            invoice_electronic.action_cancel_document(
+            elec_inv.verify_code = '123'
+            elec_inv.numero_nfse = '123'
+
+            elec_inv.ambiente = 'producao'
+
+            elec_inv.action_cancel_document(
                 justificativa='Cancelamento de teste')
 
             # Draft because I didn't send it
-            self.assertEqual(invoice_electronic.state, 'cancel')
-            self.assertEqual(invoice_electronic.codigo_retorno, '100')
-            self.assertEqual(invoice_electronic.mensagem_retorno,
-                             'Nota Fiscal Paulistana Cancelada')
+            self.assertEqual(elec_inv.state, 'draft')
+            self.assertEqual(elec_inv.codigo_retorno, '1305')
+            self.assertEqual(elec_inv.mensagem_retorno,
+                             'Assinatura de cancelamento da NFS-e incorreta.')
+
+            events = elec_inv.electronic_event_ids
+
+            self.assertEqual(len(events), 1)
+            self.assertEqual(events.code, elec_inv.codigo_retorno)
+            self.assertEqual(events.name, elec_inv.mensagem_retorno)
+            self.assertEqual(events.category, 'error')
