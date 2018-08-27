@@ -107,7 +107,7 @@ class AccountMove(models.Model):
         readonly=True)
 
     def _journal_type_hook(self):
-        return ['sale', 'company_expense', 'company_renegotiation',
+        return ['sale', 'purchase', 'company_expense', 'company_renegotiation',
         'company_revenue']
 
     def _account_user_type_hook(self):
