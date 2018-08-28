@@ -631,6 +631,10 @@ class InvoiceElectronic(models.Model):
             'vBC': "%.02f" % self.valor_bc_icms,
             'vICMS': "%.02f" % self.valor_icms,
             'vICMSDeson': '0.00',
+            'vFCPST': '0.00',
+            'vFCP': '0.00',
+            'vFCPSTRet': '0.00',
+            'vIPIDevol': '0.00',
             'vBCST': "%.02f" % self.valor_bc_icmsst,
             'vST': "%.02f" % self.valor_icmsst,
             'vProd': "%.02f" % self.valor_bruto,
@@ -709,15 +713,13 @@ class InvoiceElectronic(models.Model):
                 'dVenc': vencimento.strftime('%Y-%m-%d'),
                 'vDup': "%.02f" % dup.valor
             })
+
         cobr = {
             'fat': {
                 'nFat': self.numero_fatura or '',
-                'vOrig': "%.02f" % self.fatura_bruto
-                if self.fatura_bruto else '',
-                'vDesc': "%.02f" % self.fatura_desconto
-                if self.fatura_desconto else '',
-                'vLiq': "%.02f" % self.fatura_liquido
-                if self.fatura_liquido else '',
+                'vOrig': "%.02f" % (self.fatura_bruto if self.fatura_bruto else 0),
+                'vDesc': "%.02f" % (self.fatura_desconto if self.fatura_desconto else 0),
+                'vLiq': "%.02f" % (self.fatura_liquido if self.fatura_liquido else 0),
             },
             'dup': duplicatas
         }
@@ -775,6 +777,7 @@ class InvoiceElectronic(models.Model):
             'indSinc': 0,
             'estado': self.company_id.partner_id.state_id.ibge_code,
             'ambiente': 1 if self.ambiente == 'producao' else 2,
+            'modelo': self.model,
             'NFes': [{
                 'infNFe': nfe_values,
             }]
@@ -822,25 +825,26 @@ class InvoiceElectronic(models.Model):
 
         resposta_recibo = None
         resposta = autorizar_nfe(certificado, **lote)
-        retorno = resposta['object'].Body.nfeAutorizacaoLoteResult
-        retorno = retorno.getchildren()[0]
+        retorno = resposta['object'].Body.nfeResultMsg.getchildren()[0]
 
         if retorno.cStat == 103:
             obj = {
                 'estado': self.company_id.partner_id.state_id.ibge_code,
                 'ambiente': 1 if self.ambiente == 'producao' else 2,
+                'modelo': self.model,
                 'obj': {
                     'ambiente': 1 if self.ambiente == 'producao' else 2,
                     'numero_recibo': retorno.infRec.nRec
                 }
             }
+
             self.recibo_nfe = obj['obj']['numero_recibo']
 
             while True:
-                time.sleep(2)
+                time.sleep(5)
                 resposta_recibo = retorno_autorizar_nfe(certificado, **obj)
-                retorno = resposta_recibo['object'].Body. \
-                    nfeRetAutorizacaoLoteResult.retConsReciNFe
+                retorno = resposta_recibo['object'].Body.nfeResultMsg.getchildren()[0]
+
                 if retorno.cStat != 105:
                     break
 
@@ -897,7 +901,7 @@ class InvoiceElectronic(models.Model):
             self.invoice_id.internal_number = int(self.numero)
 
             sent_xml = resposta['sent_xml'].encode('utf8')
-            received_xml = resposta_recibo['received_xml'].encode('utf8')
+            received_xml = resposta_recibo['received_xml']
             nfe_proc = gerar_nfeproc(sent_xml,
                                      received_xml)
             self.write({
