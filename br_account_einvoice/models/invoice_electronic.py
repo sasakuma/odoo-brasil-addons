@@ -204,10 +204,11 @@ class InvoiceElectronic(models.Model):
     def _create_attachment(self, prefix, event, data):
         file_name = '%s-%s.xml' % (
             prefix, datetime.now().strftime('%Y-%m-%d-%H-%M'))
+
         self.env['ir.attachment'].create(
             {
                 'name': file_name,
-                'datas': base64.b64encode(data.encode('utf8')),
+                'datas': base64.b64encode(data.encode('utf8') if type(data) == str else data) ,
                 'datas_fname': file_name,
                 'description': '',
                 'res_model': 'invoice.electronic',
