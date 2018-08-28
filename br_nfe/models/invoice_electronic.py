@@ -483,7 +483,6 @@ class InvoiceElectronic(models.Model):
             'cUF': self.company_id.state_id.ibge_code,
             'cNF': "%08d" % self.numero_controle,
             'natOp': self.fiscal_position_id.name,
-            'indPag': self.payment_term_id.indPag or '0',
             'mod': self.model,
             'serie': self.serie.code,
             'nNF': self.numero,
@@ -722,6 +721,24 @@ class InvoiceElectronic(models.Model):
             },
             'dup': duplicatas
         }
+
+        # Para as tags indPag e tPag colocamos os valores
+        # default mais usados. O tratamento dos tipos de pagamento
+        # sera feito posteriormente.
+        # Foi utilizado a 14 para a tag 'tPag' porque duplicata
+        # mercantil permite o pagemento de varias formas.
+        det_pag = {
+            'indPag': '1',
+            'tPag': '14',
+            'vPag': "%.02f" % self.fatura_liquido if self.fatura_liquido else '',
+        }
+
+        pag = {
+            'detPag': [
+                det_pag,
+            ],
+        }
+
         infAdic = {
             'infCpl': self.informacoes_complementares or '',
             'infAdFisco': self.informacoes_legais or '',
@@ -739,6 +756,7 @@ class InvoiceElectronic(models.Model):
             'autXML': autorizados,
             'detalhes': electronic_items,
             'total': total,
+            'pag': pag,
             'transp': transp,
             'infAdic': infAdic,
             'exporta': exporta,
