@@ -358,7 +358,7 @@ class InvoiceElectronic(models.Model):
 
         prod = {
             'cProd': item.product_id.default_code,
-            'cEAN': item.product_id.barcode or '',
+            'cEAN': item.product_id.barcode or 'SEM GTIN',
             'xProd': item.product_id.with_context(
                 display_default_code=False).name_get()[0][1],
             'NCM': re.sub('[^0-9]', '', item.ncm or '')[:8],
@@ -368,7 +368,7 @@ class InvoiceElectronic(models.Model):
             'qCom': item.quantidade,
             'vUnCom': "%.02f" % item.preco_unitario,
             'vProd': "%.02f" % (item.preco_unitario * item.quantidade),
-            'cEANTrib': item.product_id.barcode or '',
+            'cEANTrib': item.product_id.barcode or 'SEM GTIN',
             'uTrib': '{:.6}'.format(item.uom_id.name or ''),
             'qTrib': item.quantidade,
             'vUnTrib': "%.02f" % item.preco_unitario,
