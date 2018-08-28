@@ -69,6 +69,7 @@ class InvoiceElectronic(models.Model):
                                        'Teleatendimento'),
                                  ('4', 'NFC-e em operação com entrega em '
                                        'domicílio'),
+                                 ('5', 'Operação presencial, fora do estabelecimento'),
                                  ('9', 'Operação não presencial, outros')],
                                 string='Indicador de Presença',
                                 readonly=True,
