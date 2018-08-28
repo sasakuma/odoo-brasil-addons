@@ -156,11 +156,12 @@ class AccountInvoice(models.Model):
         count = 1
         for parcela in inv.move_ids.sorted(lambda x: x.name):
             duplicatas.append((0, None, {
-                'numero_duplicata': "%s/%02d" % (inv.internal_number, count),
+                'numero_duplicata': "%03d" % (count),
                 'data_vencimento': parcela.date_maturity_current,
                 'valor': parcela.amount,
             }))
             count += 1
+
         res['duplicata_ids'] = duplicatas
 
         # Documentos Relacionados
