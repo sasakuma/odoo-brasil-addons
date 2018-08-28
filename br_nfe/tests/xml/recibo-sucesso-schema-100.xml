@@ -1,14 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <soap:Header>
-        <nfeCabecMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeRetAutorizacao">
-            <cUF>35</cUF>
-            <versaoDados>3.10</versaoDados>
-        </nfeCabecMsg>
-    </soap:Header>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <soap:Body>
-        <nfeRetAutorizacaoLoteResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeRetAutorizacao">
-            <retConsReciNFe versao="3.10" xmlns="http://www.portalfiscal.inf.br/nfe">
+        <nfeResultMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeRetAutorizacao4">
+            <retConsReciNFe versao="4.00" 
+                xmlns="http://www.portalfiscal.inf.br/nfe">
                 <tpAmb>2</tpAmb>
                 <verAplic>SP_NFE_PL_008i2</verAplic>
                 <nRec>351000115784693</nRec>
@@ -16,7 +12,7 @@
                 <xMotivo>Lote processado</xMotivo>
                 <cUF>35</cUF>
                 <dhRecbto>2017-11-30T16:33:18-02:00</dhRecbto>
-                <protNFe versao="3.10">
+                <protNFe versao="4.00">
                     <infProt>
                         <tpAmb>2</tpAmb>
                         <verAplic>SP_NFE_PL_008i2</verAplic>
@@ -29,6 +25,6 @@
                     </infProt>
                 </protNFe>
             </retConsReciNFe>
-        </nfeRetAutorizacaoLoteResult>
+        </nfeResultMsg>
     </soap:Body>
 </soap:Envelope>

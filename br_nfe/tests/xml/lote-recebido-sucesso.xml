@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <soap:Header>
-        <nfeCabecMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeAutorizacao">
-            <cUF>42</cUF>
-            <versaoDados>3.10</versaoDados>
-        </nfeCabecMsg>
-    </soap:Header>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <soap:Body>
-        <nfeAutorizacaoLoteResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeAutorizacao">
-            <retEnviNFe versao="3.10" xmlns="http://www.portalfiscal.inf.br/nfe">
+        <nfeResultMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeAutorizacao">
+            <retEnviNFe versao="4.00" 
+                xmlns="http://www.portalfiscal.inf.br/nfe">
                 <tpAmb>2</tpAmb>
-                <verAplic>SP_NFE_PL_008i2</verAplic>
+                <verAplic>SP_NFE_PL009_V4</verAplic>
                 <cStat>103</cStat>
                 <xMotivo>Lote recebido com sucesso</xMotivo>
                 <cUF>42</cUF>
@@ -20,6 +17,6 @@
                     <tMed>1</tMed>
                 </infRec>
             </retEnviNFe>
-        </nfeAutorizacaoLoteResult>
+        </nfeResultMsg>
     </soap:Body>
 </soap:Envelope>
