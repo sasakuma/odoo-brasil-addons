@@ -961,6 +961,7 @@ class InvoiceElectronic(models.Model):
                 'idLote': self.id,
                 'estado': self.company_id.state_id.ibge_code,
                 'ambiente': 2 if self.ambiente == 'homologacao' else 1,
+                'modelo': self.model,
                 'eventos': [{
                     'Id': id_canc,
                     'cOrgao': self.company_id.state_id.ibge_code,
@@ -974,8 +975,9 @@ class InvoiceElectronic(models.Model):
                     'xJust': justificativa
                 }]
             }
+
             resp = recepcao_evento_cancelamento(certificado, **cancelamento)
-            resposta = resp['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
+            resposta = resp['object'].Body.nfeResultMsg.retEnvEvento
 
             if resposta.cStat == 128 and resposta.retEvento.infEvento.cStat in (135, 136, 155):  # noqa: 501
                 values = {
