@@ -51,6 +51,7 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
             'cOrgao': self.electronic_doc_id.company_id.state_id.ibge_code,
             'tpAmb': self.electronic_doc_id.company_id.tipo_ambiente,
             'estado': self.electronic_doc_id.company_id.state_id.ibge_code,
+            'modelo': self.electronic_doc_id.model,
             'ambiente': int(self.electronic_doc_id.company_id.tipo_ambiente),
             'dhEvento': datetime.now().strftime('%Y-%m-%dT%H:%M:%S-00:00'),
             'chNFe': self.electronic_doc_id.chave_nfe,
@@ -61,18 +62,23 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
             'Id': "ID110110%s%02d" % (self.electronic_doc_id.chave_nfe,
                                       numero_evento)
         }
+
         cert = self.electronic_doc_id.company_id.with_context(
             {'bin_size': False}).nfe_a1_file
+
         cert_pfx = base64.decodestring(cert)
+
         certificado = Certificado(
             cert_pfx, self.electronic_doc_id.company_id.nfe_a1_password)
+
         resposta = recepcao_evento_carta_correcao(certificado, **carta)
 
-        retorno = resposta['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
+        retorno = resposta['object'].Body.nfeResultMsg.retEnvEvento
 
-        if retorno.cStat == 128 and retorno.retEvento.infEvento.cStat in (135,
-                                                                          136):
+        if retorno.cStat == 128 and retorno.retEvento.infEvento.cStat in (135, 136):
+
             eventos = self.env['carta.correcao.eletronica.evento']
+
             eventos.create({
                 'id_cce': carta['Id'],
                 'electronic_doc_id': self.electronic_doc_id.id,
@@ -83,8 +89,10 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
                 'message': retorno.retEvento.infEvento.xMotivo,
                 'protocolo': retorno.retEvento.infEvento.nProt,
             })
+
             self.electronic_doc_id._create_attachment(
                 'cce', self.electronic_doc_id, resposta['sent_xml'])
+
             self.electronic_doc_id._create_attachment(
                 'cce_ret', self.electronic_doc_id, resposta['received_xml'])
 
