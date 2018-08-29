@@ -1,13 +1,7 @@
 <Envelope>
-    <Header>
-        <nfeCabecMsg>
-            <cUF>35</cUF>
-            <versaoDados>1.00</versaoDados>
-        </nfeCabecMsg>
-    </Header>
     <Body>
-        <nfeRecepcaoEventoResult>
-            <retEnvEvento versao="1.00">
+        <nfeResultMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NFeRecepcaoEvento4">
+            <retEnvEvento versao="1.00" xmlns="http://www.portalfiscal.inf.br/nfe">
                 <idLote>33</idLote>
                 <tpAmb>2</tpAmb>
                 <verAplic>SP_EVENTOS_PL_100</verAplic>
@@ -31,6 +25,6 @@
                     </infEvento>
                 </retEvento>
             </retEnvEvento>
-        </nfeRecepcaoEventoResult>
+        </nfeResultMsg>
     </Body>
 </Envelope>
