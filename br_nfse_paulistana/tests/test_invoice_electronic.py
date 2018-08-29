@@ -227,7 +227,7 @@ class TestNFeBrasil(TransactionCase):
             with open(os.path.join(self.caminho, 'xml', 'nfse-sucesso.xml')) as xml:
                 xml_recebido = xml.read().replace('\n', '')
 
-            resp = sanitize_response(xml_recebido)
+            resp = sanitize_response(xml_recebido.encode('utf8'))
 
             envio_lote.return_value = {
                 'object': resp[1],
@@ -327,7 +327,7 @@ class TestNFeBrasil(TransactionCase):
             with open(os.path.join(self.caminho, 'xml', 'cancelamento-sucesso.xml')) as xml:
                 xml_recebido = xml.read().replace('\n', '')
 
-            resp = sanitize_response(xml_recebido)
+            resp = sanitize_response(xml_recebido.encode('utf8'))
 
             cancelar.return_value = {
                 'object': resp[1],
@@ -369,7 +369,7 @@ class TestNFeBrasil(TransactionCase):
             with open(os.path.join(self.caminho, 'xml', 'cancelamento-erro.xml')) as xml:
                 xml_recebido = xml.read().replace('\n', '')
 
-            resp = sanitize_response(xml_recebido)
+            resp = sanitize_response(xml_recebido.encode('utf8'))
 
             cancelar.return_value = {
                 'object': resp[1],
