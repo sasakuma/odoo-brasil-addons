@@ -25,8 +25,21 @@
                     <button name="action_view_edocs"
                             type="object"
                             class="label label-primary"
-                            context="{'search_default_invoice_id': id }"
+                            context="{'search_default_invoice_id': id}"
                             string="Visualizar Fila">
+                    </button>
+                </div>
+                <div class="alert alert-success" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('invoice_model', '!=', '55'),('invoice_electronic_state', '!=', 'done')]}">
+                    Sua
+                    <b>NFe de número
+                        <field name="nfe_number" class="oe_inline"/>
+                    </b>
+                    foi enviada com sucesso.
+                    <button name="action_view_edocs"
+                            type="object"
+                            class="label label-primary"
+                            context="{'search_default_invoice_id': id}"
+                            string="Visualizar NFe">
                     </button>
                 </div>
                 <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('invoice_model', '!=', '55'),('nfe_exception', '==', False)]}">
