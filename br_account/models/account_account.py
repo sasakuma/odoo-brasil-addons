@@ -11,6 +11,8 @@ class AccountAccount(models.Model):
                                    string='Primeiro Dígito',
                                    store=True)
 
+    active = fields.Boolean(default=True)
+
     @api.multi
     @api.depends('code')
     def _compute_code_first_digit(self):

@@ -6,9 +6,30 @@
         <field name="model">account.account</field>
         <field name="inherit_id" ref="account.view_account_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('row')]/div" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                        <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                    </button>
+                </div>
+            </xpath>
+
             <xpath expr="//field[@name='code']" position="after">
                 <field name="code_first_digit"/>
             </xpath>
+        </field>
+    </record>
+    
+    <record id="view_account_search" model="ir.ui.view">
+        <field name="name">account.account.search</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_search"/>
+        <field name="arch" type="xml">
+
+            <field name="name" position="after">
+                <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+            </field>
+
         </field>
     </record>
 
