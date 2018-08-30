@@ -17,7 +17,7 @@
                 </div>
                 <div class="alert alert-success" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('invoice_model', '!=', '001'),('sending_nfse', '==', False)]}">
                     Sua
-                    <b>NFSe de número
+                    <b>NFSe de número 
                         <field name="nfse_number" class="oe_inline"/>
                     </b>
                     está na fila de envio.
@@ -28,9 +28,22 @@
                             string="Visualizar Fila">
                     </button>
                 </div>
+                <div class="alert alert-success" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('invoice_model', '!=', '001'),('invoice_electronic_state', '!=', 'done')]}">
+                    Sua
+                    <b>NFSe de número
+                        <field name="nfse_number" class="oe_inline"/>
+                    </b>
+                    foi enviada com sucesso.
+                    <button name="action_view_edocs"
+                            type="object"
+                            class="label label-primary"
+                            context="{'search_default_invoice_id': id}"
+                            string="Visualizar NFSe">
+                    </button>
+                </div>
                 <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('invoice_model', '!=', '001'),('nfse_exception', '==', False)]}">
                     Ocorreu um erro com a
-                    <b>NFSe de número<field name="nfse_exception_number" class="oe_inline"/>.
+                    <b>NFSe de número <field name="nfse_exception_number" class="oe_inline"/>.
                     </b>
                     <button name="action_view_edocs"
                             type="object"
