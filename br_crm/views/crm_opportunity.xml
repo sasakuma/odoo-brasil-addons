@@ -66,4 +66,10 @@
 
         </field>
     </record>
+
+    <menuitem id="crm.menu_crm_lead_stage_act" 
+              sequence="2" 
+              parent="crm.menu_crm_config_lead" 
+              groups="base.group_user"/>
+              
 </odoo>
