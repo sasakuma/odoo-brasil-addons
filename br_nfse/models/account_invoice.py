@@ -12,13 +12,14 @@ class AccountInvoice(models.Model):
         for invoice in self:
             docs = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', invoice.id)])
+
             if docs:
-                invoice.nfse_number = docs[0].numero
-                invoice.nfse_exception_number = docs[0].numero
-                invoice.nfse_exception = (docs[0].state in ('error', 'denied'))
-                invoice.sending_nfse = docs[0].state == 'draft'
-                invoice.nfse_status = '%s - %s' % (docs[0].codigo_retorno,
-                                                   docs[0].mensagem_retorno)
+                invoice.nfse_number = docs[-1].numero
+                invoice.nfse_exception_number = docs[-1].numero
+                invoice.nfse_exception = (docs[-1].state in ('error', 'denied'))
+                invoice.sending_nfse = docs[-1].state == 'draft'
+                invoice.nfse_status = '%s - %s' % (docs[-1].codigo_retorno,
+                                                   docs[-1].mensagem_retorno)
 
     ambiente_nfse = fields.Selection(string='Ambiente NFSe',
                                      related='company_id.tipo_ambiente_nfse',
