@@ -4929,7 +4929,7 @@ msgid "Due Date"
 msgstr "Agendado para"
 
 #. module: br_crm
-#: model:ir.ui.view,arch_db:br_crm.crm_case_form_view_oppor
+#: model:ir.ui.view,arch_db:br_crm.br_crm_case_form_view_oppor1
 msgid "Customer"
 msgstr "Cliente"
 
