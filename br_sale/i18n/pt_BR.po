@@ -1347,3 +1347,8 @@ msgstr "Vlr. desconto"
 #: model:ir.model,name:br_sale.model_br_sale_parcel_wizard
 msgid "br_sale.parcel.wizard"
 msgstr "br_sale.parcel.wizard"
+
+#. module: sale
+#: model:ir.ui.menu,name:sale.Report_configuration
+msgid "Report Layout Categories"
+msgstr "Seção de Produtos"
