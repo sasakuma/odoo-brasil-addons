@@ -237,13 +237,21 @@ class TestBrSaleOrder(TransactionCase):
         self.sales_order = self.env['sale.order'].create({
             **default_saleorder,
             'name': 'SO 001',
-            'partner_id': self.partner_fisica.id
+            'partner_id': self.partner_fisica.id,
+            'partner_invoice_id': self.partner_fisica.id,
+            'partner_shipping_id': self.partner_fisica.id,
+            'date_order': datetime.today(),
+            'pricelist_id': self.env.ref('product.list0').id,
         })
 
         self.sales_order |= self.env['sale.order'].create({
             **default_saleorder,
             'name': 'SO 002',
-            'partner_id': self.partner_juridica.id
+            'partner_id': self.partner_juridica.id,
+            'partner_invoice_id': self.partner_juridica.id,
+            'partner_shipping_id': self.partner_juridica.id,
+            'date_order': datetime.today(),
+            'pricelist_id': self.env.ref('product.list0').id,
         })
 
         self.title_type = self.env.ref('br_account.account_title_type_2')
@@ -264,6 +272,9 @@ class TestBrSaleOrder(TransactionCase):
                 self.assertEqual(len(line.invoice_lines), 1)
 
                 inv_line = line.invoice_lines[0]
+
+                self.assertEqual(inv_line.invoice_id.pre_invoice_date, 
+                                 item.confirmation_date[0:10])
 
                 self.assertEqual(line.valor_desconto, inv_line.valor_desconto)
                 self.assertEqual(line.icms_cst_normal, inv_line.icms_cst_normal)
@@ -366,6 +377,8 @@ class TestBrSaleOrder(TransactionCase):
 
         for sale in self.sales_order:
 
+            self.assertEqual(len(sale.parcel_ids), 1)
+
             for parcel in sale.parcel_ids:
                 parcel_dict = self.sales_order._get_parcel_to_invoice(parcel)
 
@@ -381,6 +394,78 @@ class TestBrSaleOrder(TransactionCase):
                                  parcel.parceling_value)
                 self.assertEqual(parcel_dict['amount_days'],
                                  parcel.amount_days)
+
+    def test_create_invoice_percent(self):
+
+        for sale in self.sales_order:
+
+            context = {
+                'active_model': 'sale.order', 
+                'active_ids': [sale.id], 
+                'active_id': sale.id,
+            }
+
+            sale.with_context(context).action_confirm()
+
+            # Criamos a wizard para criação da Invoice
+            payment = self.env['sale.advance.payment.inv'].create({
+                'advance_payment_method': 'percentage',
+                'amount': 100,
+                'product_id': self.service.id,
+            })
+
+            # Criamos as invoices
+            payment.with_context(context).create_invoices()
+
+            # Recuperamos a fatura criada
+            invoice = self.env['account.invoice'].search([('origin', '=', sale.name)])
+
+            self.assertEqual(invoice.pre_invoice_date, sale.confirmation_date[:10])
+            self.assertEqual(len(invoice.parcel_ids), len(sale.parcel_ids))
+
+            for inv_parcel, order_parcel in zip(invoice.parcel_ids, sale.parcel_ids):
+                self.assertEqual(inv_parcel.name, order_parcel.name)
+                self.assertEqual(inv_parcel.date_maturity, order_parcel.date_maturity)
+                self.assertEqual(inv_parcel.old_date_maturity, order_parcel.old_date_maturity)
+                self.assertEqual(inv_parcel.financial_operation_id, order_parcel.financial_operation_id)
+                self.assertEqual(inv_parcel.title_type_id, order_parcel.title_type_id)
+                self.assertEqual(inv_parcel.pin_date, order_parcel.pin_date)
+
+    def test_create_invoice_price_fix(self):
+
+        for sale in self.sales_order:
+
+            context = {
+                'active_model': 'sale.order', 
+                'active_ids': [sale.id], 
+                'active_id': sale.id,
+            }
+
+            sale.with_context(context).action_confirm()
+
+            # Criamos a wizard para criação da Invoice
+            payment = self.env['sale.advance.payment.inv'].create({
+                'advance_payment_method': 'fixed',
+                'amount': 5,
+                'product_id': self.service.id,
+            })
+
+            # Criamos as invoices
+            payment.with_context(context).create_invoices()
+
+            # Recuperamos a fatura criada
+            invoice = self.env['account.invoice'].search([('origin', '=', sale.name)])
+
+            self.assertEqual(invoice.pre_invoice_date, sale.confirmation_date[:10])
+            self.assertEqual(len(invoice.parcel_ids), len(sale.parcel_ids))
+
+            for inv_parcel, order_parcel in zip(invoice.parcel_ids, sale.parcel_ids):
+                self.assertEqual(inv_parcel.name, order_parcel.name)
+                self.assertEqual(inv_parcel.date_maturity, order_parcel.date_maturity)
+                self.assertEqual(inv_parcel.old_date_maturity, order_parcel.old_date_maturity)
+                self.assertEqual(inv_parcel.financial_operation_id, order_parcel.financial_operation_id)
+                self.assertEqual(inv_parcel.title_type_id, order_parcel.title_type_id)
+                self.assertEqual(inv_parcel.pin_date, order_parcel.pin_date)
 
     def test_invoice_pis_cofins_taxes(self):
 
