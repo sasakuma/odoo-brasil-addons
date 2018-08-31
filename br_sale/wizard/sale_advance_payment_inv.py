@@ -32,7 +32,7 @@ class SaleAdvancePaymentInv(models.TransientModel):
         financial_operation = self.env.ref(
             'br_account.account_financial_operation_6')
 
-        invoice.pre_invoice_date = order.quotation_date
+        invoice.pre_invoice_date = order.confirmation_date
 
         # Ao invés de copiarmos as parcelas da Sale Order, optei por
         # recriá-las. Decidi seguir essas abordagem porque o uso da porcentagem

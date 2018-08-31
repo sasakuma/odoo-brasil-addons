@@ -21,6 +21,8 @@ class SaleOrder(models.Model):
     def _prepare_invoice(self):
         res = super(SaleOrder, self)._prepare_invoice()
 
+        res['pre_invoice_date'] = self.confirmation_date
+
         if self.fiscal_position_id:
             if self.fiscal_position_id.account_id:
                 res['account_id'] = self.fiscal_position_id.account_id.id
