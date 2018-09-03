@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-06 13:42+0000\n"
-"PO-Revision-Date: 2018-07-06 10:46-0300\n"
+"POT-Creation-Date: 2018-09-03 16:33+0000\n"
+"PO-Revision-Date: 2018-09-03 13:35-0300\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
 "Language: pt_BR\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #. module: br_sale
 #: model:ir.model.fields,field_description:br_sale.field_sale_order_line_icms_aliquota_credito
@@ -63,17 +63,17 @@ msgid "% Redução Base"
 msgstr "% Redução Base"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "(-) Desconto (%)"
 msgstr "(-) Desconto (%)"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "(=) Valor Bruto"
 msgstr "(=) Valor Bruto"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "(=) Valor Líquido"
 msgstr "(=) Valor Líquido"
 
@@ -513,7 +513,7 @@ msgid "99 - Outras Saídas"
 msgstr "99 - Outras Saídas"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "Adições"
 msgstr "Adições"
 
@@ -659,12 +659,12 @@ msgid "CFOP"
 msgstr "CFOP"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "COFINS"
 msgstr "COFINS"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "CSLL"
 msgstr "CSLL"
 
@@ -725,7 +725,7 @@ msgid "Condições de Pagamento"
 msgstr "Condições de Pagamento"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "Confirm Sale"
 msgstr "Confirmar Venda"
 
@@ -765,12 +765,12 @@ msgstr "Data de Vencimento"
 
 #. module: br_sale
 #: model:ir.model.fields,field_description:br_sale.field_sale_order_line_import_declaration_ids
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "Declaração de Importação"
 msgstr "Declaração de Importação"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "Delivered Quantity"
 msgstr "Quantidade Entregue"
 
@@ -795,27 +795,27 @@ msgid "Desp. Aduaneiras"
 msgstr "Desp. Aduaneiras"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "Detalhes do COFINS"
 msgstr "Detalhes do COFINS"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "Detalhes do ICMS"
 msgstr "Detalhes do ICMS"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "Detalhes do IPI"
 msgstr "Detalhes do IPI"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "Detalhes do Imposto de Importação"
 msgstr "Detalhes do Imposto de Importação"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "Detalhes do PIS"
 msgstr "Detalhes do PIS"
 
@@ -831,18 +831,18 @@ msgid "Display Name"
 msgstr "Nome exibido"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "Geral"
 msgstr "Geral"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
 #: model:ir.ui.view,arch_db:br_sale.br_sale_parcel_wizard_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "Gerar Parcelas"
 msgstr "Gerar Parcelas"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "ICMS"
 msgstr "ICMS"
 
@@ -873,27 +873,27 @@ msgid "ID"
 msgstr "ID"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "II"
 msgstr "II"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "INSS"
 msgstr "INSS"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "IPI"
 msgstr "IPI"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "IRRF"
 msgstr "IRRF"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "ISSQN"
 msgstr "ISSQN"
 
@@ -913,7 +913,7 @@ msgid "Informações Adicionais"
 msgstr "Informações Adicionais"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "Invoiced Quantity"
 msgstr "Quantidade Faturada"
 
@@ -941,7 +941,7 @@ msgid "Last Updated on"
 msgstr "Última atualização em"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "Lei da Transparência Fiscal"
 msgstr "Lei da Transparência Fiscal"
 
@@ -993,7 +993,7 @@ msgid "Outra moeda opcional se houver uma entra multi-moeda."
 msgstr "Outra moeda opcional se houver uma entra multi-moeda."
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "PIS"
 msgstr "PIS"
 
@@ -1004,9 +1004,9 @@ msgstr "Parcela"
 
 #. module: br_sale
 #: model:ir.model.fields,field_description:br_sale.field_sale_order_parcel_ids
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
 #: model:ir.ui.view,arch_db:br_sale.view_br_sale_order_parcel_form
 #: model:ir.ui.view,arch_db:br_sale.view_br_sale_order_parcel_tree
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "Parcelas"
 msgstr "Parcelas"
 
@@ -1059,7 +1059,7 @@ msgstr "Perc PIS"
 #. module: br_sale
 #: model:ir.model.fields,field_description:br_sale.field_sale_order_line_percent_subtotal
 msgid "Percent Total"
-msgstr "Percent Total"
+msgstr "Percentual Total"
 
 #. module: br_sale
 #: selection:sale.order.line,cofins_tipo:0 selection:sale.order.line,ipi_tipo:0
@@ -1112,7 +1112,7 @@ msgid "Regra"
 msgstr "Regra"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "Retenções"
 msgstr "Retenções"
 
@@ -1130,11 +1130,6 @@ msgstr "Ordem de Venda"
 #: model:ir.ui.view,arch_db:br_sale.br_sale_parcel_wizard_form
 msgid "Sale Parcels Wizard"
 msgstr "Janela de Parcelas de Venda"
-
-#. module: br_sale
-#: model:ir.model,name:br_sale.model_sale_advance_payment_inv
-msgid "Sales Advance Payment Invoice"
-msgstr "Fatura de Vendas com Pagamento Antecipado"
 
 #. module: br_sale
 #: model:ir.model,name:br_sale.model_sale_order_line
@@ -1162,7 +1157,7 @@ msgid "Simples Nacional – excesso de sublimite de receita bruta"
 msgstr "Simples Nacional – excesso de sublimite de receita bruta"
 
 #. module: br_sale
-#: model:ir.ui.view,arch_db:br_sale.br_sale_order_form
+#: model:ir.ui.view,arch_db:br_sale.view_order_form
 msgid "Substituição Tributária ICMS"
 msgstr "Substituição Tributária ICMS"
 
