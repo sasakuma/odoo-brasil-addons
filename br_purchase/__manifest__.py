@@ -15,6 +15,7 @@
     ],
     'data': [
         'views/purchase_order.xml',
+        'views/purchase_views.xml',
         'views/account_invoice.xml',
     ],
     'installable': True,
