@@ -15,6 +15,7 @@ class SaleOrder(models.Model):
 
     STATES = {
         'draft': [('readonly', False)],
+        'sent': [('readonly', False)],
     }
 
     @api.multi
@@ -92,8 +93,34 @@ class SaleOrder(models.Model):
 
     quotation_date = fields.Date(string='Data da Cotação',
                                  required=True,
+                                 readonly=True,
                                  copy=False,
+                                 states=STATES,
                                  default=fields.Date.today)
+
+    payment_term_id = fields.Many2one(readonly=True,
+                                      states=STATES)
+
+    fiscal_position_id = fields.Many2one(readonly=True,
+                                         states=STATES)
+
+    company_id = fields.Many2one(readonly=True,
+                                 states=STATES)
+
+    user_id = fields.Many2one(readonly=True,
+                              states=STATES)
+
+    client_order_ref = fields.Char(readonly=True,
+                                   states=STATES)
+
+    analytic_account_id = fields.Many2one(readonly=True,
+                                          states=STATES)
+
+    origin = fields.Char(readonly=True,
+                         states=STATES)
+
+    order_line = fields.One2many(readonly=True,
+                                 states=STATES)
 
     @api.depends('order_line.price_total', 'order_line.valor_desconto')
     def _amount_all(self):
@@ -174,7 +201,7 @@ class SaleOrder(models.Model):
             msg = ''
 
             if not sale.quotation_date:
-                msg += '- Nenhuma data fornecida como base para a criação' 
+                msg += '- Nenhuma data fornecida como base para a criação'
                 'das parcelas!'
 
             if sale.state != 'draft':
