@@ -49,6 +49,7 @@
         'wizard/br_account_invoice_print.xml',
         'wizard/br_product_fiscal_classification_wizard.xml',
         'wizard/br_account_invoice_parcel.xml',
+        'security/account_security.xml',
         'security/ir.model.access.csv',
     ],
     'demo': [

@@ -37,3 +37,4 @@ access_account_title_type_user,account.title.type.user,model_account_title_type,
 access_account_title_type_admin,account.title.type.admin,model_account_title_type,base.group_system,1,1,1,1
 access_account_financial_operation_user,account.financial.operation.user,model_account_financial_operation,base.group_user,1,0,0,0
 access_account_financial_operation_admin,account.financial.operation.admin,model_account_financial_operation,base.group_system,1,1,1,1
+access_account_invoice_portal,account.invoice.portal,account.model_account_invoice,br_account.group_account_portal_user,1,0,0,0
