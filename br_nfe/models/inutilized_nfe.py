@@ -112,8 +112,7 @@ class InutilizedNfe(models.Model):
                                 resposta['received_xml'])
         if hasattr(resposta['object'].Body, 'Fault'):
             raise UserError('Não foi possível concluir a operação.')
-        inf_inut = resposta['object'].Body.nfeInutilizacaoNF2Result. \
-            retInutNFe.infInut
+        inf_inut = resposta['object'].Body.nfeResultMsg.retInutNFe.infInut
         status = inf_inut.cStat
         if status == 102:
             self.state = 'done'
@@ -134,7 +133,7 @@ class InutilizedNfe(models.Model):
         certificado = Certificado(cert_pfx, company.nfe_a1_password)
 
         resposta = inutilizar_nfe(certificado, obj=obj, estado=estado,
-                                  ambiente=int(ambiente))
+                                  modelo=self.modelo, ambiente=int(ambiente))
         self._handle_resposta(resposta=resposta)
 
     @api.multi
@@ -148,7 +147,7 @@ class InutilizedNfe(models.Model):
         self.env['ir.attachment'].create(
             {
                 'name': file_name,
-                'datas': base64.b64encode(data.encode('utf8')),
+                'datas': base64.b64encode(data.encode('utf8') if type(data) == str else data),
                 'datas_fname': file_name,
                 'description': '',
                 'res_model': 'invoice.electronic.inutilized',
