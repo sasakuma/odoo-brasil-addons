@@ -2,6 +2,8 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import mock
+
+from odoo.exceptions import UserError
 from odoo.addons.br_account.tests.test_base import TestBaseBr
 
 
@@ -25,6 +27,7 @@ class TestAccountInvoice(TestBaseBr):
             'name': 'Faturas',
             'code': 'INV',
             'type': 'sale',
+            'update_posted': True,
             'default_debit_account_id': self.revenue_account.id,
             'default_credit_account_id': self.revenue_account.id,
         })
@@ -130,3 +133,36 @@ class TestAccountInvoice(TestBaseBr):
         for inv in self.invoices:
             inv._compute_days_to_expire_cert()
             self.assertLess(inv.days_to_expire_cert, 0)
+
+    def test_action_cancel(self):
+
+        for inv in self.invoices:
+
+            # Criamos os documentos eletronicos e as linkamos com as faturas
+            docs = self.env['invoice.electronic'].create({'code': '100',
+                                                          'name': 'Elec.Doc.',
+                                                          'state': 'error',
+                                                          'invoice_id': inv.id,
+                                                          })
+
+            docs |= self.env['invoice.electronic'].create({'code': '100',
+                                                           'name': 'Elec.Doc.',
+                                                           'state': 'done',
+                                                           'invoice_id': inv.id,
+                                                           })
+
+            # O cancelamento nao sera permitido porque o doc. eletronico
+            # ainda nao foi cancelado
+            with self.assertRaises(UserError):
+                inv.action_cancel()
+
+            # Forçamos o status de cancelado
+            # no doc. que foi emitido com sucesso,
+            # apenas para fins de praticidade no teste
+            for doc in docs:
+                if doc.state == 'done':
+                    doc.state = 'cancel'
+
+            # Como os docs ja foram nao estao mais como 'done'
+            # o cancelamento funciona normalmente
+            self.assertTrue(inv.action_cancel())
