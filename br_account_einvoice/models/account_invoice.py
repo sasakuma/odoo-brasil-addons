@@ -243,12 +243,10 @@ class AccountInvoice(models.Model):
         for item in self:
             edocs = self.env['invoice.electronic'].search(
                 [('invoice_id', '=', item.id)])
-            for edoc in edocs:
-                if edoc.state == 'done':
-                    raise UserError('Documento eletrônico emitido - Cancele o \
-                                    documento para poder cancelar a fatura')
-                if edoc.can_unlink():
-                    edoc.unlink()
+
+            if any(edoc.state == 'done' for edoc in edocs):
+                raise UserError('Documento eletrônico emitido - Cancele o \
+                                documento para poder cancelar a fatura')
         return res
 
     @api.multi
