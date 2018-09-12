@@ -20,10 +20,9 @@
                     <field name="zip_file" filename="zip_file_name"/>
                 </group>
                 <footer>
-                    <button name="nfse_export"
-                            string="Exportar" type="object"
-                            class="oe_highlight"/>
-                    <button string="Cancelar" special="cancel"/>
+                    <button name="nfse_export" string="Exportar" type="object" class="oe_highlight" attrs="{'invisible': [('state', '=', 'done')]}"/>
+                    <button string="Cancelar" special="cancel" attrs="{'invisible': [('state', '=', 'done')]}"/>
+                    <button string="Close" special="cancel" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'done')]}"/>
                 </footer>
             </form>
         </field>
