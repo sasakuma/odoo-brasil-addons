@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <form string="Cancelamento de NFe">
                 <group>
-                    <field name="edoc_id"/>
+                    <field name="edoc_id" readonly="1"/>
                     <field name="justificativa"/>
                 </group>
                 <div>
