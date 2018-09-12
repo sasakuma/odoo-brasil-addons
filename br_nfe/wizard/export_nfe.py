@@ -4,7 +4,7 @@
 import base64
 import os
 import os.path
-from io import StringIO
+from io import BytesIO
 from zipfile import ZipFile
 
 from odoo import api, fields, models
@@ -30,14 +30,17 @@ class ExportNfe(models.TransientModel):
             os.makedirs(tmp)
         except:
             pass
-        zip_base64 = StringIO()
-        zip_file = ZipFile(zip_base64, 'w')
-        for xml in xmls:
-            filename = os.path.join(tmp, xml['name'])
-            with open(filename, 'w') as xml_file:
-                xml_file.write(xml['content'])
-            zip_file.write(filename, xml['name'])
-        zip_file.close()
+        zip_base64 = BytesIO()
+
+        with ZipFile(zip_base64, 'w') as zip_file:
+            for xml in xmls:
+                filename = os.path.join(tmp, xml['name'])
+
+                with open(filename, 'w') as xml_file:
+                    xml_file.write(xml['content'])
+
+                zip_file.write(filename, xml['name'])
+
         zip_base64.seek(0)
         return base64.b64encode(zip_base64.getvalue())
 
@@ -54,12 +57,14 @@ class ExportNfe(models.TransientModel):
         invoice_ids = self.env['invoice.electronic'].search(search_vals)
         xmls = []
         for invoice in invoice_ids:
+
             if not invoice.nfe_processada:
                 invoice.generate_nfe_proc()
+
             if invoice.nfe_processada:
                 xmls.append({
-                    'content': base64.decodestring(invoice.nfe_processada),
-                    'name': invoice.nfe_processada_name
+                    'content': base64.decodestring(invoice.nfe_processada).decode(),
+                    'name': invoice.nfe_processada_name,
                 })
 
         self.zip_file = self._save_zip(xmls)
