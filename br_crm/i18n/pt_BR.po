@@ -4937,3 +4937,48 @@ msgstr "Cliente"
 #: model:ir.model,name:br_crm.model_crm_lead
 msgid "Lead/Opportunity"
 msgstr "Prospecção/Oportunidade"
+
+#. module: crm
+#: model:ir.model.fields,field_description:crm.field_crm_team_dashboard_graph_period_pipeline
+msgid "Expected to Close"
+msgstr "Fechamento esperado"
+
+#. module: crm
+#: selection:crm.team,dashboard_graph_period_pipeline:0
+msgid "Within a Month"
+msgstr "Dentro de um Mês"
+
+#. module: crm
+#: selection:crm.team,dashboard_graph_period_pipeline:0
+msgid "Within a Week"
+msgstr "Dentro de uma Semana"
+
+#. module: crm
+#: selection:crm.team,dashboard_graph_period_pipeline:0
+msgid "Within a Year"
+msgstr "Dentro de um Ano"
+
+#. module: crm
+#: model:ir.model.fields,help:crm.field_crm_team_dashboard_graph_period_pipeline
+msgid "The time period this channel's dashboard graph will consider."
+msgstr "O período de tempo que o gráfico do dashboard deste canal irá considerar."
+
+#. module: crm
+#: selection:crm.team,dashboard_graph_group_pipeline:0
+msgid "Expected Closing Day"
+msgstr "Dia de Encerramento Esperado"
+
+#. module: crm
+#: selection:crm.team,dashboard_graph_group_pipeline:0
+msgid "Expected Closing Month"
+msgstr "Mês de Encerramento Esperado"
+
+#. module: crm
+#: selection:crm.team,dashboard_graph_group_pipeline:0
+msgid "Expected Closing Week"
+msgstr "Semana de Encerramento Esperada"
+
+#. module: crm
+#: model:ir.model.fields,help:crm.field_crm_team_dashboard_graph_group_pipeline
+msgid "How this channel's dashboard graph will group the results."
+msgstr "Como o gráfico do dashboard deste canal agrupará os resultados."
