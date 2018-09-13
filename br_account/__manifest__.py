@@ -45,6 +45,7 @@
         'views/account_tax.xml',
         'views/res_partner.xml',
         'views/product_fiscal_classification.xml',
+        'views/product_pricelist_views.xml',
         'wizard/account_invoice_confirm.xml',
         'wizard/br_account_invoice_print.xml',
         'wizard/br_product_fiscal_classification_wizard.xml',
