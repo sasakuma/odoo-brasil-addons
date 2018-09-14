@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<template>
+
+    <t t-extend="SwitchCompanyMenu">
+        <t t-jquery=".dropdown-toggle > span:first-child" t-operation="replace">
+            <span class="fa fa-building-o"/>
+        </t>
+    </t>
+
+</template>

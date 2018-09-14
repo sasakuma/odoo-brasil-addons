@@ -33,6 +33,11 @@
         'views/res_company.xml',
         'security/ir.model.access.csv',
     ],
+
+    'qweb': [
+        'static/src/xml/navbar.xml',
+    ],
+
     'post_init_hook': 'post_init',
     'installable': True,
     'auto_install': True,
