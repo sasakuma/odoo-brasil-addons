@@ -8,4 +8,10 @@
         </t>
     </t>
 
+    <t t-extend="UserMenu">
+        <t t-jquery=".dropdown-toggle > span" t-operation="replace">
+            <span class=""></span>
+        </t>
+    </t>
+
 </template>
